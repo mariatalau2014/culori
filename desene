@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pictură cu Pensulă</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        #drawing-area {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            background-color: white;
+            border: 2px solid #333;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            cursor: crosshair;
+        }
+        #palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            padding: 10px;
+            background-color: #eee;
+            border-radius: 8px;
+            max-width: 600px;
+        }
+        .color {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #333;
+            transition: transform 0.2s;
+        }
+        .color:hover {
+            transform: scale(1.1);
+        }
+        .color.selected {
+            transform: scale(1.2);
+            box-shadow: 0 0 0 3px white, 0 0 0 5px #333;
+        }
+        #brush-size {
+            margin: 10px 0;
+        }
+        #controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        h1 {
+            color: #333;
+        }
+        #brush-preview {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #333;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>🎨 Pictură cu Pensulă</h1>
+        
+        <div id="controls">
+            <div>
+                <label for="brush-size">Mărime pensulă: </label>
+                <input type="range" id="brush-size" min="1" max="20" value="5">
+                <div id="brush-preview"></div>
+            </div>
+            <button id="clear">Șterge colorarea</button>
+            <button id="download">Descarcă imaginea</button>
+        </div>
+
+        <div id="palette">
+            <div class="color selected" style="background-color: #000000;" data-color="#000000"></div>
+            <div class="color" style="background-color: #FF0000;" data-color="#FF0000"></div>
+            <div class="color" style="background-color: #00FF00;" data-color="#00FF00"></div>
+            <div class="color" style="background-color: #0000FF;" data-color="#0000FF"></div>
+            <div class="color" style="background-color: #FFFF00;" data-color="#FFFF00"></div>
+            <div class="color" style="background-color: #FF00FF;" data-color="#FF00FF"></div>
+            <div class="color" style="background-color: #00FFFF;" data-color="#00FFFF"></div>
+            <div class="color" style="background-color: #FFA500;" data-color="#FFA500"></div>
+            <div class="color" style="background-color: #800080;" data-color="#800080"></div>
+            <div class="color" style="background-color: #FFC0CB;" data-color="#FFC0CB"></div>
+            <div class="color" style="background-color: #A52A2A;" data-color="#A52A2A"></div>
+            <div class="color" style="background-color: #FFFFFF;" data-color="#FFFFFF"></div>
+        </div>
+
+        <div id="drawing-area"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const drawingArea = document.getElementById('drawing-area');
+            const palette = document.getElementById('palette');
+            const brushSizeInput = document.getElementById('brush-size');
+            const brushPreview = document.getElementById('brush-preview');
+            const clearButton = document.getElementById('clear');
+            const downloadButton = document.getElementById('download');
+            
+            // Creăm două canvas-uri: unul pentru contur și unul pentru colorare
+            const outlineCanvas = document.createElement('canvas');
+            outlineCanvas.width = drawingArea.clientWidth;
+            outlineCanvas.height = drawingArea.clientHeight;
+            outlineCanvas.style.position = 'absolute';
+            outlineCanvas.style.top = '0';
+            outlineCanvas.style.left = '0';
+            outlineCanvas.style.zIndex = '1';
+            
+            const coloringCanvas = document.createElement('canvas');
+            coloringCanvas.width = drawingArea.clientWidth;
+            coloringCanvas.height = drawingArea.clientHeight;
+            coloringCanvas.style.position = 'absolute';
+            coloringCanvas.style.top = '0';
+            coloringCanvas.style.left = '0';
+            coloringCanvas.style.zIndex = '2';
+            
+            drawingArea.appendChild(outlineCanvas);
+            drawingArea.appendChild(coloringCanvas);
+            
+            const outlineCtx = outlineCanvas.getContext('2d');
+            const coloringCtx = coloringCanvas.getContext('2d');
+            
+            coloringCtx.lineCap = 'round';
+            coloringCtx.lineJoin = 'round';
+            
+            // Setări inițiale
+            let isDrawing = false;
+            let currentColor = '#000000';
+            let brushSize = 5;
+            
+            // Actualizăm previzualizarea pensulei
+            function updateBrushPreview() {
+                brushPreview.style.backgroundColor = currentColor;
+                brushPreview.style.width = brushSize + 'px';
+                brushPreview.style.height = brushSize + 'px';
+            }
+            
+            updateBrushPreview();
+            
+            // Selectare culoare
+            palette.addEventListener('click', function(e) {
+                if (e.target.classList.contains('color')) {
+                    document.querySelectorAll('.color').forEach(color => {
+                        color.classList.remove('selected');
+                    });
+                    e.target.classList.add('selected');
+                    currentColor = e.target.getAttribute('data-color');
+                    updateBrushPreview();
+                }
+            });
+            
+            // Schimbare mărime pensulă
+            brushSizeInput.addEventListener('input', function() {
+                brushSize = this.value;
+                updateBrushPreview();
+            });
+            
+            // Creăm o mască pentru a limita desenarea la interiorul conturului
+            function createMask() {
+                // Creăm un canvas temporar pentru mască
+                const maskCanvas = document.createElement('canvas');
+                maskCanvas.width = coloringCanvas.width;
+                maskCanvas.height = coloringCanvas.height;
+                const maskCtx = maskCanvas.getContext('2d');
+                
+                // Desenăm conturul în negru pe fundal alb
+                maskCtx.fillStyle = 'white';
+                maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
+                
+                // Copiem conturul
+                maskCtx.drawImage(outlineCanvas, 0, 0);
+                
+                // Creăm o mască de pixeli
+                const imageData = maskCtx.getImageData(0, 0, maskCanvas.width, maskCanvas.height);
+                const data = imageData.data;
+                
+                // Returnăm o funcție care verifică dacă un pixel este în interiorul conturului
+                return function(x, y) {
+                    if (x < 0 || y < 0 || x >= maskCanvas.width || y >= maskCanvas.height) {
+                        return false;
+                    }
+                    
+                    const index = (y * maskCanvas.width + x) * 4;
+                    // Verificăm dacă pixelul este negru (parte a conturului) sau alb (fundal)
+                    // Dacă e negru, nu permitem desenarea
+                    if (data[index] < 200 && data[index+1] < 200 && data[index+2] < 200) {
+                        return false;
+                    }
+                    
+                    // Pentru a permite desenarea doar în interior, vom folosi o metodă de flood fill virtual
+                    // Simplificat: permitem desenarea peste tot unde nu e contur
+                    return true;
+                };
+            }
+            
+            // Funcții de desenare
+            function startDrawing(e) {
+                isDrawing = true;
+                draw(e);
+            }
+            
+            function stopDrawing() {
+                isDrawing = false;
+                coloringCtx.beginPath();
+            }
+            
+            function draw(e) {
+                if (!isDrawing) return;
+                
+                const rect = coloringCanvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Verificăm dacă suntem în interiorul conturului
+                if (!isInsideOutline(x, y)) {
+                    return;
+                }
+                
+                coloringCtx.lineWidth = brushSize;
+                coloringCtx.strokeStyle = currentColor;
+                coloringCtx.lineTo(x, y);
+                coloringCtx.stroke();
+                coloringCtx.beginPath();
+                coloringCtx.moveTo(x, y);
+            }
+            
+            // Variabilă globală pentru funcția de verificare
+            let isInsideOutline = function(x, y) { return true; };
+            
+            // Evenimente mouse
+            coloringCanvas.addEventListener('mousedown', startDrawing);
+            coloringCanvas.addEventListener('mousemove', draw);
+            coloringCanvas.addEventListener('mouseup', stopDrawing);
+            coloringCanvas.addEventListener('mouseout', stopDrawing);
+            
+            // Suport touch pentru dispozitive mobile
+            coloringCanvas.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousedown', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                coloringCanvas.dispatchEvent(mouseEvent);
+            });
+            
+            coloringCanvas.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousemove', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                coloringCanvas.dispatchEvent(mouseEvent);
+            });
+            
+            coloringCanvas.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                const mouseEvent = new MouseEvent('mouseup');
+                coloringCanvas.dispatchEvent(mouseEvent);
+            });
+            
+            // Șterge doar colorarea, păstrează conturul
+            clearButton.addEventListener('click', function() {
+                coloringCtx.clearRect(0, 0, coloringCanvas.width, coloringCanvas.height);
+            });
+            
+            // Descarcă imaginea combinată
+            downloadButton.addEventListener('click', function() {
+                // Creăm un canvas temporar pentru a combina cele două straturi
+                const combinedCanvas = document.createElement('canvas');
+                combinedCanvas.width = coloringCanvas.width;
+                combinedCanvas.height = coloringCanvas.height;
+                const combinedCtx = combinedCanvas.getContext('2d');
+                
+                // Desenăm mai întâi conturul
+                combinedCtx.drawImage(outlineCanvas, 0, 0);
+                // Apoi colorarea
+                combinedCtx.drawImage(coloringCanvas, 0, 0);
+                
+                // Creăm linkul de descărcare
+                const link = document.createElement('a');
+                link.download = 'pictura-mea.png';
+                link.href = combinedCanvas.toDataURL('image/png');
+                link.click();
+            });
+            
+            // Funcție pentru a desena un contur de bază (o casă simplă)
+            function drawOutline() {
+                outlineCtx.clearRect(0, 0, outlineCanvas.width, outlineCanvas.height);
+                
+                outlineCtx.lineWidth = 3;
+                outlineCtx.strokeStyle = '#333';
+                outlineCtx.fillStyle = 'transparent';
+                
+                // Desenăm o casă simplă
+                outlineCtx.beginPath();
+                outlineCtx.moveTo(150, 300); // Punct de start (stânga jos)
+                outlineCtx.lineTo(450, 300); // Dreapta jos
+                outlineCtx.lineTo(450, 150); // Dreapta sus
+                outlineCtx.lineTo(300, 50);  // Vârful acoperișului
+                outlineCtx.lineTo(150, 150); // Stânga sus
+                outlineCtx.closePath(); // Închide forma
+                outlineCtx.stroke();
+                
+                // Fereastră
+                outlineCtx.beginPath();
+                outlineCtx.rect(200, 180, 60, 60);
+                outlineCtx.stroke();
+                
+                // Ușă
+                outlineCtx.beginPath();
+                outlineCtx.rect(320, 220, 50, 80);
+                outlineCtx.stroke();
+                
+                // Creăm funcția de verificare a conturului
+                isInsideOutline = createMask();
+            }
+            
+            // Inițializăm desenul
+            drawOutline();
+        });
+    </script>
+</body>
+</html>
