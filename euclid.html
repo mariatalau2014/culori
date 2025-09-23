@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Euclidean Algorithm GCD Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 700px;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+        
+        .input-container {
+            flex: 1;
+        }
+        
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 18px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        button {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            text-align: left;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            display: none;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .result-title {
+            font-size: 20px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .gcd-value {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .steps {
+            padding-left: 20px;
+        }
+        
+        .step {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            animation: fadeIn 0.5s ease-out;
+            border-left: 4px solid #3498db;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .step-number {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .calculation {
+            font-family: monospace;
+            font-size: 18px;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f1f8ff;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .explanation {
+            margin-top: 15px;
+            padding: 12px;
+            background-color: #e8f4fc;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #2980b9;
+            line-height: 1.5;
+            border-left: 3px solid #3498db;
+        }
+        
+        .final-step {
+            background-color: #e8f5e9;
+            border-left-color: #2ecc71;
+        }
+        
+        .final-step .step-number {
+            background-color: #2ecc71;
+        }
+        
+        .error {
+            color: #e74c3c;
+            margin-top: 10px;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .highlight {
+            background-color: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 600px) {
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .step-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .step-number {
+                margin-bottom: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Euclidean Algorithm GCD Calculator</h1>
+        <p class="subtitle">Enter two positive integers to calculate their Greatest Common Divisor (GCD) using the Euclidean algorithm. Each step includes a detailed explanation of the calculation.</p>
+        
+        <div class="input-group">
+            <div class="input-container">
+                <label for="num1">First Number</label>
+                <input type="number" id="num1" min="1" placeholder="Enter a positive integer">
+            </div>
+            <div class="input-container">
+                <label for="num2">Second Number</label>
+                <input type="number" id="num2" min="1" placeholder="Enter a positive integer">
+            </div>
+        </div>
+        
+        <div class="error" id="error-message"></div>
+        
+        <button id="calculate-btn">Calculate GCD</button>
+        
+        <div class="result-container" id="result-container">
+            <div class="result-header">
+                <div class="result-title">Calculation Steps:</div>
+                <div class="gcd-value">GCD = <span id="gcd-result">0</span></div>
+            </div>
+            <div class="steps" id="steps-container"></div>
+        </div>
+        
+        <div class="explanation" style="margin-top: 25px; background-color: #e3f2fd; border-left-color: #2c3e50;">
+            <strong>How the Euclidean Algorithm works:</strong> 
+            The algorithm repeatedly replaces the larger number by the remainder of dividing the larger number by the smaller number. 
+            This process continues until one of the numbers becomes zero. The non-zero number at this point is the GCD.
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('calculate-btn').addEventListener('click', calculateGCD);
+        
+        function calculateGCD() {
+            // Get input values
+            const num1Input = document.getElementById('num1');
+            const num2Input = document.getElementById('num2');
+            const errorMessage = document.getElementById('error-message');
+            const resultContainer = document.getElementById('result-container');
+            const stepsContainer = document.getElementById('steps-container');
+            const gcdResult = document.getElementById('gcd-result');
+            
+            // Reset previous results
+            errorMessage.style.display = 'none';
+            resultContainer.style.display = 'none';
+            stepsContainer.innerHTML = '';
+            
+            // Get and validate inputs
+            const num1 = parseInt(num1Input.value);
+            const num2 = parseInt(num2Input.value);
+            
+            if (isNaN(num1) || isNaN(num2)) {
+                showError('Please enter valid numbers.');
+                return;
+            }
+            
+            if (num1 <= 0 || num2 <= 0) {
+                showError('Please enter positive integers only.');
+                return;
+            }
+            
+            // Calculate GCD with detailed steps
+            const steps = [];
+            let a = Math.max(num1, num2);
+            let b = Math.min(num1, num2);
+            let stepCount = 1;
+            
+            // Initial step
+            steps.push({
+                title: "Initial Values",
+                calculation: `${a} and ${b}`,
+                explanation: `We start with the two numbers: <span class="highlight">${a}</span> and <span class="highlight">${b}</span>. Since ${a} ≥ ${b}, we'll divide ${a} by ${b}.`
+            });
+            
+            while (b !== 0) {
+                const quotient = Math.floor(a / b);
+                const remainder = a % b;
+                
+                steps.push({
+                    title: `Step ${stepCount}`,
+                    calculation: `${a} = ${b} × ${quotient} + ${remainder}`,
+                    explanation: `Divide <span class="highlight">${a}</span> by <span class="highlight">${b}</span>: quotient is <span class="highlight">${quotient}</span> and remainder is <span class="highlight">${remainder}</span>.<br>
+                    According to the Euclidean algorithm, GCD(${a}, ${b}) = GCD(${b}, ${remainder}).`
+                });
+                
+                a = b;
+                b = remainder;
+                stepCount++;
+            }
+            
+            // Final step
+            steps.push({
+                title: "Final Result",
+                calculation: `GCD = ${a}`,
+                explanation: `The remainder is now <span class="highlight">0</span>, so the algorithm stops. The last non-zero remainder is <span class="highlight">${a}</span>, which is the GCD of the original numbers.`,
+                isFinal: true
+            });
+            
+            // Display results
+            gcdResult.textContent = a;
+            resultContainer.style.display = 'block';
+            
+            // Display steps with detailed explanations
+            steps.forEach((step, index) => {
+                const stepElement = document.createElement('div');
+                stepElement.className = `step ${step.isFinal ? 'final-step' : ''}`;
+                
+                stepElement.innerHTML = `
+                    <div class="step-header">
+                        <span class="step-number">${index + 1}</span>
+                        <div class="step-title">${step.title}</div>
+                    </div>
+                    <div class="calculation">${step.calculation}</div>
+                    <div class="explanation">${step.explanation}</div>
+                `;
+                
+                stepsContainer.appendChild(stepElement);
+            });
+        }
+        
+        function showError(message) {
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+        
+        // Allow Enter key to trigger calculation
+        document.getElementById('num1').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') calculateGCD();
+        });
+        
+        document.getElementById('num2').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') calculateGCD();
+        });
+    </script>
+</body>
+</html>
