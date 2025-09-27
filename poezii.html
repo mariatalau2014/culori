@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator de Poezii</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            max-width: 700px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        #poemOutput {
+            margin-top: 25px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+            white-space: pre-line;
+            line-height: 1.7;
+            font-size: 18px;
+            display: none;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .poem-title {
+            font-weight: bold;
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Generator de Poezii</h1>
+        <div class="input-group">
+            <label for="theme">Tema Poeziei:</label>
+            <input type="text" id="theme" placeholder="Ex: iubire, natură, toamnă, vis, libertate...">
+        </div>
+        <div class="input-group">
+            <label for="type">Tipul Poeziei:</label>
+            <select id="type">
+                <option value="normal">Rimă normală</option>
+                <option value="liber">Vers liber</option>
+                <option value="haiku">Haiku</option>
+                <option value="sonet">Sonet</option>
+            </select>
+        </div>
+        <button onclick="generatePoem()">Generează Poezia</button>
+        <div id="poemOutput"></div>
+    </div>
+
+    <script>
+        function generatePoem() {
+            const theme = document.getElementById('theme').value.trim();
+            const type = document.getElementById('type').value;
+            const output = document.getElementById('poemOutput');
+
+            if (!theme) {
+                alert('Te rog introdu o temă pentru poezie!');
+                return;
+            }
+
+            let poem = '';
+            let title = '';
+
+            // Generare titlu
+            const adjectives = ['Minunată', 'Tainică', 'Adâncă', 'Fragedă', 'Puternică', 'Liniștită', 'Vibrantă', 'Eternă', 'Nebănuită', 'Sensibilă'];
+            const nouns = ['Cântec', 'Vis', 'Poveste', 'Suflet', 'Rugăciune', 'Jurnal', 'Steaua', 'Floare', 'Oglindă', 'Cale'];
+            const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+            const noun = nouns[Math.floor(Math.random() * nouns.length)];
+            title = `${adj} ${noun} despre ${theme.charAt(0).toUpperCase() + theme.slice(1)}`;
+
+            // Generare poezie în funcție de tip
+            switch(type) {
+                case 'liber':
+                    poem = generateFreeVerse(theme);
+                    break;
+                case 'haiku':
+                    poem = generateHaiku(theme);
+                    break;
+                case 'sonet':
+                    poem = generateSonnet(theme);
+                    break;
+                default: // normal
+                    poem = generateNormalRhyme(theme);
+            }
+
+            output.innerHTML = `<div class="poem-title">${title}</div>${poem}`;
+            output.style.display = 'block';
+        }
+
+        function generateNormalRhyme(theme) {
+            const lines = [
+                `În lumea ${theme}, unde visul e adevăr,`,
+                `Se-ntâmplă minuni, departe de-amăgăr.`,
+                `Cu gândul la tine, cu sufletul curat,`,
+                `În fiecare zi, iubirea-i un dar.`,
+                ``,
+                `Pe drumul ${theme}, cu pași de dor,`,
+                `Găsesc în tăcere un adăpost.`,
+                `Și-n vântul rece, ce șoptește-ncet,`,
+                `Auzi cum bate un inimă-ndrăgostit.`,
+                ``,
+                `Sub cerul senin, cu stelele-n zbor,`,
+                `Îți scriu aceste versuri cu foc și cu dor.`,
+                `Căci tu ești izvorul, ești lumina mea,`,
+                `Fără de tine, viața-i doar pustie goală.`,
+                ``,
+                `Aș merge prin munți, aș merge prin văi,`,
+                `Doar ca să-ți aduc un zâmbet din rai.`,
+                `Și-n fiecare clipă, în fiecare ceas,`,
+                `Te port în suflet, ca pe-un vis frumos și sfânt.`,
+                ``,
+                `Așa că rămâi, măcar în gândire,`,
+                `Să-mi ții de urât în zilele grele,`,
+                `Să fii ca lumina în noaptea cea neagră,`,
+                `Să-mi dai putere în clipele rele.`,
+                ``,
+                `Iar dacă vreodată te-oi uita,`,
+                `Să știi că sufletul meu te va căuta.`
+            ];
+            return lines.join('\n');
+        }
+
+        function generateFreeVerse(theme) {
+            const lines = [
+                `Ah, ${theme}...`,
+                `nu e doar un cuvânt,`,
+                `e un univers întreg`,
+                `în care mă pierd și mă regăsesc.`,
+                ``,
+                `Fără reguli, fără lanțuri,`,
+                `doar adevărul curat al simțirii.`,
+                `Fiecare vers – o bătaie de inimă,`,
+                `fiecare spațiu – o tăcere plină de sens.`,
+                ``,
+                `În tăcerea zorilor, când lumea se trezește,`,
+                `tu ești primul gând care-mi atinge sufletul.`,
+                `În amurgul senin, când stelele apar,`,
+                `tu ești lumina care-mi arată drumul.`,
+                ``,
+                `Nu am nevoie de rime perfecte,`,
+                `nici de versuri măsurate cu rigla inimii.`,
+                `Am nevoie doar de tine,`,
+                `prezentă în fiecare respirație,`,
+                `în fiecare bătaie de inimă,`,
+                `în fiecare vis de nepovestit.`,
+                ``,
+                `${theme}...`,
+                `ești tu, ești eu, ești tot ce există`,
+                `între tăcere și cuvânt,`,
+                `între real și vis.`,
+                ``,
+                `Și dacă mâine lumea s-ar sfârși,`,
+                `aș dori ca ultimul meu gând să fie despre tine.`,
+                `Pentru că în tine, ${theme},`,
+                `am găsit adăpostul meu etern.`
+            ];
+            return lines.join('\n');
+        }
+
+        function generateHaiku(theme) {
+            // Haiku-ul rămâne scurt conform tradiției, dar adăugăm un mic preludiu și un final pentru a face poezia mai lungă
+            const lines = [
+                `În liniștea dimineții...`,
+                ``,
+                `Frunze de ${theme}`,
+                `plutesc pe vântul senin –`,
+                `lumea tace acum.`,
+                ``,
+                `Un moment de pace,`,
+                `o clipă de eternitate,`,
+                `în care totul are sens.`,
+                ``,
+                `Și iarba șoptește`,
+                `povestea ta, ${theme},`,
+                `sub razele blânde ale soarelui.`
+            ];
+            return lines.join('\n');
+        }
+
+        function generateSonnet(theme) {
+            const lines = [
+                `Când gândul meu zboară spre tine, ${theme} dulce,`,
+                `În noaptea senină, sub stelele reci,`,
+                `Simt cum în suflet o flacără tulce`,
+                `Îmi arde inima, cu dorul tău feci.`,
+                ``,
+                `Și dacă lumea s-ar opri azi în drum,`,
+                `Eu tot aș merge spre tine, iubire,`,
+                `Căci fără tine, viața-i doar un fum,`,
+                `Un vis deșert, fără niciun zâmbire.`,
+                ``,
+                `Așa că rămâi, măcar în gândire,`,
+                `Să-mi ții de urât în zilele grele,`,
+                `Să fii ca lumina în noaptea cea neagră,`,
+                `Să-mi dai putere în clipele rele.`,
+                ``,
+                `Iar dacă vreodată te-oi uita,`,
+                `Să știi că sufletul meu te va căuta.`,
+                ``,
+                `Prin văi adânci și munți înalți,`,
+                `Prin vise clare și nopți senine,`,
+                `Te caut mereu, cu pași nesfârșiți,`,
+                `Ca floarea-albastră printre ruine.`,
+                ``,
+                `Căci tu ești rădăcina și frunza mea,`,
+                `Tu ești izvorul, tu ești marea,`,
+                `Tu ești tăcerea dintre cuvinte,`,
+                `Tu ești lumina care nu piere.`,
+                ``,
+                `Așa că, ${theme}, rămâi cu mine,`,
+                `Chiar dacă doar în versuri te pot ține.`
+            ];
+            return lines.join('\n');
+        }
+    </script>
+</body>
+</html>
