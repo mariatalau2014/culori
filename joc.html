@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Desene cu Numere și Culori</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f7f0;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #333;
+    }
+
+    h2 {
+      margin: 12px 0;
+      text-align: center;
+    }
+
+    .controls {
+      margin: 12px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .draw-btn {
+      padding: 8px 12px;
+      background: #4a6fa5;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .draw-btn:hover {
+      background: #3a5a80;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(15, 24px);
+      gap: 1px;
+      background: #ccc;
+      padding: 3px;
+      margin: 15px auto;
+      border-radius: 6px;
+    }
+
+    .cell {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+      background: white;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .legend {
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .legend-item {
+      display: inline-block;
+      margin: 4px 8px;
+      font-size: 12px;
+    }
+
+    .color-box {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin-right: 6px;
+      vertical-align: middle;
+      border: 1px solid #666;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🎨 Alege un desen și colorează prin numere!</h2>
+
+  <div class="controls">
+    <button class="draw-btn" onclick="loadDrawing('cat')">Pisicuță</button>
+    <button class="draw-btn" onclick="loadDrawing('heart')">Inimioară</button>
+    <button class="draw-btn" onclick="loadDrawing('star')">Stea</button>
+    <button class="draw-btn" onclick="loadDrawing('flower')">Florică</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="legend" id="legend"></div>
+
+  <script>
+    // --- DESENE PREDEFINITE ---
+    const drawings = {
+      cat: {
+        size: 15,
+        data: [
+          [0,0,0,0,0,1,1,1,1,1,0,0,0,0,0],
+          [0,0,0,1,1,2,2,2,2,2,1,1,0,0,0],
+          [0,0,1,2,2,2,2,2,2,2,2,2,1,0,0],
+          [0,1,2,2,2,2,2,2,2,2,2,2,2,1,0],
+          [0,1,2,2,3,2,2,2,2,2,3,2,2,1,0],
+          [1,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+          [1,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+          [1,2,2,4,2,2,2,2,2,2,2,4,2,2,1],
+          [1,2,2,2,4,4,4,4,4,4,4,2,2,2,1],
+          [1,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+          [0,1,2,2,5,5,2,2,2,5,5,2,2,1,0],
+          [0,1,2,2,2,2,5,2,5,2,2,2,2,1,0],
+          [0,0,1,2,2,2,2,5,2,2,2,2,1,0,0],
+          [0,0,0,1,1,2,2,2,2,2,1,1,0,0,0],
+          [0,0,0,0,0,1,1,1,1,1,0,0,0,0,0]
+        ]
+      },
+      heart: {
+        size: 15,
+        data: [
+          [0,0,0,0,1,1,0,0,0,1,1,0,0,0,0],
+          [0,0,0,1,2,2,1,0,1,2,2,1,0,0,0],
+          [0,0,1,2,2,2,2,1,2,2,2,2,1,0,0],
+          [0,1,2,2,2,2,2,2,2,2,2,2,2,1,0],
+          [0,1,2,2,2,2,2,2,2,2,2,2,2,1,0],
+          [0,0,1,2,2,2,2,2,2,2,2,2,1,0,0],
+          [0,0,0,1,2,2,2,2,2,2,2,1,0,0,0],
+          [0,0,0,0,1,2,2,2,2,2,1,0,0,0,0],
+          [0,0,0,0,0,1,2,2,2,1,0,0,0,0,0],
+          [0,0,0,0,0,0,1,2,1,0,0,0,0,0,0],
+          [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        ]
+      },
+      star: {
+        size: 15,
+        data: [
+          [0,0,0,0,0,0,1,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,1,2,1,0,0,0,0,0,0,0],
+          [0,0,0,0,1,2,2,2,1,0,0,0,0,0,0],
+          [0,0,0,1,2,2,2,2,2,1,0,0,0,0,0],
+          [0,0,1,2,2,2,2,2,2,2,1,0,0,0,0],
+          [0,1,2,2,2,2,2,2,2,2,2,1,0,0,0],
+          [1,2,2,2,2,2,2,2,2,2,2,2,1,0,0],
+          [0,0,0,0,0,0,2,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,0,2,0,0,0,0,0,0,0,0],
+          [0,0,0,0,0,2,3,2,0,0,0,0,0,0,0],
+          [0,0,0,0,2,3,3,3,2,0,0,0,0,0,0],
+          [0,0,0,2,3,3,3,3,3,2,0,0,0,0,0],
+          [0,0,2,3,3,3,3,3,3,3,2,0,0,0,0],
+          [0,2,3,3,3,3,3,3,3,3,3,2,0,0,0],
+          [2,3,3,3,3,3,3,3,3,3,3,3,2,0,0]
+        ]
+      },
+      flower: {
+        size: 15,
+        data: [
+          [0,0,0,0,0,1,1,1,1,1,0,0,0,0,0],
+          [0,0,0,1,1,2,2,2,2,2,1,1,0,0,0],
+          [0,0,1,2,3,3,3,3,3,3,3,2,1,0,0],
+          [0,1,2,3,3,3,3,3,3,3,3,3,2,1,0],
+          [0,1,3,3,4,4,4,4,4,4,4,3,3,1,0],
+          [1,2,3,3,4,4,4,4,4,4,4,3,3,2,1],
+          [1,2,3,3,4,4,5,4,4,4,4,3,3,2,1],
+          [1,2,3,3,4,4,4,4,4,4,4,3,3,2,1],
+          [1,2,3,3,4,4,4,4,4,4,4,3,3,2,1],
+          [0,1,3,3,4,4,4,4,4,4,4,3,3,1,0],
+          [0,1,2,3,3,3,3,3,3,3,3,3,2,1,0],
+          [0,0,1,2,3,3,3,3,3,3,3,2,1,0,0],
+          [0,0,0,1,1,2,2,2,2,2,1,1,0,0,0],
+          [0,0,0,0,0,1,1,1,1,1,0,0,0,0,0],
+          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        ]
+      }
+    };
+
+    // Mapare număr → culoare (pentru toate desenele)
+    const colorMap = {
+      0: 'white',
+      1: '#e53935', // roșu
+      2: '#1e88e5', // albastru
+      3: '#43a047', // verde
+      4: '#fdd835', // galben
+      5: '#8e24aa', // violet
+      6: '#00acc1', // turcoaz
+      7: '#f4511e', // portocaliu
+      8: '#6d4c41', // maro
+      9: '#546e7a'  // gri
+    };
+
+    const grid = document.getElementById('grid');
+    const legend = document.getElementById('legend');
+    let currentDrawing = null;
+
+    function loadDrawing(name) {
+      const draw = drawings[name];
+      if (!draw) return;
+
+      currentDrawing = draw;
+      grid.innerHTML = '';
+      grid.style.gridTemplateColumns = `repeat(${draw.size}, 24px)`;
+
+      // Extragem toate numerele unice (fără 0)
+      const uniqueNums = new Set();
+      for (const row of draw.data) {
+        for (const num of row) {
+          if (num !== 0) uniqueNums.add(num);
+        }
+      }
+
+      // Construim grila
+      for (let r = 0; r < draw.size; r++) {
+        for (let c = 0; c < draw.size; c++) {
+          const num = draw.data[r][c];
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          cell.textContent = num === 0 ? '' : num;
+          cell.dataset.num = num;
+          if (num !== 0) {
+            cell.style.color = colorMap[num] || 'black';
+            cell.style.cursor = 'pointer';
+          }
+          cell.addEventListener('click', () => revealNumber(num));
+          cell.addEventListener('mouseenter', () => {
+            if (mouseDown) revealNumber(num);
+          });
+          grid.appendChild(cell);
+        }
+      }
+
+      // Actualizăm legenda
+      legend.innerHTML = '<h3>Culori:</h3>';
+      const sortedNums = Array.from(uniqueNums).sort((a, b) => a - b);
+      sortedNums.forEach(num => {
+        const color = colorMap[num] || 'black';
+        const div = document.createElement('div');
+        div.className = 'legend-item';
+        div.innerHTML = `<span class="color-box" style="background:${color}"></span> ${num}`;
+        legend.appendChild(div);
+      });
+    }
+
+    // Reveal logic
+    function revealNumber(num) {
+      if (num === 0) return;
+      const color = colorMap[num] || '#ccc';
+      document.querySelectorAll(`.cell[data-num="${num}"]`).forEach(cell => {
+        cell.style.backgroundColor = color;
+      });
+    }
+
+    // Suport drag cu mouse
+    let mouseDown = false;
+    document.addEventListener('mousedown', () => mouseDown = true);
+    document.addEventListener('mouseup', () => mouseDown = false);
+
+    // Încarcă un desen la start
+    loadDrawing('cat');
+  </script>
+
+</body>
+</html>
