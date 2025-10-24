@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jocul Culorilor și Numerelor – Desen Car</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            touch-action: none;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .instructions {
+            max-width: 500px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 16px;
+        }
+        .palette {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .color-option {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 20px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+        .color-option.selected {
+            transform: scale(1.15);
+            box-shadow: 0 0 8px rgba(0,0,0,0.5);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(15, 24px);
+            gap: 1px;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #eee;
+            border-radius: 8px;
+            border: 2px solid #999;
+            user-select: none;
+        }
+        .cell {
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 12px;
+            color: #333;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .cell.filled {
+            color: white;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.7);
+        }
+    </style>
+</head>
+<body>
+    <h1>Desenul cu Mașina</h1>
+    <div class="instructions">
+        Alege o culoare (număr) de sus, apoi trage degetul (sau mouse-ul) peste pătrățelele cu acel număr pentru a le colora!
+    </div>
+
+    <div class="palette" id="palette"></div>
+    <div class="grid" id="grid"></div>
+
+    <script>
+        // Harta: culoare → număr
+        const colorNumberMap = {
+            '#2c3e50': 1,   // negru (caroserie)
+            '#e74c3c': 2,   // roșu (corp mașină)
+            '#f1c40f': 3,   // galben (faruri)
+            '#3498db': 4,   // albastru (geamuri)
+            '#95a5a6': 5,   // gri (roți)
+            '#2ecc71': 6,   // verde (fundal)
+            '#e67e22': 7,   // portocaliu (semne, detalii)
+            '#ecf0f1': 8    // alb (reflexii)
+        };
+
+        const colors = Object.keys(colorNumberMap);
+
+        // Desen detaliat al unei mașini (15x15)
+        const numberGrid = [
+            [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+            [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+            [6,6,6,6,2,2,2,2,2,2,2,6,6,6,6],
+            [6,6,6,2,2,2,2,2,2,2,2,2,6,6,6],
+            [6,6,2,2,4,4,4,4,4,4,4,2,2,6,6],
+            [6,2,2,2,4,4,4,4,4,4,4,2,2,2,6],
+            [6,2,2,8,2,2,2,2,2,2,2,8,2,2,6],
+            [6,2,2,2,2,2,2,2,2,2,2,2,2,2,6],
+            [6,1,1,1,1,1,1,1,1,1,1,1,1,1,6],
+            [6,1,5,5,5,1,1,1,1,5,5,5,1,1,6],
+            [6,1,5,5,5,1,1,1,1,5,5,5,1,1,6],
+            [6,1,1,1,1,1,1,1,1,1,1,1,1,1,6],
+            [6,6,6,7,7,6,6,6,6,7,7,6,6,6,6],
+            [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],
+            [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
+        ];
+
+        let selectedNumber = null;
+        let isDragging = false;
+
+        function createPalette() {
+            const palette = document.getElementById('palette');
+            palette.innerHTML = '';
+
+            colors.forEach(color => {
+                const number = colorNumberMap[color];
+                const option = document.createElement('div');
+                option.className = 'color-option';
+                option.style.backgroundColor = color;
+                option.textContent = number;
+                option.dataset.number = number;
+
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
+                    option.classList.add('selected');
+                    selectedNumber = number;
+                });
+
+                palette.appendChild(option);
+            });
+        }
+
+        function createGrid() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+
+            for (let row = 0; row < numberGrid.length; row++) {
+                for (let col = 0; col < numberGrid[row].length; col++) {
+                    const number = numberGrid[row][col];
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.number = number;
+                    cell.textContent = number;
+
+                    // Funcție de colorare
+                    const tryColorCell = () => {
+                        if (selectedNumber === null) return;
+                        if (parseInt(cell.dataset.number) === selectedNumber && !cell.classList.contains('filled')) {
+                            const color = colors.find(c => colorNumberMap[c] === selectedNumber);
+                            cell.style.backgroundColor = color;
+                            cell.classList.add('filled');
+                        }
+                    };
+
+                    // Mouse events
+                    cell.addEventListener('mousedown', () => {
+                        isDragging = true;
+                        tryColorCell();
+                    });
+
+                    cell.addEventListener('mouseenter', () => {
+                        if (isDragging) {
+                            tryColorCell();
+                        }
+                    });
+
+                    // Touch events
+                    cell.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        isDragging = true;
+                        tryColorCell();
+                    });
+
+                    cell.addEventListener('touchmove', (e) => {
+                        e.preventDefault();
+                        if (isDragging) {
+                            tryColorCell();
+                        }
+                    });
+
+                    grid.appendChild(cell);
+                }
+            }
+
+            // Oprește drag-ul când mouse-ul iese sau se ridică
+            document.addEventListener('mouseup', () => isDragging = false);
+            document.addEventListener('mouseleave', () => isDragging = false);
+            document.addEventListener('touchend', () => isDragging = false);
+        }
+
+        // Inițializare
+        createPalette();
+        createGrid();
+    </script>
+</body>
+</html>
