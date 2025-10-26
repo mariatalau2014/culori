@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Art Creator</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --purple-50: #f5f3ff;
+            --purple-500: #8b5cf6;
+            --purple-600: #7c3aed;
+            --blue-100: #dbeafe;
+            --blue-500: #3b82f6;
+            --blue-600: #2563eb;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --white: #ffffff;
+            --red-50: #fef2f2;
+            --red-400: #f87171;
+            --red-500: #ef4444;
+            --red-600: #dc2626;
+            --red-700: #b91c1c;
+            --red-800: #991b1b;
+            --green-50: #f0fdf4;
+            --green-200: #bbf7d0;
+            --green-700: #15803d;
+            --green-800: #166534;
+            --yellow-50: #fefce8;
+            --yellow-400: #facc15;
+            --yellow-800: #92400e;
+            --blue-50: #eff6ff;
+            --blue-400: #60a5fa;
+            --blue-700: #1d4ed8;
+            --blue-800: #1e40af;
+            --purple-50: #f5f3ff;
+            --purple-400: #a78bfa;
+            --purple-800: #6b21a8;
+            --indigo-50: #eef2ff;
+            --indigo-400: #818cf8;
+            --indigo-800: #4f46e5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--purple-50) 0%, var(--blue-100) 100%);
+            padding: 1rem;
+        }
+
+        .max-w-7xl {
+            max-width: 80rem;
+            margin: 0 auto;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+
+        .text-4xl {
+            font-size: 2.25rem;
+            line-height: 2.5rem;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .text-gray-800 {
+            color: var(--gray-800);
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .text-gray-600 {
+            color: var(--gray-600);
+        }
+
+        .bg-white {
+            background-color: var(--white);
+        }
+
+        .rounded-2xl {
+            border-radius: 1rem;
+        }
+
+        .shadow-xl {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .p-8 {
+            padding: 2rem;
+        }
+
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+
+        .w-20 {
+            width: 5rem;
+        }
+
+        .h-20 {
+            height: 5rem;
+        }
+
+        .bg-gradient-to-r {
+            background: linear-gradient(to right, var(--purple-500), var(--blue-500));
+        }
+
+        .rounded-full {
+            border-radius: 9999px;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .text-2xl {
+            font-size: 1.5rem;
+            line-height: 2rem;
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+
+        .px-8 {
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+
+        .py-3 {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        .hover\:from-purple-600:hover {
+            background: linear-gradient(to right, var(--purple-600), var(--blue-600));
+        }
+
+        .transition-all {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .duration-200 {
+            transition-duration: 200ms;
+        }
+
+        .font-medium {
+            font-weight: 500;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .inline-block {
+            display: inline-block;
+        }
+
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .rounded-full {
+            border-radius: 9999px;
+        }
+
+        .h-6 {
+            height: 1.5rem;
+        }
+
+        .w-6 {
+            width: 1.5rem;
+        }
+
+        .border-b-2 {
+            border-bottom-width: 2px;
+        }
+
+        .border-purple-500 {
+            border-color: var(--purple-500);
+        }
+
+        .ml-2 {
+            margin-left: 0.5rem;
+        }
+
+        .grid {
+            display: grid;
+        }
+
+        .gap-8 {
+            gap: 2rem;
+        }
+
+        .lg\:col-span-1 {
+            grid-column: span 1 / span 1;
+        }
+
+        .lg\:col-span-2 {
+            grid-column: span 2 / span 2;
+        }
+
+        .p-6 {
+            padding: 1.5rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .text-xl {
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+        }
+
+        .w-8 {
+            width: 2rem;
+        }
+
+        .h-8 {
+            height: 2rem;
+        }
+
+        .rounded {
+            border-radius: 0.25rem;
+        }
+
+        .mr-2 {
+            margin-right: 0.5rem;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+
+        .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .max-h-96 {
+            max-height: 24rem;
+        }
+
+        .object-contain {
+            object-fit: contain;
+        }
+
+        .mt-6 {
+            margin-top: 1.5rem;
+        }
+
+        .w-5 {
+            width: 1.25rem;
+        }
+
+        .h-5 {
+            height: 1.25rem;
+        }
+
+        .grid-cols-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .p-2 {
+            padding: 0.5rem;
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+
+        .border-2 {
+            border-width: 2px;
+        }
+
+        .border-gray-200 {
+            border-color: var(--gray-200);
+        }
+
+        .hover\:border-gray-300:hover {
+            border-color: var(--gray-300);
+        }
+
+        .w-6 {
+            width: 1.5rem;
+        }
+
+        .h-6 {
+            height: 1.5rem;
+        }
+
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .mb-1 {
+            margin-bottom: 0.25rem;
+        }
+
+        .text-xs {
+            font-size: 0.75rem;
+            line-height: 1rem;
+        }
+
+        .font-medium {
+            font-weight: 500;
+        }
+
+        .text-gray-700 {
+            color: var(--gray-700);
+        }
+
+        .mt-4 {
+            margin-top: 1rem;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .flex-1 {
+            flex: 1 1 0%;
+        }
+
+        .bg-gray-100 {
+            background-color: var(--gray-100);
+        }
+
+        .hover\:bg-gray-200:hover {
+            background-color: var(--gray-200);
+        }
+
+        .text-gray-700 {
+            color: var(--gray-700);
+        }
+
+        .py-2 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .px-3 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+
+        .transition-colors {
+            transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+        }
+
+        .duration-200 {
+            transition-duration: 200ms;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+        }
+
+        .w-3 {
+            width: 0.75rem;
+        }
+
+        .h-3 {
+            height: 0.75rem;
+        }
+
+        .mr-1 {
+            margin-right: 0.25rem;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .overflow-auto {
+            overflow: auto;
+        }
+
+        .max-h-80 {
+            max-height: 20rem;
+        }
+
+        .border-2 {
+            border-width: 2px;
+        }
+
+        .border-gray-200 {
+            border-color: var(--gray-200);
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+
+        .p-1 {
+            padding: 0.25rem;
+        }
+
+        .bg-gray-50 {
+            background-color: var(--gray-50);
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .aspect-square {
+            aspect-ratio: 1 / 1;
+        }
+
+        .text-\[6px\] {
+            font-size: 6px;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        .transition-all {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .duration-200 {
+            transition-duration: 200ms;
+        }
+
+        .bg-green-200 {
+            background-color: var(--green-200);
+        }
+
+        .border-0 {
+            border-width: 0;
+        }
+
+        .text-green-800 {
+            color: var(--green-800);
+        }
+
+        .bg-white {
+            background-color: var(--white);
+        }
+
+        .hover\:bg-gray-100:hover {
+            background-color: var(--gray-100);
+        }
+
+        .min-w-\[8px\] {
+            min-width: 8px;
+        }
+
+        .min-h-\[8px\] {
+            min-height: 8px;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .fixed {
+            position: fixed;
+        }
+
+        .inset-0 {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .bg-black {
+            background-color: #000;
+        }
+
+        .bg-opacity-50 {
+            opacity: 0.5;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .z-50 {
+            z-index: 50;
+        }
+
+        .p-4 {
+            padding: 1rem;
+        }
+
+        .max-w-3xl {
+            max-width: 48rem;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .max-h-\[90vh\] {
+            max-height: 90vh;
+        }
+
+        .overflow-y-auto {
+            overflow-y: auto;
+        }
+
+        .p-6 {
+            padding: 1.5rem;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .items-start {
+            align-items: flex-start;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .text-red-600 {
+            color: var(--red-600);
+        }
+
+        .w-6 {
+            width: 1.5rem;
+        }
+
+        .h-6 {
+            height: 1.5rem;
+        }
+
+        .mr-3 {
+            margin-right: 0.75rem;
+        }
+
+        .flex-shrink-0 {
+            flex-shrink: 0;
+        }
+
+        .text-xl {
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .text-gray-400 {
+            color: var(--gray-400);
+        }
+
+        .hover\:text-gray-600:hover {
+            color: var(--gray-600);
+        }
+
+        .transition-colors {
+            transition: color 0.2s ease-in-out;
+        }
+
+        .p-1 {
+            padding: 0.25rem;
+        }
+
+        .w-5 {
+            width: 1.25rem;
+        }
+
+        .h-5 {
+            height: 1.25rem;
+        }
+
+        .space-y-5 > * + * {
+            margin-top: 1.25rem;
+        }
+
+        .space-y-2 > * + * {
+            margin-top: 0.5rem;
+        }
+
+        .bg-red-50 {
+            background-color: var(--red-50);
+        }
+
+        .border-l-4 {
+            border-left-width: 4px;
+        }
+
+        .border-red-400 {
+            border-color: var(--red-400);
+        }
+
+        .p-4 {
+            padding: 1rem;
+        }
+
+        .rounded {
+            border-radius: 0.25rem;
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .text-red-800 {
+            color: var(--red-800);
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .w-4 {
+            width: 1rem;
+        }
+
+        .h-4 {
+            height: 1rem;
+        }
+
+        .mr-2 {
+            margin-right: 0.5rem;
+        }
+
+        .text-red-700 {
+            color: var(--red-700);
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+        }
+
+        .bg-gray-50 {
+            background-color: var(--gray-50);
+        }
+
+        .border-gray-400 {
+            border-color: var(--gray-400);
+        }
+
+        .text-gray-800 {
+            color: var(--gray-800);
+        }
+
+        .mb-3 {
+            margin-bottom: 0.75rem;
+        }
+
+        .text-gray-600 {
+            color: var(--gray-600);
+        }
+
+        .hover\:text-gray-800:hover {
+            color: var(--gray-800);
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+        }
+
+        .w-3 {
+            width: 0.75rem;
+        }
+
+        .h-3 {
+            height: 0.75rem;
+        }
+
+        .mr-1 {
+            margin-right: 0.25rem;
+        }
+
+        .bg-white {
+            background-color: var(--white);
+        }
+
+        .p-3 {
+            padding: 0.75rem;
+        }
+
+        .rounded {
+            border-radius: 0.25rem;
+        }
+
+        .text-xs {
+            font-size: 0.75rem;
+            line-height: 1rem;
+        }
+
+        .font-mono {
+            font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+        }
+
+        .max-h-32 {
+            max-height: 8rem;
+        }
+
+        .overflow-y-auto {
+            overflow-y: auto;
+        }
+
+        .bg-yellow-50 {
+            background-color: var(--yellow-50);
+        }
+
+        .border-yellow-400 {
+            border-color: var(--yellow-400);
+        }
+
+        .text-yellow-800 {
+            color: var(--yellow-800);
+        }
+
+        .mb-3 {
+            margin-bottom: 0.75rem;
+        }
+
+        .max-h-24 {
+            max-height: 6rem;
+        }
+
+        .whitespace-pre-wrap {
+            white-space: pre-wrap;
+        }
+
+        .bg-blue-50 {
+            background-color: var(--blue-50);
+        }
+
+        .border-blue-400 {
+            border-color: var(--blue-400);
+        }
+
+        .text-blue-800 {
+            color: var(--blue-800);
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .text-blue-700 {
+            color: var(--blue-700);
+        }
+
+        .space-y-1 > * + * {
+            margin-top: 0.25rem;
+        }
+
+        .bg-purple-50 {
+            background-color: var(--purple-50);
+        }
+
+        .border-purple-400 {
+            border-color: var(--purple-400);
+        }
+
+        .text-purple-800 {
+            color: var(--purple-800);
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .text-purple-700 {
+            color: var(--purple-700);
+        }
+
+        .bg-green-50 {
+            background-color: var(--green-50);
+        }
+
+        .border-green-400 {
+            border-color: var(--green-400);
+        }
+
+        .text-green-800 {
+            color: var(--green-800);
+        }
+
+        .mb-3 {
+            margin-bottom: 0.75rem;
+        }
+
+        .text-green-700 {
+            color: var(--green-700);
+        }
+
+        .list-disc {
+            list-style-type: disc;
+        }
+
+        .list-inside {
+            list-style-position: inside;
+        }
+
+        .bg-indigo-50 {
+            background-color: var(--indigo-50);
+        }
+
+        .border-indigo-400 {
+            border-color: var(--indigo-400);
+        }
+
+        .text-indigo-800 {
+            color: var(--indigo-800);
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .text-indigo-700 {
+            color: var(--indigo-700);
+        }
+
+        .mt-6 {
+            margin-top: 1.5rem;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .gap-3 {
+            gap: 0.75rem;
+        }
+
+        .justify-end {
+            justify-content: flex-end;
+        }
+
+        .bg-gray-500 {
+            background-color: var(--gray-500);
+        }
+
+        .hover\:bg-gray-600:hover {
+            background-color: var(--gray-600);
+        }
+
+        .text-white {
+            color: var(--white);
+        }
+
+        .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .py-2 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+
+        .font-medium {
+            font-weight: 500;
+        }
+
+        .transition-colors {
+            transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+        }
+
+        .w-4 {
+            width: 1rem;
+        }
+
+        .h-4 {
+            height: 1rem;
+        }
+
+        .mr-2 {
+            margin-right: 0.5rem;
+        }
+
+        .bg-red-500 {
+            background-color: var(--red-500);
+        }
+
+        .hover\:bg-red-600:hover {
+            background-color: var(--red-600);
+        }
+
+        .px-6 {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        .py-2 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+
+        .font-medium {
+            font-weight: 500;
+        }
+
+        .transition-colors {
+            transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+        }
+
+        @media (min-width: 1024px) {
+            .lg\:grid-cols-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen bg-gradient-to-br from-purple-50 to-blue-100 p-4">
+        <div class="max-w-7xl mx-auto">
+            <!-- Error Modal -->
+            <div id="errorModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 hidden">
+                <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex items-center text-red-600">
+                                <svg class="w-6 h-6 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 19c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                                <h3 class="text-xl font-bold">Application Error</h3>
+                            </div>
+                            <button id="closeErrorBtn" class="text-gray-400 hover:text-gray-600 transition-colors p-1">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-5" id="errorDetailsContainer">
+                            <!-- Error details will be populated by JavaScript -->
+                        </div>
+                        
+                        <div class="mt-6 flex gap-3 justify-end">
+                            <button id="copyErrorBtn" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                Copy Error Info
+                            </button>
+                            <button id="closeErrorModalBtn" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                    Pixel Art Creator
+                </h1>
+                <p class="text-gray-600">
+                    Upload an image and recreate it using numbered colors!
+                </p>
+            </div>
+
+            <!-- Upload Section -->
+            <div id="uploadSection" class="bg-white rounded-2xl shadow-xl p-8 mb-8 text-center">
+                <div class="mb-6">
+                    <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">
+                        Upload Your Image
+                    </h2>
+                    <p class="text-gray-600 mb-6">
+                        Choose an image to convert into a pixel art coloring puzzle
+                    </p>
+                </div>
+                
+                <label class="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-8 py-3 rounded-full cursor-pointer hover:from-purple-600 hover:to-blue-600 transition-all duration-200 font-medium">
+                    Select Image
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+                </label>
+                
+                <div id="processingIndicator" class="mt-4 hidden">
+                    <div class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div>
+                    <span class="ml-2 text-gray-600">Processing image...</span>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div id="mainContent" class="hidden grid lg:grid-cols-3 gap-8">
+                <!-- Original Image -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-2xl shadow-xl p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                            <img id="originalImageThumb" src="" alt="Original" class="w-8 h-8 rounded mr-2">
+                            Original Image
+                        </h3>
+                        <img id="originalImage" src="" alt="Original" class="w-full rounded-lg shadow-md max-h-96 object-contain">
+                    </div>
+
+                    <!-- Color Palette -->
+                    <div class="bg-white rounded-2xl shadow-xl p-6 mt-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h10a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-1.657 1.657M11 12.343l-1.657-1.657a2 2 0 00-2.828 0L3.687 13.515a2 2 0 000 2.828l1.657 1.657"></path>
+                            </svg>
+                            Color Palette
+                        </h3>
+                        <div id="colorPalette" class="grid grid-cols-4 gap-2">
+                            <!-- Color palette will be populated by JavaScript -->
+                        </div>
+                        
+                        <div class="mt-4 flex gap-2">
+                            <button id="resetBtn" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-3 rounded-lg transition-colors duration-200 text-sm flex items-center justify-center">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pixel Art Grid -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-2xl shadow-xl p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-semibold text-gray-800">
+                                Pixel Art Grid
+                            </h3>
+                            <div id="progressText" class="text-sm text-gray-600">
+                                Progress: 0 / 0 cells
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-auto max-h-80 border-2 border-gray-200 rounded-lg p-1 bg-gray-50 flex justify-center">
+                            <div id="pixelGrid" class="inline-block">
+                                <!-- Pixel grid will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 text-sm text-gray-600">
+                            <p class="mb-2">
+                                <strong>How to play:</strong> Select a color from the palette, then click on cells with the corresponding number to color them.
+                            </p>
+                            <p>
+                                When you color all cells correctly, you'll recreate the original image!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hidden canvas for image processing -->
+            <canvas id="canvas" class="hidden"></canvas>
+        </div>
+
+        <script>
+            // DOM Elements
+            const uploadSection = document.getElementById('uploadSection');
+            const mainContent = document.getElementById('mainContent');
+            const fileInput = document.getElementById('fileInput');
+            const processingIndicator = document.getElementById('processingIndicator');
+            const originalImage = document.getElementById('originalImage');
+            const originalImageThumb = document.getElementById('originalImageThumb');
+            const colorPalette = document.getElementById('colorPalette');
+            const pixelGrid = document.getElementById('pixelGrid');
+            const progressText = document.getElementById('progressText');
+            const resetBtn = document.getElementById('resetBtn');
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Error Modal Elements
+            const errorModal = document.getElementById('errorModal');
+            const closeErrorBtn = document.getElementById('closeErrorBtn');
+            const closeErrorModalBtn = document.getElementById('closeErrorModalBtn');
+            const copyErrorBtn = document.getElementById('copyErrorBtn');
+            const errorDetailsContainer = document.getElementById('errorDetailsContainer');
+            
+            // State variables
+            let originalImageUrl = null;
+            let colorMapping = [];
+            let pixelatedImage = null;
+            let selectedColor = null;
+            let completedCells = new Set();
+            let isProcessing = false;
+            let currentError = null;
+
+            // Error handling function
+            function handleError(errorMessage, errorDetails = null) {
+                console.error('Application Error:', errorMessage, errorDetails);
+                currentError = {
+                    message: errorMessage,
+                    details: errorDetails,
+                    timestamp: new Date().toISOString(),
+                    stack: errorDetails?.stack || null
+                };
+                
+                // Populate error modal
+                populateErrorModal();
+                errorModal.classList.remove('hidden');
+                isProcessing = false;
+                processingIndicator.classList.add('hidden');
+            }
+
+            function populateErrorModal() {
+                errorDetailsContainer.innerHTML = '';
+                
+                // Error Message
+                const errorMessageDiv = document.createElement('div');
+                errorMessageDiv.className = 'bg-red-50 border-l-4 border-red-400 p-4 rounded';
+                errorMessageDiv.innerHTML = `
+                    <h4 class="font-semibold text-red-800 mb-2 flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 19c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        Error Message
+                    </h4>
+                    <p class="text-red-700 text-sm">${currentError.message}</p>
+                `;
+                errorDetailsContainer.appendChild(errorMessageDiv);
+                
+                // Error Details
+                if (currentError.details) {
+                    const errorDetailsDiv = document.createElement('div');
+                    errorDetailsDiv.className = 'bg-gray-50 border-l-4 border-gray-400 p-4 rounded';
+                    errorDetailsDiv.innerHTML = `
+                        <h4 class="font-semibold text-gray-800 mb-3 flex items-center justify-between">
+                            Error Details
+                            <button id="copyDetailsBtn" class="text-gray-600 hover:text-gray-800 transition-colors flex items-center text-sm">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                Copy Details
+                            </button>
+                        </h4>
+                        <div class="bg-white p-3 rounded text-xs font-mono max-h-32 overflow-y-auto">
+                            ${typeof currentError.details === 'object' 
+                                ? JSON.stringify(currentError.details, Object.getOwnPropertyNames(currentError.details), 2)
+                                : currentError.details.toString()
+                            }
+                        </div>
+                    `;
+                    errorDetailsContainer.appendChild(errorDetailsDiv);
+                }
+                
+                // Stack Trace
+                if (currentError.stack) {
+                    const stackTraceDiv = document.createElement('div');
+                    stackTraceDiv.className = 'bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded';
+                    stackTraceDiv.innerHTML = `
+                        <h4 class="font-semibold text-yellow-800 mb-3">Stack Trace</h4>
+                        <div class="bg-white p-3 rounded text-xs font-mono max-h-24 overflow-y-auto whitespace-pre-wrap">
+                            ${currentError.stack}
+                        </div>
+                    `;
+                    errorDetailsContainer.appendChild(stackTraceDiv);
+                }
+                
+                // Timestamp
+                const timestampDiv = document.createElement('div');
+                timestampDiv.className = 'bg-blue-50 border-l-4 border-blue-400 p-4 rounded';
+                const timestamp = new Date(currentError.timestamp).toLocaleString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    timeZoneName: 'short'
+                });
+                timestampDiv.innerHTML = `
+                    <h4 class="font-semibold text-blue-800 mb-2">When did this happen?</h4>
+                    <p class="text-blue-700 text-sm">${timestamp}</p>
+                `;
+                errorDetailsContainer.appendChild(timestampDiv);
+                
+                // Technical Information
+                const techInfoDiv = document.createElement('div');
+                techInfoDiv.className = 'bg-purple-50 border-l-4 border-purple-400 p-4 rounded';
+                techInfoDiv.innerHTML = `
+                    <h4 class="font-semibold text-purple-800 mb-2">Technical Information</h4>
+                    <div class="text-purple-700 text-sm space-y-1">
+                        <p><strong>Browser:</strong> ${navigator.userAgent}</p>
+                        <p><strong>Platform:</strong> ${navigator.platform}</p>
+                        <p><strong>Language:</strong> ${navigator.language}</p>
+                        <p><strong>Online:</strong> ${navigator.onLine ? 'Yes' : 'No'}</p>
+                    </div>
+                `;
+                errorDetailsContainer.appendChild(techInfoDiv);
+                
+                // Troubleshooting Tips
+                const troubleshootingDiv = document.createElement('div');
+                troubleshootingDiv.className = 'bg-green-50 border-l-4 border-green-400 p-4 rounded';
+                troubleshootingDiv.innerHTML = `
+                    <h4 class="font-semibold text-green-800 mb-3">How to Fix This</h4>
+                    <ul class="text-green-700 text-sm space-y-2 list-disc list-inside">
+                        <li><strong>File Issues:</strong> Make sure you're uploading a valid image file (JPEG, PNG, GIF, BMP, WebP)</li>
+                        <li><strong>File Size:</strong> Keep files under 10MB for best performance</li>
+                        <li><strong>Browser Support:</strong> Ensure your browser supports the Canvas API (all modern browsers do)</li>
+                        <li><strong>Corrupted Files:</strong> Try uploading a different image to test if the issue is file-specific</li>
+                        <li><strong>Memory Issues:</strong> Very large images may cause memory problems - try a smaller image</li>
+                        <li><strong>Refresh:</strong> Sometimes refreshing the page resolves temporary issues</li>
+                    </ul>
+                `;
+                errorDetailsContainer.appendChild(troubleshootingDiv);
+                
+                // Support Information
+                const supportDiv = document.createElement('div');
+                supportDiv.className = 'bg-indigo-50 border-l-4 border-indigo-400 p-4 rounded';
+                supportDiv.innerHTML = `
+                    <h4 class="font-semibold text-indigo-800 mb-2">Need Help?</h4>
+                    <p class="text-indigo-700 text-sm">
+                        If this error persists, please copy the error details above and contact support. 
+                        Include information about what you were trying to do when the error occurred.
+                    </p>
+                `;
+                errorDetailsContainer.appendChild(supportDiv);
+            }
+
+            // Function to copy error details to clipboard
+            function copyErrorDetails() {
+                if (!currentError) return;
+                
+                const errorText = `
+Error Message: ${currentError.message}
+Timestamp: ${currentError.timestamp}
+Details: ${currentError.details ? JSON.stringify(currentError.details, null, 2) : 'None'}
+Stack: ${currentError.stack || 'None'}
+                `.trim();
+                
+                navigator.clipboard.writeText(errorText).catch(err => {
+                    console.error('Failed to copy error details:', err);
+                });
+            }
+
+            // Generate a limited palette of colors
+            function generateColorPalette(imageData, maxColors = 12) {
+                try {
+                    const pixels = imageData.data;
+                    if (!pixels || pixels.length === 0) {
+                        throw new Error('Invalid image - no pixel data found');
+                    }
+                    
+                    const colorMap = new Map();
+                    
+                    // Sample pixels to reduce processing time
+                    const step = Math.max(1, Math.floor(pixels.length / 4 / 10000));
+                    
+                    for (let i = 0; i < pixels.length; i += step * 4) {
+                        const r = pixels[i];
+                        const g = pixels[i + 1];
+                        const b = pixels[i + 2];
+                        const key = `${r},${g},${b}`;
+                        colorMap.set(key, (colorMap.get(key) || 0) + 1);
+                    }
+                    
+                    // Get top colors
+                    const sortedColors = Array.from(colorMap.entries())
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, maxColors);
+                    
+                    return sortedColors.map(([color, count], index) => {
+                        const [r, g, b] = color.split(',').map(Number);
+                        return {
+                            id: index + 1,
+                            r,
+                            g,
+                            b,
+                            hex: `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`,
+                            count
+                        };
+                    });
+                } catch (err) {
+                    throw new Error(`Failed to generate color palette: ${err.message}`);
+                }
+            }
+
+            // Find closest color from palette
+            function findClosestColor(r, g, b, palette) {
+                try {
+                    if (!palette || palette.length === 0) {
+                        throw new Error('No color palette available');
+                    }
+                    
+                    let minDistance = Infinity;
+                    let closestColor = palette[0];
+                    
+                    for (const color of palette) {
+                        const distance = Math.sqrt(
+                            Math.pow(r - color.r, 2) + 
+                            Math.pow(g - color.g, 2) + 
+                            Math.pow(b - color.b, 2)
+                        );
+                        
+                        if (distance < minDistance) {
+                            minDistance = distance;
+                            closestColor = color;
+                        }
+                    }
+                    
+                    return closestColor;
+                } catch (err) {
+                    throw new Error(`Failed to find closest color: ${err.message}`);
+                }
+            }
+
+            // Process the uploaded image
+            function processImage(file) {
+                try {
+                    if (!file) {
+                        throw new Error('No file provided');
+                    }
+                    
+                    if (!file.type.startsWith('image/')) {
+                        throw new Error('File is not an image. Please upload a valid image file (JPEG, PNG, GIF, etc.)');
+                    }
+                    
+                    // Check file size (limit to 10MB for performance)
+                    if (file.size > 10 * 1024 * 1024) {
+                        throw new Error('File size too large. Please upload an image smaller than 10MB');
+                    }
+                    
+                    isProcessing = true;
+                    processingIndicator.classList.remove('hidden');
+                    errorModal.classList.add('hidden');
+                    
+                    const img = new Image();
+                    
+                    if (!canvas || !ctx) {
+                        throw new Error('Failed to access canvas context - browser may not support Canvas API');
+                    }
+                    
+                    img.onload = () => {
+                        try {
+                            // Set canvas dimensions (limit size for performance)
+                            const maxWidth = 300;
+                            const maxHeight = 300;
+                            let { width, height } = img;
+                            
+                            if (width === 0 || height === 0) {
+                                throw new Error('Invalid image dimensions: width or height is zero');
+                            }
+                            
+                            if (width > maxWidth || height > maxHeight) {
+                                const ratio = Math.min(maxWidth / width, maxHeight / height);
+                                width = width * ratio;
+                                height = height * ratio;
+                            }
+                            
+                            canvas.width = Math.floor(width);
+                            canvas.height = Math.floor(height);
+                            
+                            // Draw image on canvas
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            // Get image data
+                            const imageData = ctx.getImageData(0, 0, width, height);
+                            
+                            // Generate color palette
+                            const palette = generateColorPalette(imageData);
+                            if (palette.length === 0) {
+                                throw new Error('Could not generate color palette from image - image may be corrupted or unsupported format');
+                            }
+                            colorMapping = palette;
+                            
+                            // Create pixelated version with color mapping - smaller grid
+                            const gridSize = Math.min(20, Math.max(12, Math.floor(Math.min(width, height) / 15)));
+                            const gridWidth = gridSize;
+                            const gridHeight = gridSize;
+                            
+                            if (gridWidth === 0 || gridHeight === 0) {
+                                throw new Error('Invalid grid dimensions calculated - image processing failed');
+                            }
+                            
+                            const pixelatedData = [];
+                            for (let y = 0; y < gridHeight; y++) {
+                                const row = [];
+                                for (let x = 0; x < gridWidth; x++) {
+                                    // Map grid coordinates to original image coordinates
+                                    const imgX = Math.floor((x / gridWidth) * width);
+                                    const imgY = Math.floor((y / gridHeight) * height);
+                                    const pixelIndex = (imgY * width + imgX) * 4;
+                                    
+                                    const r = imageData.data[pixelIndex];
+                                    const g = imageData.data[pixelIndex + 1];
+                                    const b = imageData.data[pixelIndex + 2];
+                                    
+                                    const closestColor = findClosestColor(r, g, b, palette);
+                                    row.push(closestColor.id);
+                                }
+                                pixelatedData.push(row);
+                            }
+                            
+                            pixelatedImage = {
+                                data: pixelatedData,
+                                width: gridWidth,
+                                height: gridHeight
+                            };
+                            
+                            originalImageUrl = URL.createObjectURL(file);
+                            originalImage.src = originalImageUrl;
+                            originalImageThumb.src = originalImageUrl;
+                            completedCells = new Set();
+                            isProcessing = false;
+                            processingIndicator.classList.add('hidden');
+                            
+                            // Show main content and hide upload section
+                            uploadSection.classList.add('hidden');
+                            mainContent.classList.remove('hidden');
+                            
+                            // Render color palette and pixel grid
+                            renderColorPalette();
+                            renderPixelGrid();
+                            updateProgress();
+                        } catch (processingError) {
+                            handleError('Error processing image', processingError);
+                        }
+                    };
+                    
+                    img.onerror = (errorEvent) => {
+                        handleError('Failed to load image', {
+                            message: 'Image loading failed - the file may be corrupted or in an unsupported format',
+                            fileName: file.name,
+                            fileType: file.type,
+                            fileSize: file.size,
+                            errorEvent: errorEvent.type
+                        });
+                    };
+                    
+                    img.src = URL.createObjectURL(file);
+                } catch (err) {
+                    handleError('Error processing uploaded file', err);
+                }
+            }
+
+            function renderColorPalette() {
+                colorPalette.innerHTML = '';
+                colorMapping.forEach(color => {
+                    const button = document.createElement('button');
+                    button.className = `p-2 rounded-lg border-2 transition-all duration-200 ${
+                        selectedColor === color.id
+                            ? 'border-purple-500 ring-2 ring-purple-200'
+                            : 'border-gray-200 hover:border-gray-300'
+                    }`;
+                    button.innerHTML = `
+                        <div class="w-6 h-6 rounded mx-auto mb-1" style="background-color: ${color.hex}"></div>
+                        <span class="text-xs font-medium text-gray-700">${color.id}</span>
+                    `;
+                    button.onclick = () => {
+                        selectedColor = color.id;
+                        renderColorPalette();
+                    };
+                    colorPalette.appendChild(button);
+                });
+            }
+
+            function renderPixelGrid() {
+                pixelGrid.innerHTML = '';
+                pixelGrid.style.gridTemplateColumns = `repeat(${pixelatedImage.width}, minmax(0, 1fr))`;
+                pixelGrid.style.display = 'grid';
+                pixelGrid.style.gap = '0px';
+                pixelGrid.style.width = 'fit-content';
+                
+                pixelatedImage.data.forEach((row, rowIndex) => {
+                    row.forEach((colorId, colIndex) => {
+                        const color = getColorById(colorId);
+                        const cellKey = `${rowIndex}-${colIndex}`;
+                        const isCompleted = completedCells.has(cellKey);
+                        
+                        const cell = document.createElement('div');
+                        cell.className = `aspect-square flex items-center justify-center text-[6px] font-bold cursor-pointer transition-all duration-200 ${
+                            isCompleted
+                                ? 'bg-green-200 border-0 text-green-800'
+                                : 'bg-white hover:bg-gray-100 border-0'
+                        }`;
+                        cell.style.backgroundColor = isCompleted ? color?.hex : 'white';
+                        cell.style.minWidth = '8px';
+                        cell.style.minHeight = '8px';
+                        
+                        if (!isCompleted) {
+                            cell.textContent = colorId;
+                        }
+                        
+                        cell.onclick = () => handleCellClick(rowIndex, colIndex, colorId);
+                        pixelGrid.appendChild(cell);
+                    });
+                });
+            }
+
+            function handleCellClick(row, col, colorId) {
+                if (selectedColor === null) return;
+                
+                const cellKey = `${row}-${col}`;
+                const newCompletedCells = new Set(completedCells);
+                
+                if (selectedColor === colorId) {
+                    newCompletedCells.add(cellKey);
+                } else {
+                    newCompletedCells.delete(cellKey);
+                }
+                
+                completedCells = newCompletedCells;
+                renderPixelGrid();
+                updateProgress();
+            }
+
+            function updateProgress() {
+                const totalCells = pixelatedImage.width * pixelatedImage.height;
+                progressText.textContent = `Progress: ${completedCells.size} / ${totalCells} cells`;
+            }
+
+            function resetColoring() {
+                completedCells = new Set();
+                selectedColor = null;
+                renderColorPalette();
+                renderPixelGrid();
+                updateProgress();
+            }
+
+            function getColorById(id) {
+                return colorMapping.find(color => color.id === id);
+            }
+
+            // Event Listeners
+            fileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    processImage(file);
+                }
+            });
+
+            resetBtn.addEventListener('click', resetColoring);
+
+            closeErrorBtn.addEventListener('click', () => {
+                errorModal.classList.add('hidden');
+            });
+
+            closeErrorModalBtn.addEventListener('click', () => {
+                errorModal.classList.add('hidden');
+            });
+
+            copyErrorBtn.addEventListener('click', copyErrorDetails);
+
+            // Initialize Lucide icons
+            lucide.createIcons();
+        </script>
+    </div>
+</body>
+</html>
