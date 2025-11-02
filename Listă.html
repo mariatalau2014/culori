@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listă de Cumpărături Partajată</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59'
+                        },
+                        green: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d'
+                        },
+                        yellow: {
+                            500: '#eab308'
+                        },
+                        orange: {
+                            100: '#ffedd5',
+                            800: '#9a3412'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .font-mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-4">
+    <div class="max-w-3xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-type">
+                    <polyline points="4 7 4 4 20 4 20 7"></polyline>
+                    <line x1="9" y1="20" x2="15" y2="20"></line>
+                    <line x1="12" y1="4" x2="12" y2="20"></line>
+                </svg>
+                <h1 class="text-3xl font-bold text-gray-800">Listă de Cumpărături Partajată</h1>
+            </div>
+            <p class="text-gray-600">Introduceți un cod pentru a accesa sau crea o listă!</p>
+        </div>
+
+        <!-- Main Content -->
+        <div id="app">
+            <!-- Code Input Section -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-200">
+                <div class="space-y-4">
+                    <div class="text-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hash mx-auto mb-2">
+                            <line x1="4" y1="9" x2="20" y2="9"></line>
+                            <line x1="4" y1="15" x2="20" y2="15"></line>
+                            <line x1="10" y1="3" x2="8" y2="21"></line>
+                            <line x1="16" y1="3" x2="14" y2="21"></line>
+                        </svg>
+                        <h3 class="text-lg font-semibold text-gray-800">Introduceți codul listei</h3>
+                        <p class="text-sm text-gray-600 mt-1">
+                            Dacă lista există, o veți accesa. Dacă nu, o puteți crea!
+                        </p>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <input type="text" id="listCodeInput" placeholder="Introduceți codul listei (ex: CUMP2024)" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-gray-700 font-medium">
+                        <button onclick="checkOrCreateList()" id="accessButton" disabled class="w-full bg-emerald-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-emerald-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hash">
+                                <line x1="4" y1="9" x2="20" y2="9"></line>
+                                <line x1="4" y1="15" x2="20" y2="15"></line>
+                                <line x1="10" y1="3" x2="8" y2="21"></line>
+                                <line x1="16" y1="3" x2="14" y2="21"></line>
+                            </svg>
+                            Accesează/Creează Listă
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Stocare simulată pentru liste
+        let storedLists = {};
+        let currentCode = '';
+        let listExists = false;
+        let tasks = [];
+        let expandedCategories = {};
+
+        // Categorii cu cuvinte cheie
+        const categories = {
+            'Lactate': ['lapte', 'iaurt', 'brânză', 'smântână', 'kefir', 'cacaval', 'telemea', 'mascarpone', 'cremă de brânză', 'yogurt'],
+            'Fructe/Legume': ['măr', 'pară', 'banană', 'portocală', 'mandarină', 'kiwi', 'struguri', 'cireșe', 'vișine', 'caise', 'pere', 'mere', 'rosii', 'castraveți', 'ardei', 'morcovi', 'ceapă', 'usturoi', 'cartofi', 'gulie', 'varză', 'salată', 'spanac', 'pătrunjel', 'leuștean', 'morcov', 'dovlecel', 'pepene', 'avocado'],
+            'Carne/Pescuit': ['carne', 'pui', 'curcan', 'vită', 'porc', 'mici', 'cârnați', 'șnițel', 'tocăniță', 'pește', 'somon', 'ton', 'scrumbie', 'pastrav', 'calamar', 'crab', 'creveți'],
+            'Pâine/Produse de patiserie': ['pâine', 'covrigi', 'franzelă', 'chiflă', 'corn', 'plăcintă', 'tort', 'prăjituri', 'brioșe', 'biscuiți', 'fursecuri', 'drojdie', 'făină'],
+            'Băuturi': ['apă', 'suc', 'ceai', 'cafea', 'bere', 'vin', 'whisky', 'rachiu', 'țuică', 'cola', 'fanta', 'sprite', 'limonadă'],
+            'Moloz și condimente': ['sare', 'piper', 'ulei', 'oțet', 'mustar', 'ketchup', 'maioneză', 'soia', 'cimbru', 'busuioc', 'coriandru', 'chimen', 'scorțișoară', 'nutmeg', 'vanilie'],
+            'Altele': []
+        };
+
+        // Funcții utilitare
+        function getCategoryForItem(item) {
+            const itemLower = item.toLowerCase();
+            for (const [category, keywords] of Object.entries(categories)) {
+                if (keywords.some(keyword => itemLower.includes(keyword))) {
+                    return category;
+                }
+            }
+            return 'Altele';
+        }
+
+        function updateAccessButton() {
+            const input = document.getElementById('listCodeInput');
+            const button = document.getElementById('accessButton');
+            button.disabled = !input.value.trim();
+        }
+
+        function renderApp() {
+            const app = document.getElementById('app');
+            
+            if (!currentCode) {
+                // Arată doar secțiunea de introducere cod
+                app.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-200">
+                        <div class="space-y-4">
+                            <div class="text-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hash mx-auto mb-2">
+                                    <line x1="4" y1="9" x2="20" y2="9"></line>
+                                    <line x1="4" y1="15" x2="20" y2="15"></line>
+                                    <line x1="10" y1="3" x2="8" y2="21"></line>
+                                    <line x1="16" y1="3" x2="14" y2="21"></line>
+                                </svg>
+                                <h3 class="text-lg font-semibold text-gray-800">Introduceți codul listei</h3>
+                                <p class="text-sm text-gray-600 mt-1">
+                                    Dacă lista există, o veți accesa. Dacă nu, o puteți crea!
+                                </p>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <input type="text" id="listCodeInput" placeholder="Introduceți codul listei (ex: CUMP2024)" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-gray-700 font-medium" oninput="updateAccessButton()">
+                                <button onclick="checkOrCreateList()" id="accessButton" disabled class="w-full bg-emerald-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-emerald-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hash">
+                                        <line x1="4" y1="9" x2="20" y2="9"></line>
+                                        <line x1="4" y1="15" x2="20" y2="15"></line>
+                                        <line x1="10" y1="3" x2="8" y2="21"></line>
+                                        <line x1="16" y1="3" x2="14" y2="21"></line>
+                                    </svg>
+                                    Accesează/Creează Listă
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('listCodeInput').addEventListener('input', updateAccessButton);
+                return;
+            }
+
+            if (!listExists) {
+                // Lista nu există - oferă opțiunea de a crea
+                app.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-200 text-center">
+                        <div class="mb-4">
+                            <div class="inline-flex items-center gap-2 bg-orange-100 text-orange-800 px-3 py-2 rounded-lg mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hash">
+                                    <line x1="4" y1="9" x2="20" y2="9"></line>
+                                    <line x1="4" y1="15" x2="20" y2="15"></line>
+                                    <line x1="10" y1="3" x2="8" y2="21"></line>
+                                    <line x1="16" y1="3" x2="14" y2="21"></line>
+                                </svg>
+                                <span class="font-mono font-bold text-lg">${currentCode}</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                                Lista cu codul "${currentCode}" nu există încă!
+                            </h3>
+                            <p class="text-gray-600">
+                                Doriți să creați o listă nouă cu acest cod?
+                            </p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button onclick="goBack()" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg font-semibold hover:bg-gray-400 transition-colors">
+                                Înapoi
+                            </button>
+                            <button onclick="createNewList()" class="flex-1 bg-emerald-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus">
+                                    <path d="M5 12h14"></path>
+                                    <path d="M12 5v14"></path>
+                                </svg>
+                                Creează Listă Nouă
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Lista există - afișează conținutul
+            let html = `
+                <div class="bg-white rounded-xl shadow-lg p-4 mb-6 border border-gray-200 text-center">
+                    <div class="inline-flex items-center gap-2 bg-emerald-100 text-emerald-800 px-3 py-2 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hash">
+                            <line x1="4" y1="9" x2="20" y2="9"></line>
+                            <line x1="4" y1="15" x2="20" y2="15"></line>
+                            <line x1="10" y1="3" x2="8" y2="21"></line>
+                            <line x1="16" y1="3" x2="14" y2="21"></line>
+                        </svg>
+                        <span class="font-mono font-bold text-lg">${currentCode}</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">
+                        Distribuiți acest cod pentru a partaja lista
+                    </p>
+                </div>
+            `;
+
+            // Grupăm task-urile incomplete după categorie
+            const incompleteTasks = tasks.filter(task => !task.completed);
+            const completedTasks = tasks.filter(task => task.completed);
+            const groupedIncompleteTasks = {};
+            
+            incompleteTasks.forEach(task => {
+                if (!groupedIncompleteTasks[task.category]) {
+                    groupedIncompleteTasks[task.category] = [];
+                }
+                groupedIncompleteTasks[task.category].push(task);
+            });
+
+            const categoriesWithTasks = Object.keys(groupedIncompleteTasks).filter(
+                category => groupedIncompleteTasks[category].length > 0
+            );
+
+            // Input pentru adăugare produse
+            html += `
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-200">
+                    <div class="space-y-4">
+                        <textarea id="productInput" placeholder="Scrieți produsele aici, fiecare pe o linie nouă...
+Ex: Lapte
+     Mere
+     Pui
+     Pâine" class="w-full h-40 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none text-gray-700 placeholder-gray-400 font-medium"></textarea>
+                        <div class="flex gap-3">
+                            <button onclick="addTasks()" id="addTasksButton" disabled class="flex-1 bg-emerald-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-emerald-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                OK - Adaugă Produsele
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Task-uri incomplete grupate
+            if (categoriesWithTasks.length > 0) {
+                html += `
+                    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                            <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
+                            Lista de Cumpărături
+                        </h2>
+                        <div class="space-y-4">
+                `;
+
+                categoriesWithTasks.forEach(category => {
+                    const categoryTasks = groupedIncompleteTasks[category];
+                    const isExpanded = expandedCategories[category] || false;
+                    
+                    html += `
+                        <div class="border border-gray-200 rounded-lg overflow-hidden">
+                            <button onclick="toggleCategory('${category}')" class="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left">
+                                <div class="flex items-center gap-3">
+                                    <span class="font-semibold text-gray-800">${category}</span>
+                                    <span class="bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded-full">
+                                        ${categoryTasks.length}
+                                    </span>
+                                </div>
+                                ${isExpanded ? 
+                                    '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>' : 
+                                    '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>'
+                                }
+                            </button>
+                    `;
+
+                    if (isExpanded) {
+                        html += `<div class="p-4 space-y-2 bg-white">`;
+                        categoryTasks.forEach(task => {
+                            html += `
+                                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-all">
+                                    <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask(${task.id})" class="w-5 h-5 text-emerald-600 rounded focus:ring-emerald-500">
+                                    <span class="flex-1 text-gray-800 font-medium">${task.text}</span>
+                                </div>
+                            `;
+                        });
+                        html += `</div>`;
+                    }
+
+                    html += `</div>`;
+                });
+
+                html += `</div></div>`;
+            }
+
+            // Task-uri completate
+            if (completedTasks.length > 0) {
+                html += `
+                    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-6">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                            <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                            Cumpărate (${completedTasks.length})
+                        </h2>
+                        <div class="space-y-3">
+                `;
+
+                completedTasks.forEach(task => {
+                    html += `
+                        <div class="flex items-center gap-3 p-3 rounded-lg bg-green-50 border border-green-200">
+                            <input type="checkbox" checked onchange="toggleTask(${task.id})" class="w-5 h-5 text-green-600 rounded focus:ring-green-500">
+                            <span class="flex-1 line-through text-green-700 font-medium">${task.text}</span>
+                            <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">${task.category}</span>
+                        </div>
+                    `;
+                });
+
+                html += `</div></div>`;
+            }
+
+            // Buton reset
+            html += `
+                <div class="text-center">
+                    <button onclick="resetList()" class="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800 font-medium transition-colors bg-white px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw">
+                            <path d="M3 2v6h6"></path>
+                            <path d="M3 13a9 9 0 1 0 3-7.7L3 8"></path>
+                        </svg>
+                        Resetează lista
+                    </button>
+                </div>
+            `;
+
+            app.innerHTML = html;
+            
+            // Adăugăm event listener pentru textarea
+            const textarea = document.getElementById('productInput');
+            if (textarea) {
+                textarea.addEventListener('input', function() {
+                    const button = document.getElementById('addTasksButton');
+                    button.disabled = !this.value.trim();
+                });
+            }
+        }
+
+        // Funcții de acțiune
+        function checkOrCreateList() {
+            const input = document.getElementById('listCodeInput');
+            const code = input.value.trim().toUpperCase();
+            
+            if (!code) return;
+            
+            currentCode = code;
+            const existingList = storedLists[code];
+            
+            if (existingList) {
+                tasks = existingList.tasks;
+                listExists = true;
+            } else {
+                listExists = false;
+                tasks = [];
+            }
+            
+            renderApp();
+        }
+
+        function goBack() {
+            currentCode = '';
+            listExists = false;
+            tasks = [];
+            renderApp();
+        }
+
+        function createNewList() {
+            storedLists[currentCode] = { tasks: [] };
+            listExists = true;
+            tasks = [];
+            renderApp();
+        }
+
+        function addTasks() {
+            const textarea = document.getElementById('productInput');
+            const text = textarea.value.trim();
+            
+            if (!text || !currentCode) return;
+            
+            const newTasks = text.split('\n')
+                .filter(line => line.trim() !== '')
+                .map((task, index) => ({
+                    id: Date.now() + index,
+                    text: task.trim(),
+                    completed: false,
+                    category: getCategoryForItem(task.trim())
+                }));
+            
+            tasks = [...tasks, ...newTasks];
+            storedLists[currentCode] = { tasks: tasks };
+            
+            textarea.value = '';
+            renderApp();
+        }
+
+        function toggleTask(id) {
+            tasks = tasks.map(task => 
+                task.id === id ? { ...task, completed: !task.completed } : task
+            );
+            
+            if (currentCode) {
+                storedLists[currentCode] = { tasks: tasks };
+            }
+            
+            renderApp();
+        }
+
+        function toggleCategory(category) {
+            expandedCategories[category] = !expandedCategories[category];
+            renderApp();
+        }
+
+        function resetList() {
+            tasks = [];
+            if (currentCode) {
+                storedLists[currentCode] = { tasks: [] };
+            }
+            renderApp();
+        }
+
+        // Inițializare
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('listCodeInput');
+            if (input) {
+                input.addEventListener('input', updateAccessButton);
+            }
+        });
+    </script>
+</body>
+</html>
