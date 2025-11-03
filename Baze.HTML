@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertor Bază 10 → Bază 2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb, #e8eaf6);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #2196f3, #9c27b0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .input-group {
+            margin-bottom: 24px;
+        }
+        
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        input {
+            width: 100%;
+            padding: 16px 60px 16px 20px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #2196f3;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+        
+        .clear-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.2s;
+        }
+        
+        .clear-btn:hover {
+            color: #666;
+        }
+        
+        .error {
+            color: #f44336;
+            font-size: 14px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .convert-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #2196f3, #9c27b0);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
+        }
+        
+        .convert-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.3);
+        }
+        
+        .convert-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result-box {
+            background: linear-gradient(135deg, #e8f5e8, #f0f7f0);
+            border: 2px solid #c8e6c9;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        
+        .result-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        
+        .arrow {
+            color: #4caf50;
+            font-size: 20px;
+        }
+        
+        .result-value {
+            font-size: 24px;
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            color: #1b5e20;
+            word-break: break-all;
+        }
+        
+        .explanation-box {
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 24px;
+        }
+        
+        .explanation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .explanation-title {
+            font-weight: 700;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .book-icon {
+            color: #2196f3;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .control-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .auto-btn {
+            background: #2196f3;
+            color: white;
+        }
+        
+        .auto-btn:hover:not(:disabled) {
+            background: #1976d2;
+        }
+        
+        .auto-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .reset-btn {
+            background: #757575;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background: #616161;
+        }
+        
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .step {
+            padding: 16px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .step.current {
+            border: 2px solid #2196f3;
+            background: #e3f2fd;
+        }
+        
+        .step.completed {
+            border: 2px solid #4caf50;
+            background: #e8f5e8;
+        }
+        
+        .step.pending {
+            border: 2px solid #e0e0e0;
+            background: white;
+        }
+        
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .step-content {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .step-details {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        
+        .detail {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        
+        .detail-value {
+            font-family: 'Courier New', monospace;
+            color: #2196f3;
+        }
+        
+        .checkmark {
+            width: 24px;
+            height: 24px;
+            background: #4caf50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        
+        .step-icon {
+            width: 24px;
+            height: 24px;
+            background: #2196f3;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(33, 150, 243, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0); }
+        }
+        
+        .current-explanation {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+        
+        .current-explanation-title {
+            font-weight: 700;
+            color: #0d47a1;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .current-explanation-text {
+            color: #0d47a1;
+            line-height: 1.6;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+        }
+        
+        .nav-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .prev-btn {
+            background: #bdbdbd;
+            color: white;
+        }
+        
+        .prev-btn:hover:not(:disabled) {
+            background: #9e9e9e;
+        }
+        
+        .next-btn {
+            background: #2196f3;
+            color: white;
+        }
+        
+        .next-btn:hover:not(:disabled) {
+            background: #1976d2;
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .progress {
+            text-align: center;
+            margin-top: 16px;
+        }
+        
+        .progress-text {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: #eeeeee;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .placeholder {
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+        
+        .placeholder-text {
+            color: #999;
+            font-size: 16px;
+        }
+        
+        .info-box {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 32px;
+            text-align: center;
+        }
+        
+        .info-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .info-text {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            input {
+                padding: 14px 50px 14px 16px;
+                font-size: 16px;
+            }
+            
+            .result-value {
+                font-size: 20px;
+            }
+            
+            .step-details {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">10→2</div>
+            <h1>Convertor Bază 10 → Bază 2</h1>
+            <p class="subtitle">Transformă numere din sistemul zecimal în sistemul binar cu explicație detaliată la fiecare pas</p>
+        </div>
+
+        <div class="input-group">
+            <label for="decimalInput">Număr în baza 10</label>
+            <div class="input-wrapper">
+                <input type="text" id="decimalInput" placeholder="Ex: 42">
+                <button class="clear-btn" id="clearBtn" style="display: none;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="error" id="error" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorMessage"></span>
+            </div>
+        </div>
+
+        <button class="convert-btn" id="convertBtn">Convertiți cu Explicație Pas cu Pas</button>
+
+        <div id="resultSection" style="display: none;">
+            <div class="result-box">
+                <div class="result-header">
+                    <span class="result-title">Rezultat Final:</span>
+                    <span class="arrow">→</span>
+                </div>
+                <div class="result-value" id="resultValue"></div>
+            </div>
+
+            <div class="explanation-box">
+                <div class="explanation-header">
+                    <h3 class="explanation-title">
+                        <i class="fas fa-book-open book-icon"></i>
+                        Explicație Detaliată
+                    </h3>
+                    <div class="controls">
+                        <button class="control-btn auto-btn" id="autoBtn">Auto</button>
+                        <button class="control-btn reset-btn" id="resetBtn">Reset</button>
+                    </div>
+                </div>
+
+                <div class="steps-container" id="stepsContainer"></div>
+
+                <div class="current-explanation" id="currentExplanation" style="display: none;">
+                    <h4 class="current-explanation-title">
+                        <i class="fas fa-book-open"></i>
+                        <span id="currentExplanationTitle"></span>
+                    </h4>
+                    <p class="current-explanation-text" id="currentExplanationText"></p>
+                </div>
+
+                <div class="navigation">
+                    <button class="nav-btn prev-btn" id="prevBtn" disabled>Înapoi</button>
+                    <button class="nav-btn next-btn" id="nextBtn">Următorul Pas</button>
+                </div>
+
+                <div class="progress">
+                    <div class="progress-text" id="progressText">Începeți conversia</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="placeholder" id="placeholderSection">
+            <p class="placeholder-text">
+                <i class="fas fa-arrow-right"></i><br>
+                Introduceți un număr zecimal și apăsați "Convertiți cu Explicație" pentru a vedea pașii detaliați
+            </p>
+        </div>
+
+        <div class="info-box">
+            <h4 class="info-title">Metoda de Conversie</h4>
+            <p class="info-text">
+                <strong>Pașii metodei:</strong> Împărțiți numărul la 2, păstrați restul, continuați cu câtul până când acesta devine 0. 
+                Cifrele binare sunt resturile citite în ordine inversă (de la ultimul la primul).
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const decimalInput = document.getElementById('decimalInput');
+            const clearBtn = document.getElementById('clearBtn');
+            const convertBtn = document.getElementById('convertBtn');
+            const errorDiv = document.getElementById('error');
+            const errorMessage = document.getElementById('errorMessage');
+            const resultSection = document.getElementById('resultSection');
+            const placeholderSection = document.getElementById('placeholderSection');
+            const resultValue = document.getElementById('resultValue');
+            const stepsContainer = document.getElementById('stepsContainer');
+            const currentExplanation = document.getElementById('currentExplanation');
+            const currentExplanationTitle = document.getElementById('currentExplanationTitle');
+            const currentExplanationText = document.getElementById('currentExplanationText');
+            const autoBtn = document.getElementById('autoBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const progressText = document.getElementById('progressText');
+            
+            let decimalNumber = '';
+            let steps = [];
+            let currentStep = -1;
+            let isAutoPlaying = false;
+            let autoInterval = null;
+            
+            // Input handling
+            decimalInput.addEventListener('input', function() {
+                decimalNumber = this.value;
+                clearBtn.style.display = decimalNumber ? 'block' : 'none';
+                hideError();
+            });
+            
+            decimalInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    convertToBinaryWithSteps();
+                }
+            });
+            
+            clearBtn.addEventListener('click', function() {
+                decimalInput.value = '';
+                decimalNumber = '';
+                clearBtn.style.display = 'none';
+                hideError();
+                resetConversion();
+            });
+            
+            convertBtn.addEventListener('click', convertToBinaryWithSteps);
+            prevBtn.addEventListener('click', prevStep);
+            nextBtn.addEventListener('click', nextStep);
+            resetBtn.addEventListener('click', resetSteps);
+            autoBtn.addEventListener('click', startAutoPlay);
+            
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorDiv.style.display = 'flex';
+            }
+            
+            function hideError() {
+                errorDiv.style.display = 'none';
+            }
+            
+            function resetConversion() {
+                resultSection.style.display = 'none';
+                placeholderSection.style.display = 'block';
+                steps = [];
+                currentStep = -1;
+                isAutoPlaying = false;
+                clearInterval(autoInterval);
+                updateNavigation();
+                progressText.textContent = 'Începeți conversia';
+                currentExplanation.style.display = 'none';
+            }
+            
+            function convertToBinaryWithSteps() {
+                hideError();
+                resetConversion();
+                
+                if (!decimalNumber.trim()) {
+                    showError('Vă rugăm introduceți un număr');
+                    return;
+                }
+                
+                const num = parseInt(decimalNumber);
+                
+                if (isNaN(num)) {
+                    showError('Introduceți un număr valid');
+                    return;
+                }
+                
+                if (num < 0) {
+                    showError('Introduceți un număr pozitiv');
+                    return;
+                }
+                
+                if (num > 1000000) {
+                    showError('Numărul este prea mare (max: 1,000,000)');
+                    return;
+                }
+                
+                if (num === 0) {
+                    resultValue.textContent = '0₁₀ = 0₂';
+                    resultSection.style.display = 'block';
+                    placeholderSection.style.display = 'none';
+                    steps = [{
+                        remainder: 0,
+                        quotient: 0,
+                        binary: '0',
+                        explanation: "Orice număr 0 în baza 10 este egal cu 0 în baza 2.",
+                        stepNumber: 1,
+                        isFinalStep: true
+                    }];
+                    renderSteps();
+                    return;
+                }
+                
+                let currentNum = num;
+                const conversionSteps = [];
+                let stepCount = 1;
+                
+                while (currentNum > 0) {
+                    const remainder = currentNum % 2;
+                    const quotient = Math.floor(currentNum / 2);
+                    
+                    let explanation = "";
+                    if (stepCount === 1) {
+                        explanation = `Pasul ${stepCount}: Împărțim ${currentNum} la 2. Obținem câtul ${quotient} și restul ${remainder}. Restul ${remainder} va fi ultima cifră (cea mai puțin semnificativă) a numărului binar.`;
+                    } else if (quotient === 0) {
+                        explanation = `Pasul ${stepCount}: Împărțim ${currentNum} la 2. Obținem câtul ${quotient} și restul ${remainder}. Deoarece câtul este 0, ne oprim aici. Restul ${remainder} va fi prima cifră (cea mai semnificativă) a numărului binar.`;
+                    } else {
+                        explanation = `Pasul ${stepCount}: Împărțim ${currentNum} la 2. Obținem câtul ${quotient} și restul ${remainder}. Restul ${remainder} va fi următoarea cifră a numărului binar (mergând de la dreapta la stânga).`;
+                    }
+                    
+                    conversionSteps.push({
+                        remainder,
+                        quotient,
+                        binary: conversionSteps.map(step => step.remainder).reverse().join('') + remainder.toString(),
+                        explanation,
+                        stepNumber: stepCount
+                    });
+                    
+                    currentNum = quotient;
+                    stepCount++;
+                }
+                
+                // Add final explanation step
+                const finalBinary = conversionSteps.map(step => step.remainder).reverse().join('');
+                conversionSteps.push({
+                    remainder: null,
+                    quotient: 0,
+                    binary: finalBinary,
+                    explanation: `Rezultat final: Citim resturile de la ultimul la primul (de sus în jos). Astfel, ${decimalNumber}₁₀ = ${finalBinary}₂`,
+                    stepNumber: stepCount,
+                    isFinalStep: true
+                });
+                
+                resultValue.textContent = `${decimalNumber}₁₀ = ${finalBinary}₂`;
+                resultSection.style.display = 'block';
+                placeholderSection.style.display = 'none';
+                steps = conversionSteps;
+                renderSteps();
+            }
+            
+            function renderSteps() {
+                stepsContainer.innerHTML = '';
+                steps.forEach((step, index) => {
+                    const stepDiv = document.createElement('div');
+                    stepDiv.className = 'step pending';
+                    stepDiv.dataset.index = index;
+                    
+                    const isLastStep = step.isFinalStep;
+                    const stepTitle = isLastStep ? 'Rezultat Final' : `Pasul ${step.stepNumber}: ${index === 0 ? parseInt(decimalNumber) : steps[index - 1].quotient} ÷ 2`;
+                    
+                    let stepHTML = `
+                        <div class="step-header">
+                            <div class="step-title">${stepTitle}</div>
+                        </div>
+                    `;
+                    
+                    if (!isLastStep) {
+                        stepHTML += `
+                            <div class="step-details">
+                                <div class="detail">
+                                    <span class="detail-label">Cât</span>
+                                    <span class="detail-value">${step.quotient}</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="detail-label">Rest</span>
+                                    <span class="detail-value">${step.remainder}</span>
+                                </div>
+                                <div class="detail">
+                                    <span class="detail-label">Cifra binară</span>
+                                    <span class="detail-value">${step.remainder}</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    stepDiv.innerHTML = stepHTML;
+                    stepsContainer.appendChild(stepDiv);
+                });
+                
+                updateStepDisplay();
+            }
+            
+            function updateStepDisplay() {
+                const stepElements = stepsContainer.querySelectorAll('.step');
+                stepElements.forEach((stepEl, index) => {
+                    stepEl.classList.remove('current', 'completed', 'pending');
+                    if (index < currentStep) {
+                        stepEl.classList.add('completed');
+                    } else if (index === currentStep) {
+                        stepEl.classList.add('current');
+                    } else {
+                        stepEl.classList.add('pending');
+                    }
+                });
+                
+                // Add icons
+                const iconsContainer = document.querySelectorAll('.step .step-header');
+                iconsContainer.forEach((iconContainer, index) => {
+                    // Remove existing icons
+                    const existingIcon = iconContainer.querySelector('.step-icon, .checkmark');
+                    if (existingIcon) existingIcon.remove();
+                    
+                    if (index === currentStep && !steps[index].isFinalStep) {
+                        const icon = document.createElement('div');
+                        icon.className = 'step-icon';
+                        icon.innerHTML = '<i class="fas fa-step-forward"></i>';
+                        iconContainer.appendChild(icon);
+                    } else if (index < currentStep || (index === currentStep && steps[index].isFinalStep)) {
+                        const icon = document.createElement('div');
+                        icon.className = 'checkmark';
+                        icon.textContent = '✓';
+                        iconContainer.appendChild(icon);
+                    }
+                });
+                
+                updateNavigation();
+                updateProgressText();
+                updateCurrentExplanation();
+            }
+            
+            function updateCurrentExplanation() {
+                if (currentStep >= 0 && currentStep < steps.length) {
+                    currentExplanation.style.display = 'block';
+                    const isFinal = steps[currentStep].isFinalStep;
+                    currentExplanationTitle.textContent = isFinal ? 'Rezultat Final' : `Pasul ${steps[currentStep].stepNumber}`;
+                    currentExplanationText.textContent = steps[currentStep].explanation;
+                } else {
+                    currentExplanation.style.display = 'none';
+                }
+            }
+            
+            function updateNavigation() {
+                prevBtn.disabled = currentStep <= -1;
+                nextBtn.disabled = currentStep >= steps.length - 1;
+                autoBtn.disabled = isAutoPlaying || currentStep >= steps.length - 1;
+                nextBtn.textContent = currentStep >= steps.length - 2 ? 'Finalizează' : 'Următorul Pas';
+            }
+            
+            function updateProgressText() {
+                if (currentStep === -1) {
+                    progressText.textContent = 'Începeți conversia';
+                } else if (currentStep === steps.length - 1) {
+                    progressText.textContent = 'Conversie completă!';
+                } else {
+                    progressText.textContent = `Pasul ${currentStep + 1} din ${steps.length}`;
+                }
+            }
+            
+            function nextStep() {
+                if (currentStep < steps.length - 1) {
+                    currentStep++;
+                    updateStepDisplay();
+                }
+            }
+            
+            function prevStep() {
+                if (currentStep > -1) {
+                    currentStep--;
+                    updateStepDisplay();
+                }
+            }
+            
+            function resetSteps() {
+                currentStep = -1;
+                isAutoPlaying = false;
+                clearInterval(autoInterval);
+                updateStepDisplay();
+            }
+            
+            function startAutoPlay() {
+                isAutoPlaying = true;
+                currentStep = -1;
+                clearInterval(autoInterval);
+                autoInterval = setInterval(() => {
+                    if (currentStep < steps.length - 1) {
+                        currentStep++;
+                        updateStepDisplay();
+                    } else {
+                        isAutoPlaying = false;
+                        clearInterval(autoInterval);
+                        autoBtn.disabled = true;
+                    }
+                }, 2000);
+                updateNavigation();
+            }
+        });
+    </script>
+</body>
+</html>
