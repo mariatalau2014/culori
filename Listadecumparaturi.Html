@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lista de Cumpărături</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    :root {
+      --primary: #4a6fa5;
+      --secondary: #6b8cbc;
+      --accent: #ff6b6b;
+      --background: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --success: #28a745;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background-color: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 16px;
+    }
+    .view {
+      display: none;
+    }
+    .view.active {
+      display: block;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .header h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+    .header p {
+      color: #666;
+      font-size: 0.95rem;
+    }
+    .btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      width: 100%;
+      margin: 8px 0;
+    }
+    .btn:hover {
+      background-color: var(--secondary);
+    }
+    .btn-accent {
+      background-color: var(--accent);
+    }
+    .btn-accent:hover {
+      background-color: #ff5252;
+    }
+    .input-group {
+      margin: 16px 0;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    .error {
+      color: #d32f2f;
+      font-size: 0.875rem;
+      margin-top: 6px;
+      min-height: 1.2em;
+    }
+    .category-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+    }
+    .items-container {
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .item {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid #eee;
+    }
+    .item:last-child {
+      border-bottom: none;
+    }
+    .item.completed .item-text {
+      text-decoration: line-through;
+      color: #888;
+    }
+    .item-text {
+      flex: 1;
+      margin: 0 12px;
+    }
+    .item-actions button {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 1.2rem;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .item-actions button:hover {
+      color: var(--accent);
+    }
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 1rem;
+      margin-bottom: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .back-btn:hover {
+      text-decoration: underline;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+    }
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- VIEWS -->
+  <div id="homeView" class="view active">
+    <div class="header">
+      <h1>Lista de Cumpărături</h1>
+      <p>Partajează o listă cu alții folosind un cod unic!</p>
+    </div>
+    <button id="createBtn" class="btn">Creează o listă nouă</button>
+    <button id="joinBtn" class="btn">Intră într-o listă existentă</button>
+  </div>
+
+  <div id="createView" class="view">
+    <button class="back-btn" id="backFromCreate">&larr; Înapoi</button>
+    <div class="header">
+      <h1>Creează Listă</h1>
+    </div>
+    <div class="input-group">
+      <label for="listName">Numele listei</label>
+      <input type="text" id="listName" placeholder="Ex: Cumpărături supermarket" />
+    </div>
+    <div class="error" id="createError"></div>
+    <button id="confirmCreate" class="btn">Creează Listă</button>
+  </div>
+
+  <div id="joinView" class="view">
+    <button class="back-btn" id="backFromJoin">&larr; Înapoi</button>
+    <div class="header">
+      <h1>Intră în Listă</h1>
+      <p>Introdu codul primit de la creator</p>
+    </div>
+    <div class="input-group">
+      <label for="joinCode">Cod (6 cifre)</label>
+      <input type="text" id="joinCode" placeholder="Ex: 123456" maxlength="6" />
+    </div>
+    <div class="error" id="joinError"></div>
+    <button id="confirmJoin" class="btn">Intră</button>
+  </div>
+
+  <div id="listView" class="view">
+    <button class="back-btn" id="backFromList">&larr; Ieși din listă</button>
+    <div class="header">
+      <h1 id="listTitle">Lista ta</h1>
+      <p id="listCodeDisplay" style="font-size: 0.9rem; color: #666;"></p>
+    </div>
+    
+    <div id="categoriesContainer"></div>
+
+    <button id="addItemBtn" class="btn">+ Adaugă articol</button>
+  </div>
+
+  <!-- MODAL: Selectare categorie -->
+  <div id="categoryModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Selectează categoria</h2>
+      <div id="modalCategoryList" style="margin: 16px 0;"></div>
+      <input type="text" id="newItemInput" placeholder="Ce vrei să adaugi?" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;" />
+      <button id="confirmAddItemBtn" class="btn">Adaugă</button>
+      <button id="cancelAddItemBtn" class="btn btn-accent" style="background:#ccc; color:black;">Renunță</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Selectare categorie destinație (mutare) -->
+  <div id="moveModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Mută în categoria</h2>
+      <div id="moveCategoryList" style="margin: 16px 0;"></div>
+      <button id="cancelMoveBtn" class="btn btn-accent" style="background:#ccc; color:black;">Renunță</button>
+    </div>
+  </div>
+
+  <script>
+    // -------------------------------
+    // INIT SUPABASE
+    // -------------------------------
+    const supabaseUrl = 'https://ywbmnkleicpokpnwkija.supabase.co';
+    const supabaseAnonKey = 'sb_publishable_3Eoi2E9K_EFFvdj7PwAAgQ_CdwFKgeV';
+    const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+    // -------------------------------
+    // UI Elements
+    // -------------------------------
+    const elements = {
+      homeView: document.getElementById('homeView'),
+      createView: document.getElementById('createView'),
+      joinView: document.getElementById('joinView'),
+      listView: document.getElementById('listView'),
+      listName: document.getElementById('listName'),
+      joinCode: document.getElementById('joinCode'),
+      createError: document.getElementById('createError'),
+      joinError: document.getElementById('joinError'),
+      listTitle: document.getElementById('listTitle'),
+      listCodeDisplay: document.getElementById('listCodeDisplay'),
+      categoriesContainer: document.getElementById('categoriesContainer'),
+      addItemBtn: document.getElementById('addItemBtn'),
+      // Modals
+      categoryModal: document.getElementById('categoryModal'),
+      moveModal: document.getElementById('moveModal'),
+      modalCategoryList: document.getElementById('modalCategoryList'),
+      moveCategoryList: document.getElementById('moveCategoryList'),
+      newItemInput: document.getElementById('newItemInput'),
+      // Back buttons
+      backFromCreate: document.getElementById('backFromCreate'),
+      backFromJoin: document.getElementById('backFromJoin'),
+      backFromList: document.getElementById('backFromList'),
+      // Confirm buttons
+      confirmCreate: document.getElementById('confirmCreate'),
+      confirmJoin: document.getElementById('confirmJoin'),
+      confirmAddItemBtn: document.getElementById('confirmAddItemBtn'),
+      cancelAddItemBtn: document.getElementById('cancelAddItemBtn'),
+      cancelMoveBtn: document.getElementById('cancelMoveBtn')
+    };
+
+    let currentList = null;
+    let expandedCategories = {};
+    let modalCurrentItem = '';
+    let itemToMoveId = null;
+
+    const defaultCategories = ['Fructe și legume', 'Lactate', 'Pâine și cereale', 'Carne și pește', 'Băuturi', 'Dulciuri', 'Altele'];
+
+    // -------------------------------
+    // UTILS
+    // -------------------------------
+    function showView(viewId) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById(viewId).classList.add('active');
+    }
+
+    function showError(element, message) {
+      element.textContent = message;
+      setTimeout(() => element.textContent = '', 3000);
+    }
+
+    function generateCode() {
+      return Math.floor(100000 + Math.random() * 900000).toString();
+    }
+
+    // -------------------------------
+    // SUPABASE FUNCTIONS
+    // -------------------------------
+    async function loadListWithCategories(listId) {
+      const { data: categories, error } = await supabase
+        .from('categories')
+        .select(`
+          id,
+          name,
+          items:items(id, text, completed)
+        `)
+        .eq('list_id', listId)
+        .order('name', { referencedTable: 'categories' })
+        .order('created_at', { referencedTable: 'items' });
+
+      if (error) {
+        console.error('Eroare încărcare categorii:', error);
+        showError(elements.createError, 'Eroare la încărcarea listei');
+        return;
+      }
+
+      currentList.categories = categories.map(cat => ({
+        id: cat.id,
+        name: cat.name,
+        items: cat.items || []
+      }));
+
+      // Extinde toate categoriile implicit
+      expanded_categories = {};
+      currentList.categories.forEach(cat => {
+        expanded_categories[cat.name] = true;
+      });
+
+      renderList();
+    }
+
+    function renderList() {
+      elements.listTitle.textContent = currentList.name;
+      elements.listCodeDisplay.textContent = `Cod listă: ${currentList.code}`;
+      elements.categoriesContainer.innerHTML = '';
+
+      currentList.categories.forEach(category => {
+        const isExpanded = expanded_categories[category.name] ?? true;
+        const categoryEl = document.createElement('div');
+        categoryEl.className = 'category';
+        categoryEl.innerHTML = `
+          <div class="category-header" data-category="${category.name}">
+            <span>${category.name}</span>
+            <span>${category.items.filter(i => !i.completed).length} rămase</span>
+          </div>
+          <div class="items-container ${isExpanded ? '' : 'hidden'}" data-category="${category.name}">
+            ${category.items.map(item => `
+              <div class="item ${item.completed ? 'completed' : ''}" data-item-id="${item.id}">
+                <input type="checkbox" ${item.completed ? 'checked' : ''} data-item-id="${item.id}" />
+                <span class="item-text">${item.text}</span>
+                <div class="item-actions">
+                  <button class="move-btn" data-item-id="${item.id}" title="Mută">🔃</button>
+                  <button class="delete-btn" data-item-id="${item.id}" title="Șterge">🗑️</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        elements.categoriesContainer.appendChild(categoryEl);
+      });
+
+      // Event listeners pentru checkbox, move, delete
+      document.querySelectorAll('.category-header').forEach(header => {
+        header.addEventListener('click', () => {
+          const catName = header.dataset.category;
+          expanded_categories[catName] = !expanded_categories[catName];
+          const container = document.querySelector(`.items-container[data-category="${catName}"]`);
+          container.classList.toggle('hidden');
+        });
+      });
+
+      document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', async (e) => {
+          const itemId = e.target.dataset.itemId;
+          const completed = e.target.checked;
+          const { error } = await supabase
+            .from('items')
+            .update({ completed })
+            .eq('id', itemId);
+          if (!error) {
+            await loadListWithCategories(currentList.id);
+          }
+        });
+      });
+
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const itemId = btn.dataset.itemId;
+          const { error } = await supabase
+            .from('items')
+            .delete()
+            .eq('id', itemId);
+          if (!error) {
+            await loadListWithCategories(currentList.id);
+          }
+        });
+      });
+
+      document.querySelectorAll('.move-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          itemToMoveId = btn.dataset.itemId;
+          openMoveModal();
+        });
+      });
+    }
+
+    async function createList() {
+      const name = elements.listName.value.trim();
+      if (!name) {
+        showError(elements.createError, 'Introdu un nume pentru listă');
+        return;
+      }
+
+      const code = generateCode();
+
+      // Creează lista
+      const { data: list, error: listError } = await supabase
+        .from('shopping_lists')
+        .insert({ name, code })
+        .select()
+        .single();
+
+      if (listError) {
+        console.error(listError);
+        showError(elements.createError, 'Eroare la crearea listei');
+        return;
+      }
+
+      // Creează categoriile
+      const categoryInserts = defaultCategories.map(cat => ({
+        list_id: list.id,
+        name: cat
+      }));
+
+      const { error: catError } = await supabase
+        .from('categories')
+        .insert(categoryInserts);
+
+      if (catError) {
+        console.error(catError);
+        showError(elements.createError, 'Eroare la crearea categoriilor');
+        return;
+      }
+
+      currentList = { ...list, categories: [] };
+      await loadListWithCategories(list.id);
+      showView('listView');
+    }
+
+    async function joinList() {
+      const code = elements.joinCode.value.trim();
+      if (!code) {
+        showError(elements.joinError, 'Introdu un cod');
+        return;
+      }
+
+      const { data: list, error } = await supabase
+        .from('shopping_lists')
+        .select('id, name, code')
+        .eq('code', code)
+        .single();
+
+      if (error || !list) {
+        showError(elements.joinError, 'Cod invalid. Încearcă din nou.');
+        return;
+      }
+
+      currentList = list;
+      await loadListWithCategories(list.id);
+      showView('listView');
+    }
+
+    function openCategoryModal() {
+      elements.modalCategoryList.innerHTML = '';
+      currentList.categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'btn';
+        btn.textContent = cat.name;
+        btn.addEventListener('click', () => {
+          modalCurrentItem = elements.newItemInput.value.trim();
+          if (!modalCurrentItem) {
+            showError(elements.categoryModal.querySelector('.error') || elements.createError, 'Introdu un articol');
+            return;
+          }
+          confirmAddItem(cat.id);
+        });
+        elements.modalCategoryList.appendChild(btn);
+      });
+      elements.newItemInput.value = '';
+      elements.categoryModal.classList.remove('hidden');
+    }
+
+    async function confirmAddItem(categoryId) {
+      const text = modalCurrentItem.trim();
+      if (!text) return;
+
+      const { error } = await supabase
+        .from('items')
+        .insert({ category_id: categoryId, text, completed: false });
+
+      if (error) {
+        console.error(error);
+        showError(elements.createError, 'Eroare la adăugare');
+      } else {
+        elements.categoryModal.classList.add('hidden');
+        await loadListWithCategories(currentList.id);
+      }
+    }
+
+    function openMoveModal() {
+      elements.moveCategoryList.innerHTML = '';
+      currentList.categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'btn';
+        btn.textContent = cat.name;
+        btn.addEventListener('click', async () => {
+          // Mută itemul în această categorie
+          const { error } = await supabase
+            .from('items')
+            .update({ category_id: cat.id })
+            .eq('id', itemToMoveId);
+          if (!error) {
+            elements.moveModal.classList.add('hidden');
+            await loadListWithCategories(currentList.id);
+          }
+        });
+        elements.moveCategoryList.appendChild(btn);
+      });
+      elements.moveModal.classList.remove('hidden');
+    }
+
+    // -------------------------------
+    // EVENT LISTENERS
+    // -------------------------------
+    elements.createBtn.addEventListener('click', () => showView('createView'));
+    elements.joinBtn.addEventListener('click', () => showView('joinView'));
+
+    elements.backFromCreate.addEventListener('click', () => showView('homeView'));
+    elements.backFromJoin.addEventListener('click', () => showView('homeView'));
+    elements.backFromList.addEventListener('click', () => {
+      currentList = null;
+      showView('homeView');
+    });
+
+    elements.confirmCreate.addEventListener('click', createList);
+    elements.confirmJoin.addEventListener('click', joinList);
+
+    elements.addItemBtn.addEventListener('click', openCategoryModal);
+
+    elements.cancelAddItemBtn.addEventListener('click', () => {
+      elements.categoryModal.classList.add('hidden');
+    });
+
+    elements.cancelMoveBtn.addEventListener('click', () => {
+      elements.moveModal.classList.add('hidden');
+    });
+
+    // Close modals on outside click
+    window.addEventListener('click', (e) => {
+      if (e.target === elements.categoryModal) elements.categoryModal.classList.add('hidden');
+      if (e.target === elements.moveModal) elements.moveModal.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>
