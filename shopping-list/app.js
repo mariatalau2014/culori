@@ -1,7 +1,7 @@
 // Supabase Config
 const SUPABASE_URL = 'https://ywbmnkleicpokpnwkija.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3Ym1ua2xlaWNwb2twbndraWphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIwNTY2MTQsImV4cCI6MjA3NzYzMjYxNH0.hjchuerJ7OsC8hvkdXzBf9pEuLm5-vbDXWaQV4s8lFc';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Default Categories
 const DEFAULT_CATEGORIES = [
@@ -87,7 +87,7 @@ async function handleCreateList(e) {
 
     try {
         // Create list
-        const { data: list, error } = await supabase
+        const { data: list, error } = await supabaseClient
             .from('shopping_lists')
             .insert({ name, code })
             .select()
@@ -101,7 +101,7 @@ async function handleCreateList(e) {
             name: cat.name
         }));
 
-        const { error: catError } = await supabase
+        const { error: catError } = await supabaseClient
             .from('categories')
             .insert(categoryData);
 
@@ -126,7 +126,7 @@ async function loadList(code) {
 
     try {
         // Get list
-        const { data: list, error } = await supabase
+        const { data: list, error } = await supabaseClient
             .from('shopping_lists')
             .select('*')
             .eq('code', code)
@@ -141,7 +141,7 @@ async function loadList(code) {
         currentList = list;
 
         // Get categories
-        const { data: cats } = await supabase
+        const { data: cats } = await supabaseClient
             .from('categories')
             .select('*')
             .eq('list_id', list.id)
@@ -152,7 +152,7 @@ async function loadList(code) {
         // Get items
         const categoryIds = categories.map(c => c.id);
         if (categoryIds.length > 0) {
-            const { data: itms } = await supabase
+            const { data: itms } = await supabaseClient
                 .from('items')
                 .select('*')
                 .in('category_id', categoryIds)
@@ -175,14 +175,14 @@ async function loadList(code) {
 function setupRealtimeSubscription() {
     const categoryIds = categories.map(c => c.id);
 
-    supabase
+    supabaseClient
         .channel('items-changes')
         .on('postgres_changes',
             { event: '*', schema: 'public', table: 'items' },
             async (payload) => {
                 // Reload items
                 if (categoryIds.length > 0) {
-                    const { data } = await supabase
+                    const { data } = await supabaseClient
                         .from('items')
                         .select('*')
                         .in('category_id', categoryIds)
@@ -331,7 +331,7 @@ async function handleAddItem(e) {
     if (!text) return;
 
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('items')
             .insert({ text, category_id: categoryId })
             .select()
@@ -357,7 +357,7 @@ async function handleToggleItem(id) {
     const newCompleted = !item.completed;
 
     try {
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('items')
             .update({ completed: newCompleted })
             .eq('id', id);
@@ -375,7 +375,7 @@ async function handleToggleItem(id) {
 // Handle Delete Item
 async function handleDeleteItem(id) {
     try {
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('items')
             .delete()
             .eq('id', id);
