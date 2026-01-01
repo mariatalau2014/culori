@@ -9,11 +9,14 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Caveat:wght@600;700&display=swap');
     body {
       font-family: 'Inter', sans-serif;
       margin: 0;
       padding: 0;
+    }
+    .cursive-text {
+      font-family: 'Caveat', cursive;
     }
   </style>
 </head>
@@ -57,7 +60,8 @@
             'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
             'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
             'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4'
-          ]
+          ],
+          tempo: 500
         },
         happy: {
           name: 'Happy Birthday',
@@ -72,7 +76,8 @@
             'C4', 'C4', 'D4', 'C4', 'G4', 'F4',
             'C4', 'C4', 'C5', 'A4', 'F4', 'E4', 'D4',
             'A4', 'A4', 'G4', 'F4', 'G4', 'F4'
-          ]
+          ],
+          tempo: 600
         },
         row: {
           name: 'Row Your Boat',
@@ -89,7 +94,8 @@
             'E4', 'E4', 'E4', 'E4', 'E4', 'E4',
             'G4', 'G4', 'G4', 'G4', 'G4', 'G4',
             'C4', 'C4', 'C4', 'C4', 'C4', 'C4'
-          ]
+          ],
+          tempo: 450
         },
         jingle: {
           name: 'Jingle Bells',
@@ -102,7 +108,8 @@
           notes: [
             'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'G4', 'C4', 'D4', 'E4',
             'F4', 'F4', 'F4', 'F4', 'F4', 'E4', 'E4', 'E4', 'E4', 'D4', 'D4', 'E4', 'D4', 'G4'
-          ]
+          ],
+          tempo: 400
         },
         mary: {
           name: "Mary Had a Lamb",
@@ -116,7 +123,8 @@
             'E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4',
             'D4', 'D4', 'D4', 'E4', 'G4', 'G4',
             'E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4', 'E4', 'D4', 'D4', 'E4', 'D4', 'C4'
-          ]
+          ],
+          tempo: 500
         },
         abc: {
           name: 'ABC Song',
@@ -133,7 +141,8 @@
             'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
             'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
             'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4'
-          ]
+          ],
+          tempo: 480
         },
         old: {
           name: 'Old MacDonald',
@@ -149,7 +158,106 @@
             'G4', 'B4', 'B4', 'A4', 'A4', 'G4',
             'D4', 'D4', 'C4', 'C4', 'D4', 'E4', 'D4', 'G4',
             'G4', 'G4', 'D4', 'E4', 'E4', 'D4'
-          ]
+          ],
+          tempo: 550
+        },
+        barbi: {
+          name: 'Barbi Warl',
+          lyrics: [
+            'In', 'a', 'Barbi', 'Warl', 'so', 'bright',
+            'Where', 'dreams', 'take', 'flight', 'all', 'night',
+            'Pink', 'castles', 'shine', 'with', 'glow',
+            'And', 'magic', 'flows', 'just', 'like', 'so'
+          ],
+          notes: [
+            'C4', 'E4', 'G4', 'C5', 'G4', 'E4', 'C4',
+            'D4', 'F4', 'A4', 'D5', 'A4', 'F4', 'D4',
+            'E4', 'G4', 'B4', 'E5', 'B4', 'G4', 'E4',
+            'C4', 'E4', 'G4', 'C5', 'G4', 'E4', 'C4'
+          ],
+          tempo: 520
+        },
+        rainbow: {
+          name: 'Rainbow Song',
+          lyrics: [
+            'Red', 'and', 'yellow', 'and', 'pink', 'and', 'green',
+            'Purple', 'and', 'orange', 'and', 'blue',
+            'I', 'can', 'sing', 'a', 'rainbow',
+            'Sing', 'along', 'with', 'me'
+          ],
+          notes: [
+            'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4',
+            'C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4',
+            'C4', 'E4', 'G4', 'C5', 'G4', 'E4', 'C4',
+            'D4', 'F4', 'A4', 'D5', 'A4', 'F4', 'D4'
+          ],
+          tempo: 500
+        },
+        wheels: {
+          name: 'Wheels on the Bus',
+          lyrics: [
+            'The', 'wheels', 'on', 'the', 'bus', 'go',
+            'Round', 'and', 'round', 'round',
+            'All', 'through', 'the', 'town'
+          ],
+          notes: [
+            'C4', 'C4', 'C4', 'G4', 'G4', 'G4',
+            'A4', 'A4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'C4', 'C4', 'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4', 'C4'
+          ],
+          tempo: 450
+        },
+        spider: {
+          name: 'Itsy Bitsy Spider',
+          lyrics: [
+            'The', 'itsy', 'bitsy', 'spider',
+            'Climbed', 'up', 'the', 'water', 'spout',
+            'Down', 'came', 'the', 'rain',
+            'And', 'washed', 'the', 'spider', 'out'
+          ],
+          notes: [
+            'C4', 'D4', 'E4', 'C4', 'E4', 'G4', 'E4', 'C4',
+            'D4', 'E4', 'F4', 'D4', 'F4', 'A4', 'F4', 'D4',
+            'E4', 'G4', 'E4', 'C4', 'E4', 'G4', 'E4', 'C4',
+            'C4', 'G4', 'G4', 'G4', 'E4', 'E4', 'E4', 'C4'
+          ],
+          tempo: 500
+        },
+        baa: {
+          name: 'Baa Baa Black Sheep',
+          lyrics: [
+            'Baa', 'baa', 'black', 'sheep',
+            'Have', 'you', 'any', 'wool',
+            'Yes', 'sir', 'yes', 'sir',
+            'Three', 'bags', 'full'
+          ],
+          notes: [
+            'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'G4',
+            'C4', 'D4', 'E4', 'F4', 'F4', 'E4', 'E4', 'D4', 'D4',
+            'E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4',
+            'D4', 'D4', 'E4', 'D4', 'C4'
+          ],
+          tempo: 550
+        },
+        star: {
+          name: 'Star Light',
+          lyrics: [
+            'Star', 'light', 'star', 'bright',
+            'First', 'star', 'I', 'see', 'tonight',
+            'I', 'wish', 'I', 'may', 'I', 'wish', 'I', 'might',
+            'Have', 'the', 'wish', 'I', 'wish', 'tonight'
+          ],
+          notes: [
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4'
+          ],
+          tempo: 600
         }
       };
 
@@ -204,19 +312,20 @@
       };
 
       useEffect(() => {
+        const song = songs[currentSong];
         const interval = setInterval(() => {
           setFallingDots(prev => {
             const updatedDots = prev.map(dot => ({
               ...dot,
-              y: dot.y + 8.0
+              y: dot.y + 4.0
             })).filter(dot => dot.y < 300);
             return updatedDots;
           });
           
-          if (isAutoMode && Math.random() < 0.04) {
+          if (isAutoMode) {
             createFallingDot();
           }
-        }, 50);
+        }, song.tempo);
 
         return () => clearInterval(interval);
       }, [currentSong, isAutoMode]);
@@ -262,21 +371,21 @@
       return (
         <div className="min-h-screen bg-gradient-to-b from-indigo-900 via-purple-900 to-pink-800 flex flex-col items-center justify-center p-4">
           <div className="text-center mb-6">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 cursive-text">
               Musical Piano Adventure
             </h1>
-            <p className="text-purple-200 text-lg">
+            <p className="text-purple-200 text-lg cursive-text">
               Play along with falling lyrics or create your own melody! 🎵
             </p>
           </div>
 
-          <div className="mb-6 max-w-3xl w-full">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+          <div className="mb-6 max-w-4xl w-full">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
               {Object.entries(songs).map(([key, song]) => (
                 <button
                   key={key}
                   onClick={() => changeSong(key)}
-                  className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 text-sm ${
+                  className={`px-2 py-2 rounded-lg font-medium transition-all duration-200 text-sm cursive-text ${
                     currentSong === key
                       ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg'
                       : 'bg-white/20 text-purple-200 hover:bg-white/30'
@@ -291,7 +400,7 @@
           <div className="mb-6">
             <button
               onClick={() => setIsAutoMode(!isAutoMode)}
-              className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
+              className={`px-6 py-2 rounded-full font-medium transition-all duration-200 cursive-text ${
                 isAutoMode
                   ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg'
                   : 'bg-gradient-to-r from-purple-400 to-pink-500 text-white shadow-lg'
@@ -317,7 +426,7 @@
                 onClick={() => handleDotClick(dot)}
               >
                 <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-white font-bold text-xs drop-shadow-md">
+                  <span className="text-white font-bold text-xs drop-shadow-md cursive-text">
                     {dot.lyric}
                   </span>
                 </div>
@@ -335,10 +444,10 @@
                     transition-all duration-150 ease-in-out cursor-pointer z-10 flex flex-col items-center justify-end pb-2`}
                   onClick={() => handleKeyPress(key)}
                 >
-                  <div className="text-gray-700 font-bold text-base mb-1">
+                  <div className="text-gray-700 font-bold text-base mb-1 cursive-text">
                     {key.note}
                   </div>
-                  <div className="text-gray-600 font-medium text-xs">
+                  <div className="text-gray-600 font-medium text-xs cursive-text">
                     {key.lyric}
                   </div>
                 </button>
@@ -350,8 +459,8 @@
 
           <div className="mt-8 text-center max-w-md">
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-              <p className="text-purple-200 text-sm leading-relaxed">
-                Choose from 7 different songs with falling lyrics, or switch to Free Play mode 
+              <p className="text-purple-200 text-sm leading-relaxed cursive-text">
+                Choose from 13 different songs with falling lyrics, or switch to Free Play mode 
                 to create your own melodies! In Free Play mode, no dots fall automatically, 
                 but you can still play any key on the piano. Keys light up beautifully when played! ✨
               </p>
