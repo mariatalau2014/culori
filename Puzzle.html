@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Puzzle Game</title>
+    <title>Custom Image Puzzle</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -110,17 +110,21 @@
             max-width: 200px;
             max-height: 200px;
             display: none;
+            border: 1px solid #ccc;
+        }
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <h1>Image Puzzle Game</h1>
+    <h1>Custom Image Puzzle</h1>
     
     <div id="instructions">
-        1. Upload your own image<br>
+        1. Upload your image<br>
         2. Choose puzzle size<br>
         3. Click "Start Game"<br>
-        4. Click a piece, then click an empty slot to place it
+        4. Each puzzle piece shows a unique part of your image!
     </div>
 
     <div id="controls">
@@ -148,10 +152,12 @@
 
     <script>
         let uploadedImage = null;
+        let imgWidth = 0;
+        let imgHeight = 0;
         let gridSize = 3;
-        let pieces = [];
         let boardState = [];
         let selectedPiece = null;
+        let piecesData = [];
 
         const imageUpload = document.getElementById('image-upload');
         const preview = document.getElementById('preview');
@@ -172,6 +178,14 @@
                 uploadedImage = e.target.result;
                 preview.src = uploadedImage;
                 preview.style.display = 'inline-block';
+                
+                const img = new Image();
+                img.onload = () => {
+                    imgWidth = img.width;
+                    imgHeight = img.height;
+                };
+                img.src = uploadedImage;
+                
                 document.getElementById('message').textContent = '';
             };
             reader.readAsDataURL(file);
@@ -203,15 +217,23 @@
         function initGame() {
             document.getElementById('puzzle-board').innerHTML = '';
             document.getElementById('pieces-container').innerHTML = '';
-            pieces = [];
             boardState = Array(gridSize * gridSize).fill(null);
             selectedPiece = null;
+            piecesData = [];
 
-            for (let i = 0; i < gridSize * gridSize; i++) {
-                pieces.push(i);
+            // Creează datele pentru fiecare piesă (coordonate unice)
+            for (let id = 0; id < gridSize * gridSize; id++) {
+                const row = Math.floor(id / gridSize);
+                const col = id % gridSize;
+                piecesData.push({
+                    id: id,
+                    row: row,
+                    col: col
+                });
             }
 
-            shuffleArray(pieces);
+            // Amestecă piesele
+            shuffleArray(piecesData);
 
             const board = document.getElementById('puzzle-board');
             board.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
@@ -233,23 +255,21 @@
             const container = document.getElementById('pieces-container');
             const pieceSize = Math.min(50, 300 / gridSize);
 
-            pieces.forEach(id => {
-                const piece = document.createElement('img');
-                piece.src = uploadedImage;
-                piece.className = 'piece';
-                piece.dataset.id = id;
-                piece.draggable = false;
+            piecesData.forEach(piece => {
+                const pieceElement = document.createElement('div');
+                pieceElement.className = 'piece';
+                pieceElement.dataset.id = piece.id;
+                pieceElement.style.width = `${pieceSize}px`;
+                pieceElement.style.height = `${pieceSize}px`;
+                pieceElement.style.backgroundImage = `url(${uploadedImage})`;
+                pieceElement.style.backgroundSize = `${imgWidth}px ${imgHeight}px`;
 
-                piece.style.width = `${pieceSize}px`;
-                piece.style.height = `${pieceSize}px`;
-                piece.style.objectFit = 'cover';
+                const pieceWidth = imgWidth / gridSize;
+                const pieceHeight = imgHeight / gridSize;
+                pieceElement.style.backgroundPosition = `-${piece.col * pieceWidth}px -${piece.row * pieceHeight}px`;
 
-                const row = Math.floor(id / gridSize);
-                const col = id % gridSize;
-                piece.style.objectPosition = `-${col * 100 / gridSize}% -${row * 100 / gridSize}%`;
-
-                piece.addEventListener('click', () => selectPiece(piece, id));
-                container.appendChild(piece);
+                pieceElement.addEventListener('click', () => selectPiece(pieceElement, piece.id));
+                container.appendChild(pieceElement);
             });
         }
 
@@ -274,17 +294,22 @@
 
             const cell = document.querySelector(`.puzzle-cell[data-index="${index}"]`);
             cell.innerHTML = '';
-            const img = document.createElement('img');
-            img.src = uploadedImage;
-            img.style.width = '100%';
-            img.style.height = '100%';
-            img.style.objectFit = 'cover';
 
-            const row = Math.floor(selectedPiece.id / gridSize);
-            const col = selectedPiece.id % gridSize;
-            img.style.objectPosition = `-${col * 100 / gridSize}% -${row * 100 / gridSize}%`;
+            const pieceDiv = document.createElement('div');
+            pieceDiv.style.width = '100%';
+            pieceDiv.style.height = '100%';
+            pieceDiv.style.backgroundImage = `url(${uploadedImage})`;
+            pieceDiv.style.backgroundSize = `${imgWidth}px ${imgHeight}px`;
 
-            cell.appendChild(img);
+            // Găsește datele piesei selectate
+            const pieceData = piecesData.find(p => p.id === selectedPiece.id);
+            if (pieceData) {
+                const pieceWidth = imgWidth / gridSize;
+                const pieceHeight = imgHeight / gridSize;
+                pieceDiv.style.backgroundPosition = `-${pieceData.col * pieceWidth}px -${pieceData.row * pieceHeight}px`;
+            }
+
+            cell.appendChild(pieceDiv);
             boardState[index] = selectedPiece.id;
             selectedPiece.element.remove();
             selectedPiece = null;
@@ -293,6 +318,7 @@
         }
 
         function checkWin() {
+            // Verifică dacă fiecare poziție conține piesa corectă
             let win = true;
             for (let i = 0; i < boardState.length; i++) {
                 if (boardState[i] !== i) {
@@ -308,4 +334,5 @@
     </script>
 </body>
 </html>
+
 
