@@ -31,6 +31,7 @@
       const [fallingDots, setFallingDots] = useState([]);
       const [currentSong, setCurrentSong] = useState('twinkle');
       const [isAutoMode, setIsAutoMode] = useState(true);
+      const [speedMultiplier, setSpeedMultiplier] = useState(1.0);
       const audioContextRef = useRef(null);
       
       const whiteKeys = [
@@ -44,7 +45,7 @@
         { id: 'C5', note: 'C', freq: 523.25, lyric: 'Do!', x: 224 }
       ];
 
-      const songs = {
+      const baseSongs = {
         twinkle: {
           name: 'Twinkle Twinkle',
           lyrics: [
@@ -261,6 +262,15 @@
         }
       };
 
+      // Apply speed multiplier to get current songs
+      const songs = {};
+      Object.entries(baseSongs).forEach(([key, song]) => {
+        songs[key] = {
+          ...song,
+          tempo: Math.max(100, Math.round(song.tempo / speedMultiplier))
+        };
+      });
+
       let currentSongIndex = 0;
 
       const initAudioContext = () => {
@@ -314,21 +324,28 @@
       useEffect(() => {
         const song = songs[currentSong];
         const interval = setInterval(() => {
-          setFallingDots(prev => {
-            const updatedDots = prev.map(dot => ({
-              ...dot,
-              y: dot.y + 4.0
-            })).filter(dot => dot.y < 300);
-            return updatedDots;
-          });
-          
           if (isAutoMode) {
             createFallingDot();
           }
         }, song.tempo);
 
         return () => clearInterval(interval);
-      }, [currentSong, isAutoMode]);
+      }, [currentSong, isAutoMode, speedMultiplier]);
+
+      // Animation loop for falling dots
+      useEffect(() => {
+        const fallInterval = setInterval(() => {
+          setFallingDots(prev => {
+            const updatedDots = prev.map(dot => ({
+              ...dot,
+              y: dot.y + (4.0 * speedMultiplier)
+            })).filter(dot => dot.y < 300);
+            return updatedDots;
+          });
+        }, 30);
+
+        return () => clearInterval(fallInterval);
+      }, [speedMultiplier]);
 
       const handleDotReachedPiano = (dot) => {
         const key = whiteKeys.find(k => k.id === dot.targetKey);
@@ -342,6 +359,9 @@
               return newSet;
             });
           }, 300);
+          
+          // Remove the dot when it reaches the piano
+          setFallingDots(prev => prev.filter(d => d.id !== dot.id));
         }
       };
 
@@ -355,6 +375,15 @@
             return newSet;
           });
         }, 300);
+        
+        // Remove only the first (oldest) falling dot that matches this key
+        setFallingDots(prev => {
+          const index = prev.findIndex(dot => dot.targetKey === key.id);
+          if (index !== -1) {
+            return [...prev.slice(0, index), ...prev.slice(index + 1)];
+          }
+          return prev;
+        });
       };
 
       const handleDotClick = (dot) => {
@@ -366,6 +395,11 @@
         setCurrentSong(songKey);
         currentSongIndex = 0;
         setFallingDots([]);
+      };
+
+      const handleSpeedChange = (e) => {
+        const value = parseFloat(e.target.value);
+        setSpeedMultiplier(value);
       };
 
       return (
@@ -381,7 +415,7 @@
 
           <div className="mb-6 max-w-4xl w-full">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-              {Object.entries(songs).map(([key, song]) => (
+              {Object.entries(baseSongs).map(([key, song]) => (
                 <button
                   key={key}
                   onClick={() => changeSong(key)}
@@ -394,6 +428,25 @@
                   {song.name}
                 </button>
               ))}
+            </div>
+          </div>
+
+          <div className="mb-6 flex flex-col items-center w-full max-w-md">
+            <div className="flex items-center gap-4 mb-2 w-full">
+              <span className="text-white cursive-text font-medium">Slow</span>
+              <input
+                type="range"
+                min="0.5"
+                max="2.0"
+                step="0.1"
+                value={speedMultiplier}
+                onChange={handleSpeedChange}
+                className="w-full h-2 bg-purple-300 rounded-lg appearance-none cursor-pointer"
+              />
+              <span className="text-white cursive-text font-medium">Fast</span>
+            </div>
+            <div className="text-purple-200 cursive-text text-sm">
+              Speed: {speedMultiplier.toFixed(1)}x
             </div>
           </div>
 
@@ -460,9 +513,8 @@
           <div className="mt-8 text-center max-w-md">
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
               <p className="text-purple-200 text-sm leading-relaxed cursive-text">
-                Choose from 13 different songs with falling lyrics, or switch to Free Play mode 
-                to create your own melodies! In Free Play mode, no dots fall automatically, 
-                but you can still play any key on the piano. Keys light up beautifully when played! ✨
+                Choose from 13 different songs! Adjust the speed slider to control how fast the dots fall and appear. 
+                When you press a piano key, only one matching falling dot disappears (the oldest one). ✨
               </p>
             </div>
           </div>
