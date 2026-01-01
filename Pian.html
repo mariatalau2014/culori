@@ -1,549 +1,369 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Musical Piano Adventure</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    * {
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      min-height: 100vh;
-      background: linear-gradient(to bottom, #312e81, #581c87, #9d174d);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
-    .header h1 {
-      font-size: 3rem;
-      font-weight: bold;
-      color: white;
-      margin-bottom: 8px;
-    }
-
-    .header p {
-      color: #e9d5ff;
-      font-size: 1.125rem;
-    }
-
-    .song-selector {
-      margin-bottom: 24px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .song-btn {
-      padding: 8px 16px;
-      border-radius: 9999px;
-      font-weight: 500;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .song-btn.active {
-      background: linear-gradient(to right, #facc15, #f97316);
-      color: white;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-    }
-
-    .song-btn.inactive {
-      background: rgba(255, 255, 255, 0.2);
-      color: #e9d5ff;
-    }
-
-    .song-btn.inactive:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-
-    .mode-toggle {
-      margin-bottom: 24px;
-    }
-
-    .mode-btn {
-      padding: 8px 24px;
-      border-radius: 9999px;
-      font-weight: 500;
-      border: none;
-      cursor: pointer;
-      color: white;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-      transition: all 0.2s;
-    }
-
-    .mode-btn.auto {
-      background: linear-gradient(to right, #4ade80, #10b981);
-    }
-
-    .mode-btn.free {
-      background: linear-gradient(to right, #c084fc, #ec4899);
-    }
-
-    .game-area {
-      position: relative;
-      width: 256px;
-      height: 340px;
-    }
-
-    .falling-dot {
-      position: absolute;
-      border-radius: 50%;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      transform: translate(-50%, -50%);
-      cursor: pointer;
-      transition: transform 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .falling-dot:hover {
-      transform: translate(-50%, -50%) scale(1.25);
-    }
-
-    .falling-dot span {
-      color: white;
-      font-weight: bold;
-      font-size: 0.75rem;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    }
-
-    .piano-container {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      display: flex;
-      width: 256px;
-    }
-
-    .piano-key {
-      width: 32px;
-      height: 144px;
-      background: white;
-      border-right: 1px solid #d1d5db;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-      position: relative;
-      cursor: pointer;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      padding-bottom: 8px;
-      transition: all 0.15s ease-in-out;
-    }
-
-    .piano-key:last-child {
-      border-right: none;
-    }
-
-    .piano-key:hover {
-      background: #f3f4f6;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
-    }
-
-    .piano-key.active {
-      background: linear-gradient(to bottom, #67e8f9, #a5f3fc);
-      transform: translateY(-8px);
-      box-shadow: 0 0 0 4px #22d3ee, 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-    }
-
-    .piano-key .note {
-      color: #374151;
-      font-weight: bold;
-      font-size: 1rem;
-      margin-bottom: 4px;
-    }
-
-    .piano-key .lyric {
-      color: #4b5563;
-      font-weight: 500;
-      font-size: 0.75rem;
-    }
-
-    .piano-base {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 144px;
-      background: linear-gradient(to top, #78350f, #92400e, #b45309);
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
-      z-index: 0;
-      border-top: 4px solid #451a03;
-    }
-
-    .instructions {
-      margin-top: 32px;
-      text-align: center;
-      max-width: 28rem;
-    }
-
-    .instructions-box {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(8px);
-      border-radius: 8px;
-      padding: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .instructions-box p {
-      color: #e9d5ff;
-      font-size: 0.875rem;
-      line-height: 1.625;
-    }
-
-    @media (max-width: 640px) {
-      .header h1 {
-        font-size: 2rem;
-      }
     }
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <div class="header">
-    <h1>Musical Piano Adventure</h1>
-    <p>Play along with falling lyrics or create your own melody! 🎵</p>
-  </div>
+  <div id="root"></div>
 
-  <!-- Song Selector -->
-  <div class="song-selector" id="songSelector"></div>
+  <script type="text/babel">
+    const { useState, useRef, useEffect } = React;
 
-  <!-- Mode Toggle -->
-  <div class="mode-toggle">
-    <button class="mode-btn auto" id="modeBtn">Auto Mode: ON</button>
-  </div>
+    const PianoWithFallingDots = () => {
+      const [activeKeys, setActiveKeys] = useState(new Set());
+      const [fallingDots, setFallingDots] = useState([]);
+      const [currentSong, setCurrentSong] = useState('twinkle');
+      const [isAutoMode, setIsAutoMode] = useState(true);
+      const audioContextRef = useRef(null);
+      
+      const whiteKeys = [
+        { id: 'C4', note: 'C', freq: 261.63, lyric: 'Do', x: 0 },
+        { id: 'D4', note: 'D', freq: 293.66, lyric: 'Re', x: 32 },
+        { id: 'E4', note: 'E', freq: 329.63, lyric: 'Mi', x: 64 },
+        { id: 'F4', note: 'F', freq: 349.23, lyric: 'Fa', x: 96 },
+        { id: 'G4', note: 'G', freq: 392.00, lyric: 'Sol', x: 128 },
+        { id: 'A4', note: 'A', freq: 440.00, lyric: 'La', x: 160 },
+        { id: 'B4', note: 'B', freq: 493.88, lyric: 'Si', x: 192 },
+        { id: 'C5', note: 'C', freq: 523.25, lyric: 'Do!', x: 224 }
+      ];
 
-  <!-- Game Area -->
-  <div class="game-area">
-    <div id="fallingDotsContainer"></div>
-    <div class="piano-container" id="pianoContainer"></div>
-    <div class="piano-base"></div>
-  </div>
+      const songs = {
+        twinkle: {
+          name: 'Twinkle Twinkle',
+          lyrics: [
+            'Twinkle', 'twinkle', 'little', 'star',
+            'How', 'I', 'wonder', 'what', 'you', 'are',
+            'Up', 'above', 'the', 'world', 'so', 'high',
+            'Like', 'a', 'diamond', 'in', 'the', 'sky'
+          ],
+          notes: [
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4'
+          ]
+        },
+        happy: {
+          name: 'Happy Birthday',
+          lyrics: [
+            'Happy', 'birthday', 'to', 'you',
+            'Happy', 'birthday', 'to', 'you',
+            'Happy', 'birthday', 'dear', 'friend',
+            'Happy', 'birthday', 'to', 'you'
+          ],
+          notes: [
+            'C4', 'C4', 'D4', 'C4', 'F4', 'E4',
+            'C4', 'C4', 'D4', 'C4', 'G4', 'F4',
+            'C4', 'C4', 'C5', 'A4', 'F4', 'E4', 'D4',
+            'A4', 'A4', 'G4', 'F4', 'G4', 'F4'
+          ]
+        },
+        row: {
+          name: 'Row Your Boat',
+          lyrics: [
+            'Row', 'row', 'row', 'your', 'boat',
+            'Gently', 'down', 'the', 'stream',
+            'Merrily', 'merrily', 'merrily', 'merrily',
+            'Life', 'is', 'but', 'a', 'dream'
+          ],
+          notes: [
+            'C4', 'C4', 'C4', 'D4', 'E4',
+            'E4', 'D4', 'E4', 'F4', 'G4',
+            'G4', 'G4', 'G4', 'G4', 'G4', 'G4',
+            'E4', 'E4', 'E4', 'E4', 'E4', 'E4',
+            'G4', 'G4', 'G4', 'G4', 'G4', 'G4',
+            'C4', 'C4', 'C4', 'C4', 'C4', 'C4'
+          ]
+        },
+        jingle: {
+          name: 'Jingle Bells',
+          lyrics: [
+            'Jingle', 'bells', 'jingle', 'bells',
+            'Jingle', 'all', 'the', 'way',
+            'Oh', 'what', 'fun', 'it', 'is', 'to',
+            'Ride', 'in', 'a', 'one', 'horse', 'open', 'sleigh'
+          ],
+          notes: [
+            'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'G4', 'C4', 'D4', 'E4',
+            'F4', 'F4', 'F4', 'F4', 'F4', 'E4', 'E4', 'E4', 'E4', 'D4', 'D4', 'E4', 'D4', 'G4'
+          ]
+        },
+        mary: {
+          name: "Mary Had a Lamb",
+          lyrics: [
+            'Mary', 'had', 'a', 'little', 'lamb',
+            'Little', 'lamb', 'little', 'lamb',
+            'Mary', 'had', 'a', 'little', 'lamb',
+            'Its', 'fleece', 'was', 'white', 'as', 'snow'
+          ],
+          notes: [
+            'E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4',
+            'D4', 'D4', 'D4', 'E4', 'G4', 'G4',
+            'E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4', 'E4', 'D4', 'D4', 'E4', 'D4', 'C4'
+          ]
+        },
+        abc: {
+          name: 'ABC Song',
+          lyrics: [
+            'A', 'B', 'C', 'D', 'E', 'F', 'G',
+            'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+            'Q', 'R', 'S', 'T', 'U', 'V',
+            'W', 'X', 'Y', 'and', 'Z'
+          ],
+          notes: [
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4'
+          ]
+        },
+        old: {
+          name: 'Old MacDonald',
+          lyrics: [
+            'Old', 'MacDonald', 'had', 'a', 'farm',
+            'E-I-E-I-O',
+            'And', 'on', 'his', 'farm', 'he', 'had', 'a', 'cow',
+            'E-I-E-I-O'
+          ],
+          notes: [
+            'G4', 'G4', 'G4', 'D4', 'E4', 'E4', 'D4',
+            'G4', 'G4', 'G4', 'D4', 'E4', 'E4', 'D4',
+            'G4', 'B4', 'B4', 'A4', 'A4', 'G4',
+            'D4', 'D4', 'C4', 'C4', 'D4', 'E4', 'D4', 'G4',
+            'G4', 'G4', 'D4', 'E4', 'E4', 'D4'
+          ]
+        }
+      };
 
-  <!-- Instructions -->
-  <div class="instructions">
-    <div class="instructions-box">
-      <p>
-        Choose from 3 different songs with falling lyrics, or switch to Free Play mode 
-        to create your own melodies! In Free Play mode, no dots fall automatically, 
-        but you can still play any key on the piano. Keys light up beautifully when played! ✨
-      </p>
-    </div>
-  </div>
+      let currentSongIndex = 0;
 
-  <script>
-    // State
-    let activeKeys = new Set();
-    let fallingDots = [];
-    let currentSong = 'twinkle';
-    let isAutoMode = true;
-    let audioContext = null;
-    let currentSongIndex = 0;
+      const initAudioContext = () => {
+        if (!audioContextRef.current) {
+          audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      };
 
-    // Piano key configuration
-    const whiteKeys = [
-      { id: 'C4', note: 'C', freq: 261.63, lyric: 'Do', x: 0 },
-      { id: 'D4', note: 'D', freq: 293.66, lyric: 'Re', x: 32 },
-      { id: 'E4', note: 'E', freq: 329.63, lyric: 'Mi', x: 64 },
-      { id: 'F4', note: 'F', freq: 349.23, lyric: 'Fa', x: 96 },
-      { id: 'G4', note: 'G', freq: 392.00, lyric: 'Sol', x: 128 },
-      { id: 'A4', note: 'A', freq: 440.00, lyric: 'La', x: 160 },
-      { id: 'B4', note: 'B', freq: 493.88, lyric: 'Si', x: 192 },
-      { id: 'C5', note: 'C', freq: 523.25, lyric: 'Do!', x: 224 }
-    ];
+      const playNote = (freq, lyric) => {
+        initAudioContext();
+        const oscillator = audioContextRef.current.createOscillator();
+        const gainNode = audioContextRef.current.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContextRef.current.destination);
+        
+        oscillator.frequency.value = freq;
+        oscillator.type = 'sine';
+        
+        const now = audioContextRef.current.currentTime;
+        gainNode.gain.setValueAtTime(0, now);
+        gainNode.gain.linearRampToValueAtTime(0.4, now + 0.01);
+        gainNode.gain.linearRampToValueAtTime(0, now + 0.7);
+        
+        oscillator.start(now);
+        oscillator.stop(now + 0.7);
+      };
 
-    // Song configurations
-    const songs = {
-      twinkle: {
-        name: 'Twinkle Twinkle',
-        lyrics: [
-          'Twinkle', 'twinkle', 'little', 'star',
-          'How', 'I', 'wonder', 'what', 'you', 'are',
-          'Up', 'above', 'the', 'world', 'so', 'high',
-          'Like', 'a', 'diamond', 'in', 'the', 'sky'
-        ],
-        notes: [
-          'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
-          'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4',
-          'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
-          'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
-          'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
-          'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4'
-        ]
-      },
-      happy: {
-        name: 'Happy Birthday',
-        lyrics: [
-          'Happy', 'birthday', 'to', 'you',
-          'Happy', 'birthday', 'to', 'you',
-          'Happy', 'birthday', 'dear', 'friend',
-          'Happy', 'birthday', 'to', 'you'
-        ],
-        notes: [
-          'C4', 'C4', 'D4', 'C4', 'F4', 'E4',
-          'C4', 'C4', 'D4', 'C4', 'G4', 'F4',
-          'C4', 'C4', 'C5', 'A4', 'F4', 'E4', 'D4',
-          'A4', 'A4', 'G4', 'F4', 'G4', 'F4'
-        ]
-      },
-      row: {
-        name: 'Row Your Boat',
-        lyrics: [
-          'Row', 'row', 'row', 'your', 'boat',
-          'Gently', 'down', 'the', 'stream',
-          'Merrily', 'merrily', 'merrily', 'merrily',
-          'Life', 'is', 'but', 'a', 'dream'
-        ],
-        notes: [
-          'C4', 'C4', 'C4', 'D4', 'E4',
-          'E4', 'D4', 'E4', 'F4', 'G4',
-          'G4', 'G4', 'G4', 'G4', 'G4', 'G4',
-          'E4', 'E4', 'E4', 'E4', 'E4', 'E4',
-          'G4', 'G4', 'G4', 'G4', 'G4', 'G4',
-          'C4', 'C4', 'C4', 'C4', 'C4', 'C4'
-        ]
-      }
+      const createFallingDot = () => {
+        const song = songs[currentSong];
+        const noteId = song.notes[currentSongIndex % song.notes.length];
+        const lyric = song.lyrics[currentSongIndex % song.lyrics.length];
+        currentSongIndex++;
+        
+        const key = whiteKeys.find(k => k.id === noteId);
+        if (key) {
+          const newDot = {
+            id: Date.now() + Math.random(),
+            x: key.x + 16,
+            y: 0,
+            targetKey: key.id,
+            lyric: lyric,
+            freq: key.freq,
+            size: 20,
+            color: `hsl(${Math.random() * 360}, 80%, 65%)`
+          };
+          setFallingDots(prev => [...prev, newDot]);
+        }
+      };
+
+      useEffect(() => {
+        const interval = setInterval(() => {
+          setFallingDots(prev => {
+            const updatedDots = prev.map(dot => ({
+              ...dot,
+              y: dot.y + 8.0
+            })).filter(dot => dot.y < 300);
+            return updatedDots;
+          });
+          
+          if (isAutoMode && Math.random() < 0.04) {
+            createFallingDot();
+          }
+        }, 50);
+
+        return () => clearInterval(interval);
+      }, [currentSong, isAutoMode]);
+
+      const handleDotReachedPiano = (dot) => {
+        const key = whiteKeys.find(k => k.id === dot.targetKey);
+        if (key) {
+          playNote(dot.freq, dot.lyric);
+          setActiveKeys(prev => new Set([...prev, key.id]));
+          setTimeout(() => {
+            setActiveKeys(prev => {
+              const newSet = new Set(prev);
+              newSet.delete(key.id);
+              return newSet;
+            });
+          }, 300);
+        }
+      };
+
+      const handleKeyPress = (key) => {
+        playNote(key.freq, key.lyric);
+        setActiveKeys(prev => new Set([...prev, key.id]));
+        setTimeout(() => {
+          setActiveKeys(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(key.id);
+            return newSet;
+          });
+        }, 300);
+      };
+
+      const handleDotClick = (dot) => {
+        setFallingDots(prev => prev.filter(d => d.id !== dot.id));
+        handleDotReachedPiano(dot);
+      };
+
+      const changeSong = (songKey) => {
+        setCurrentSong(songKey);
+        currentSongIndex = 0;
+        setFallingDots([]);
+      };
+
+      return (
+        <div className="min-h-screen bg-gradient-to-b from-indigo-900 via-purple-900 to-pink-800 flex flex-col items-center justify-center p-4">
+          <div className="text-center mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+              Musical Piano Adventure
+            </h1>
+            <p className="text-purple-200 text-lg">
+              Play along with falling lyrics or create your own melody! 🎵
+            </p>
+          </div>
+
+          <div className="mb-6 max-w-3xl w-full">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+              {Object.entries(songs).map(([key, song]) => (
+                <button
+                  key={key}
+                  onClick={() => changeSong(key)}
+                  className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 text-sm ${
+                    currentSong === key
+                      ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg'
+                      : 'bg-white/20 text-purple-200 hover:bg-white/30'
+                  }`}
+                >
+                  {song.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <button
+              onClick={() => setIsAutoMode(!isAutoMode)}
+              className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
+                isAutoMode
+                  ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg'
+                  : 'bg-gradient-to-r from-purple-400 to-pink-500 text-white shadow-lg'
+              }`}
+            >
+              {isAutoMode ? 'Auto Mode: ON' : 'Free Play: ON'}
+            </button>
+          </div>
+
+          <div className="relative" style={{ width: '256px', height: '340px' }}>
+            {fallingDots.map(dot => (
+              <div
+                key={dot.id}
+                className="absolute rounded-full shadow-lg transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-200 hover:scale-125"
+                style={{
+                  left: `${dot.x}px`,
+                  top: `${dot.y}px`,
+                  width: `${dot.size}px`,
+                  height: `${dot.size}px`,
+                  backgroundColor: dot.color,
+                  boxShadow: `0 0 15px ${dot.color}cc, 0 0 30px ${dot.color}80`
+                }}
+                onClick={() => handleDotClick(dot)}
+              >
+                <div className="w-full h-full flex items-center justify-center">
+                  <span className="text-white font-bold text-xs drop-shadow-md">
+                    {dot.lyric}
+                  </span>
+                </div>
+              </div>
+            ))}
+
+            <div className="absolute bottom-0 left-0 flex" style={{ width: '256px' }}>
+              {whiteKeys.map(key => (
+                <button
+                  key={key.id}
+                  className={`w-8 h-36 bg-white border-r border-gray-300 last:border-r-0 rounded-t-none shadow-lg relative
+                    ${activeKeys.has(key.id) 
+                      ? 'bg-gradient-to-b from-cyan-300 to-cyan-200 transform -translate-y-2 ring-4 ring-cyan-400 shadow-2xl' 
+                      : 'hover:bg-gray-100 hover:shadow-xl'}
+                    transition-all duration-150 ease-in-out cursor-pointer z-10 flex flex-col items-center justify-end pb-2`}
+                  onClick={() => handleKeyPress(key)}
+                >
+                  <div className="text-gray-700 font-bold text-base mb-1">
+                    {key.note}
+                  </div>
+                  <div className="text-gray-600 font-medium text-xs">
+                    {key.lyric}
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div className="absolute bottom-0 left-0 w-full h-36 bg-gradient-to-t from-amber-900 via-amber-800 to-amber-700 rounded-t-lg z-0 border-t-4 border-amber-950" />
+          </div>
+
+          <div className="mt-8 text-center max-w-md">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+              <p className="text-purple-200 text-sm leading-relaxed">
+                Choose from 7 different songs with falling lyrics, or switch to Free Play mode 
+                to create your own melodies! In Free Play mode, no dots fall automatically, 
+                but you can still play any key on the piano. Keys light up beautifully when played! ✨
+              </p>
+            </div>
+          </div>
+        </div>
+      );
     };
 
-    // Initialize audio context
-    function initAudioContext() {
-      if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      }
-    }
-
-    // Play note function
-    function playNote(freq) {
-      initAudioContext();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-
-      oscillator.frequency.value = freq;
-      oscillator.type = 'sine';
-
-      const now = audioContext.currentTime;
-      gainNode.gain.setValueAtTime(0, now);
-      gainNode.gain.linearRampToValueAtTime(0.4, now + 0.01);
-      gainNode.gain.linearRampToValueAtTime(0, now + 0.7);
-
-      oscillator.start(now);
-      oscillator.stop(now + 0.7);
-    }
-
-    // Create falling dot
-    function createFallingDot() {
-      const song = songs[currentSong];
-      const noteId = song.notes[currentSongIndex % song.notes.length];
-      const lyric = song.lyrics[currentSongIndex % song.lyrics.length];
-      currentSongIndex++;
-
-      const key = whiteKeys.find(k => k.id === noteId);
-      if (key) {
-        const newDot = {
-          id: Date.now() + Math.random(),
-          x: key.x + 16,
-          y: 0,
-          targetKey: key.id,
-          lyric: lyric,
-          freq: key.freq,
-          size: 20,
-          color: `hsl(${Math.random() * 360}, 80%, 65%)`
-        };
-        fallingDots.push(newDot);
-      }
-    }
-
-    // Render falling dots
-    function renderFallingDots() {
-      const container = document.getElementById('fallingDotsContainer');
-      container.innerHTML = '';
-      
-      fallingDots.forEach(dot => {
-        const dotEl = document.createElement('div');
-        dotEl.className = 'falling-dot';
-        dotEl.style.left = `${dot.x}px`;
-        dotEl.style.top = `${dot.y}px`;
-        dotEl.style.width = `${dot.size}px`;
-        dotEl.style.height = `${dot.size}px`;
-        dotEl.style.backgroundColor = dot.color;
-        dotEl.style.boxShadow = `0 0 15px ${dot.color}cc, 0 0 30px ${dot.color}80`;
-        
-        const span = document.createElement('span');
-        span.textContent = dot.lyric;
-        dotEl.appendChild(span);
-        
-        dotEl.addEventListener('click', () => handleDotClick(dot));
-        container.appendChild(dotEl);
-      });
-    }
-
-    // Handle dot click
-    function handleDotClick(dot) {
-      fallingDots = fallingDots.filter(d => d.id !== dot.id);
-      handleDotReachedPiano(dot);
-      renderFallingDots();
-    }
-
-    // Handle dot reaching piano
-    function handleDotReachedPiano(dot) {
-      const key = whiteKeys.find(k => k.id === dot.targetKey);
-      if (key) {
-        playNote(dot.freq);
-        activeKeys.add(key.id);
-        updatePianoKeys();
-        
-        setTimeout(() => {
-          activeKeys.delete(key.id);
-          updatePianoKeys();
-        }, 300);
-      }
-    }
-
-    // Handle key press manually
-    function handleKeyPress(key) {
-      playNote(key.freq);
-      activeKeys.add(key.id);
-      updatePianoKeys();
-      
-      setTimeout(() => {
-        activeKeys.delete(key.id);
-        updatePianoKeys();
-      }, 300);
-    }
-
-    // Update piano keys visual state
-    function updatePianoKeys() {
-      whiteKeys.forEach(key => {
-        const keyEl = document.getElementById(`key-${key.id}`);
-        if (activeKeys.has(key.id)) {
-          keyEl.classList.add('active');
-        } else {
-          keyEl.classList.remove('active');
-        }
-      });
-    }
-
-    // Change song
-    function changeSong(songKey) {
-      currentSong = songKey;
-      currentSongIndex = 0;
-      fallingDots = [];
-      renderFallingDots();
-      renderSongButtons();
-    }
-
-    // Toggle mode
-    function toggleMode() {
-      isAutoMode = !isAutoMode;
-      const modeBtn = document.getElementById('modeBtn');
-      if (isAutoMode) {
-        modeBtn.textContent = 'Auto Mode: ON';
-        modeBtn.className = 'mode-btn auto';
-      } else {
-        modeBtn.textContent = 'Free Play: ON';
-        modeBtn.className = 'mode-btn free';
-      }
-    }
-
-    // Render song selector buttons
-    function renderSongButtons() {
-      const selector = document.getElementById('songSelector');
-      selector.innerHTML = '';
-      
-      Object.entries(songs).forEach(([key, song]) => {
-        const btn = document.createElement('button');
-        btn.className = `song-btn ${currentSong === key ? 'active' : 'inactive'}`;
-        btn.textContent = song.name;
-        btn.addEventListener('click', () => changeSong(key));
-        selector.appendChild(btn);
-      });
-    }
-
-    // Render piano keys
-    function renderPiano() {
-      const container = document.getElementById('pianoContainer');
-      
-      whiteKeys.forEach(key => {
-        const keyEl = document.createElement('button');
-        keyEl.id = `key-${key.id}`;
-        keyEl.className = 'piano-key';
-        
-        const noteEl = document.createElement('div');
-        noteEl.className = 'note';
-        noteEl.textContent = key.note;
-        
-        const lyricEl = document.createElement('div');
-        lyricEl.className = 'lyric';
-        lyricEl.textContent = key.lyric;
-        
-        keyEl.appendChild(noteEl);
-        keyEl.appendChild(lyricEl);
-        keyEl.addEventListener('click', () => handleKeyPress(key));
-        
-        container.appendChild(keyEl);
-      });
-    }
-
-    // Animation loop
-    function animate() {
-      // Move dots down
-      fallingDots = fallingDots.map(dot => ({
-        ...dot,
-        y: dot.y + 4.0
-      })).filter(dot => dot.y < 300);
-
-      // Check if dots reached piano
-      const dotsToRemove = [];
-      fallingDots.forEach(dot => {
-        if (dot.y >= 200 && dot.y < 210) {
-          handleDotReachedPiano(dot);
-          dotsToRemove.push(dot.id);
-        }
-      });
-      
-      fallingDots = fallingDots.filter(dot => !dotsToRemove.includes(dot.id));
-
-      // Create new dots in auto mode
-      if (isAutoMode && Math.random() < 0.04) {
-        createFallingDot();
-      }
-
-      renderFallingDots();
-    }
-
-    // Initialize
-    function init() {
-      renderSongButtons();
-      renderPiano();
-      
-      document.getElementById('modeBtn').addEventListener('click', toggleMode);
-      
-      setInterval(animate, 50);
-    }
-
-    // Start when page loads
-    window.addEventListener('load', init);
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<PianoWithFallingDots />);
   </script>
 </body>
 </html>
+
