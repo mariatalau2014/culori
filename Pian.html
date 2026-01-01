@@ -32,6 +32,7 @@
       const [currentSong, setCurrentSong] = useState('twinkle');
       const [isAutoMode, setIsAutoMode] = useState(true);
       const [speedMultiplier, setSpeedMultiplier] = useState(1.0);
+      const [isSongFinished, setIsSongFinished] = useState(false);
       const audioContextRef = useRef(null);
       
       const whiteKeys = [
@@ -301,8 +302,13 @@
 
       const createFallingDot = () => {
         const song = songs[currentSong];
-        const noteId = song.notes[currentSongIndex % song.notes.length];
-        const lyric = song.lyrics[currentSongIndex % song.lyrics.length];
+        if (currentSongIndex >= song.notes.length) {
+          setIsSongFinished(true);
+          return;
+        }
+        
+        const noteId = song.notes[currentSongIndex];
+        const lyric = song.lyrics[currentSongIndex];
         currentSongIndex++;
         
         const key = whiteKeys.find(k => k.id === noteId);
@@ -323,6 +329,8 @@
 
       useEffect(() => {
         const song = songs[currentSong];
+        if (isSongFinished) return;
+        
         const interval = setInterval(() => {
           if (isAutoMode) {
             createFallingDot();
@@ -330,7 +338,7 @@
         }, song.tempo);
 
         return () => clearInterval(interval);
-      }, [currentSong, isAutoMode, speedMultiplier]);
+      }, [currentSong, isAutoMode, speedMultiplier, isSongFinished]);
 
       // Animation loop for falling dots
       useEffect(() => {
@@ -395,11 +403,18 @@
         setCurrentSong(songKey);
         currentSongIndex = 0;
         setFallingDots([]);
+        setIsSongFinished(false);
       };
 
       const handleSpeedChange = (e) => {
         const value = parseFloat(e.target.value);
         setSpeedMultiplier(value);
+      };
+
+      const restartSong = () => {
+        currentSongIndex = 0;
+        setFallingDots([]);
+        setIsSongFinished(false);
       };
 
       return (
@@ -450,10 +465,10 @@
             </div>
           </div>
 
-          <div className="mb-6">
+          <div className="mb-6 flex gap-3">
             <button
               onClick={() => setIsAutoMode(!isAutoMode)}
-              className={`px-6 py-2 rounded-full font-medium transition-all duration-200 cursive-text ${
+              className={`px-4 py-2 rounded-full font-medium transition-all duration-200 cursive-text ${
                 isAutoMode
                   ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg'
                   : 'bg-gradient-to-r from-purple-400 to-pink-500 text-white shadow-lg'
@@ -461,6 +476,15 @@
             >
               {isAutoMode ? 'Auto Mode: ON' : 'Free Play: ON'}
             </button>
+            
+            {isSongFinished && (
+              <button
+                onClick={restartSong}
+                className="px-4 py-2 bg-gradient-to-r from-blue-400 to-cyan-500 text-white rounded-full font-medium cursive-text shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                Restart Song
+              </button>
+            )}
           </div>
 
           <div className="relative" style={{ width: '256px', height: '340px' }}>
@@ -513,8 +537,8 @@
           <div className="mt-8 text-center max-w-md">
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
               <p className="text-purple-200 text-sm leading-relaxed cursive-text">
-                Choose from 13 different songs! Adjust the speed slider to control how fast the dots fall and appear. 
-                When you press a piano key, only one matching falling dot disappears (the oldest one). ✨
+                Choose from 13 different songs! When a song finishes, dots stop appearing automatically. 
+                Use the Restart button to play again. Adjust speed with the slider. ✨
               </p>
             </div>
           </div>
