@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplificator de Fracții cu Puteri Multiple</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .fraction-section {
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .powers-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .power-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .power-item input {
+            width: 70px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        .power-item input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .multiply-symbol {
+            font-size: 1.2rem;
+            color: #666;
+            margin: 0 5px;
+        }
+        
+        .add-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+        
+        .add-btn:hover {
+            background: #218838;
+        }
+        
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+        
+        .remove-btn:hover {
+            background: #c82333;
+        }
+        
+        .fraction-line {
+            width: 100%;
+            height: 3px;
+            background: #333;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .result h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .fraction-result {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        
+        .error {
+            color: #e74c3c;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        
+        .steps {
+            margin-top: 20px;
+            text-align: left;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: #666;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        
+        .example {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .power-item input {
+                width: 60px;
+                padding: 6px;
+                font-size: 0.9rem;
+            }
+            
+            .multiply-symbol {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simplificator de Fracții cu Puteri Multiple</h1>
+        <div class="subtitle">Adăugați oricâte puteri doriți în numărător și numitor</div>
+        
+        <div class="fraction-section">
+            <div class="section-title">NUMĂRĂTOR</div>
+            <div id="numerator-powers" class="powers-container">
+                <div class="power-item">
+                    <input type="number" class="base-input" placeholder="Bază" step="1" value="2">
+                    <span>^</span>
+                    <input type="number" class="exp-input" placeholder="Exp" step="1" value="3">
+                    <button class="remove-btn" onclick="removePower(this, 'numerator')">−</button>
+                </div>
+            </div>
+            <button class="add-btn" onclick="addPower('numerator')">+ Adaugă putere</button>
+        </div>
+        
+        <div class="fraction-line"></div>
+        
+        <div class="fraction-section">
+            <div class="section-title">NUMITOR</div>
+            <div id="denominator-powers" class="powers-container">
+                <div class="power-item">
+                    <input type="number" class="base-input" placeholder="Bază" step="1" value="2">
+                    <span>^</span>
+                    <input type="number" class="exp-input" placeholder="Exp" step="1" value="1">
+                    <button class="remove-btn" onclick="removePower(this, 'denominator')">−</button>
+                </div>
+            </div>
+            <button class="add-btn" onclick="addPower('denominator')">+ Adaugă putere</button>
+        </div>
+        
+        <button onclick="simplifyFractionWithMultiplePowers()">Simplifică Fracția</button>
+        <div id="error" class="error"></div>
+        
+        <div class="example">
+            <strong>Exemplu:</strong> Pentru (2³ × 3² × 5¹) / (2¹ × 3⁴ × 7²)<br>
+            Adăugați puterile corespunzătoare în fiecare secțiune
+        </div>
+        
+        <div id="result" class="result" style="display: none;">
+            <h2>Fracția Simplificată:</h2>
+            <div class="fraction-result" id="simplified-fraction"></div>
+            <div class="steps" id="steps"></div>
+        </div>
+    </div>
+
+    <script>
+        function gcd(a, b) {
+            a = Math.abs(a);
+            b = Math.abs(b);
+            while (b !== 0) {
+                let temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
+        
+        function power(base, exp) {
+            if (exp === 0) return 1;
+            if (exp < 0) return 1 / Math.pow(base, -exp);
+            return Math.pow(base, exp);
+        }
+        
+        function addPower(section) {
+            const container = document.getElementById(`${section}-powers`);
+            const newPower = document.createElement('div');
+            newPower.className = 'power-item';
+            newPower.innerHTML = `
+                <input type="number" class="base-input" placeholder="Bază" step="1">
+                <span>^</span>
+                <input type="number" class="exp-input" placeholder="Exp" step="1">
+                <button class="remove-btn" onclick="removePower(this, '${section}')">−</button>
+            `;
+            container.appendChild(newPower);
+        }
+        
+        function removePower(button, section) {
+            const container = document.getElementById(`${section}-powers`);
+            const powerItem = button.parentElement;
+            container.removeChild(powerItem);
+            
+            // Ensure at least one power exists
+            if (container.children.length === 0) {
+                addPower(section);
+            }
+        }
+        
+        function getPowersFromSection(section) {
+            const container = document.getElementById(`${section}-powers`);
+            const powers = [];
+            
+            for (let item of container.children) {
+                const baseInput = item.querySelector('.base-input');
+                const expInput = item.querySelector('.exp-input');
+                
+                const base = parseFloat(baseInput.value);
+                const exp = parseFloat(expInput.value);
+                
+                // Only include valid powers (skip empty inputs)
+                if (!isNaN(base) && !isNaN(exp)) {
+                    powers.push({base, exp});
+                }
+            }
+            
+            return powers;
+        }
+        
+        function simplifyFractionWithMultiplePowers() {
+            const errorDiv = document.getElementById('error');
+            const resultDiv = document.getElementById('result');
+            const simplifiedFractionDiv = document.getElementById('simplified-fraction');
+            const stepsDiv = document.getElementById('steps');
+            
+            // Reset previous results
+            errorDiv.textContent = '';
+            resultDiv.style.display = 'none';
+            
+            // Get powers from both sections
+            const numeratorPowers = getPowersFromSection('numerator');
+            const denominatorPowers = getPowersFromSection('denominator');
+            
+            // Validate inputs
+            if (numeratorPowers.length === 0 || denominatorPowers.length === 0) {
+                errorDiv.textContent = 'Trebuie să aveți cel puțin o putere în fiecare secțiune!';
+                return;
+            }
+            
+            // Check for invalid combinations (0 with negative exponent)
+            const allPowers = [...numeratorPowers, ...denominatorPowers];
+            for (let powerObj of allPowers) {
+                if (powerObj.base === 0 && powerObj.exp < 0) {
+                    errorDiv.textContent = 'Nu puteți avea baza 0 cu exponent negativ!';
+                    return;
+                }
+            }
+            
+            // Calculate numerator and denominator values
+            let numerator = 1;
+            let denominator = 1;
+            
+            // Calculate numerator
+            for (let p of numeratorPowers) {
+                if (p.base === 0 && p.exp > 0) {
+                    numerator = 0;
+                    break;
+                } else if (p.base !== 0 || p.exp === 0) {
+                    numerator *= power(p.base, p.exp);
+                }
+            }
+            
+            // Calculate denominator
+            for (let p of denominatorPowers) {
+                if (p.base === 0 && p.exp > 0) {
+                    denominator = 0;
+                    break;
+                } else if (p.base !== 0 || p.exp === 0) {
+                    denominator *= power(p.base, p.exp);
+                }
+            }
+            
+            // Handle special cases
+            if (numerator === 0) {
+                if (denominator === 0) {
+                    errorDiv.textContent = 'Formă nedeterminată 0/0!';
+                    return;
+                }
+                simplifiedFractionDiv.textContent = '0';
+                stepsDiv.innerHTML = '<strong>Numărătorul este 0, deci fracția este 0.</strong>';
+                resultDiv.style.display = 'block';
+                return;
+            }
+            
+            if (denominator === 0) {
+                errorDiv.textContent = 'Numitorul este 0 - fracție nedefinită!';
+                return;
+            }
+            
+            // Convert to fraction and simplify
+            const originalNum = numerator;
+            const originalDen = denominator;
+            
+            // Handle floating point precision by converting to integers
+            const numStr = originalNum.toString();
+            const denStr = originalDen.toString();
+            const numDecimals = numStr.includes('.') ? numStr.split('.')[1].length : 0;
+            const denDecimals = denStr.includes('.') ? denStr.split('.')[1].length : 0;
+            const maxDecimals = Math.max(numDecimals, denDecimals);
+            
+            const multiplier = Math.pow(10, Math.min(maxDecimals, 10)); // Limit to avoid overflow
+            let intNum = Math.round(originalNum * multiplier);
+            let intDen = Math.round(originalDen * multiplier);
+            
+            // Handle very large numbers that might cause issues
+            if (isNaN(intNum) || isNaN(intDen) || !isFinite(intNum) || !isFinite(intDen)) {
+                errorDiv.textContent = 'Rezultatul este prea mare pentru a fi calculat precis!';
+                return;
+            }
+            
+            // Handle negative fractions
+            let sign = '';
+            if ((intNum < 0 && intDen > 0) || (intNum > 0 && intDen < 0)) {
+                sign = '-';
+            }
+            
+            intNum = Math.abs(intNum);
+            intDen = Math.abs(intDen);
+            
+            // Find GCD and simplify
+            const divisor = gcd(intNum, intDen);
+            const simplifiedNum = intNum / divisor;
+            const simplifiedDen = intDen / divisor;
+            
+            // Display result
+            let resultText;
+            if (simplifiedDen === 1) {
+                resultText = `${sign}${simplifiedNum}`;
+            } else {
+                resultText = `${sign}${simplifiedNum}/${simplifiedDen}`;
+            }
+            
+            simplifiedFractionDiv.textContent = resultText;
+            
+            // Generate steps
+            let stepsHTML = `<strong>Calculul valorilor:</strong><br>`;
+            
+            // Numerator steps
+            stepsHTML += `<strong>Numărător:</strong><br>`;
+            for (let i = 0; i < numeratorPowers.length; i++) {
+                const p = numeratorPowers[i];
+                stepsHTML += `${p.base}<sup>${p.exp}</sup> = ${power(p.base, p.exp)}<br>`;
+            }
+            stepsHTML += `Total numărător: ${originalNum}<br><br>`;
+            
+            // Denominator steps
+            stepsHTML += `<strong>Numitor:</strong><br>`;
+            for (let i = 0; i < denominatorPowers.length; i++) {
+                const p = denominatorPowers[i];
+                stepsHTML += `${p.base}<sup>${p.exp}</sup> = ${power(p.base, p.exp)}<br>`;
+            }
+            stepsHTML += `Total numitor: ${originalDen}<br><br>`;
+            
+            // Simplification steps
+            stepsHTML += `<strong>Simplificare finală:</strong><br>`;
+            stepsHTML += `${originalNum}/${originalDen} = ${resultText}<br>`;
+            if (divisor > 1) {
+                stepsHTML += `CMMDC(${intNum}, ${intDen}) = ${divisor}`;
+            } else {
+                stepsHTML += `Fracția este deja în cea mai simplă formă.`;
+            }
+            
+            stepsDiv.innerHTML = stepsHTML;
+            resultDiv.style.display = 'block';
+        }
+        
+        // Allow Enter key to trigger simplification
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                simplifyFractionWithMultiplePowers();
+            }
+        });
+    </script>
+</body>
+</html>
+
