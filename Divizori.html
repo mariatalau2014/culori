@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divizori și Multipli Limitați</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            text-align: left;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            text-align: center;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        
+        .divisors-btn {
+            background: #4facfe;
+        }
+        
+        .multiples-btn {
+            background: #00c9ff;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e9ecef;
+        }
+        
+        .result-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .result-content {
+            color: #495057;
+            font-size: 1.1rem;
+            font-weight: 500;
+            word-wrap: break-word;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .input-group {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Divizori și Multipli Limitați</h1>
+        <p class="subtitle">Găsește divizorii unui număr sau multiplii acestuia mai mici decât o anumită valoare</p>
+        
+        <div class="input-group">
+            <label class="input-label" for="numberInput">Numărul:</label>
+            <input type="number" id="numberInput" placeholder="Introduceți numărul" min="1">
+        </div>
+        
+        <div class="input-group">
+            <label class="input-label" for="limitInput">Limita (mai mic decât):</label>
+            <input type="number" id="limitInput" placeholder="Introduceți limita" min="1">
+        </div>
+        
+        <div class="buttons">
+            <button class="divisors-btn" onclick="findDivisors()">Divizorii mai mici decât limita</button>
+            <button class="multiples-btn" onclick="findMultiples()">Multiplii mai mici decât limita</button>
+        </div>
+        
+        <div class="result" id="result">
+            <div class="result-content">Rezultatul va apărea aici</div>
+        </div>
+    </div>
+
+    <script>
+        function findDivisors() {
+            const numberInput = document.getElementById('numberInput');
+            const limitInput = document.getElementById('limitInput');
+            const result = document.getElementById('result');
+            
+            const number = parseInt(numberInput.value);
+            const limit = parseInt(limitInput.value);
+            
+            // Validare inputuri
+            if (isNaN(number) || number < 1) {
+                result.innerHTML = '<div class="error">Vă rugăm să introduceți un număr natural pozitiv!</div>';
+                return;
+            }
+            
+            if (isNaN(limit) || limit < 1) {
+                result.innerHTML = '<div class="error">Vă rugăm să introduceți o limită validă (număr natural pozitiv)!</div>';
+                return;
+            }
+            
+            if (limit <= 1) {
+                result.innerHTML = '<div class="error">Limita trebuie să fie mai mare decât 1!</div>';
+                return;
+            }
+            
+            // Găsirea divizorilor mai mici decât limita
+            const divisors = [];
+            for (let i = 1; i < limit && i <= number; i++) {
+                if (number % i === 0) {
+                    divisors.push(i);
+                }
+            }
+            
+            if (divisors.length === 0) {
+                result.innerHTML = `
+                    <div class="result-title">Divizori ai lui ${number} mai mici decât ${limit}:</div>
+                    <div class="result-content">Nu există divizori în acest interval</div>
+                `;
+            } else {
+                result.innerHTML = `
+                    <div class="result-title">Divizori ai lui ${number} mai mici decât ${limit}:</div>
+                    <div class="result-content">${divisors.join(', ')}</div>
+                `;
+            }
+        }
+        
+        function findMultiples() {
+            const numberInput = document.getElementById('numberInput');
+            const limitInput = document.getElementById('limitInput');
+            const result = document.getElementById('result');
+            
+            const number = parseInt(numberInput.value);
+            const limit = parseInt(limitInput.value);
+            
+            // Validare inputuri
+            if (isNaN(number) || number < 1) {
+                result.innerHTML = '<div class="error">Vă rugăm să introduceți un număr natural pozitiv!</div>';
+                return;
+            }
+            
+            if (isNaN(limit) || limit < 1) {
+                result.innerHTML = '<div class="error">Vă rugăm să introduceți o limită validă (număr natural pozitiv)!</div>';
+                return;
+            }
+            
+            if (limit <= number) {
+                result.innerHTML = '<div class="error">Limita trebuie să fie mai mare decât numărul pentru a avea multipli!</div>';
+                return;
+            }
+            
+            // Găsirea multiplilor mai mici decât limita
+            const multiples = [];
+            let multiple = number;
+            let i = 1;
+            
+            while (multiple < limit) {
+                multiples.push(multiple);
+                i++;
+                multiple = number * i;
+            }
+            
+            if (multiples.length === 0) {
+                result.innerHTML = `
+                    <div class="result-title">Multiplii lui ${number} mai mici decât ${limit}:</div>
+                    <div class="result-content">Nu există multipli în acest interval</div>
+                `;
+            } else {
+                result.innerHTML = `
+                    <div class="result-title">Multiplii lui ${number} mai mici decât ${limit}:</div>
+                    <div class="result-content">${multiples.join(', ')}</div>
+                `;
+            }
+        }
+        
+        // Allow Enter key to trigger divisors search
+        document.getElementById('numberInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                findDivisors();
+            }
+        });
+        
+        document.getElementById('limitInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                findDivisors();
+            }
+        });
+    </script>
+</body>
+</html>
+
