@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fractii pe Axa Numerelor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 900px;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: #718096;
+            margin-bottom: 25px;
+            font-size: 16px;
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 16px;
+        }
+        
+        .fraction-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 15px;
+            justify-content: center;
+        }
+        
+        .fraction-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        input[type="number"] {
+            width: 80px;
+            padding: 10px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            text-align: center;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .divider {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4a5568;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .clear-btn {
+            background: linear-gradient(135deg, #e53e3e 0%, #dd6b20 100%);
+        }
+        
+        .number-line-container {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 20px;
+            position: relative;
+            overflow-x: auto;
+        }
+        
+        .number-line {
+            position: relative;
+            height: 80px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            min-width: 600px;
+        }
+        
+        .line {
+            height: 4px;
+            background: #cbd5e0;
+            flex: 1;
+            position: relative;
+        }
+        
+        .tick {
+            position: absolute;
+            top: -12px;
+            width: 2px;
+            height: 24px;
+            background: #4a5568;
+        }
+        
+        .tick-label {
+            position: absolute;
+            top: 28px;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+        
+        .fraction-marker {
+            position: absolute;
+            top: -30px;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+        
+        .fraction-label {
+            position: absolute;
+            top: -60px;
+            transform: translateX(-50%);
+            background: white;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #4a5568;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+            z-index: 5;
+        }
+        
+        .fractions-display {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .fraction-tag {
+            background: #edf2f7;
+            padding: 10px 16px;
+            border-radius: 24px;
+            font-size: 14px;
+            color: #4a5568;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tag-marker {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .error {
+            color: #e53e3e;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .fraction-group {
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+            }
+            
+            input[type="number"] {
+                width: 100px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fractii pe Axa Numerelor</h1>
+        <p class="subtitle">Adăugați fracții folosind câmpurile de mai jos</p>
+        
+        <div class="input-section">
+            <div class="fraction-inputs" id="fractionInputs">
+                <!-- Fraction inputs will be added here -->
+            </div>
+            <div class="buttons">
+                <button onclick="addFractionInput()">➕ Adaugă Fracție</button>
+                <button onclick="plotFractions()" class="plot-btn">📊 Afișează pe Axa</button>
+                <button onclick="clearAll()" class="clear-btn">🗑️ Șterge Tot</button>
+            </div>
+            <div id="errorMessage" class="error"></div>
+        </div>
+        
+        <div class="number-line-container">
+            <div class="number-line" id="numberLine">
+                <div class="line" id="line"></div>
+            </div>
+            <div class="fractions-display" id="fractionsDisplay"></div>
+        </div>
+    </div>
+
+    <script>
+        let fractionCount = 0;
+        const maxFractions = 20;
+        
+        function addFractionInput() {
+            if (fractionCount >= maxFractions) {
+                showError(`Poți adăuga maxim ${maxFractions} fracții.`);
+                return;
+            }
+            
+            const container = document.getElementById('fractionInputs');
+            const fractionGroup = document.createElement('div');
+            fractionGroup.className = 'fraction-group';
+            fractionGroup.dataset.index = fractionCount;
+            
+            fractionGroup.innerHTML = `
+                <input type="number" placeholder="Numărător" min="-1000" max="1000" step="1">
+                <span class="divider">/</span>
+                <input type="number" placeholder="Numitor" min="1" max="1000" step="1">
+                <button type="button" onclick="removeFractionInput(this)" style="background: #e53e3e; padding: 6px 12px; font-size: 12px;">✕</button>
+            `;
+            
+            container.appendChild(fractionGroup);
+            fractionCount++;
+        }
+        
+        function removeFractionInput(button) {
+            const fractionGroup = button.parentElement;
+            fractionGroup.remove();
+            fractionCount--;
+            clearError();
+        }
+        
+        function clearAll() {
+            document.getElementById('fractionInputs').innerHTML = '';
+            document.getElementById('line').innerHTML = '';
+            document.getElementById('fractionsDisplay').innerHTML = '';
+            fractionCount = 0;
+            clearError();
+        }
+        
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+        }
+        
+        function clearError() {
+            document.getElementById('errorMessage').textContent = '';
+        }
+        
+        function plotFractions() {
+            const errorDiv = document.getElementById('errorMessage');
+            const lineDiv = document.getElementById('line');
+            const fractionsDisplay = document.getElementById('fractionsDisplay');
+            
+            // Clear previous content
+            lineDiv.innerHTML = '';
+            fractionsDisplay.innerHTML = '';
+            clearError();
+            
+            const fractionGroups = document.querySelectorAll('.fraction-group');
+            const fractions = [];
+            
+            if (fractionGroups.length === 0) {
+                showError('Vă rugăm să adăugați cel puțin o fracție.');
+                return;
+            }
+            
+            try {
+                fractionGroups.forEach((group, index) => {
+                    const inputs = group.querySelectorAll('input');
+                    const numeratorInput = inputs[0];
+                    const denominatorInput = inputs[1];
+                    
+                    const numerator = parseInt(numeratorInput.value);
+                    const denominator = parseInt(denominatorInput.value);
+                    
+                    // Validate inputs
+                    if (isNaN(numerator)) {
+                        throw new Error(`Numărătorul pentru fracția ${index + 1} este invalid.`);
+                    }
+                    
+                    if (isNaN(denominator) || denominator === 0) {
+                        throw new Error(`Numitorul pentru fracția ${index + 1} trebuie să fie un număr întreg pozitiv.`);
+                    }
+                    
+                    const value = numerator / denominator;
+                    fractions.push({
+                        original: `${numerator}/${denominator}`,
+                        value: value,
+                        numerator: numerator,
+                        denominator: denominator
+                    });
+                });
+                
+                if (fractions.length === 0) {
+                    showError('Nu s-au găsit fracții valide.');
+                    return;
+                }
+                
+                // Find min and max values to determine the range
+                const values = fractions.map(f => f.value);
+                const minValue = Math.min(...values, 0);
+                const maxValue = Math.max(...values, 1);
+                
+                // Calculate the range with some padding
+                const range = maxValue - minValue;
+                const padding = Math.max(range * 0.1, 0.5); // Ensure minimum padding
+                const displayMin = minValue - padding;
+                const displayMax = maxValue + padding;
+                const displayRange = displayMax - displayMin;
+                
+                // Create number line ticks - ensure we have reasonable tick spacing
+                let tickCount;
+                if (displayRange <= 2) {
+                    tickCount = Math.min(20, Math.max(5, Math.ceil(displayRange * 10)));
+                } else if (displayRange <= 10) {
+                    tickCount = Math.min(20, Math.max(5, Math.ceil(displayRange * 5)));
+                } else {
+                    tickCount = Math.min(20, Math.max(5, Math.ceil(displayRange * 2)));
+                }
+                
+                const tickInterval = displayRange / (tickCount - 1);
+                
+                // Add ticks and labels
+                for (let i = 0; i < tickCount; i++) {
+                    const tickValue = displayMin + (i * tickInterval);
+                    const position = (tickValue - displayMin) / displayRange * 100;
+                    
+                    const tick = document.createElement('div');
+                    tick.className = 'tick';
+                    tick.style.left = `${position}%`;
+                    lineDiv.appendChild(tick);
+                    
+                    const label = document.createElement('div');
+                    label.className = 'tick-label';
+                    label.style.left = `${position}%`;
+                    // Format the label nicely
+                    if (Math.abs(tickValue - Math.round(tickValue)) < 0.01) {
+                        label.textContent = Math.round(tickValue).toString();
+                    } else {
+                        label.textContent = tickValue.toFixed(1);
+                    }
+                    lineDiv.appendChild(label);
+                }
+                
+                // Add fraction markers
+                fractions.forEach((frac, index) => {
+                    const position = (frac.value - displayMin) / displayRange * 100;
+                    
+                    const marker = document.createElement('div');
+                    marker.className = 'fraction-marker';
+                    marker.style.left = `${position}%`;
+                    // Use letters A-Z, then AA, AB, etc. for more than 26 fractions
+                    if (index < 26) {
+                        marker.textContent = String.fromCharCode(65 + index);
+                    } else {
+                        const firstChar = String.fromCharCode(65 + Math.floor((index - 26) / 26));
+                        const secondChar = String.fromCharCode(65 + ((index - 26) % 26));
+                        marker.textContent = firstChar + secondChar;
+                    }
+                    lineDiv.appendChild(marker);
+                    
+                    const label = document.createElement('div');
+                    label.className = 'fraction-label';
+                    label.style.left = `${position}%`;
+                    label.textContent = frac.original;
+                    lineDiv.appendChild(label);
+                });
+                
+                // Display fractions below with markers
+                fractions.forEach((frac, index) => {
+                    const tag = document.createElement('div');
+                    tag.className = 'fraction-tag';
+                    
+                    const marker = document.createElement('div');
+                    marker.className = 'tag-marker';
+                    if (index < 26) {
+                        marker.textContent = String.fromCharCode(65 + index);
+                    } else {
+                        const firstChar = String.fromCharCode(65 + Math.floor((index - 26) / 26));
+                        const secondChar = String.fromCharCode(65 + ((index - 26) % 26));
+                        marker.textContent = firstChar + secondChar;
+                    }
+                    
+                    tag.appendChild(marker);
+                    tag.innerHTML += frac.original;
+                    fractionsDisplay.appendChild(tag);
+                });
+                
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+        
+        // Add one fraction input by default
+        addFractionInput();
+    </script>
+</body>
+</html>
+
