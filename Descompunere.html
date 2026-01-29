@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descompunere Mixtă în Puteri</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 5px;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background: #4facfe;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 18px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+        
+        .power-display {
+            background: white;
+            border: 2px solid #4facfe;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #4facfe;
+        }
+        
+        .number-display {
+            background: white;
+            border: 2px solid #4facfe;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #4facfe;
+        }
+        
+        .mixed-inputs {
+            background: #f0f9ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 2px solid #bae6fd;
+        }
+        
+        .mixed-input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .mixed-input {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .power-type-select {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .power-type-select select {
+            padding: 8px 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .decompose-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 4px solid #4facfe;
+            margin-top: 20px;
+        }
+        
+        .result h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+        
+        .result p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+        
+        .error {
+            background: #fff8f8;
+            border-left: 4px solid #f5576c;
+            color: #d32f2f;
+        }
+        
+        .success {
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            color: #166534;
+        }
+        
+        .warning {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            color: #92400e;
+        }
+        
+        .decomposition-list {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .decomposition-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .decomposition-item:last-child {
+            border-bottom: none;
+        }
+        
+        .power-form {
+            font-family: 'Segoe UI', monospace;
+            font-weight: bold;
+        }
+        
+        .add-term-btn {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border: 2px dashed #93c5fd;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .add-term-btn:hover {
+            background: #bfdbfe;
+            transform: translateY(-1px);
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .mixed-input-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .mixed-input {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Descompunere Mixtă în Puteri</h1>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('power')">Putere (a<sup>n</sup>)</div>
+            <div class="tab" onclick="switchTab('number')">Număr Direct</div>
+        </div>
+        
+        <div id="powerTab" class="tab-content active">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="baseInput">Baza (a):</label>
+                    <input type="number" id="baseInput" min="1" placeholder="Ex: 2, 3, 5">
+                </div>
+                
+                <div class="input-group">
+                    <label for="exponentInput">Exponentul (n):</label>
+                    <input type="number" id="exponentInput" min="1" max="20" placeholder="Ex: 2, 3, 4, 5">
+                </div>
+                
+                <div class="power-display" id="powerDisplay">
+                    a<sup>n</sup> = ?
+                </div>
+            </div>
+        </div>
+        
+        <div id="numberTab" class="tab-content">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="numberInput">Numărul:</label>
+                    <input type="number" id="numberInput" min="1" placeholder="Ex: 25, 125, 100">
+                </div>
+                
+                <div class="number-display" id="numberDisplay">
+                    Număr = ?
+                </div>
+            </div>
+        </div>
+        
+        <div class="mixed-inputs">
+            <h3 style="margin-bottom: 15px; color: #1e40af;">Configurație Descompunere Mixtă</h3>
+            <div id="mixedTerms">
+                <div class="mixed-input-group">
+                    <div class="mixed-input">
+                        <label>Termen 1 - Puterea:</label>
+                        <select class="power-select">
+                            <option value="2">Pătrat (k²)</option>
+                            <option value="3" selected>Cub (k³)</option>
+                            <option value="4">Putere 4 (k⁴)</option>
+                            <option value="5">Putere 5 (k⁵)</option>
+                            <option value="6">Putere 6 (k⁶)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mixed-input-group">
+                    <div class="mixed-input">
+                        <label>Termen 2 - Puterea:</label>
+                        <select class="power-select">
+                            <option value="2" selected>Pătrat (k²)</option>
+                            <option value="3">Cub (k³)</option>
+                            <option value="4">Putere 4 (k⁴)</option>
+                            <option value="5">Putere 5 (k⁵)</option>
+                            <option value="6">Putere 6 (k⁶)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button class="add-term-btn" onclick="addMixedTerm()">+ Adaugă Termen</button>
+        </div>
+        
+        <div class="buttons">
+            <button class="decompose-btn" onclick="decompose()">Descompune</button>
+        </div>
+        
+        <div id="result" class="result" style="display: none;">
+            <h3>Rezultatul Descompunerii:</h3>
+            <p id="resultText"></p>
+            <div id="decompositionList" class="decomposition-list" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'power';
+        let termCount = 2;
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tabEl => {
+                tabEl.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide tab content
+            document.getElementById('powerTab').classList.toggle('active', tab === 'power');
+            document.getElementById('numberTab').classList.toggle('active', tab === 'number');
+            
+            // Update displays
+            if (tab === 'power') {
+                updatePowerDisplay();
+            } else {
+                updateNumberDisplay();
+            }
+        }
+        
+        // Update displays when inputs change
+        document.getElementById('baseInput').addEventListener('input', updatePowerDisplay);
+        document.getElementById('exponentInput').addEventListener('input', updatePowerDisplay);
+        document.getElementById('numberInput').addEventListener('input', updateNumberDisplay);
+        
+        function updatePowerDisplay() {
+            if (currentTab !== 'power') return;
+            
+            const base = parseInt(document.getElementById('baseInput').value);
+            const exponent = parseInt(document.getElementById('exponentInput').value);
+            
+            if (isNaN(base) || isNaN(exponent) || base <= 0 || exponent <= 0) {
+                document.getElementById('powerDisplay').innerHTML = 'a<sup>n</sup> = ?';
+                return;
+            }
+            
+            let power = Math.pow(base, exponent);
+            
+            if (power > Number.MAX_SAFE_INTEGER || !isFinite(power)) {
+                document.getElementById('powerDisplay').innerHTML = 'Rezultat prea mare!';
+                return;
+            }
+            
+            document.getElementById('powerDisplay').innerHTML = 
+                `${base}<sup>${exponent}</sup> = ${power}`;
+        }
+        
+        function updateNumberDisplay() {
+            if (currentTab !== 'number') return;
+            
+            const number = parseInt(document.getElementById('numberInput').value);
+            
+            if (isNaN(number) || number <= 0) {
+                document.getElementById('numberDisplay').innerHTML = 'Număr = ?';
+                return;
+            }
+            
+            document.getElementById('numberDisplay').innerHTML = `Număr = ${number}`;
+        }
+        
+        function addMixedTerm() {
+            termCount++;
+            const mixedTerms = document.getElementById('mixedTerms');
+            const newTerm = document.createElement('div');
+            newTerm.className = 'mixed-input-group';
+            newTerm.innerHTML = `
+                <div class="mixed-input">
+                    <label>Termen ${termCount} - Puterea:</label>
+                    <select class="power-select">
+                        <option value="2">Pătrat (k²)</option>
+                        <option value="3" selected>Cub (k³)</option>
+                        <option value="4">Putere 4 (k⁴)</option>
+                        <option value="5">Putere 5 (k⁵)</option>
+                        <option value="6">Putere 6 (k⁶)</option>
+                    </select>
+                </div>
+            `;
+            mixedTerms.appendChild(newTerm);
+        }
+        
+        function getPowerNotation(value, k) {
+            if (value <= 0) return value.toString();
+            
+            const root = Math.pow(value, 1/k);
+            const roundedRoot = Math.round(root);
+            
+            // Check if it's a perfect k-th power
+            if (Math.abs(root - roundedRoot) < 1e-10 && Math.pow(roundedRoot, k) === value) {
+                if (k === 2) {
+                    return `<span class="power-form">${roundedRoot}²</span>`;
+                } else if (k === 3) {
+                    return `<span class="power-form">${roundedRoot}³</span>`;
+                } else {
+                    return `<span class="power-form">${roundedRoot}<sup>${k}</sup></span>`;
+                }
+            }
+            return value.toString();
+        }
+        
+        function isPerfectPower(value, k) {
+            if (value <= 0) return false;
+            const root = Math.pow(value, 1/k);
+            const roundedRoot = Math.round(root);
+            return Math.abs(root - roundedRoot) < 1e-10 && Math.pow(roundedRoot, k) === value;
+        }
+        
+        function decompose() {
+            let numberToDecompose;
+            let displayText;
+            
+            if (currentTab === 'power') {
+                const base = parseInt(document.getElementById('baseInput').value);
+                const exponent = parseInt(document.getElementById('exponentInput').value);
+                
+                if (isNaN(base) || base <= 0) {
+                    showError('Vă rugăm să introduceți o bază pozitivă validă.');
+                    return;
+                }
+                
+                if (isNaN(exponent) || exponent <= 0 || exponent > 20) {
+                    showError('Exponentul trebuie să fie între 1 și 20.');
+                    return;
+                }
+                
+                let power = Math.pow(base, exponent);
+                
+                if (power > Number.MAX_SAFE_INTEGER || !isFinite(power)) {
+                    showError('Rezultatul este prea mare pentru a fi procesat!');
+                    return;
+                }
+                
+                numberToDecompose = power;
+                displayText = `${base}<sup>${exponent}</sup> = ${power}`;
+            } else {
+                const number = parseInt(document.getElementById('numberInput').value);
+                
+                if (isNaN(number) || number <= 0) {
+                    showError('Vă rugăm să introduceți un număr pozitiv valid.');
+                    return;
+                }
+                
+                numberToDecompose = number;
+                displayText = `${number}`;
+            }
+            
+            // Get power configuration
+            const powerSelects = document.querySelectorAll('.power-select');
+            const powerConfig = Array.from(powerSelects).map(select => parseInt(select.value));
+            
+            if (powerConfig.length === 0) {
+                showError('Vă rugăm să adăugați cel puțin un termen de descompunere.');
+                return;
+            }
+            
+            const result = findMixedPowerDecomposition(numberToDecompose, powerConfig);
+            showResult(result, displayText, numberToDecompose, powerConfig);
+        }
+        
+        function findMixedPowerDecomposition(n, powerConfig) {
+            const k_terms = powerConfig.length;
+            
+            if (k_terms === 1) {
+                const k = powerConfig[0];
+                if (isPerfectPower(n, k)) {
+                    return [n];
+                } else {
+                    return null;
+                }
+            }
+            
+            // For small number of terms, try exhaustive search
+            if (k_terms <= 4) {
+                return findMixedPowerDecompositionExhaustive(n, powerConfig);
+            }
+            
+            // For larger number of terms, use approximate method
+            return findApproximateMixedPowerDecomposition(n, powerConfig);
+        }
+        
+        function findMixedPowerDecompositionExhaustive(n, powerConfig) {
+            const maxRoots = powerConfig.map(k => Math.floor(Math.pow(n, 1/k)) + 1);
+            
+            function backtrack(remaining, termIndex) {
+                if (termIndex === powerConfig.length) {
+                    return remaining === 0 ? [] : null;
+                }
+                
+                if (remaining <= 0) {
+                    return null;
+                }
+                
+                const k = powerConfig[termIndex];
+                const maxRoot = Math.min(Math.floor(Math.pow(remaining, 1/k)), maxRoots[termIndex]);
+                
+                for (let i = maxRoot; i >= 1; i--) {
+                    const power = Math.pow(i, k);
+                    if (power > remaining) continue;
+                    
+                    const rest = backtrack(remaining - power, termIndex + 1);
+                    if (rest !== null) {
+                        return [power, ...rest];
+                    }
+                }
+                
+                return null;
+            }
+            
+            return backtrack(n, 0);
+        }
+        
+        function findApproximateMixedPowerDecomposition(n, powerConfig) {
+            const powers = [];
+            let remaining = n;
+            const k_terms = powerConfig.length;
+            
+            for (let i = 0; i < k_terms - 1; i++) {
+                const k = powerConfig[i];
+                const portion = Math.floor(remaining / (k_terms - i));
+                const root = Math.floor(Math.pow(portion, 1/k));
+                const power = Math.pow(root, k);
+                powers.push(Math.max(power, 1));
+                remaining -= Math.max(power, 1);
+            }
+            
+            powers.push(Math.max(remaining, 1));
+            return powers;
+        }
+        
+        function showResult(decomposition, displayText, number, powerConfig) {
+            const resultDiv = document.getElementById('result');
+            const resultText = document.getElementById('resultText');
+            const decompositionList = document.getElementById('decompositionList');
+            
+            if (decomposition === null) {
+                let configText = powerConfig.map((k, i) => {
+                    if (k === 2) return `pătrat`;
+                    else if (k === 3) return `cub`;
+                    else return `putere ${k}`;
+                }).join(' + ');
+                
+                resultText.innerHTML = `❌ Nu există o descompunere exactă a lui <strong>${displayText}</strong> ca sumă de ${configText}.`;
+                resultDiv.className = 'result error';
+                decompositionList.style.display = 'none';
+            } else {
+                const sum = decomposition.reduce((acc, val) => acc + val, 0);
+                const isExact = sum === number;
+                
+                let configText = powerConfig.map((k, i) => {
+                    if (k === 2) return `pătrat`;
+                    else if (k === 3) return `cub`;
+                    else return `putere ${k}`;
+                }).join(' + ');
+                
+                if (isExact) {
+                    resultText.innerHTML = `✅ ${displayText} poate fi descompus ca sumă de ${configText}:`;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultText.innerHTML = `⚠️ Descompunere aproximativă pentru ${displayText} ca sumă de ${configText} (nu toți termenii sunt puteri perfecte):`;
+                    resultDiv.className = 'result warning';
+                }
+                
+                decompositionList.innerHTML = '';
+                decomposition.forEach((term, index) => {
+                    const k = powerConfig[index];
+                    const isPerfect = isPerfectPower(term, k);
+                    const termDisplay = getPowerNotation(term, k);
+                    
+                    const item = document.createElement('div');
+                    item.className = 'decomposition-item';
+                    item.innerHTML = `
+                        <span>Termen ${index + 1} (${k === 2 ? 'pătrat' : k === 3 ? 'cub' : 'putere ' + k}):</span>
+                        <span><strong>${termDisplay}</strong> ${isPerfect ? '✓' : '✗'}</span>
+                    `;
+                    decompositionList.appendChild(item);
+                });
+                
+                decompositionList.style.display = 'block';
+            }
+            
+            resultDiv.style.display = 'block';
+        }
+        
+        function showError(message) {
+            const resultDiv = document.getElementById('result');
+            const resultText = document.getElementById('resultText');
+            const decompositionList = document.getElementById('decompositionList');
+            
+            resultText.innerHTML = message;
+            resultDiv.className = 'result error';
+            decompositionList.style.display = 'none';
+            resultDiv.style.display = 'block';
+        }
+        
+        // Allow Enter key to trigger decomposition
+        document.getElementById('baseInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                decompose();
+            }
+        });
+        
+        document.getElementById('exponentInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                decompose();
+            }
+        });
+        
+        document.getElementById('numberInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                decompose();
+            }
+        });
+    </script>
+</body>
+</html>
+
