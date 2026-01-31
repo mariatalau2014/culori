@@ -1,46 +1,273 @@
-import React from "react"
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
-import './globals.css'
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator Fracții - Adunare și Scădere</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f0e8;
+      color: #2d3047;
+      min-height: 100vh;
+      padding: 24px;
+    }
 
-export const metadata: Metadata = {
-  title: 'Calculator Fracții - Adunare și Scădere',
-  description: 'Calculează sume și diferențe de fracții cu toți pașii explicați',
-  generator: 'v0.app',
-  icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
-  },
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: #fffbf5;
+      border: 2px solid #2d3047;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .fractions-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .fraction-input {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .fraction-input input {
+      width: 60px;
+      padding: 8px;
+      text-align: center;
+      font-size: 1.25rem;
+      border: 2px solid #2d3047;
+      border-radius: 8px;
+      background: #fffbf5;
+    }
+
+    .fraction-line {
+      width: 60px;
+      height: 3px;
+      background: #2d3047;
+    }
+
+    .operator-select {
+      padding: 8px 12px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border: 2px solid #2d3047;
+      border-radius: 8px;
+      background: #f5f0e8;
+      cursor: pointer;
+    }
+
+    .remove-btn {
+      background: #fee2e2;
+      color: #dc2626;
+      border: 2px solid #dc2626;
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-size: 1.25rem;
+    }
+
+    .buttons-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: #e07a5f;
+      color: white;
+      border: 2px solid #e07a5f;
+    }
+
+    .btn-secondary {
+      background: #fffbf5;
+      color: #2d3047;
+      border: 2px solid #2d3047;
+    }
+
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .step {
+      background: #f5f0e8;
+      border: 2px solid #2d3047;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .step-number {
+      background: #e07a5f;
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .math-expression {
+      font-size: 1.25rem;
+      font-family: 'Times New Roman', serif;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .fraction-display {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .frac-line {
+      width: 100%;
+      height: 2px;
+      background: #2d3047;
+    }
+
+    .result-box {
+      background: #d4edda;
+      border: 2px solid #28a745;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Calculator Fracții</h1>
+  <p class="subtitle">Adunare și scădere cu toți pașii explicați</p>
+
+  <div class="card">
+    <div class="card-title">Introdu fracțiile</div>
+    <div id="fractionsContainer" class="fractions-container"></div>
+
+    <div class="buttons-row">
+      <button class="btn btn-secondary" onclick="addFraction()">+ Adaugă fracție</button>
+      <button class="btn btn-primary" onclick="calculate()">Calculează</button>
+      <button class="btn btn-secondary" onclick="resetAll()">Resetează</button>
+    </div>
+  </div>
+
+  <div id="resultsCard" class="card" style="display:none;">
+    <div class="card-title">Pașii rezolvării</div>
+    <div id="stepsContainer" class="steps-container"></div>
+  </div>
+</div>
+
+<script>
+let fractionCount = 0;
+
+function gcd(a, b) {
+  while (b) [a, b] = [b, a % b];
+  return Math.abs(a);
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
-  return (
-    <html lang="en">
-      <body className={`font-sans antialiased`}>
-        {children}
-        <Analytics />
-      </body>
-    </html>
-  )
+function lcm(a, b) {
+  return Math.abs(a * b) / gcd(a, b);
 }
+
+function addFraction() {
+  fractionCount++;
+  const container = document.getElementById('fractionsContainer');
+
+  const div = document.createElement('div');
+  div.className = 'fraction-group';
+  div.style.display = 'flex';
+  div.style.alignItems = 'center';
+  div.style.gap = '12px';
+
+  if (fractionCount > 1) {
+    div.innerHTML += `
+      <select class="operator-select" id="op${fractionCount}">
+        <option value="+">+</option>
+        <option value="-">-</option>
+      </select>`;
+  }
+
+  div.innerHTML += `
+    <div class="fraction-input">
+      <input type="number" id="num${fractionCount}" placeholder="a">
+      <div class="fraction-line"></div>
+      <input type="number" id="den${fractionCount}" placeholder="b">
+    </div>`;
+
+  if (fractionCount > 2) {
+    div.innerHTML += `<button class="remove-btn" onclick="this.parentElement.remove()">x</button>`;
+  }
+
+  container.appendChild(div);
+}
+
+function resetAll() {
+  fractionCount = 0;
+  document.getElementById('fractionsContainer').innerHTML = '';
+  document.getElementById('resultsCard').style.display = 'none';
+  addFraction();
+  addFraction();
+}
+
+addFraction();
+addFraction();
+</script>
+
+</body>
+</html>
