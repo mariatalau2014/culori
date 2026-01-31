@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator Fracții și Întregi</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f0e8;
+  padding: 20px;
+}
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+.card {
+  background: #fffbf5;
+  border: 2px solid #2d3047;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.fractions-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.fraction-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.fraction-input input {
+  width: 60px;
+  text-align: center;
+  font-size: 18px;
+}
+.line {
+  width: 60px;
+  height: 2px;
+  background: black;
+}
+.operator {
+  font-size: 22px;
+}
+button {
+  padding: 10px 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.result {
+  background: #d4edda;
+  border: 2px solid #28a745;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Calculator Fracții & Întregi</h1>
+
+  <div class="card">
+    <div id="fractions" class="fractions-container"></div>
+    <br>
+    <button onclick="addFraction()">+ Adaugă</button>
+    <button onclick="calculate()">Calculează</button>
+    <button onclick="resetAll()">Resetează</button>
+  </div>
+
+  <div id="resultBox" class="result" style="display:none;"></div>
+</div>
+
+<script>
+let count = 0;
+
+function gcd(a, b) {
+  while (b !== 0) [a, b] = [b, a % b];
+  return Math.abs(a);
+}
+
+function addFraction() {
+  count++;
+  const div = document.createElement("div");
+  div.style.display = "flex";
+  div.style.alignItems = "center";
+  div.style.gap = "10px";
+
+  if (count > 1) {
+    div.innerHTML += `
+      <select id="op${count}">
+        <option value="+">+</option>
+        <option value="-">-</option>
+      </select>
+    `;
+  }
+
+  div.innerHTML += `
+    <div class="fraction-input">
+      <input type="number" id="num${count}" placeholder="a">
+      <div class="line"></div>
+      <input type="number" id="den${count}" placeholder="1">
+    </div>
+  `;
+
+  document.getElementById("fractions").appendChild(div);
+}
+
+function calculate() {
+  let num = 0;
+  let den = 1;
+
+  for (let i = 1; i <= count; i++) {
+    let n = parseInt(document.getElementById(`num${i}`).value);
+    let dInput = document.getElementById(`den${i}`).value;
+    let d = dInput === "" ? 1 : parseInt(dInput);
+
+    if (isNaN(n) || d === 0) {
+      alert("Date invalide!");
+      return;
+    }
+
+    let sign = (i === 1) ? "+" : document.getElementById(`op${i}`).value;
+    if (sign === "-") n = -n;
+
+    num = num * d + n * den;
+    den = den * d;
+
+    let g = gcd(num, den);
+    num /= g;
+    den /= g;
+  }
+
+  let resultText = den === 1 ? num : `${num}/${den}`;
+  document.getElementById("resultBox").style.display = "block";
+  document.getElementById("resultBox").innerText = "Rezultat: " + resultText;
+}
+
+function resetAll() {
+  count = 0;
+  document.getElementById("fractions").innerHTML = "";
+  document.getElementById("resultBox").style.display = "none";
+  addFraction();
+  addFraction();
+}
+
+addFraction();
+addFraction();
+</script>
+
+</body>
+</html>
