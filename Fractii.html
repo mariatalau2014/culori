@@ -3,130 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculator fracții mixte</title>
-
+  <title>Calculator Fracții - Adunare, Scădere și Înmulțire cu Număr Natural</title>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f5f0e8;
-      padding: 24px;
       color: #2d3047;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: auto;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      text-align: center;
-      color: #6b7280;
-      margin-bottom: 24px;
-    }
-
-    .card {
-      background: #fffbf5;
-      border: 2px solid #2d3047;
-      border-radius: 12px;
+      min-height: 100vh;
       padding: 24px;
-      margin-bottom: 24px;
     }
-
-    .fractions-container {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 { text-align: center; font-size: 2rem; margin-bottom: 8px; }
+    .subtitle { text-align: center; color: #6b7280; margin-bottom: 32px; }
+    .card {
+      background: #fffbf5; border: 2px solid #2d3047; border-radius: 12px;
+      padding: 24px; margin-bottom: 24px;
     }
-
-    .fraction-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .fraction-input {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .fraction-input input {
-      width: 60px;
-      padding: 8px;
-      text-align: center;
-      font-size: 1.1rem;
-      border: 2px solid #2d3047;
-      border-radius: 8px;
-      background: #fffbf5;
-    }
-
-    .fraction-line {
-      width: 60px;
-      height: 3px;
-      background: #2d3047;
-    }
-
-    .operator-select {
-      padding: 8px 12px;
-      font-size: 1.4rem;
-      border-radius: 8px;
-      border: 2px solid #2d3047;
-      background: #f5f0e8;
-      cursor: pointer;
-    }
-
-    .buttons-row {
-      display: flex;
-      gap: 12px;
-      margin-top: 20px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      padding: 12px 24px;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-      border: 2px solid #2d3047;
-      background: #fffbf5;
-    }
-
-    .btn-primary {
-      background: #e07a5f;
-      border-color: #e07a5f;
-      color: white;
-    }
-
-    .result {
-      font-size: 1.4rem;
-      margin-top: 16px;
-      text-align: center;
-    }
+    .card-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 20px; }
+    .fractions-container { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .fraction-input { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .fraction-input input { width: 60px; padding: 8px; text-align: center; font-size: 1.25rem; border: 2px solid #2d3047; border-radius: 8px; background: #fffbf5; }
+    .fraction-line { width: 60px; height: 3px; background: #2d3047; }
+    .operator-select { padding: 8px 12px; font-size: 1.5rem; font-weight: bold; border: 2px solid #2d3047; border-radius: 8px; background: #f5f0e8; cursor: pointer; }
+    .remove-btn { background: #fee2e2; color: #dc2626; border: 2px solid #dc2626; border-radius: 8px; width: 32px; height: 32px; cursor: pointer; font-size: 1.25rem; }
+    .buttons-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn { padding: 12px 24px; font-size: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer; }
+    .btn-primary { background: #e07a5f; color: white; border: 2px solid #e07a5f; }
+    .btn-secondary { background: #fffbf5; color: #2d3047; border: 2px solid #2d3047; }
+    .steps-container { display: flex; flex-direction: column; gap: 16px; }
+    .step { background: #f5f0e8; border: 2px solid #2d3047; border-radius: 8px; padding: 16px; }
+    .step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .step-number { background: #e07a5f; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    .math-expression { font-size: 1.25rem; font-family: 'Times New Roman', serif; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .fraction-display { display: inline-flex; flex-direction: column; align-items: center; }
+    .frac-line { width: 100%; height: 2px; background: #2d3047; }
+    .result-box { background: #d4edda; border: 2px solid #28a745; border-radius: 8px; padding: 20px; margin-top: 16px; }
   </style>
 </head>
-
 <body>
+
 <div class="container">
-  <h1>Calculator fracții mixte</h1>
-  <p class="subtitle">Introduce fracții de forma c a/b</p>
+  <h1>Calculator Fracții</h1>
+  <p class="subtitle">Adunare, scădere și înmulțire cu număr natural</p>
 
   <div class="card">
+    <div class="card-title">Introdu fracțiile</div>
     <div id="fractionsContainer" class="fractions-container"></div>
 
     <div class="buttons-row">
-      <button class="btn" onclick="addFraction()">+ Adaugă fracție</button>
+      <button class="btn btn-secondary" onclick="addFraction()">+ Adaugă fracție</button>
       <button class="btn btn-primary" onclick="calculate()">Calculează</button>
-      <button class="btn" onclick="resetAll()">Resetează</button>
+      <button class="btn btn-secondary" onclick="resetAll()">Resetează</button>
     </div>
+  </div>
 
-    <div id="result" class="result"></div>
+  <div id="resultsCard" class="card" style="display:none;">
+    <div class="card-title">Pașii rezolvării</div>
+    <div id="stepsContainer" class="steps-container"></div>
   </div>
 </div>
 
@@ -134,24 +68,12 @@
 let fractionCount = 0;
 
 function gcd(a, b) {
-  while (b !== 0) {
-    [a, b] = [b, a % b];
-  }
+  while (b) [a, b] = [b, a % b];
   return Math.abs(a);
 }
 
-function simplify(num, den) {
-  const d = gcd(num, den);
-  return { num: num / d, den: den / d };
-}
-
-function toImproperFraction(c, a, b) {
-  c = c || 0;
-  a = a || 0;
-  return {
-    num: b * c + a,
-    den: b
-  };
+function lcm(a, b) {
+  return Math.abs(a * b) / gcd(a, b);
 }
 
 function addFraction() {
@@ -160,75 +82,94 @@ function addFraction() {
 
   const div = document.createElement('div');
   div.className = 'fraction-group';
+  div.style.display = 'flex';
+  div.style.alignItems = 'center';
+  div.style.gap = '12px';
 
   if (fractionCount > 1) {
     div.innerHTML += `
       <select class="operator-select" id="op${fractionCount}">
         <option value="+">+</option>
         <option value="-">-</option>
-      </select>
-    `;
+      </select>`;
   }
 
   div.innerHTML += `
     <div class="fraction-input">
-      <input type="number" placeholder="întreg" id="int${fractionCount}">
-      <input type="number" placeholder="a" id="num${fractionCount}">
+      <input type="number" id="num${fractionCount}" placeholder="a">
       <div class="fraction-line"></div>
-      <input type="number" placeholder="b" id="den${fractionCount}">
+      <input type="number" id="den${fractionCount}" placeholder="b">
     </div>
-  `;
+    <input type="number" id="mult${fractionCount}" placeholder="× număr" style="width:80px; padding:8px; text-align:center;">`;
 
-  container.appendChild(div);
-}
-
-function calculate() {
-  let resultNum = 0;
-  let resultDen = 1;
-
-  for (let i = 1; i <= fractionCount; i++) {
-    let c = parseInt(document.getElementById(`int${i}`).value);
-    let a = parseInt(document.getElementById(`num${i}`).value);
-    let b = parseInt(document.getElementById(`den${i}`).value);
-
-    if (!b || b === 0) {
-      alert("Numitorul nu poate fi 0");
-      return;
-    }
-
-    let frac = toImproperFraction(c, a, b);
-    let num = frac.num;
-    let den = frac.den;
-
-    if (i === 1) {
-      resultNum = num;
-      resultDen = den;
-    } else {
-      const op = document.getElementById(`op${i}`).value;
-      if (op === "+") {
-        resultNum = resultNum * den + num * resultDen;
-      } else {
-        resultNum = resultNum * den - num * resultDen;
-      }
-      resultDen = resultDen * den;
-    }
+  if (fractionCount > 2) {
+    div.innerHTML += `<button class="remove-btn" onclick="this.parentElement.remove()">x</button>`;
   }
 
-  const simplified = simplify(resultNum, resultDen);
-  document.getElementById('result').innerText =
-    `Rezultat: ${simplified.num} / ${simplified.den}`;
+  container.appendChild(div);
 }
 
 function resetAll() {
   fractionCount = 0;
   document.getElementById('fractionsContainer').innerHTML = '';
-  document.getElementById('result').innerText = '';
+  document.getElementById('resultsCard').style.display = 'none';
   addFraction();
   addFraction();
 }
 
-addFraction();
-addFraction();
+function calculate() {
+  const numerators = [];
+  const denominators = [];
+  const operators = [];
+
+  for (let i = 1; i <= fractionCount; i++) {
+    const numElem = document.getElementById('num' + i);
+    const denElem = document.getElementById('den' + i);
+    const multElem = document.getElementById('mult' + i);
+    const opElem = document.getElementById('op' + i);
+
+    if (!numElem || !denElem) continue;
+
+    let numerator = parseInt(numElem.value);
+    let denominator = parseInt(denElem.value);
+    let multiplier = parseInt(multElem.value) || 1;
+
+    numerator *= multiplier; // Înmulțim cu numărul natural
+
+    numerators.push(numerator);
+    denominators.push(denominator);
+    if (opElem) operators.push(opElem.value);
+  }
+
+  // Calcularea rezultatului
+  let commonDen = denominators[0];
+  for (let i = 1; i < denominators.length; i++) {
+    commonDen = lcm(commonDen, denominators[i]);
+  }
+
+  let resultNumerator = numerators[0] * (commonDen / denominators[0]);
+  for (let i = 1; i < numerators.length; i++) {
+    const val = numerators[i] * (commonDen / denominators[i]);
+    if (operators[i - 1] === "+") resultNumerator += val;
+    else resultNumerator -= val;
+  }
+
+  const divisor = gcd(resultNumerator, commonDen);
+  resultNumerator /= divisor;
+  const resultDenominator = commonDen / divisor;
+
+  // Afișarea pașilor
+  const stepsContainer = document.getElementById('stepsContainer');
+  stepsContainer.innerHTML = `
+    <div class="step">
+      <div class="math-expression">Rezultat: ${resultNumerator}/${resultDenominator}</div>
+    </div>
+  `;
+  document.getElementById('resultsCard').style.display = 'block';
+}
+
+resetAll();
 </script>
+
 </body>
 </html>
