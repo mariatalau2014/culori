@@ -2,67 +2,109 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <title>Culoare opusă</title>
+    <title>Culoare opusă – glisoare</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            padding: 20px;
+            padding: 30px;
+            background: #f4f4f4;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .slider-group {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        input[type="range"] {
+            width: 300px;
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
         }
 
         .box {
-            width: 150px;
-            height: 150px;
-            margin-top: 10px;
-            border: 1px solid #000;
-            display: inline-flex;
+            width: 300px;
+            height: 300px;
+            border: 3px solid #000;
+            display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 22px;
             font-weight: bold;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <h2>Alege culoarea</h2>
+<h2>Alege culoarea (RGB)</h2>
 
+<div class="slider-group">
     R:
-    <input type="number" id="red" min="0" max="255" value="0"><br>
-    G:
-    <input type="number" id="green" min="0" max="255" value="0"><br>
-    B:
-    <input type="number" id="blue" min="0" max="255" value="0"><br>
+    <input type="range" id="red" min="0" max="255" value="0">
+    <span id="rVal">0</span>
+</div>
 
+<div class="slider-group">
+    G:
+    <input type="range" id="green" min="0" max="255" value="0">
+    <span id="gVal">0</span>
+</div>
+
+<div class="slider-group">
+    B:
+    <input type="range" id="blue" min="0" max="255" value="0">
+    <span id="bVal">0</span>
+</div>
+
+<div class="container">
     <div class="box" id="original">Original</div>
     <div class="box" id="opposite">Opus</div>
+</div>
 
-    <script>
-        const red = document.getElementById('red');
-        const green = document.getElementById('green');
-        const blue = document.getElementById('blue');
+<script>
+    const red = document.getElementById('red');
+    const green = document.getElementById('green');
+    const blue = document.getElementById('blue');
 
-        const original = document.getElementById('original');
-        const opposite = document.getElementById('opposite');
+    const rVal = document.getElementById('rVal');
+    const gVal = document.getElementById('gVal');
+    const bVal = document.getElementById('bVal');
 
-        function updateColor() {
-            let r = parseInt(red.value) || 0;
-            let g = parseInt(green.value) || 0;
-            let b = parseInt(blue.value) || 0;
+    const original = document.getElementById('original');
+    const opposite = document.getElementById('opposite');
 
-            original.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+    function updateColor() {
+        const r = parseInt(red.value);
+        const g = parseInt(green.value);
+        const b = parseInt(blue.value);
 
-            let rOpp = 255 - r;
-            let gOpp = 255 - g;
-            let bOpp = 255 - b;
+        rVal.textContent = r;
+        gVal.textContent = g;
+        bVal.textContent = b;
 
-            opposite.style.backgroundColor = `rgb(${rOpp}, ${gOpp}, ${bOpp})`;
-        }
+        original.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
 
-        red.addEventListener('input', updateColor);
-        green.addEventListener('input', updateColor);
-        blue.addEventListener('input', updateColor);
+        const rOpp = 255 - r;
+        const gOpp = 255 - g;
+        const bOpp = 255 - b;
 
-        updateColor();
-    </script>
+        opposite.style.backgroundColor = `rgb(${rOpp}, ${gOpp}, ${bOpp})`;
+    }
+
+    red.addEventListener('input', updateColor);
+    green.addEventListener('input', updateColor);
+    blue.addEventListener('input', updateColor);
+
+    updateColor();
+</script>
 
 </body>
 </html>
