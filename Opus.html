@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Culoare opusă</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .box {
+            width: 150px;
+            height: 150px;
+            margin-top: 10px;
+            border: 1px solid #000;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Alege culoarea</h2>
+
+    R:
+    <input type="number" id="red" min="0" max="255" value="0"><br>
+    G:
+    <input type="number" id="green" min="0" max="255" value="0"><br>
+    B:
+    <input type="number" id="blue" min="0" max="255" value="0"><br>
+
+    <div class="box" id="original">Original</div>
+    <div class="box" id="opposite">Opus</div>
+
+    <script>
+        const red = document.getElementById('red');
+        const green = document.getElementById('green');
+        const blue = document.getElementById('blue');
+
+        const original = document.getElementById('original');
+        const opposite = document.getElementById('opposite');
+
+        function updateColor() {
+            let r = parseInt(red.value) || 0;
+            let g = parseInt(green.value) || 0;
+            let b = parseInt(blue.value) || 0;
+
+            original.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+
+            let rOpp = 255 - r;
+            let gOpp = 255 - g;
+            let bOpp = 255 - b;
+
+            opposite.style.backgroundColor = `rgb(${rOpp}, ${gOpp}, ${bOpp})`;
+        }
+
+        red.addEventListener('input', updateColor);
+        green.addEventListener('input', updateColor);
+        blue.addEventListener('input', updateColor);
+
+        updateColor();
+    </script>
+
+</body>
+</html>
