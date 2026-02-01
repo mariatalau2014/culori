@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculator fracții</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 20px;
+    }
+    .app {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 360px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .fract {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 6px;
+      align-items: center;
+    }
+    input {
+      width: 55px;
+      padding: 4px;
+      font-size: 13px;
+      background: #ffd6e8; /* roz pal */
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      text-align: center;
+    }
+    select, button {
+      padding: 6px;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+    button {
+      width: 100%;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button.reset {
+      background: #999;
+      margin-top: 6px;
+    }
+    .rezultat {
+      margin-top: 12px;
+      font-weight: bold;
+      text-align: center;
+    }
+    .op {
+      margin: 6px 0;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <h2>Fracții multiple</h2>
+
+  <div id="listaFractii"></div>
+
+  <select id="operatie" class="op">
+    <option value="+">Adună</option>
+    <option value="-">Scade</option>
+  </select>
+
+  <button onclick="adaugaFractie()">Adaugă fracție</button>
+  <button onclick="calculeaza()">Calculează</button>
+  <button class="reset" onclick="reseteaza()">Resetează</button>
+
+  <div class="rezultat" id="rezultat"></div>
+</div>
+
+<script>
+  function gcd(a, b) {
+    return b === 0 ? Math.abs(a) : gcd(b, a % b);
+  }
+
+  function adaugaFractie() {
+    const div = document.createElement("div");
+    div.className = "fract";
+    div.innerHTML = `
+      <input type="number" placeholder="a">
+      <span>+</span>
+      <input type="number" placeholder="d">
+      <span>/</span>
+      <input type="number" placeholder="c">
+    `;
+    document.getElementById("listaFractii").appendChild(div);
+  }
+
+  function calculeaza() {
+    const fractii = document.querySelectorAll(".fract");
+    const op = document.getElementById("operatie").value;
+    const out = document.getElementById("rezultat");
+
+    if (fractii.length === 0) {
+      out.textContent = "Adaugă cel puțin o fracție";
+      return;
+    }
+
+    let num = 0;
+    let den = 1;
+
+    for (let i = 0; i < fractii.length; i++) {
+      const inputs = fractii[i].querySelectorAll("input");
+      const a = parseInt(inputs[0].value) || 0;
+      const d = parseInt(inputs[1].value) || 0;
+      const c = parseInt(inputs[2].value);
+
+      if (!c) {
+        out.textContent = "Numitorul nu poate fi 0";
+        return;
+      }
+
+      let fn = a * c + d;
+      let fd = c;
+
+      if (i === 0) {
+        num = fn;
+        den = fd;
+      } else {
+        if (op === "+") num = num * fd + fn * den;
+        else num = num * fd - fn * den;
+        den = den * fd;
+      }
+
+      const g = gcd(num, den);
+      num /= g;
+      den /= g;
+    }
+
+    const semn = num < 0 ? "-" : "";
+    num = Math.abs(num);
+    const intreg = Math.floor(num / den);
+    const rest = num % den;
+
+    if (rest === 0) out.textContent = `Rezultat: ${semn}${intreg}`;
+    else out.textContent = `Rezultat: ${semn}${num}/${den} (= ${semn}${intreg} + ${rest}/${den})`;
+  }
+
+  function reseteaza() {
+    document.getElementById("listaFractii").innerHTML = "";
+    document.getElementById("rezultat").textContent = "";
+  }
+
+  // pornește cu 2 fracții
+  adaugaFractie();
+  adaugaFractie();
+</script>
+
+</body>
+</html>
