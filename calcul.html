@@ -270,6 +270,14 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         
+        .points {
+            font-size: 22px;
+            color: #ff69b4;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
         .btn {
             background: linear-gradient(135deg, #ff69b4, #ff9ec7);
             color: white;
@@ -438,7 +446,7 @@
                 <span class="timer">20</span>
             </div>
             
-            <div class="score">Scor: <span id="score-value">0</span> 🌟</div>
+            <div class="points">Puncte: <span id="points-value">100</span> 💎</div>
             
             <div class="problem" id="problem"></div>
             
@@ -474,13 +482,13 @@
         const optionsContainer = document.getElementById('options-container');
         const resultEl = document.getElementById('result');
         const timerEl = document.querySelector('.timer');
-        const scoreValueEl = document.getElementById('score-value');
+        const pointsValueEl = document.getElementById('points-value');
         const restartBtn = document.getElementById('restart-btn');
         const questionCountEl = document.getElementById('question-count');
         const levelButtons = document.querySelectorAll('.level-btn');
         
         // Game state
-        let score = 0;
+        let points = 100;
         let questionCount = 1;
         let timeLeft = 20;
         let timerInterval;
@@ -796,8 +804,8 @@
                     <div class="prize-title">Felicitări, Super Eroine! 🌈</div>
                     <div class="prize-message">
                         Ai completat cu succes toate cele 20 de întrebări!<br>
-                        Ești o adevărată campioană a matematicii! ✨<br>
-                        Ai câștigat coroana magică! 👑
+                        Ai terminat cu <strong>${points} puncte</strong>! ✨<br>
+                        Ești o adevărată campioană a matematicii! 👑
                     </div>
                     <button class="btn" id="final-restart-btn">Joacă din nou! 🎀</button>
                 </div>
@@ -831,36 +839,39 @@
             if (selectedAnswer === currentAnswer) {
                 resultEl.textContent = 'Corect! 🎉✨';
                 resultEl.style.color = '#4CAF50';
-                score++;
-                scoreValueEl.textContent = score;
-                
-                if (isPenaltyQuestion) {
-                    isPenaltyQuestion = false;
-                    if (questionCount >= totalQuestions) {
-                        setTimeout(showPrizeModal, 2000);
-                    } else {
-                        setTimeout(() => {
-                            questionCount++;
-                            displayProblem();
-                            startTimer();
-                        }, 2000);
-                    }
-                } else {
-                    if (questionCount >= totalQuestions) {
-                        setTimeout(showPrizeModal, 2000);
-                    } else {
-                        setTimeout(() => {
-                            questionCount++;
-                            displayProblem();
-                            startTimer();
-                        }, 2000);
-                    }
-                }
             } else {
                 resultEl.textContent = `Greșit! Acum ai o întrebare mai grea... 💫`;
                 resultEl.style.color = '#f44336';
+                points--; // Deduct 1 point for wrong answer
+                pointsValueEl.textContent = points;
                 isPenaltyQuestion = true;
-                
+            }
+            
+            if (isPenaltyQuestion && selectedAnswer === currentAnswer) {
+                // Correct answer on penalty question
+                isPenaltyQuestion = false;
+                if (questionCount >= totalQuestions) {
+                    setTimeout(showPrizeModal, 2000);
+                } else {
+                    setTimeout(() => {
+                        questionCount++;
+                        displayProblem();
+                        startTimer();
+                    }, 2000);
+                }
+            } else if (!isPenaltyQuestion && selectedAnswer === currentAnswer) {
+                // Correct answer on regular question
+                if (questionCount >= totalQuestions) {
+                    setTimeout(showPrizeModal, 2000);
+                } else {
+                    setTimeout(() => {
+                        questionCount++;
+                        displayProblem();
+                        startTimer();
+                    }, 2000);
+                }
+            } else if (selectedAnswer !== currentAnswer) {
+                // Wrong answer - stay on same question count, show penalty next
                 setTimeout(() => {
                     displayProblem();
                     startTimer();
@@ -891,6 +902,8 @@
                         option.style.pointerEvents = 'none';
                     });
                     
+                    points--; // Deduct 1 point for timeout
+                    pointsValueEl.textContent = points;
                     isPenaltyQuestion = true;
                     
                     setTimeout(() => {
@@ -903,10 +916,10 @@
         
         // Restart game
         function restartGame() {
-            score = 0;
+            points = 100;
             questionCount = 1;
             isPenaltyQuestion = false;
-            scoreValueEl.textContent = score;
+            pointsValueEl.textContent = points;
             restartBtn.classList.add('hidden');
             displayProblem();
             startTimer();
