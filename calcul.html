@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test de Matematică - Răspuns Corect Obligatoriu</title>
+    <title>Test de Matematică - Adunare fără Trecere peste Ordin</title>
     <style>
         * {
             margin: 0;
@@ -237,7 +237,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Test de Matematică - Răspuns Corect Obligatoriu</h1>
+        <h1>Test de Matematică - Adunare fără Trecere peste Ordin</h1>
         
         <div class="progress">Întrebarea: <span id="question-count">1</span>/20</div>
         
@@ -273,25 +273,58 @@
         let timerInterval;
         let currentAnswer;
         let gameActive = true;
+        let isPenaltyQuestion = false;
         const totalQuestions = 20;
         
-        // Generate random math problem with numbers up to 100 (no 3-digit numbers)
-        function generateProblem() {
-            const operations = ['+', '-'];
-            const operation = operations[Math.floor(Math.random() * operations.length)];
-            
+        // Check if addition has no carry-over (fără trecere peste ordin)
+        function hasNoCarry(num1, num2) {
+            // Check units place
+            if ((num1 % 10) + (num2 % 10) >= 10) return false;
+            // Check tens place
+            if (Math.floor(num1 / 10) % 10 + Math.floor(num2 / 10) % 10 >= 10) return false;
+            // Check hundreds place (for 3-digit numbers)
+            if (Math.floor(num1 / 100) + Math.floor(num2 / 100) >= 10) return false;
+            return true;
+        }
+        
+        // Generate 3-digit addition without carry-over
+        function generateNoCarryAddition() {
             let num1, num2;
-            if (questionCount <= 10) {
-                // First 10 questions: larger numbers but max 100
+            do {
+                // Generate first number: 100-999
+                num1 = Math.floor(Math.random() * 900) + 100;
+                // Generate second number: 100-999
+                num2 = Math.floor(Math.random() * 900) + 100;
+            } while (!hasNoCarry(num1, num2));
+            
+            return { num1, num2, answer: num1 + num2 };
+        }
+        
+        // Generate random math problem with appropriate difficulty
+        function generateProblem() {
+            let num1, num2, operation, answer;
+            
+            if (isPenaltyQuestion) {
+                // Penalty question: 3-digit addition WITHOUT carry-over (only plus, no subtraction)
+                const { num1: n1, num2: n2, answer: ans } = generateNoCarryAddition();
+                num1 = n1;
+                num2 = n2;
+                operation = '+';
+                answer = ans;
+            } else if (questionCount <= 10) {
+                // First 10 questions: numbers under 50
+                operation = Math.random() < 0.5 ? '+' : '-';
                 if (operation === '+') {
-                    num1 = Math.floor(Math.random() * 100) + 1;
-                    num2 = Math.floor(Math.random() * (101 - num1)) + 1; // Ensure sum <= 100
+                    num1 = Math.floor(Math.random() * 49) + 1; // 1-49
+                    num2 = Math.floor(Math.random() * (50 - num1)) + 1; // Ensure sum < 50
                 } else {
-                    num1 = Math.floor(Math.random() * 100) + 1;
-                    num2 = Math.floor(Math.random() * num1) + 1;
+                    num1 = Math.floor(Math.random() * 49) + 1; // 1-49
+                    num2 = Math.floor(Math.random() * num1) + 1; // Ensure positive result
                 }
+                answer = operation === '+' ? num1 + num2 : num1 - num2;
             } else {
                 // Last 10 questions: numbers up to 50
+                operation = Math.random() < 0.5 ? '+' : '-';
                 if (operation === '+') {
                     num1 = Math.floor(Math.random() * 50) + 1;
                     num2 = Math.floor(Math.random() * (51 - num1)) + 1;
@@ -299,25 +332,44 @@
                     num1 = Math.floor(Math.random() * 50) + 1;
                     num2 = Math.floor(Math.random() * num1) + 1;
                 }
+                answer = operation === '+' ? num1 + num2 : num1 - num2;
             }
             
             const problem = `${num1} ${operation} ${num2}`;
-            const answer = operation === '+' ? num1 + num2 : num1 - num2;
-            
             return { problem, answer };
         }
         
-        // Generate wrong answers (all between 0-100 for first 10, 0-50 for last 10)
+        // Generate wrong answers based on question type
         function generateWrongAnswers(correctAnswer) {
             const wrongAnswers = new Set();
-            const maxRange = questionCount <= 10 ? 100 : 50;
             
-            while (wrongAnswers.size < 4) {
-                const wrongAnswer = Math.floor(Math.random() * (maxRange + 1));
-                if (wrongAnswer !== correctAnswer) {
-                    wrongAnswers.add(wrongAnswer);
+            if (isPenaltyQuestion) {
+                // For penalty questions (3-digit addition), wrong answers should be close to correct answer
+                while (wrongAnswers.size < 4) {
+                    const offset = Math.floor(Math.random() * 200) - 100;
+                    const wrongAnswer = correctAnswer + offset;
+                    if (wrongAnswer !== correctAnswer && wrongAnswer > 0) {
+                        wrongAnswers.add(wrongAnswer);
+                    }
+                }
+            } else if (questionCount <= 10) {
+                // First 10 questions: answers under 50
+                while (wrongAnswers.size < 4) {
+                    const wrongAnswer = Math.floor(Math.random() * 50);
+                    if (wrongAnswer !== correctAnswer) {
+                        wrongAnswers.add(wrongAnswer);
+                    }
+                }
+            } else {
+                // Last 10 questions: answers up to 50
+                while (wrongAnswers.size < 4) {
+                    const wrongAnswer = Math.floor(Math.random() * 51);
+                    if (wrongAnswer !== correctAnswer) {
+                        wrongAnswers.add(wrongAnswer);
+                    }
                 }
             }
+            
             return Array.from(wrongAnswers);
         }
         
@@ -326,16 +378,21 @@
             const { problem, answer } = generateProblem();
             currentAnswer = answer;
             
-            problemEl.textContent = problem;
-            questionCountEl.textContent = questionCount;
+            if (!isPenaltyQuestion) {
+                questionCountEl.textContent = questionCount;
+            }
             
-            // Set timer based on question number
-            if (questionCount <= 10) {
+            // Set timer based on question type
+            if (isPenaltyQuestion) {
+                timeLeft = 50; // 50 seconds for 3-digit penalty questions
+            } else if (questionCount <= 10) {
                 timeLeft = 20;
             } else {
                 timeLeft = 10;
             }
             timerEl.textContent = timeLeft;
+            
+            problemEl.textContent = problem;
             
             const wrongAnswers = generateWrongAnswers(answer);
             const allAnswers = [...wrongAnswers, answer];
@@ -427,21 +484,37 @@
                 score++;
                 scoreValueEl.textContent = score;
                 
-                // Only increment question count if answer is correct
-                if (questionCount >= totalQuestions) {
-                    setTimeout(showPrizeModal, 2000);
+                if (isPenaltyQuestion) {
+                    // After correct penalty answer, continue with normal progression
+                    isPenaltyQuestion = false;
+                    if (questionCount >= totalQuestions) {
+                        setTimeout(showPrizeModal, 2000);
+                    } else {
+                        setTimeout(() => {
+                            questionCount++;
+                            displayProblem();
+                            startTimer();
+                        }, 2000);
+                    }
                 } else {
-                    setTimeout(() => {
-                        questionCount++;
-                        displayProblem();
-                        startTimer();
-                    }, 2000);
+                    // Normal correct answer
+                    if (questionCount >= totalQuestions) {
+                        setTimeout(showPrizeModal, 2000);
+                    } else {
+                        setTimeout(() => {
+                            questionCount++;
+                            displayProblem();
+                            startTimer();
+                        }, 2000);
+                    }
                 }
             } else {
-                resultEl.textContent = `Greșit! Încearcă din nou...`;
+                resultEl.textContent = `Greșit! Acum ai o întrebare mai grea...`;
                 resultEl.style.color = '#f56565';
                 
-                // Don't increment question count, just reset the same question after delay
+                // Set penalty question for next attempt
+                isPenaltyQuestion = true;
+                
                 setTimeout(() => {
                     displayProblem();
                     startTimer();
@@ -460,7 +533,7 @@
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     gameActive = false;
-                    resultEl.textContent = `Timp expirat! Încearcă din nou...`;
+                    resultEl.textContent = `Timp expirat! Acum ai o întrebare mai grea...`;
                     resultEl.style.color = '#f56565';
                     
                     const options = document.querySelectorAll('.option');
@@ -472,7 +545,9 @@
                         option.style.pointerEvents = 'none';
                     });
                     
-                    // Don't increment question count, just reset the same question after delay
+                    // Set penalty question for next attempt
+                    isPenaltyQuestion = true;
+                    
                     setTimeout(() => {
                         displayProblem();
                         startTimer();
@@ -485,6 +560,7 @@
         function restartGame() {
             score = 0;
             questionCount = 1;
+            isPenaltyQuestion = false;
             scoreValueEl.textContent = score;
             restartBtn.classList.add('hidden');
             displayProblem();
