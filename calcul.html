@@ -3,113 +3,248 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test de Matematică - Adunare fără Trecere peste Ordin</title>
+    <title>Test de Matematică - Alege Nivelul Tău!</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Comic Sans MS', 'Marker Felt', 'Chalkboard SE', sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff9ec7 0%, #a8e6cf 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.3) 2px, transparent 3px),
+                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.3) 2px, transparent 3px),
+                radial-gradient(circle at 50% 10%, rgba(255, 105, 180, 0.2) 1px, transparent 2px),
+                radial-gradient(circle at 30% 90%, rgba(173, 216, 230, 0.2) 1px, transparent 2px);
         }
         
         .container {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(255, 105, 180, 0.4);
             padding: 40px;
             max-width: 600px;
             width: 100%;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, #ff69b4, #ff9ec7, #a8e6cf, #8fd3f4);
+            z-index: -1;
+            border-radius: 30px;
+            animation: rotateGradient 8s linear infinite;
+            opacity: 0.3;
+        }
+        
+        @keyframes rotateGradient {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         h1 {
-            color: #4a5568;
+            color: #ff69b4;
             margin-bottom: 30px;
-            font-size: 28px;
-            font-weight: 700;
+            font-size: 32px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(45deg, #ff69b4, #ff9ec7, #8fd3f4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .level-selection {
+            margin: 30px 0;
+        }
+        
+        .level-btn {
+            background: linear-gradient(135deg, #ffebf3, #f0f8ff);
+            border: 3px solid #ff9ec7;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 15px 0;
+            font-size: 22px;
+            font-weight: bold;
+            color: #ff69b4;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(255, 158, 199, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .level-btn:hover {
+            background: linear-gradient(135deg, #ffe6f0, #e6f7ff);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 16px rgba(255, 158, 199, 0.5);
+            border-color: #ff69b4;
+        }
+        
+        .level-btn.easy {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #e8f5e8, #f0f8ff);
+            color: #2e7d32;
+        }
+        
+        .level-btn.easy:hover {
+            border-color: #2e7d32;
+            background: linear-gradient(135deg, #d4edda, #e6f7ff);
+        }
+        
+        .level-btn.medium {
+            border-color: #FF9800;
+            background: linear-gradient(135deg, #fff3e0, #f0f8ff);
+            color: #E65100;
+        }
+        
+        .level-btn.medium:hover {
+            border-color: #E65100;
+            background: linear-gradient(135deg, #ffe0b2, #e6f7ff);
+        }
+        
+        .level-btn.hard {
+            border-color: #F44336;
+            background: linear-gradient(135deg, #ffebee, #f0f8ff);
+            color: #C62828;
+        }
+        
+        .level-btn.hard:hover {
+            border-color: #C62828;
+            background: linear-gradient(135deg, #ffcdd2, #e6f7ff);
         }
         
         .timer-container {
-            background: #e2e8f0;
+            background: linear-gradient(45deg, #ffebf3, #e6f7ff);
             border-radius: 50px;
             padding: 15px 25px;
             margin-bottom: 30px;
             display: inline-block;
+            border: 3px solid #ff9ec7;
+            box-shadow: 0 4px 8px rgba(255, 158, 199, 0.3);
         }
         
         .timer {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
-            color: #2d3748;
+            color: #ff69b4;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         
         .progress {
-            background: #e2e8f0;
+            background: linear-gradient(45deg, #e6f7ff, #fff0f5);
             border-radius: 50px;
-            padding: 10px 20px;
-            margin-bottom: 20px;
+            padding: 12px 22px;
+            margin-bottom: 25px;
             display: inline-block;
-            font-size: 16px;
-            color: #4a5568;
+            font-size: 18px;
+            color: #ff69b4;
+            border: 2px solid #8fd3f4;
+            box-shadow: 0 3px 6px rgba(143, 211, 244, 0.3);
         }
         
         .problem {
-            font-size: 48px;
+            font-size: 52px;
             font-weight: bold;
-            color: #2d3748;
+            color: #ff69b4;
             margin: 30px 0;
-            min-height: 60px;
+            min-height: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(45deg, #fff0f5, #f0f8ff);
+            border-radius: 20px;
+            padding: 15px;
+            border: 3px dashed #ff9ec7;
         }
         
         .options-container {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 12px;
             margin: 30px 0;
             flex-wrap: wrap;
         }
         
         .option {
-            background: #f7fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 15px;
-            padding: 15px 20px;
-            font-size: 20px;
+            background: linear-gradient(135deg, #ffebf3, #f0f8ff);
+            border: 3px solid #ff9ec7;
+            border-radius: 20px;
+            padding: 18px 22px;
+            font-size: 22px;
             font-weight: bold;
-            color: #4a5568;
+            color: #ff69b4;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-width: 80px;
+            min-width: 85px;
+            box-shadow: 0 4px 8px rgba(255, 158, 199, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
         }
         
         .option:hover {
-            background: #edf2f7;
-            border-color: #cbd5e0;
-            transform: translateY(-2px);
+            background: linear-gradient(135deg, #ffe6f0, #e6f7ff);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 16px rgba(255, 158, 199, 0.5);
+            border-color: #ff69b4;
+        }
+        
+        .option:hover::before {
+            left: 100%;
         }
         
         .option.correct {
-            background: #c6f6d5;
-            border-color: #48bb78;
-            color: #2f855a;
+            background: linear-gradient(135deg, #c8f7c5, #a8e6cf);
+            border-color: #4CAF50;
+            color: #2e7d32;
+            animation: bounce 0.6s ease-in-out;
         }
         
         .option.incorrect {
-            background: #fed7d7;
-            border-color: #f56565;
-            color: #c53030;
+            background: linear-gradient(135deg, #ffcdd2, #ffebee);
+            border-color: #f44336;
+            color: #c62828;
+            animation: shake 0.6s ease-in-out;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) scale(1); }
+            40% { transform: translateY(-10px) scale(1.1); }
+            60% { transform: translateY(-5px) scale(1.05); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
         
         .option:disabled {
@@ -119,38 +254,45 @@
         }
         
         .result {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: bold;
             margin: 20px 0;
-            min-height: 30px;
+            min-height: 35px;
+            color: #ff69b4;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         
         .score {
-            font-size: 18px;
-            color: #718096;
+            font-size: 20px;
+            color: #ff69b4;
             margin-bottom: 25px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         
         .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff69b4, #ff9ec7);
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 15px 40px;
-            font-size: 18px;
+            padding: 18px 45px;
+            font-size: 20px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 10px;
+            margin-top: 15px;
+            box-shadow: 0 6px 12px rgba(255, 105, 180, 0.4);
+            font-family: 'Comic Sans MS', 'Marker Felt', 'Chalkboard SE', sans-serif;
         }
         
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(255, 105, 180, 0.6);
+            background: linear-gradient(135deg, #ff5ca8, #ff8db8);
         }
         
         .btn:active {
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
         
         .btn:disabled {
@@ -169,21 +311,24 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(255, 158, 199, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            backdrop-filter: blur(5px);
         }
         
         .prize-content {
             background: white;
-            border-radius: 20px;
-            padding: 40px;
+            border-radius: 30px;
+            padding: 50px;
             text-align: center;
-            max-width: 500px;
+            max-width: 550px;
             width: 90%;
-            animation: popIn 0.5s ease-out;
+            animation: popIn 0.6s ease-out;
+            border: 5px solid #ff69b4;
+            box-shadow: 0 20px 40px rgba(255, 105, 180, 0.5);
         }
         
         @keyframes popIn {
@@ -192,23 +337,32 @@
         }
         
         .prize-title {
-            font-size: 32px;
-            color: #48bb78;
-            margin-bottom: 20px;
+            font-size: 36px;
+            color: #ff69b4;
+            margin-bottom: 25px;
             font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
         
         .prize-message {
-            font-size: 20px;
-            color: #2d3748;
-            margin-bottom: 30px;
-            line-height: 1.5;
+            font-size: 22px;
+            color: #ff69b4;
+            margin-bottom: 35px;
+            line-height: 1.6;
+            font-weight: bold;
         }
         
         .trophy {
-            font-size: 80px;
-            margin: 20px 0;
+            font-size: 100px;
+            margin: 25px 0;
             color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            animation: sparkle 2s infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            50% { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 40px gold; }
         }
         
         .fireworks {
@@ -223,41 +377,99 @@
         
         .firework {
             position: absolute;
-            width: 5px;
-            height: 5px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
-            animation: explode 1s ease-out forwards;
+            animation: explode 1.2s ease-out forwards;
         }
         
         @keyframes explode {
-            0% { transform: translate(0, 0); opacity: 1; width: 5px; height: 5px; }
-            100% { transform: translate(var(--tx), var(--ty)); opacity: 0; width: 2px; height: 2px; }
+            0% { transform: translate(0, 0); opacity: 1; width: 6px; height: 6px; }
+            100% { transform: translate(var(--tx), var(--ty)); opacity: 0; width: 3px; height: 3px; }
+        }
+        
+        /* Decorative elements */
+        .star {
+            position: absolute;
+            font-size: 20px;
+            color: #ff69b4;
+            opacity: 0.7;
+            animation: twinkle 3s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.9; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Test de Matematică - Adunare fără Trecere peste Ordin</h1>
-        
-        <div class="progress">Întrebarea: <span id="question-count">1</span>/20</div>
-        
-        <div class="timer-container">
-            <span class="timer">20</span>
+        <!-- Level Selection Screen -->
+        <div id="level-screen">
+            <h1>✨ Alege Nivelul Tău! ✨</h1>
+            <p style="color: #ff69b4; margin-bottom: 25px; font-size: 18px;">Selectează dificultatea și începe aventura matematică!</p>
+            
+            <div class="level-selection">
+                <button class="level-btn easy" data-level="easy">
+                    🌟 Ușor<br>
+                    <span style="font-size: 16px; font-weight: normal;">Adunări și scăderi</span>
+                </button>
+                
+                <button class="level-btn medium" data-level="medium">
+                    ⭐ Mediu<br>
+                    <span style="font-size: 16px; font-weight: normal;">Adunări, scăderi, înmulțiri și împărțiri</span>
+                </button>
+                
+                <button class="level-btn hard" data-level="hard">
+                    💫 Greu<br>
+                    <span style="font-size: 16px; font-weight: normal;">Toate operațiile + puteri</span>
+                </button>
+            </div>
         </div>
         
-        <div class="score">Scor: <span id="score-value">0</span></div>
-        
-        <div class="problem" id="problem"></div>
-        
-        <div class="options-container" id="options-container"></div>
-        
-        <div class="result" id="result"></div>
-        
-        <button class="btn hidden" id="restart-btn">Reîncepe Jocul</button>
+        <!-- Game Screen -->
+        <div id="game-screen" class="hidden">
+            <h1>✨ Test de Matematică Magic! ✨</h1>
+            
+            <div class="progress">Întrebarea: <span id="question-count">1</span>/20</div>
+            
+            <div class="timer-container">
+                <span class="timer">20</span>
+            </div>
+            
+            <div class="score">Scor: <span id="score-value">0</span> 🌟</div>
+            
+            <div class="problem" id="problem"></div>
+            
+            <div class="options-container" id="options-container"></div>
+            
+            <div class="result" id="result"></div>
+            
+            <button class="btn hidden" id="restart-btn">Reîncepe Jocul! 🎀</button>
+        </div>
     </div>
 
     <script>
+        // Add decorative stars
+        function addStars() {
+            const colors = ['#ff69b4', '#ff9ec7', '#8fd3f4', '#a8e6cf', '#ffd700'];
+            for (let i = 0; i < 15; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.innerHTML = '⭐';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.color = colors[Math.floor(Math.random() * colors.length)];
+                star.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                document.body.appendChild(star);
+            }
+        }
+        
         // Elements
+        const levelScreen = document.getElementById('level-screen');
+        const gameScreen = document.getElementById('game-screen');
         const problemEl = document.getElementById('problem');
         const optionsContainer = document.getElementById('options-container');
         const resultEl = document.getElementById('result');
@@ -265,6 +477,7 @@
         const scoreValueEl = document.getElementById('score-value');
         const restartBtn = document.getElementById('restart-btn');
         const questionCountEl = document.getElementById('question-count');
+        const levelButtons = document.querySelectorAll('.level-btn');
         
         // Game state
         let score = 0;
@@ -274,15 +487,44 @@
         let currentAnswer;
         let gameActive = true;
         let isPenaltyQuestion = false;
+        let currentLevel = 'easy';
         const totalQuestions = 20;
+        
+        // Level descriptions
+        const levelInfo = {
+            easy: {
+                name: 'Ușor',
+                operations: ['+', '-'],
+                maxNumbers: [50, 50],
+                penaltyMax: 100,
+                timeFirst10: 20,
+                timeLast10: 10,
+                penaltyTime: 50
+            },
+            medium: {
+                name: 'Mediu',
+                operations: ['+', '-', '*', '/'],
+                maxNumbers: [20, 20],
+                penaltyMax: 50,
+                timeFirst10: 25,
+                timeLast10: 15,
+                penaltyTime: 60
+            },
+            hard: {
+                name: 'Greu',
+                operations: ['+', '-', '*', '/', '^'],
+                maxNumbers: [10, 5],
+                penaltyMax: 30,
+                timeFirst10: 30,
+                timeLast10: 20,
+                penaltyTime: 70
+            }
+        };
         
         // Check if addition has no carry-over (fără trecere peste ordin)
         function hasNoCarry(num1, num2) {
-            // Check units place
             if ((num1 % 10) + (num2 % 10) >= 10) return false;
-            // Check tens place
             if (Math.floor(num1 / 10) % 10 + Math.floor(num2 / 10) % 10 >= 10) return false;
-            // Check hundreds place (for 3-digit numbers)
             if (Math.floor(num1 / 100) + Math.floor(num2 / 100) >= 10) return false;
             return true;
         }
@@ -291,82 +533,125 @@
         function generateNoCarryAddition() {
             let num1, num2;
             do {
-                // Generate first number: 100-999
                 num1 = Math.floor(Math.random() * 900) + 100;
-                // Generate second number: 100-999
                 num2 = Math.floor(Math.random() * 900) + 100;
             } while (!hasNoCarry(num1, num2));
-            
             return { num1, num2, answer: num1 + num2 };
         }
         
-        // Generate random math problem with appropriate difficulty
+        // Generate random math problem based on level
         function generateProblem() {
-            let num1, num2, operation, answer;
-            
             if (isPenaltyQuestion) {
-                // Penalty question: 3-digit addition WITHOUT carry-over (only plus, no subtraction)
-                const { num1: n1, num2: n2, answer: ans } = generateNoCarryAddition();
-                num1 = n1;
-                num2 = n2;
-                operation = '+';
-                answer = ans;
-            } else if (questionCount <= 10) {
-                // First 10 questions: numbers under 50
-                operation = Math.random() < 0.5 ? '+' : '-';
-                if (operation === '+') {
-                    num1 = Math.floor(Math.random() * 49) + 1; // 1-49
-                    num2 = Math.floor(Math.random() * (50 - num1)) + 1; // Ensure sum < 50
+                // Penalty question: 3-digit addition WITHOUT carry-over (only plus)
+                const { num1, num2, answer } = generateNoCarryAddition();
+                return { problem: `${num1} + ${num2}`, answer };
+            }
+            
+            const level = levelInfo[currentLevel];
+            const operation = level.operations[Math.floor(Math.random() * level.operations.length)];
+            
+            let num1, num2, answer;
+            
+            if (operation === '+') {
+                if (questionCount <= 10) {
+                    num1 = Math.floor(Math.random() * level.maxNumbers[0]) + 1;
+                    num2 = Math.floor(Math.random() * (level.maxNumbers[0] + 1 - num1)) + 1;
                 } else {
-                    num1 = Math.floor(Math.random() * 49) + 1; // 1-49
-                    num2 = Math.floor(Math.random() * num1) + 1; // Ensure positive result
-                }
-                answer = operation === '+' ? num1 + num2 : num1 - num2;
-            } else {
-                // Last 10 questions: numbers up to 50
-                operation = Math.random() < 0.5 ? '+' : '-';
-                if (operation === '+') {
                     num1 = Math.floor(Math.random() * 50) + 1;
                     num2 = Math.floor(Math.random() * (51 - num1)) + 1;
+                }
+                answer = num1 + num2;
+            } 
+            else if (operation === '-') {
+                if (questionCount <= 10) {
+                    num1 = Math.floor(Math.random() * level.maxNumbers[0]) + 1;
+                    num2 = Math.floor(Math.random() * num1) + 1;
                 } else {
                     num1 = Math.floor(Math.random() * 50) + 1;
                     num2 = Math.floor(Math.random() * num1) + 1;
                 }
-                answer = operation === '+' ? num1 + num2 : num1 - num2;
+                answer = num1 - num2;
+            }
+            else if (operation === '*') {
+                if (questionCount <= 10) {
+                    num1 = Math.floor(Math.random() * level.maxNumbers[1]) + 1;
+                    num2 = Math.floor(Math.random() * level.maxNumbers[1]) + 1;
+                } else {
+                    num1 = Math.floor(Math.random() * 10) + 1;
+                    num2 = Math.floor(Math.random() * 10) + 1;
+                }
+                answer = num1 * num2;
+            }
+            else if (operation === '/') {
+                if (questionCount <= 10) {
+                    num2 = Math.floor(Math.random() * level.maxNumbers[1]) + 1;
+                    answer = Math.floor(Math.random() * level.maxNumbers[1]) + 1;
+                    num1 = num2 * answer;
+                } else {
+                    num2 = Math.floor(Math.random() * 10) + 1;
+                    answer = Math.floor(Math.random() * 10) + 1;
+                    num1 = num2 * answer;
+                }
+            }
+            else if (operation === '^') {
+                if (questionCount <= 10) {
+                    num1 = Math.floor(Math.random() * 5) + 2; // 2-6
+                    num2 = Math.floor(Math.random() * 3) + 2; // 2-4
+                } else {
+                    num1 = Math.floor(Math.random() * 4) + 2; // 2-5
+                    num2 = Math.floor(Math.random() * 2) + 2; // 2-3
+                }
+                answer = Math.pow(num1, num2);
             }
             
-            const problem = `${num1} ${operation} ${num2}`;
+            let problem;
+            if (operation === '^') {
+                problem = `${num1}<sup>${num2}</sup>`;
+            } else if (operation === '/') {
+                problem = `${num1} ÷ ${num2}`;
+            } else {
+                problem = `${num1} ${operation} ${num2}`;
+            }
+            
             return { problem, answer };
         }
         
-        // Generate wrong answers based on question type
+        // Generate wrong answers based on level and question type
         function generateWrongAnswers(correctAnswer) {
             const wrongAnswers = new Set();
+            const maxAttempts = 20;
+            let attempts = 0;
             
             if (isPenaltyQuestion) {
-                // For penalty questions (3-digit addition), wrong answers should be close to correct answer
-                while (wrongAnswers.size < 4) {
+                while (wrongAnswers.size < 4 && attempts < maxAttempts) {
                     const offset = Math.floor(Math.random() * 200) - 100;
                     const wrongAnswer = correctAnswer + offset;
                     if (wrongAnswer !== correctAnswer && wrongAnswer > 0) {
                         wrongAnswers.add(wrongAnswer);
                     }
-                }
-            } else if (questionCount <= 10) {
-                // First 10 questions: answers under 50
-                while (wrongAnswers.size < 4) {
-                    const wrongAnswer = Math.floor(Math.random() * 50);
-                    if (wrongAnswer !== correctAnswer) {
-                        wrongAnswers.add(wrongAnswer);
-                    }
+                    attempts++;
                 }
             } else {
-                // Last 10 questions: answers up to 50
-                while (wrongAnswers.size < 4) {
-                    const wrongAnswer = Math.floor(Math.random() * 51);
-                    if (wrongAnswer !== correctAnswer) {
+                const level = levelInfo[currentLevel];
+                const range = currentLevel === 'easy' ? 50 : (currentLevel === 'medium' ? 100 : 200);
+                
+                while (wrongAnswers.size < 4 && attempts < maxAttempts) {
+                    const wrongAnswer = Math.floor(Math.random() * (range + 1));
+                    if (wrongAnswer !== correctAnswer && wrongAnswer >= 0) {
                         wrongAnswers.add(wrongAnswer);
                     }
+                    attempts++;
+                }
+            }
+            
+            // If we couldn't generate enough unique wrong answers, fill with sequential numbers
+            if (wrongAnswers.size < 4) {
+                let filler = correctAnswer + 1;
+                while (wrongAnswers.size < 4) {
+                    if (filler !== correctAnswer) {
+                        wrongAnswers.add(filler);
+                    }
+                    filler++;
                 }
             }
             
@@ -382,17 +667,17 @@
                 questionCountEl.textContent = questionCount;
             }
             
-            // Set timer based on question type
+            // Set timer based on level and question type
             if (isPenaltyQuestion) {
-                timeLeft = 50; // 50 seconds for 3-digit penalty questions
+                timeLeft = levelInfo[currentLevel].penaltyTime;
             } else if (questionCount <= 10) {
-                timeLeft = 20;
+                timeLeft = levelInfo[currentLevel].timeFirst10;
             } else {
-                timeLeft = 10;
+                timeLeft = levelInfo[currentLevel].timeLast10;
             }
             timerEl.textContent = timeLeft;
             
-            problemEl.textContent = problem;
+            problemEl.innerHTML = problem;
             
             const wrongAnswers = generateWrongAnswers(answer);
             const allAnswers = [...wrongAnswers, answer];
@@ -417,22 +702,22 @@
             container.className = 'fireworks';
             document.body.appendChild(container);
             
-            const colors = ['#FF5252', '#4CAF50', '#2196F3', '#FFC107', '#9C27B0', '#00BCD4'];
+            const colors = ['#FF5252', '#4CAF50', '#2196F3', '#FFC107', '#9C27B0', '#00BCD4', '#FF69B4', '#FF9EC7'];
             
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 60; i++) {
                 const firework = document.createElement('div');
                 firework.className = 'firework';
                 firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                 firework.style.left = Math.random() * 100 + '%';
                 firework.style.top = Math.random() * 100 + '%';
-                firework.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
-                firework.style.setProperty('--ty', (Math.random() - 0.5) * 200 + 'px');
+                firework.style.setProperty('--tx', (Math.random() - 0.5) * 250 + 'px');
+                firework.style.setProperty('--ty', (Math.random() - 0.5) * 250 + 'px');
                 container.appendChild(firework);
             }
             
             setTimeout(() => {
                 container.remove();
-            }, 2000);
+            }, 2500);
         }
         
         // Show prize modal
@@ -444,12 +729,13 @@
             modal.innerHTML = `
                 <div class="prize-content">
                     <div class="trophy">🏆</div>
-                    <div class="prize-title">Felicitări!</div>
+                    <div class="prize-title">Felicitări, Super Eroine! 🌈</div>
                     <div class="prize-message">
                         Ai completat cu succes toate cele 20 de întrebări!<br>
-                        Ești un adevărat campion al matematicii! 🎉
+                        Ești o adevărată campioană a matematicii! ✨<br>
+                        Ai câștigat coroana magică! 👑
                     </div>
-                    <button class="btn" id="final-restart-btn">Joacă din nou</button>
+                    <button class="btn" id="final-restart-btn">Joacă din nou! 🎀</button>
                 </div>
             `;
             document.body.appendChild(modal);
@@ -479,13 +765,12 @@
             });
             
             if (selectedAnswer === currentAnswer) {
-                resultEl.textContent = 'Corect! 🎉';
-                resultEl.style.color = '#48bb78';
+                resultEl.textContent = 'Corect! 🎉✨';
+                resultEl.style.color = '#4CAF50';
                 score++;
                 scoreValueEl.textContent = score;
                 
                 if (isPenaltyQuestion) {
-                    // After correct penalty answer, continue with normal progression
                     isPenaltyQuestion = false;
                     if (questionCount >= totalQuestions) {
                         setTimeout(showPrizeModal, 2000);
@@ -497,7 +782,6 @@
                         }, 2000);
                     }
                 } else {
-                    // Normal correct answer
                     if (questionCount >= totalQuestions) {
                         setTimeout(showPrizeModal, 2000);
                     } else {
@@ -509,10 +793,8 @@
                     }
                 }
             } else {
-                resultEl.textContent = `Greșit! Acum ai o întrebare mai grea...`;
-                resultEl.style.color = '#f56565';
-                
-                // Set penalty question for next attempt
+                resultEl.textContent = `Greșit! Acum ai o întrebare mai grea... 💫`;
+                resultEl.style.color = '#f44336';
                 isPenaltyQuestion = true;
                 
                 setTimeout(() => {
@@ -533,8 +815,8 @@
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     gameActive = false;
-                    resultEl.textContent = `Timp expirat! Acum ai o întrebare mai grea...`;
-                    resultEl.style.color = '#f56565';
+                    resultEl.textContent = `Timp expirat! Acum ai o întrebare mai grea... 💫`;
+                    resultEl.style.color = '#f44336';
                     
                     const options = document.querySelectorAll('.option');
                     options.forEach(option => {
@@ -545,7 +827,6 @@
                         option.style.pointerEvents = 'none';
                     });
                     
-                    // Set penalty question for next attempt
                     isPenaltyQuestion = true;
                     
                     setTimeout(() => {
@@ -567,12 +848,27 @@
             startTimer();
         }
         
+        // Start game with selected level
+        function startGame(level) {
+            currentLevel = level;
+            levelScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            restartGame();
+        }
+        
+        // Event listeners for level selection
+        levelButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const level = button.getAttribute('data-level');
+                startGame(level);
+            });
+        });
+        
         // Event listener for restart button
         restartBtn.addEventListener('click', restartGame);
         
-        // Initialize game
-        displayProblem();
-        startTimer();
+        // Initialize game and add decorative elements
+        addStars();
     </script>
 </body>
 </html>
