@@ -262,14 +262,6 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         
-        .score {
-            font-size: 20px;
-            color: #ff69b4;
-            margin-bottom: 25px;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-        
         .points {
             font-size: 22px;
             color: #ff69b4;
@@ -307,6 +299,27 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #8fd3f4, #a8e6cf);
+            color: #ff69b4;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(143, 211, 244, 0.4);
+            font-family: 'Comic Sans MS', 'Marker Felt', 'Chalkboard SE', sans-serif;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 12px rgba(143, 211, 244, 0.6);
+            background: linear-gradient(135deg, #7fc7e8, #98d9c0);
         }
         
         .hidden {
@@ -455,6 +468,7 @@
             <div class="result" id="result"></div>
             
             <button class="btn hidden" id="restart-btn">Reîncepe Jocul! 🎀</button>
+            <button class="back-btn" id="back-to-level-btn">❮ Înapoi la Alegere</button>
         </div>
     </div>
 
@@ -484,6 +498,7 @@
         const timerEl = document.querySelector('.timer');
         const pointsValueEl = document.getElementById('points-value');
         const restartBtn = document.getElementById('restart-btn');
+        const backToLevelBtn = document.getElementById('back-to-level-btn');
         const questionCountEl = document.getElementById('question-count');
         const levelButtons = document.querySelectorAll('.level-btn');
         
@@ -498,34 +513,31 @@
         let currentLevel = 'easy';
         const totalQuestions = 20;
         
-        // Level descriptions
+        // Level descriptions - all levels have 20 seconds, penalty has 50 seconds
         const levelInfo = {
             easy: {
                 name: 'Ușor',
                 operations: ['+', '-'],
                 maxNumbers: [50, 50],
                 penaltyMax: 100,
-                timeFirst10: 20,
-                timeLast10: 10,
-                penaltyTime: 50
+                timeAll: 20,
+                penaltyTime: 50 // 50 seconds for penalty questions (as requested)
             },
             medium: {
                 name: 'Mediu',
                 operations: ['*', '/'],
                 maxNumbers: [20, 20],
                 penaltyMax: 50,
-                timeFirst10: 25,
-                timeLast10: 10,
-                penaltyTime: 60
+                timeAll: 20,
+                penaltyTime: 50 // 50 seconds for penalty questions (as requested)
             },
             hard: {
                 name: 'Greu',
                 operations: ['*', '/', '^'],
                 maxNumbers: [10, 5],
                 penaltyMax: 30,
-                timeFirst10: 30,
-                timeLast10: 10,
-                penaltyTime: 70
+                timeAll: 20,
+                penaltyTime: 50 // 50 seconds for penalty questions (as requested)
             }
         };
         
@@ -601,55 +613,29 @@
             let num1, num2, answer;
             
             if (operation === '*') {
-                if (questionCount <= 10) {
-                    num1 = Math.floor(Math.random() * level.maxNumbers[1]) + 1;
-                    num2 = Math.floor(Math.random() * level.maxNumbers[1]) + 1;
-                } else {
-                    num1 = Math.floor(Math.random() * 10) + 1;
-                    num2 = Math.floor(Math.random() * 10) + 1;
-                }
+                num1 = Math.floor(Math.random() * level.maxNumbers[1]) + 1;
+                num2 = Math.floor(Math.random() * level.maxNumbers[1]) + 1;
                 answer = num1 * num2;
             }
             else if (operation === '/') {
-                if (questionCount <= 10) {
-                    num2 = Math.floor(Math.random() * level.maxNumbers[1]) + 1;
-                    answer = Math.floor(Math.random() * level.maxNumbers[1]) + 1;
-                    num1 = num2 * answer;
-                } else {
-                    num2 = Math.floor(Math.random() * 10) + 1;
-                    answer = Math.floor(Math.random() * 10) + 1;
-                    num1 = num2 * answer;
-                }
+                num2 = Math.floor(Math.random() * level.maxNumbers[1]) + 1;
+                answer = Math.floor(Math.random() * level.maxNumbers[1]) + 1;
+                num1 = num2 * answer;
             }
             else if (operation === '^') {
-                if (questionCount <= 10) {
-                    num1 = Math.floor(Math.random() * 5) + 2; // 2-6
-                    num2 = Math.floor(Math.random() * 3) + 2; // 2-4
-                } else {
-                    num1 = Math.floor(Math.random() * 4) + 2; // 2-5
-                    num2 = Math.floor(Math.random() * 2) + 2; // 2-3
-                }
+                num1 = Math.floor(Math.random() * 5) + 2; // 2-6
+                num2 = Math.floor(Math.random() * 3) + 2; // 2-4
                 answer = Math.pow(num1, num2);
             }
             // For easy level, we still have + and -
             else if (operation === '+') {
-                if (questionCount <= 10) {
-                    num1 = Math.floor(Math.random() * level.maxNumbers[0]) + 1;
-                    num2 = Math.floor(Math.random() * (level.maxNumbers[0] + 1 - num1)) + 1;
-                } else {
-                    num1 = Math.floor(Math.random() * 50) + 1;
-                    num2 = Math.floor(Math.random() * (51 - num1)) + 1;
-                }
+                num1 = Math.floor(Math.random() * level.maxNumbers[0]) + 1;
+                num2 = Math.floor(Math.random() * (level.maxNumbers[0] + 1 - num1)) + 1;
                 answer = num1 + num2;
             } 
             else if (operation === '-') {
-                if (questionCount <= 10) {
-                    num1 = Math.floor(Math.random() * level.maxNumbers[0]) + 1;
-                    num2 = Math.floor(Math.random() * num1) + 1;
-                } else {
-                    num1 = Math.floor(Math.random() * 50) + 1;
-                    num2 = Math.floor(Math.random() * num1) + 1;
-                }
+                num1 = Math.floor(Math.random() * level.maxNumbers[0]) + 1;
+                num2 = Math.floor(Math.random() * num1) + 1;
                 answer = num1 - num2;
             }
             
@@ -741,11 +727,9 @@
             
             // Set timer based on level and question type
             if (isPenaltyQuestion) {
-                timeLeft = levelInfo[currentLevel].penaltyTime;
-            } else if (questionCount <= 10) {
-                timeLeft = levelInfo[currentLevel].timeFirst10;
+                timeLeft = levelInfo[currentLevel].penaltyTime; // Always 50 seconds for penalty
             } else {
-                timeLeft = 10; // Always 10 seconds after 10 correct answers
+                timeLeft = levelInfo[currentLevel].timeAll; // Always 20 seconds for regular questions
             }
             timerEl.textContent = timeLeft;
             
@@ -808,6 +792,7 @@
                         Ești o adevărată campioană a matematicii! 👑
                     </div>
                     <button class="btn" id="final-restart-btn">Joacă din nou! 🎀</button>
+                    <button class="back-btn" style="margin-top: 15px;" id="final-back-btn">❮ Înapoi la Alegere</button>
                 </div>
             `;
             document.body.appendChild(modal);
@@ -815,6 +800,11 @@
             document.getElementById('final-restart-btn').addEventListener('click', () => {
                 modal.remove();
                 restartGame();
+            });
+            
+            document.getElementById('final-back-btn').addEventListener('click', () => {
+                modal.remove();
+                goBackToLevelSelection();
             });
         }
         
@@ -925,6 +915,12 @@
             startTimer();
         }
         
+        // Go back to level selection
+        function goBackToLevelSelection() {
+            gameScreen.classList.add('hidden');
+            levelScreen.classList.remove('hidden');
+        }
+        
         // Start game with selected level
         function startGame(level) {
             currentLevel = level;
@@ -943,6 +939,9 @@
         
         // Event listener for restart button
         restartBtn.addEventListener('click', restartGame);
+        
+        // Event listener for back to level button
+        backToLevelBtn.addEventListener('click', goBackToLevelSelection);
         
         // Initialize game and add decorative elements
         addStars();
