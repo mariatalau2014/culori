@@ -418,12 +418,12 @@
                 
                 <button class="level-btn medium" data-level="medium">
                     ⭐ Mediu<br>
-                    <span style="font-size: 16px; font-weight: normal;">Adunări, scăderi, înmulțiri și împărțiri</span>
+                    <span style="font-size: 16px; font-weight: normal;">Înmulțiri și împărțiri</span>
                 </button>
                 
                 <button class="level-btn hard" data-level="hard">
                     💫 Greu<br>
-                    <span style="font-size: 16px; font-weight: normal;">Toate operațiile + puteri</span>
+                    <span style="font-size: 16px; font-weight: normal;">Înmulțiri, împărțiri și puteri</span>
                 </button>
             </div>
         </div>
@@ -490,7 +490,7 @@
         let currentLevel = 'easy';
         const totalQuestions = 20;
         
-        // Level descriptions
+        // Level descriptions - updated to remove + and - from medium and hard
         const levelInfo = {
             easy: {
                 name: 'Ușor',
@@ -503,20 +503,20 @@
             },
             medium: {
                 name: 'Mediu',
-                operations: ['+', '-', '*', '/'],
+                operations: ['*', '/'], // Only multiplication and division
                 maxNumbers: [20, 20],
                 penaltyMax: 50,
                 timeFirst10: 25,
-                timeLast10: 10, // Changed to 10 seconds after 10 correct answers
+                timeLast10: 10,
                 penaltyTime: 60
             },
             hard: {
                 name: 'Greu',
-                operations: ['+', '-', '*', '/', '^'],
+                operations: ['*', '/', '^'], // Only multiplication, division, and powers
                 maxNumbers: [10, 5],
                 penaltyMax: 30,
                 timeFirst10: 30,
-                timeLast10: 10, // Changed to 10 seconds after 10 correct answers
+                timeLast10: 10,
                 penaltyTime: 70
             }
         };
@@ -552,27 +552,7 @@
             
             let num1, num2, answer;
             
-            if (operation === '+') {
-                if (questionCount <= 10) {
-                    num1 = Math.floor(Math.random() * level.maxNumbers[0]) + 1;
-                    num2 = Math.floor(Math.random() * (level.maxNumbers[0] + 1 - num1)) + 1;
-                } else {
-                    num1 = Math.floor(Math.random() * 50) + 1;
-                    num2 = Math.floor(Math.random() * (51 - num1)) + 1;
-                }
-                answer = num1 + num2;
-            } 
-            else if (operation === '-') {
-                if (questionCount <= 10) {
-                    num1 = Math.floor(Math.random() * level.maxNumbers[0]) + 1;
-                    num2 = Math.floor(Math.random() * num1) + 1;
-                } else {
-                    num1 = Math.floor(Math.random() * 50) + 1;
-                    num2 = Math.floor(Math.random() * num1) + 1;
-                }
-                answer = num1 - num2;
-            }
-            else if (operation === '*') {
+            if (operation === '*') {
                 if (questionCount <= 10) {
                     num1 = Math.floor(Math.random() * level.maxNumbers[1]) + 1;
                     num2 = Math.floor(Math.random() * level.maxNumbers[1]) + 1;
@@ -602,6 +582,27 @@
                     num2 = Math.floor(Math.random() * 2) + 2; // 2-3
                 }
                 answer = Math.pow(num1, num2);
+            }
+            // For easy level, we still have + and -
+            else if (operation === '+') {
+                if (questionCount <= 10) {
+                    num1 = Math.floor(Math.random() * level.maxNumbers[0]) + 1;
+                    num2 = Math.floor(Math.random() * (level.maxNumbers[0] + 1 - num1)) + 1;
+                } else {
+                    num1 = Math.floor(Math.random() * 50) + 1;
+                    num2 = Math.floor(Math.random() * (51 - num1)) + 1;
+                }
+                answer = num1 + num2;
+            } 
+            else if (operation === '-') {
+                if (questionCount <= 10) {
+                    num1 = Math.floor(Math.random() * level.maxNumbers[0]) + 1;
+                    num2 = Math.floor(Math.random() * num1) + 1;
+                } else {
+                    num1 = Math.floor(Math.random() * 50) + 1;
+                    num2 = Math.floor(Math.random() * num1) + 1;
+                }
+                answer = num1 - num2;
             }
             
             let problem;
@@ -673,7 +674,7 @@
             } else if (questionCount <= 10) {
                 timeLeft = levelInfo[currentLevel].timeFirst10;
             } else {
-                timeLeft = 10; // Always 10 seconds after 10 correct answers (as requested)
+                timeLeft = 10; // Always 10 seconds after 10 correct answers
             }
             timerEl.textContent = timeLeft;
             
