@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test de Matematică - Provocare Progresivă</title>
+    <title>Test de Matematică - Răspuns Corect Obligatoriu</title>
     <style>
         * {
             margin: 0;
@@ -237,7 +237,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Test de Matematică - Provocare Progresivă</h1>
+        <h1>Test de Matematică - Răspuns Corect Obligatoriu</h1>
         
         <div class="progress">Întrebarea: <span id="question-count">1</span>/20</div>
         
@@ -275,23 +275,23 @@
         let gameActive = true;
         const totalQuestions = 20;
         
-        // Generate random math problem with appropriate difficulty
+        // Generate random math problem with numbers up to 100 (no 3-digit numbers)
         function generateProblem() {
             const operations = ['+', '-'];
             const operation = operations[Math.floor(Math.random() * operations.length)];
             
             let num1, num2;
             if (questionCount <= 10) {
-                // First 10 questions: larger numbers (up to 100 for addition, up to 100 for subtraction)
+                // First 10 questions: larger numbers but max 100
                 if (operation === '+') {
                     num1 = Math.floor(Math.random() * 100) + 1;
-                    num2 = Math.floor(Math.random() * 100) + 1;
+                    num2 = Math.floor(Math.random() * (101 - num1)) + 1; // Ensure sum <= 100
                 } else {
-                    num1 = Math.floor(Math.random() * 200) + 50; // Larger first number
-                    num2 = Math.floor(Math.random() * (num1 - 1)) + 1;
+                    num1 = Math.floor(Math.random() * 100) + 1;
+                    num2 = Math.floor(Math.random() * num1) + 1;
                 }
             } else {
-                // Last 10 questions: numbers up to 50 as requested
+                // Last 10 questions: numbers up to 50
                 if (operation === '+') {
                     num1 = Math.floor(Math.random() * 50) + 1;
                     num2 = Math.floor(Math.random() * (51 - num1)) + 1;
@@ -307,20 +307,14 @@
             return { problem, answer };
         }
         
-        // Generate wrong answers
+        // Generate wrong answers (all between 0-100 for first 10, 0-50 for last 10)
         function generateWrongAnswers(correctAnswer) {
             const wrongAnswers = new Set();
+            const maxRange = questionCount <= 10 ? 100 : 50;
+            
             while (wrongAnswers.size < 4) {
-                let wrongAnswer;
-                if (questionCount <= 10) {
-                    // For first 10 questions, wrong answers can be larger
-                    const offset = Math.floor(Math.random() * 40) - 20;
-                    wrongAnswer = correctAnswer + offset;
-                } else {
-                    // For last 10 questions, keep answers between 0-50
-                    wrongAnswer = Math.floor(Math.random() * 51);
-                }
-                if (wrongAnswer !== correctAnswer && wrongAnswer >= 0) {
+                const wrongAnswer = Math.floor(Math.random() * (maxRange + 1));
+                if (wrongAnswer !== correctAnswer) {
                     wrongAnswers.add(wrongAnswer);
                 }
             }
@@ -432,21 +426,27 @@
                 resultEl.style.color = '#48bb78';
                 score++;
                 scoreValueEl.textContent = score;
-            } else {
-                resultEl.textContent = `Greșit! Răspuns corect: ${currentAnswer}`;
-                resultEl.style.color = '#f56565';
-            }
-            
-            // Auto-proceed to next question after showing result
-            setTimeout(() => {
+                
+                // Only increment question count if answer is correct
                 if (questionCount >= totalQuestions) {
-                    showPrizeModal();
+                    setTimeout(showPrizeModal, 2000);
                 } else {
-                    questionCount++;
+                    setTimeout(() => {
+                        questionCount++;
+                        displayProblem();
+                        startTimer();
+                    }, 2000);
+                }
+            } else {
+                resultEl.textContent = `Greșit! Încearcă din nou...`;
+                resultEl.style.color = '#f56565';
+                
+                // Don't increment question count, just reset the same question after delay
+                setTimeout(() => {
                     displayProblem();
                     startTimer();
-                }
-            }, 2000);
+                }, 2000);
+            }
         }
         
         // Start timer
@@ -460,7 +460,7 @@
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     gameActive = false;
-                    resultEl.textContent = `Timp expirat! Răspuns corect: ${currentAnswer}`;
+                    resultEl.textContent = `Timp expirat! Încearcă din nou...`;
                     resultEl.style.color = '#f56565';
                     
                     const options = document.querySelectorAll('.option');
@@ -472,15 +472,10 @@
                         option.style.pointerEvents = 'none';
                     });
                     
-                    // Auto-proceed to next question after time expires
+                    // Don't increment question count, just reset the same question after delay
                     setTimeout(() => {
-                        if (questionCount >= totalQuestions) {
-                            showPrizeModal();
-                        } else {
-                            questionCount++;
-                            displayProblem();
-                            startTimer();
-                        }
+                        displayProblem();
+                        startTimer();
                     }, 2000);
                 }
             }, 1000);
