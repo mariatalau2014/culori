@@ -490,7 +490,7 @@
         let currentLevel = 'easy';
         const totalQuestions = 20;
         
-        // Level descriptions - updated to remove + and - from medium and hard
+        // Level descriptions
         const levelInfo = {
             easy: {
                 name: 'Ușor',
@@ -503,7 +503,7 @@
             },
             medium: {
                 name: 'Mediu',
-                operations: ['*', '/'], // Only multiplication and division
+                operations: ['*', '/'],
                 maxNumbers: [20, 20],
                 penaltyMax: 50,
                 timeFirst10: 25,
@@ -512,7 +512,7 @@
             },
             hard: {
                 name: 'Greu',
-                operations: ['*', '/', '^'], // Only multiplication, division, and powers
+                operations: ['*', '/', '^'],
                 maxNumbers: [10, 5],
                 penaltyMax: 30,
                 timeFirst10: 30,
@@ -529,7 +529,7 @@
             return true;
         }
         
-        // Generate 3-digit addition without carry-over
+        // Generate 3-digit addition without carry-over (only for easy level penalty)
         function generateNoCarryAddition() {
             let num1, num2;
             do {
@@ -539,12 +539,52 @@
             return { num1, num2, answer: num1 + num2 };
         }
         
+        // Generate harder multiplication/division for medium penalty
+        function generateHardMediumProblem() {
+            const operation = Math.random() < 0.5 ? '*' : '/';
+            let num1, num2, answer;
+            
+            if (operation === '*') {
+                // Harder multiplication: numbers up to 50
+                num1 = Math.floor(Math.random() * 50) + 10; // 10-59
+                num2 = Math.floor(Math.random() * 50) + 10; // 10-59
+                answer = num1 * num2;
+            } else {
+                // Harder division: larger numbers with exact division
+                num2 = Math.floor(Math.random() * 20) + 5; // 5-24
+                answer = Math.floor(Math.random() * 30) + 10; // 10-39
+                num1 = num2 * answer;
+            }
+            
+            const problem = operation === '/' ? `${num1} ÷ ${num2}` : `${num1} ${operation} ${num2}`;
+            return { problem, answer };
+        }
+        
+        // Generate harder power problems for hard penalty
+        function generateHardPowerProblem() {
+            // Larger base and exponent for penalty questions
+            const base = Math.floor(Math.random() * 8) + 3; // 3-10
+            const exponent = Math.floor(Math.random() * 4) + 3; // 3-6
+            const answer = Math.pow(base, exponent);
+            const problem = `${base}<sup>${exponent}</sup>`;
+            return { problem, answer };
+        }
+        
         // Generate random math problem based on level
         function generateProblem() {
             if (isPenaltyQuestion) {
-                // Penalty question: 3-digit addition WITHOUT carry-over (only plus)
-                const { num1, num2, answer } = generateNoCarryAddition();
-                return { problem: `${num1} + ${num2}`, answer };
+                // Handle penalty questions based on level
+                if (currentLevel === 'easy') {
+                    // Easy level penalty: 3-digit addition without carry-over
+                    const { num1, num2, answer } = generateNoCarryAddition();
+                    return { problem: `${num1} + ${num2}`, answer };
+                } else if (currentLevel === 'medium') {
+                    // Medium level penalty: harder multiplication/division
+                    return generateHardMediumProblem();
+                } else if (currentLevel === 'hard') {
+                    // Hard level penalty: harder powers
+                    return generateHardPowerProblem();
+                }
             }
             
             const level = levelInfo[currentLevel];
@@ -624,17 +664,40 @@
             let attempts = 0;
             
             if (isPenaltyQuestion) {
-                while (wrongAnswers.size < 4 && attempts < maxAttempts) {
-                    const offset = Math.floor(Math.random() * 200) - 100;
-                    const wrongAnswer = correctAnswer + offset;
-                    if (wrongAnswer !== correctAnswer && wrongAnswer > 0) {
-                        wrongAnswers.add(wrongAnswer);
+                // For penalty questions, generate more challenging wrong answers
+                if (currentLevel === 'easy') {
+                    while (wrongAnswers.size < 4 && attempts < maxAttempts) {
+                        const offset = Math.floor(Math.random() * 200) - 100;
+                        const wrongAnswer = correctAnswer + offset;
+                        if (wrongAnswer !== correctAnswer && wrongAnswer > 0) {
+                            wrongAnswers.add(wrongAnswer);
+                        }
+                        attempts++;
                     }
-                    attempts++;
+                } else if (currentLevel === 'medium') {
+                    // Medium penalty: larger range for wrong answers
+                    while (wrongAnswers.size < 4 && attempts < maxAttempts) {
+                        const offset = Math.floor(Math.random() * 400) - 200;
+                        const wrongAnswer = correctAnswer + offset;
+                        if (wrongAnswer !== correctAnswer && wrongAnswer > 0) {
+                            wrongAnswers.add(wrongAnswer);
+                        }
+                        attempts++;
+                    }
+                } else if (currentLevel === 'hard') {
+                    // Hard penalty: very large range for wrong answers
+                    while (wrongAnswers.size < 4 && attempts < maxAttempts) {
+                        const offset = Math.floor(Math.random() * 1000) - 500;
+                        const wrongAnswer = correctAnswer + offset;
+                        if (wrongAnswer !== correctAnswer && wrongAnswer > 0) {
+                            wrongAnswers.add(wrongAnswer);
+                        }
+                        attempts++;
+                    }
                 }
             } else {
                 const level = levelInfo[currentLevel];
-                const range = currentLevel === 'easy' ? 50 : (currentLevel === 'medium' ? 100 : 200);
+                const range = currentLevel === 'easy' ? 50 : (currentLevel === 'medium' ? 200 : 500);
                 
                 while (wrongAnswers.size < 4 && attempts < maxAttempts) {
                     const wrongAnswer = Math.floor(Math.random() * (range + 1));
