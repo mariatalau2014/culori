@@ -511,6 +511,8 @@
         let gameActive = true;
         let isPenaltyQuestion = false;
         let currentLevel = 'easy';
+        let overtimeMode = false; // Flag to track if we're in overtime mode
+        let overtimeSeconds = 0; // Track seconds in overtime
         const totalQuestions = 20;
         
         // Level descriptions - all levels have 20 seconds, penalty has 50 seconds
@@ -521,7 +523,7 @@
                 maxNumbers: [50, 50],
                 penaltyMax: 100,
                 timeAll: 20,
-                penaltyTime: 50 // 50 seconds for penalty questions (as requested)
+                penaltyTime: 50
             },
             medium: {
                 name: 'Mediu',
@@ -529,7 +531,7 @@
                 maxNumbers: [20, 20],
                 penaltyMax: 50,
                 timeAll: 20,
-                penaltyTime: 50 // 50 seconds for penalty questions (as requested)
+                penaltyTime: 50
             },
             hard: {
                 name: 'Greu',
@@ -537,7 +539,7 @@
                 maxNumbers: [10, 5],
                 penaltyMax: 30,
                 timeAll: 20,
-                penaltyTime: 50 // 50 seconds for penalty questions (as requested)
+                penaltyTime: 50
             }
         };
         
@@ -725,6 +727,10 @@
                 questionCountEl.textContent = questionCount;
             }
             
+            // Reset overtime mode when displaying new problem
+            overtimeMode = false;
+            overtimeSeconds = 0;
+            
             // Set timer based on level and question type
             if (isPenaltyQuestion) {
                 timeLeft = levelInfo[currentLevel].penaltyTime; // Always 50 seconds for penalty
@@ -841,67 +847,91 @@
                 // Correct answer on penalty question
                 isPenaltyQuestion = false;
                 if (questionCount >= totalQuestions) {
-                    setTimeout(showPrizeModal, 2000);
+                    setTimeout(showPrizeModal, 3000);
                 } else {
                     setTimeout(() => {
                         questionCount++;
                         displayProblem();
                         startTimer();
-                    }, 2000);
+                    }, 3000);
                 }
             } else if (!isPenaltyQuestion && selectedAnswer === currentAnswer) {
                 // Correct answer on regular question
                 if (questionCount >= totalQuestions) {
-                    setTimeout(showPrizeModal, 2000);
+                    setTimeout(showPrizeModal, 3000);
                 } else {
                     setTimeout(() => {
                         questionCount++;
                         displayProblem();
                         startTimer();
-                    }, 2000);
+                    }, 3000);
                 }
             } else if (selectedAnswer !== currentAnswer) {
                 // Wrong answer - stay on same question count, show penalty next
                 setTimeout(() => {
                     displayProblem();
                     startTimer();
-                }, 2000);
+                }, 3000);
             }
         }
         
-        // Start timer
+        // Start timer - slowed down to update every 1.5 seconds instead of 1 second
         function startTimer() {
             gameActive = true;
+            overtimeMode = false;
+            overtimeSeconds = 0;
             
             timerInterval = setInterval(() => {
-                timeLeft--;
-                timerEl.textContent = timeLeft;
-                
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    gameActive = false;
-                    resultEl.textContent = `Timp expirat! Acum ai o întrebare mai grea... 💫`;
-                    resultEl.style.color = '#f44336';
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    timerEl.textContent = timeLeft;
+                } else {
+                    // Overtime mode: show negative time and deduct points
+                    if (!overtimeMode) {
+                        overtimeMode = true;
+                        overtimeSeconds = 0;
+                    }
                     
-                    const options = document.querySelectorAll('.option');
-                    options.forEach(option => {
-                        const optionValue = parseInt(option.textContent);
-                        if (optionValue === currentAnswer) {
-                            option.classList.add('correct');
-                        }
-                        option.style.pointerEvents = 'none';
-                    });
+                    overtimeSeconds++;
+                    timeLeft--;
+                    timerEl.textContent = timeLeft; // This will show negative numbers
                     
-                    points--; // Deduct 1 point for timeout
+                    // Deduct 1 point for each second in overtime
+                    points--;
                     pointsValueEl.textContent = points;
-                    isPenaltyQuestion = true;
                     
-                    setTimeout(() => {
-                        displayProblem();
-                        startTimer();
-                    }, 2000);
+                    // End game if points reach 0 or below
+                    if (points <= 0) {
+                        clearInterval(timerInterval);
+                        gameActive = false;
+                        resultEl.textContent = `Ai rămas fără puncte! Joc terminat. 💔`;
+                        resultEl.style.color = '#f44336';
+                        
+                        setTimeout(() => {
+                            goBackToLevelSelection();
+                        }, 3000);
+                        return;
+                    }
+                    
+                    // If more than 5 seconds in overtime, automatically mark as wrong
+                    if (overtimeSeconds > 5) {
+                        clearInterval(timerInterval);
+                        gameActive = false;
+                        resultEl.textContent = `Timp expirat! Acum ai o întrebare mai grea... 💫`;
+                        resultEl.style.color = '#f44336';
+                        
+                        points--; // Deduct 1 point for timeout
+                        pointsValueEl.textContent = points;
+                        isPenaltyQuestion = true;
+                        
+                        setTimeout(() => {
+                            displayProblem();
+                            startTimer();
+                        }, 3000);
+                        return;
+                    }
                 }
-            }, 1000);
+            }, 1500); // Changed from 1000ms to 1500ms (1.5 seconds per tick)
         }
         
         // Restart game
