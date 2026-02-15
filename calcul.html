@@ -270,6 +270,16 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         
+        .emoji-display {
+            font-size: 48px;
+            margin: 10px 0;
+            transition: transform 0.3s ease;
+        }
+        
+        .emoji-display:hover {
+            transform: scale(1.2) rotate(10deg);
+        }
+        
         .btn {
             background: linear-gradient(135deg, #ff69b4, #ff9ec7);
             color: white;
@@ -459,7 +469,8 @@
                 <span class="timer">20</span>
             </div>
             
-            <div class="points">Puncte: <span id="points-value">100</span> 💎</div>
+            <div class="points">Puncte: <span id="points-value">100</span> <span id="points-emoji">👑</span></div>
+            <div class="emoji-display" id="emoji-display">👑</div>
             
             <div class="problem" id="problem"></div>
             
@@ -489,6 +500,27 @@
             }
         }
         
+        // Get emoji based on points
+        function getEmojiForPoints(points) {
+            if (points >= 90) return '👑'; // Crown - Excellent
+            if (points >= 80) return '🌟'; // Star - Great
+            if ( points >= 70) return '😊'; // Happy face - Good
+            if (points >= 60) return '🙂'; // Slightly happy - Okay
+            if (points >= 50) return '😐'; // Neutral - Fair
+            if (points >= 40) return '😕'; // Confused - Below average
+            if (points >= 30) return '😞'; // Sad - Poor
+            if (points >= 20) return '😢'; // Crying - Very poor
+            if (points >= 10) return '😭'; // Loudly crying - Terrible
+            return '💀'; // Skull - Game over
+        }
+        
+        // Update emoji display
+        function updateEmojiDisplay() {
+            const emoji = getEmojiForPoints(points);
+            document.getElementById('points-emoji').textContent = emoji;
+            document.getElementById('emoji-display').textContent = emoji;
+        }
+        
         // Elements
         const levelScreen = document.getElementById('level-screen');
         const gameScreen = document.getElementById('game-screen');
@@ -513,33 +545,37 @@
         let currentLevel = 'easy';
         let overtimeMode = false; // Flag to track if we're in overtime mode
         let overtimeSeconds = 0; // Track seconds in overtime
+        let correctAnswersFirst10 = 0; // Track correct answers in first 10 questions
         const totalQuestions = 20;
         
-        // Level descriptions - all levels have 20 seconds, penalty has 50 seconds
+        // Level descriptions with updated timing rules
         const levelInfo = {
             easy: {
                 name: 'Ușor',
                 operations: ['+', '-'],
                 maxNumbers: [50, 50],
                 penaltyMax: 100,
-                timeAll: 20,
-                penaltyTime: 50
+                timeFirst10: 20, // First 10 questions: 20 seconds
+                timeAfter10: 10,  // After 10 correct answers: 10 seconds
+                penaltyTime: 25   // Penalty questions: 25 seconds (as requested)
             },
             medium: {
                 name: 'Mediu',
                 operations: ['*', '/'],
                 maxNumbers: [20, 20],
                 penaltyMax: 50,
-                timeAll: 20,
-                penaltyTime: 50
+                timeFirst10: 20, // First 10 questions: 20 seconds
+                timeAfter10: 10,  // After 10 correct answers: 10 seconds
+                penaltyTime: 25   // Penalty questions: 25 seconds (as requested)
             },
             hard: {
                 name: 'Greu',
                 operations: ['*', '/', '^'],
                 maxNumbers: [10, 5],
                 penaltyMax: 30,
-                timeAll: 20,
-                penaltyTime: 50
+                timeFirst10: 20, // First 10 questions: 20 seconds
+                timeAfter10: 25,  // After 10 correct answers: 25 seconds
+                penaltyTime: 25   // Penalty questions: 25 seconds (as requested)
             }
         };
         
@@ -731,11 +767,16 @@
             overtimeMode = false;
             overtimeSeconds = 0;
             
-            // Set timer based on level and question type
+            // Set timer based on level, question count, and whether it's a penalty question
             if (isPenaltyQuestion) {
-                timeLeft = levelInfo[currentLevel].penaltyTime; // Always 50 seconds for penalty
+                timeLeft = levelInfo[currentLevel].penaltyTime; // Always 25 seconds for penalty (as requested)
             } else {
-                timeLeft = levelInfo[currentLevel].timeAll; // Always 20 seconds for regular questions
+                // Check if we have 10 or more correct answers in the first 10 questions
+                if (correctAnswersFirst10 >= 10) {
+                    timeLeft = levelInfo[currentLevel].timeAfter10;
+                } else {
+                    timeLeft = levelInfo[currentLevel].timeFirst10;
+                }
             }
             timerEl.textContent = timeLeft;
             
@@ -786,11 +827,13 @@
         function showPrizeModal() {
             createFireworks();
             
+            const finalEmoji = getEmojiForPoints(points);
+            
             const modal = document.createElement('div');
             modal.className = 'prize-modal';
             modal.innerHTML = `
                 <div class="prize-content">
-                    <div class="trophy">🏆</div>
+                    <div class="trophy">${finalEmoji}</div>
                     <div class="prize-title">Felicitări, Super Eroine! 🌈</div>
                     <div class="prize-message">
                         Ai completat cu succes toate cele 20 de întrebări!<br>
@@ -835,11 +878,17 @@
             if (selectedAnswer === currentAnswer) {
                 resultEl.textContent = 'Corect! 🎉✨';
                 resultEl.style.color = '#4CAF50';
+                
+                // Track correct answers in first 10 questions
+                if (!isPenaltyQuestion && questionCount <= 10) {
+                    correctAnswersFirst10++;
+                }
             } else {
                 resultEl.textContent = `Greșit! Acum ai o întrebare mai grea... 💫`;
                 resultEl.style.color = '#f44336';
                 points--; // Deduct 1 point for wrong answer
                 pointsValueEl.textContent = points;
+                updateEmojiDisplay();
                 isPenaltyQuestion = true;
             }
             
@@ -899,6 +948,7 @@
                     // Deduct 1 point for each second in overtime
                     points--;
                     pointsValueEl.textContent = points;
+                    updateEmojiDisplay();
                     
                     // End game if points reach 0 or below
                     if (points <= 0) {
@@ -922,6 +972,7 @@
                         
                         points--; // Deduct 1 point for timeout
                         pointsValueEl.textContent = points;
+                        updateEmojiDisplay();
                         isPenaltyQuestion = true;
                         
                         setTimeout(() => {
@@ -938,8 +989,10 @@
         function restartGame() {
             points = 100;
             questionCount = 1;
+            correctAnswersFirst10 = 0; // Reset correct answers counter
             isPenaltyQuestion = false;
             pointsValueEl.textContent = points;
+            updateEmojiDisplay();
             restartBtn.classList.add('hidden');
             displayProblem();
             startTimer();
@@ -975,6 +1028,7 @@
         
         // Initialize game and add decorative elements
         addStars();
+        updateEmojiDisplay();
     </script>
 </body>
 </html>
