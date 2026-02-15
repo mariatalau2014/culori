@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Matematică - Provocare Progresivă</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .timer-container {
+            background: #e2e8f0;
+            border-radius: 50px;
+            padding: 15px 25px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+        
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .progress {
+            background: #e2e8f0;
+            border-radius: 50px;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            display: inline-block;
+            font-size: 16px;
+            color: #4a5568;
+        }
+        
+        .problem {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2d3748;
+            margin: 30px 0;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .options-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .option {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 15px 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 80px;
+        }
+        
+        .option:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+            transform: translateY(-2px);
+        }
+        
+        .option.correct {
+            background: #c6f6d5;
+            border-color: #48bb78;
+            color: #2f855a;
+        }
+        
+        .option.incorrect {
+            background: #fed7d7;
+            border-color: #f56565;
+            color: #c53030;
+        }
+        
+        .option:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+        
+        .score {
+            font-size: 18px;
+            color: #718096;
+            margin-bottom: 25px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .prize-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .prize-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            animation: popIn 0.5s ease-out;
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .prize-title {
+            font-size: 32px;
+            color: #48bb78;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .prize-message {
+            font-size: 20px;
+            color: #2d3748;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        
+        .trophy {
+            font-size: 80px;
+            margin: 20px 0;
+            color: #FFD700;
+        }
+        
+        .fireworks {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            animation: explode 1s ease-out forwards;
+        }
+        
+        @keyframes explode {
+            0% { transform: translate(0, 0); opacity: 1; width: 5px; height: 5px; }
+            100% { transform: translate(var(--tx), var(--ty)); opacity: 0; width: 2px; height: 2px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test de Matematică - Provocare Progresivă</h1>
+        
+        <div class="progress">Întrebarea: <span id="question-count">1</span>/20</div>
+        
+        <div class="timer-container">
+            <span class="timer">20</span>
+        </div>
+        
+        <div class="score">Scor: <span id="score-value">0</span></div>
+        
+        <div class="problem" id="problem"></div>
+        
+        <div class="options-container" id="options-container"></div>
+        
+        <div class="result" id="result"></div>
+        
+        <button class="btn hidden" id="restart-btn">Reîncepe Jocul</button>
+    </div>
+
+    <script>
+        // Elements
+        const problemEl = document.getElementById('problem');
+        const optionsContainer = document.getElementById('options-container');
+        const resultEl = document.getElementById('result');
+        const timerEl = document.querySelector('.timer');
+        const scoreValueEl = document.getElementById('score-value');
+        const restartBtn = document.getElementById('restart-btn');
+        const questionCountEl = document.getElementById('question-count');
+        
+        // Game state
+        let score = 0;
+        let questionCount = 1;
+        let timeLeft = 20;
+        let timerInterval;
+        let currentAnswer;
+        let gameActive = true;
+        const totalQuestions = 20;
+        
+        // Generate random math problem with appropriate difficulty
+        function generateProblem() {
+            const operations = ['+', '-'];
+            const operation = operations[Math.floor(Math.random() * operations.length)];
+            
+            let num1, num2;
+            if (questionCount <= 10) {
+                // First 10 questions: larger numbers (up to 100 for addition, up to 100 for subtraction)
+                if (operation === '+') {
+                    num1 = Math.floor(Math.random() * 100) + 1;
+                    num2 = Math.floor(Math.random() * 100) + 1;
+                } else {
+                    num1 = Math.floor(Math.random() * 200) + 50; // Larger first number
+                    num2 = Math.floor(Math.random() * (num1 - 1)) + 1;
+                }
+            } else {
+                // Last 10 questions: numbers up to 50 as requested
+                if (operation === '+') {
+                    num1 = Math.floor(Math.random() * 50) + 1;
+                    num2 = Math.floor(Math.random() * (51 - num1)) + 1;
+                } else {
+                    num1 = Math.floor(Math.random() * 50) + 1;
+                    num2 = Math.floor(Math.random() * num1) + 1;
+                }
+            }
+            
+            const problem = `${num1} ${operation} ${num2}`;
+            const answer = operation === '+' ? num1 + num2 : num1 - num2;
+            
+            return { problem, answer };
+        }
+        
+        // Generate wrong answers
+        function generateWrongAnswers(correctAnswer) {
+            const wrongAnswers = new Set();
+            while (wrongAnswers.size < 4) {
+                let wrongAnswer;
+                if (questionCount <= 10) {
+                    // For first 10 questions, wrong answers can be larger
+                    const offset = Math.floor(Math.random() * 40) - 20;
+                    wrongAnswer = correctAnswer + offset;
+                } else {
+                    // For last 10 questions, keep answers between 0-50
+                    wrongAnswer = Math.floor(Math.random() * 51);
+                }
+                if (wrongAnswer !== correctAnswer && wrongAnswer >= 0) {
+                    wrongAnswers.add(wrongAnswer);
+                }
+            }
+            return Array.from(wrongAnswers);
+        }
+        
+        // Display problem and options
+        function displayProblem() {
+            const { problem, answer } = generateProblem();
+            currentAnswer = answer;
+            
+            problemEl.textContent = problem;
+            questionCountEl.textContent = questionCount;
+            
+            // Set timer based on question number
+            if (questionCount <= 10) {
+                timeLeft = 20;
+            } else {
+                timeLeft = 10;
+            }
+            timerEl.textContent = timeLeft;
+            
+            const wrongAnswers = generateWrongAnswers(answer);
+            const allAnswers = [...wrongAnswers, answer];
+            const shuffledAnswers = allAnswers.sort(() => Math.random() - 0.5);
+            
+            optionsContainer.innerHTML = '';
+            shuffledAnswers.forEach(ans => {
+                const option = document.createElement('div');
+                option.className = 'option';
+                option.textContent = ans;
+                option.addEventListener('click', () => selectAnswer(ans));
+                optionsContainer.appendChild(option);
+            });
+            
+            resultEl.textContent = '';
+            restartBtn.classList.add('hidden');
+        }
+        
+        // Create fireworks effect
+        function createFireworks() {
+            const container = document.createElement('div');
+            container.className = 'fireworks';
+            document.body.appendChild(container);
+            
+            const colors = ['#FF5252', '#4CAF50', '#2196F3', '#FFC107', '#9C27B0', '#00BCD4'];
+            
+            for (let i = 0; i < 50; i++) {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                firework.style.left = Math.random() * 100 + '%';
+                firework.style.top = Math.random() * 100 + '%';
+                firework.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
+                firework.style.setProperty('--ty', (Math.random() - 0.5) * 200 + 'px');
+                container.appendChild(firework);
+            }
+            
+            setTimeout(() => {
+                container.remove();
+            }, 2000);
+        }
+        
+        // Show prize modal
+        function showPrizeModal() {
+            createFireworks();
+            
+            const modal = document.createElement('div');
+            modal.className = 'prize-modal';
+            modal.innerHTML = `
+                <div class="prize-content">
+                    <div class="trophy">🏆</div>
+                    <div class="prize-title">Felicitări!</div>
+                    <div class="prize-message">
+                        Ai completat cu succes toate cele 20 de întrebări!<br>
+                        Ești un adevărat campion al matematicii! 🎉
+                    </div>
+                    <button class="btn" id="final-restart-btn">Joacă din nou</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            document.getElementById('final-restart-btn').addEventListener('click', () => {
+                modal.remove();
+                restartGame();
+            });
+        }
+        
+        // Handle answer selection
+        function selectAnswer(selectedAnswer) {
+            if (!gameActive) return;
+            
+            clearInterval(timerInterval);
+            gameActive = false;
+            
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                const optionValue = parseInt(option.textContent);
+                if (optionValue === currentAnswer) {
+                    option.classList.add('correct');
+                } else if (optionValue === selectedAnswer) {
+                    option.classList.add('incorrect');
+                }
+                option.style.pointerEvents = 'none';
+            });
+            
+            if (selectedAnswer === currentAnswer) {
+                resultEl.textContent = 'Corect! 🎉';
+                resultEl.style.color = '#48bb78';
+                score++;
+                scoreValueEl.textContent = score;
+            } else {
+                resultEl.textContent = `Greșit! Răspuns corect: ${currentAnswer}`;
+                resultEl.style.color = '#f56565';
+            }
+            
+            // Auto-proceed to next question after showing result
+            setTimeout(() => {
+                if (questionCount >= totalQuestions) {
+                    showPrizeModal();
+                } else {
+                    questionCount++;
+                    displayProblem();
+                    startTimer();
+                }
+            }, 2000);
+        }
+        
+        // Start timer
+        function startTimer() {
+            gameActive = true;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    gameActive = false;
+                    resultEl.textContent = `Timp expirat! Răspuns corect: ${currentAnswer}`;
+                    resultEl.style.color = '#f56565';
+                    
+                    const options = document.querySelectorAll('.option');
+                    options.forEach(option => {
+                        const optionValue = parseInt(option.textContent);
+                        if (optionValue === currentAnswer) {
+                            option.classList.add('correct');
+                        }
+                        option.style.pointerEvents = 'none';
+                    });
+                    
+                    // Auto-proceed to next question after time expires
+                    setTimeout(() => {
+                        if (questionCount >= totalQuestions) {
+                            showPrizeModal();
+                        } else {
+                            questionCount++;
+                            displayProblem();
+                            startTimer();
+                        }
+                    }, 2000);
+                }
+            }, 1000);
+        }
+        
+        // Restart game
+        function restartGame() {
+            score = 0;
+            questionCount = 1;
+            scoreValueEl.textContent = score;
+            restartBtn.classList.add('hidden');
+            displayProblem();
+            startTimer();
+        }
+        
+        // Event listener for restart button
+        restartBtn.addEventListener('click', restartGame);
+        
+        // Initialize game
+        displayProblem();
+        startTimer();
+    </script>
+</body>
+</html>
+
