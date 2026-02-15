@@ -507,7 +507,7 @@
                 maxNumbers: [20, 20],
                 penaltyMax: 50,
                 timeFirst10: 25,
-                timeLast10: 15,
+                timeLast10: 10, // Changed to 10 seconds after 10 correct answers
                 penaltyTime: 60
             },
             hard: {
@@ -516,7 +516,7 @@
                 maxNumbers: [10, 5],
                 penaltyMax: 30,
                 timeFirst10: 30,
-                timeLast10: 20,
+                timeLast10: 10, // Changed to 10 seconds after 10 correct answers
                 penaltyTime: 70
             }
         };
@@ -673,7 +673,7 @@
             } else if (questionCount <= 10) {
                 timeLeft = levelInfo[currentLevel].timeFirst10;
             } else {
-                timeLeft = levelInfo[currentLevel].timeLast10;
+                timeLeft = 10; // Always 10 seconds after 10 correct answers (as requested)
             }
             timerEl.textContent = timeLeft;
             
