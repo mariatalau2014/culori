@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jocul Literelor Magice</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap');
+
+        :root {
+            --primary: #FF85A2;
+            --secondary: #A2D2FF;
+            --accent: #FFC8DD;
+            --warning: #FFD93D;
+            --text: #5E6472;
+            --white: #FFFFFF;
+            --success: #BDE0FE;
+            --error: #FF6B6B;
+            --ghost: #E0E0E0;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Nunito', sans-serif;
+            background-color: #FFF0F5;
+            background-image: url('https://image.qwenlm.ai/public_source/9d076338-2b12-4553-8888-4cf6f0866228/1206da42b-50bc-4579-b502-e76be98f8371.png');
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.95);
+            width: 95%;
+            height: 95%;
+            max-height: 800px;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(255, 133, 162, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        header {
+            text-align: center;
+            width: 100%;
+            margin-bottom: 5px;
+            flex-shrink: 0;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin: 0;
+            text-shadow: 2px 2px 0px #FFE5EC;
+        }
+
+        .score-container {
+            background: var(--secondary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: inline-block;
+            margin-top: 5px;
+            box-shadow: 0 4px 0 #7AB8E8;
+        }
+
+        .play-area {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            min-height: 0;
+        }
+
+        .letter-card {
+            background: var(--accent);
+            width: 100px;
+            height: 100px;
+            border-radius: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Fredoka One', cursive;
+            font-size: 4rem;
+            color: var(--primary);
+            box-shadow: 0 8px 0 #FFB3C6;
+            transition: transform 0.2s;
+            position: relative;
+            flex-shrink: 0;
+            border: 4px solid transparent;
+        }
+
+        .letter-card.bounce { animation: bounce 0.5s; }
+        .letter-card.shake { animation: shake 0.5s; border-color: var(--error); }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 350px;
+            aspect-ratio: 1;
+            background: white;
+            border: 4px dashed var(--secondary);
+            border-radius: 25px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+        }
+
+        canvas#drawCanvas {
+            border-radius: 20px;
+            width: 100%;
+            height: 100%;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 2; /* Desenul e deasupra */
+        }
+
+        canvas#guideCanvas {
+            border-radius: 20px;
+            width: 100%;
+            height: 100%;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1; /* Conturul e dedesubt */
+            pointer-events: none;
+        }
+
+        .clear-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #FFD1DC;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 0 #FFB3C6;
+            z-index: 10;
+        }
+        .clear-btn:active { transform: translateY(4px); box-shadow: none; }
+        .clear-btn svg { width: 18px; height: 18px; fill: #D65A78; }
+
+        .action-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.4rem;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #D65A78;
+            transition: all 0.1s;
+            width: 90%;
+            max-width: 300px;
+            flex-shrink: 0;
+            margin-top: auto;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn:active { transform: translateY(6px); box-shadow: none; }
+        
+        .action-btn.next {
+            background: var(--success);
+            box-shadow: 0 6px 0 #8AC4E0;
+        }
+        
+        .action-btn.skip {
+            background: var(--warning);
+            color: #5E6472;
+            box-shadow: 0 6px 0 #E5C335;
+        }
+
+        .feedback-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Fredoka One', cursive;
+            font-size: 3rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 100;
+            border-radius: 30px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .feedback-overlay.show { opacity: 1; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .feedback-overlay.fail { color: var(--error); }
+        .feedback-overlay.success { color: var(--primary); }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+
+        #confetti {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 200;
+            border-radius: 30px;
+        }
+
+        .mascot-img {
+            position: absolute;
+            top: -40px;
+            right: -30px;
+            width: 90px;
+            height: auto;
+            z-index: 5;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="game-card">
+        <canvas id="confetti"></canvas>
+        
+        <header>
+            <h1>Jocul Literelor</h1>
+            <div class="score-container">Steluțe: <span id="score">0</span> ⭐</div>
+        </header>
+
+        <div class="play-area">
+            <!-- Litera de copiat -->
+            <div class="letter-card" id="targetCard">
+                <span id="targetLetter">A</span>
+                <img src="https://image.qwenlm.ai/public_source/9d076338-2b12-4553-8888-4cf6f0866228/173d93ddf-8170-4865-8cf4-97af1e0962e2.png" alt="Mascot" class="mascot-img">
+            </div>
+
+            <!-- Zona de desen cu 2 canvas-uri suprapuse -->
+            <div class="canvas-container">
+                <!-- Canvas-ul din spate pentru contur -->
+                <canvas id="guideCanvas"></canvas>
+                <!-- Canvas-ul din față pentru desenul utilizatorului -->
+                <canvas id="drawCanvas"></canvas>
+                
+                <button class="clear-btn" onclick="clearCanvas()" title="Șterge">
+                    <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                </button>
+            </div>
+
+            <!-- Buton Acțiune -->
+            <button id="mainBtn" class="action-btn" onclick="handleAction()">
+                <span>Verifică!</span>
+            </button>
+        </div>
+
+        <div class="feedback-overlay" id="feedback">
+            <div id="feedbackIcon" style="font-size: 4rem; margin-bottom: 10px;">🎉</div>
+            <div id="feedbackText">Bravo!</div>
+        </div>
+    </div>
+
+    <script>
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const numbers = "0123456789";
+        const allChars = letters + numbers;
+        
+        let currentChar = '';
+        let score = 0;
+        let isLevelComplete = false;
+        let hasDrawnSomething = false;
+
+        const drawCanvas = document.getElementById('drawCanvas');
+        const drawCtx = drawCanvas.getContext('2d');
+        const guideCanvas = document.getElementById('guideCanvas');
+        const guideCtx = guideCanvas.getContext('2d');
+        
+        const targetLetterEl = document.getElementById('targetLetter');
+        const targetCard = document.getElementById('targetCard');
+        const mainBtn = document.getElementById('mainBtn');
+        const feedbackEl = document.getElementById('feedback');
+        const feedbackText = document.getElementById('feedbackText');
+        const feedbackIcon = document.getElementById('feedbackIcon');
+        const scoreEl = document.getElementById('score');
+        const confettiCanvas = document.getElementById('confetti');
+        const confettiCtx = confettiCanvas.getContext('2d');
+
+        function resizeCanvases() {
+            const container = drawCanvas.parentElement;
+            
+            // Setăm aceeași dimensiune pentru ambele canvas-uri
+            [drawCanvas, guideCanvas].forEach(c => {
+                c.width = container.clientWidth;
+                c.height = container.clientHeight;
+            });
+            
+            drawCtx.lineCap = 'round';
+            drawCtx.lineJoin = 'round';
+            drawCtx.lineWidth = Math.max(10, container.clientWidth / 20);
+            drawCtx.strokeStyle = '#5E6472';
+            
+            // Redesenăm conturul dacă se schimbă dimensiunea
+            if(currentChar) drawGuide();
+        }
+        
+        window.addEventListener('resize', resizeCanvases);
+        setTimeout(resizeCanvases, 10);
+
+        // --- Desenare Contur (Ghid) ---
+        function drawGuide() {
+            guideCtx.clearRect(0, 0, guideCanvas.width, guideCanvas.height);
+            guideCtx.fillStyle = '#E0E0E0'; // Culoare gri deschis
+            guideCtx.font = `bold ${guideCanvas.height * 0.8}px 'Fredoka One'`;
+            guideCtx.textAlign = 'center';
+            guideCtx.textBaseline = 'middle';
+            guideCtx.fillText(currentChar, guideCanvas.width / 2, guideCanvas.height / 2 + (guideCanvas.height * 0.05));
+        }
+
+        // --- Desen Utilizator ---
+        let isDrawing = false;
+
+        function getPos(e) {
+            const rect = drawCanvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+
+        function startDraw(e) {
+            if (isLevelComplete) return;
+            isDrawing = true;
+            hasDrawnSomething = true;
+            const pos = getPos(e);
+            drawCtx.beginPath();
+            drawCtx.moveTo(pos.x, pos.y);
+            if(e.cancelable) e.preventDefault();
+        }
+
+        function draw(e) {
+            if (!isDrawing || isLevelComplete) return;
+            const pos = getPos(e);
+            drawCtx.lineTo(pos.x, pos.y);
+            drawCtx.stroke();
+            if(e.cancelable) e.preventDefault();
+        }
+
+        function stopDraw() {
+            isDrawing = false;
+            drawCtx.closePath();
+        }
+
+        drawCanvas.addEventListener('mousedown', startDraw);
+        drawCanvas.addEventListener('mousemove', draw);
+        drawCanvas.addEventListener('mouseup', stopDraw);
+        drawCanvas.addEventListener('mouseout', stopDraw);
+        drawCanvas.addEventListener('touchstart', startDraw, { passive: false });
+        drawCanvas.addEventListener('touchmove', draw, { passive: false });
+        drawCanvas.addEventListener('touchend', stopDraw);
+
+        // --- Logică Joc ---
+
+        function nextLevel() {
+            isLevelComplete = false;
+            hasDrawnSomething = false;
+            currentChar = allChars.charAt(Math.floor(Math.random() * allChars.length));
+            targetLetterEl.textContent = currentChar;
+            
+            clearCanvas();
+            drawGuide(); // Desenează conturul nou
+            
+            targetCard.classList.remove('bounce', 'shake');
+            void targetCard.offsetWidth; 
+            targetCard.classList.add('bounce');
+
+            updateButton('check');
+            hideFeedback();
+        }
+
+        function clearCanvas() {
+            drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+            hasDrawnSomething = false;
+            if (isLevelComplete) {
+                isLevelComplete = false;
+                updateButton('check');
+                hideFeedback();
+            }
+        }
+
+        function updateButton(state) {
+            mainBtn.innerHTML = '';
+            mainBtn.className = 'action-btn';
+            
+            if (state === 'check') {
+                mainBtn.textContent = "Verifică!";
+                mainBtn.onclick = handleCheck;
+            } else if (state === 'skip') {
+                mainBtn.innerHTML = "<span>🔄 Altă Literă</span>";
+                mainBtn.classList.add('skip');
+                mainBtn.onclick = handleSkip;
+            } else if (state === 'next') {
+                mainBtn.textContent = "Următoarea ➡️";
+                mainBtn.classList.add('next');
+                mainBtn.onclick = nextLevel;
+            }
+        }
+
+        function handleAction() {
+            if(isLevelComplete) nextLevel();
+        }
+
+        function handleCheck() {
+            if (!hasDrawnSomething) {
+                showFeedback("Desenează pe contur!", "fail", "✏️");
+                return;
+            }
+
+            const analysis = analyzeDrawing();
+            
+            // Verificare strictă bazată pe suprapunerea pixelilor
+            if (analysis.matchRatio < 0.35) {
+                showFeedback("Nu ai respectat conturul!", "fail", "🤔");
+                targetCard.classList.add('shake');
+                setTimeout(() => targetCard.classList.remove('shake'), 500);
+                updateButton('skip');
+                return;
+            }
+
+            winLevel();
+        }
+
+        function handleSkip() {
+            nextLevel();
+        }
+
+        function analyzeDrawing() {
+            // Obținem datele din ambele canvas-uri
+            const drawData = drawCtx.getImageData(0, 0, drawCanvas.width, drawCanvas.height).data;
+            const guideData = guideCtx.getImageData(0, 0, guideCanvas.width, guideCanvas.height).data;
+            
+            let drawPixels = 0;
+            let guidePixels = 0;
+            let matchPixels = 0;
+
+            for (let i = 0; i < drawData.length; i += 4) {
+                const isDraw = drawData[i + 3] > 0;
+                const isGuide = guideData[i + 3] > 0;
+
+                if (isDraw) drawPixels++;
+                if (isGuide) guidePixels++;
+                if (isDraw && isGuide) matchPixels++;
+            }
+
+            // Calculăm cât de bine se suprapune desenul cu conturul
+            // Evităm împărțirea la zero
+            if (guidePixels === 0) return { matchRatio: 0 };
+            
+            // Raportul: câți pixeli din desen sunt PE contur vs total pixeli din contur
+            // Și penalizăm dacă a desenat mult în afara conturului
+            const coverage = matchPixels / guidePixels; 
+            const precision = matchPixels / (drawPixels || 1);
+
+            // Scor combinat
+            const score = (coverage * 0.7) + (precision * 0.3);
+            
+            return { matchRatio: score };
+        }
+
+        function winLevel() {
+            isLevelComplete = true;
+            score += 1;
+            scoreEl.textContent = score;
+            showFeedback("Bravo! E corect!", "success", "🌟");
+            updateButton('next');
+            fireConfetti();
+        }
+
+        function showFeedback(text, type, icon) {
+            feedbackText.textContent = text;
+            feedbackIcon.textContent = icon;
+            feedbackEl.className = `feedback-overlay show ${type}`;
+            setTimeout(hideFeedback, 2000);
+        }
+
+        function hideFeedback() {
+            feedbackEl.classList.remove('show');
+        }
+
+        // --- Confetti ---
+        let particles = [];
+        function resizeConfetti() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeConfetti);
+        resizeConfetti();
+
+        function fireConfetti() {
+            const colors = ['#FF85A2', '#A2D2FF', '#FFC8DD', '#FFD93D'];
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: centerX, y: centerY,
+                    vx: (Math.random() - 0.5) * 15,
+                    vy: (Math.random() - 0.5) * 15 - 5,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    life: 100
+                });
+            }
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            particles.forEach((p, index) => {
+                p.x += p.vx; p.y += p.vy; p.vy += 0.5; p.life--;
+                confettiCtx.fillStyle = p.color;
+                confettiCtx.beginPath();
+                confettiCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                confettiCtx.fill();
+                if (p.life <= 0) particles.splice(index, 1);
+            });
+            if (particles.length > 0) requestAnimationFrame(animateConfetti);
+        }
+
+        nextLevel();
+    </script>
+</body>
+</html>
+
