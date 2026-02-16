@@ -98,6 +98,17 @@
             border-color: #ff69b4;
         }
         
+        .level-btn.very-easy {
+            border-color: #2196F3;
+            background: linear-gradient(135deg, #e3f2fd, #f0f8ff);
+            color: #0d47a1;
+        }
+        
+        .level-btn.very-easy:hover {
+            border-color: #0d47a1;
+            background: linear-gradient(135deg, #bbdefb, #e6f7ff);
+        }
+        
         .level-btn.easy {
             border-color: #4CAF50;
             background: linear-gradient(135deg, #e8f5e8, #f0f8ff);
@@ -190,6 +201,77 @@
             overflow: hidden;
         }
         
+        .counting-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin: 20px 0;
+            min-height: 150px;
+            align-items: center;
+        }
+        
+        .counting-item {
+            font-size: 40px;
+            animation: bounceItem 2s infinite alternate;
+        }
+        
+        @keyframes bounceItem {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+        
+        .sequence-container {
+            font-size: 50px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            align-items: center;
+        }
+        
+        .sequence-item {
+            font-size: 45px;
+            background: linear-gradient(135deg, #ffebf3, #f0f8ff);
+            border: 3px solid #ff9ec7;
+            border-radius: 20px;
+            padding: 15px 20px;
+            min-width: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(255, 158, 199, 0.3);
+        }
+        
+        .addition-container {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .addition-group {
+            display: flex;
+            gap: 15px;
+            margin: 10px;
+        }
+        
+        .plus-sign {
+            font-size: 40px;
+            color: #FF9800;
+            font-weight: bold;
+            align-self: center;
+        }
+        
+        .equals-sign {
+            font-size: 40px;
+            color: #4CAF50;
+            font-weight: bold;
+            align-self: center;
+        }
+        
         .problem-earthquake {
             animation: earthquake 0.5s ease-in-out;
             background: linear-gradient(45deg, #ffebee, #fff0f5);
@@ -205,7 +287,7 @@
         .options-container {
             display: flex;
             justify-content: center;
-            gap: 12px;
+            gap: 15px;
             margin: 30px 0;
             flex-wrap: wrap;
         }
@@ -213,17 +295,26 @@
         .option {
             background: linear-gradient(135deg, #ffebf3, #f0f8ff);
             border: 3px solid #ff9ec7;
-            border-radius: 20px;
-            padding: 18px 22px;
-            font-size: 22px;
+            border-radius: 25px;
+            padding: 20px 25px;
+            font-size: 28px;
             font-weight: bold;
             color: #ff69b4;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-width: 85px;
-            box-shadow: 0 4px 8px rgba(255, 158, 199, 0.3);
+            min-width: 100px;
+            box-shadow: 0 6px 12px rgba(255, 158, 199, 0.3);
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .option-number {
+            font-size: 36px;
+            margin-bottom: 8px;
         }
         
         .option::before {
@@ -239,8 +330,8 @@
         
         .option:hover {
             background: linear-gradient(135deg, #ffe6f0, #e6f7ff);
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 8px 16px rgba(255, 158, 199, 0.5);
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 20px rgba(255, 158, 199, 0.5);
             border-color: #ff69b4;
         }
         
@@ -264,14 +355,14 @@
         
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% { transform: translateY(0) scale(1); }
-            40% { transform: translateY(-10px) scale(1.1); }
-            60% { transform: translateY(-5px) scale(1.05); }
+            40% { transform: translateY(-15px) scale(1.2); }
+            60% { transform: translateY(-8px) scale(1.1); }
         }
         
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
         }
         
         .option:disabled {
@@ -281,30 +372,20 @@
         }
         
         .result {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             margin: 20px 0;
-            min-height: 35px;
+            min-height: 40px;
             color: #ff69b4;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         
         .points {
-            font-size: 22px;
+            font-size: 24px;
             color: #ff69b4;
             margin-bottom: 15px;
             font-weight: bold;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-        
-        .emoji-display {
-            font-size: 48px;
-            margin: 10px 0;
-            transition: transform 0.3s ease;
-        }
-        
-        .emoji-display:hover {
-            transform: scale(1.2) rotate(10deg);
         }
         
         .btn {
@@ -312,19 +393,19 @@
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 18px 45px;
-            font-size: 20px;
+            padding: 20px 50px;
+            font-size: 22px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 15px;
-            box-shadow: 0 6px 12px rgba(255, 105, 180, 0.4);
+            box-shadow: 0 8px 16px rgba(255, 105, 180, 0.4);
             font-family: 'Comic Sans MS', 'Marker Felt', 'Chalkboard SE', sans-serif;
         }
         
         .btn:hover {
-            transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 10px 20px rgba(255, 105, 180, 0.6);
+            transform: translateY(-5px) scale(1.08);
+            box-shadow: 0 12px 24px rgba(255, 105, 180, 0.6);
             background: linear-gradient(135deg, #ff5ca8, #ff8db8);
         }
         
@@ -343,19 +424,19 @@
             color: #ff69b4;
             border: none;
             border-radius: 50px;
-            padding: 12px 30px;
-            font-size: 16px;
+            padding: 15px 35px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 10px;
-            box-shadow: 0 4px 8px rgba(143, 211, 244, 0.4);
+            box-shadow: 0 5px 10px rgba(143, 211, 244, 0.4);
             font-family: 'Comic Sans MS', 'Marker Felt', 'Chalkboard SE', sans-serif;
         }
         
         .back-btn:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 6px 12px rgba(143, 211, 244, 0.6);
+            transform: translateY(-3px) scale(1.08);
+            box-shadow: 0 8px 16px rgba(143, 211, 244, 0.6);
             background: linear-gradient(135deg, #7fc7e8, #98d9c0);
         }
         
@@ -462,18 +543,18 @@
         
         .mistake-indicator {
             display: inline-block;
-            width: 20px;
-            height: 20px;
+            width: 25px;
+            height: 25px;
             background-color: #ffcdd2;
-            border: 2px solid #f44336;
+            border: 3px solid #f44336;
             border-radius: 50%;
-            margin: 0 3px;
+            margin: 0 5px;
             transition: all 0.3s ease;
         }
         
         .mistake-indicator.filled {
             background-color: #f44336;
-            transform: scale(1.2);
+            transform: scale(1.3);
         }
         
         .earthquake-warning {
@@ -483,8 +564,8 @@
             background: #f44336;
             color: white;
             border-radius: 15px;
-            padding: 5px 10px;
-            font-size: 12px;
+            padding: 8px 15px;
+            font-size: 14px;
             font-weight: bold;
             animation: pulse 1s infinite;
             z-index: 10;
@@ -492,7 +573,31 @@
         
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .counting-instruction {
+            font-size: 24px;
+            color: #ff69b4;
+            margin: 15px 0;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .sequence-instruction {
+            font-size: 24px;
+            color: #ff69b4;
+            margin: 15px 0;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .addition-instruction {
+            font-size: 24px;
+            color: #ff69b4;
+            margin: 15px 0;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
     </style>
 </head>
@@ -504,6 +609,11 @@
             <p style="color: #ff69b4; margin-bottom: 25px; font-size: 18px;">Selectează dificultatea și începe aventura matematică!</p>
             
             <div class="level-selection">
+                <button class="level-btn very-easy" data-level="very-easy">
+                    🌟 Foarte Ușor<br>
+                    <span style="font-size: 16px; font-weight: normal;">Pentru copii mici (3 ani)</span>
+                </button>
+                
                 <button class="level-btn easy" data-level="easy">
                     🌟 Ușor<br>
                     <span style="font-size: 16px; font-weight: normal;">Adunări și scăderi</span>
@@ -533,13 +643,18 @@
             </div>
             
             <div class="timer-container">
-                <span class="timer">20</span>
+                <span class="timer">30</span>
             </div>
             
-            <div class="points">Puncte: <span id="points-value">100</span> <span id="points-emoji">👑</span></div>
-            <div class="emoji-display" id="emoji-display">👑</div>
+            <div class="points">Puncte: <span id="points-value">100</span></div>
             
             <div class="problem" id="problem"></div>
+            <div class="counting-instruction" id="counting-instruction"></div>
+            <div class="counting-container" id="counting-container"></div>
+            <div class="sequence-instruction" id="sequence-instruction"></div>
+            <div class="sequence-container" id="sequence-container"></div>
+            <div class="addition-instruction" id="addition-instruction"></div>
+            <div class="addition-container" id="addition-container"></div>
             
             <div class="options-container" id="options-container"></div>
             
@@ -565,41 +680,6 @@
                 star.style.animationDelay = Math.random() * 3 + 's';
                 document.body.appendChild(star);
             }
-        }
-        
-        // Get emoji based on points
-        function getEmojiForPoints(points) {
-            if (points >= 90) return '👑'; // Crown - Excellent
-            if (points >= 80) return '🌟'; // Star - Great
-            if ( points >= 70) return '😊'; // Happy face - Good
-            if (points >= 60) return '🙂'; // Slightly happy - Okay
-            if (points >= 50) return '😐'; // Neutral - Fair
-            if (points >= 40) return '😕'; // Confused - Below average
-            if (points >= 30) return '😞'; // Sad - Poor
-            if (points >= 20) return '😢'; // Crying - Very poor
-            if (points >= 10) return '😭'; // Loudly crying - Terrible
-            return '💀'; // Skull - Game over
-        }
-        
-        // Update emoji display
-        function updateEmojiDisplay() {
-            const emoji = getEmojiForPoints(points);
-            document.getElementById('points-emoji').textContent = emoji;
-            document.getElementById('emoji-display').textContent = emoji;
-        }
-        
-        // Get performance message based on points
-        function getPerformanceMessage(points) {
-            if (points >= 90) return "EXCELENT! Ești o adevărată genială a matematicii! 👑";
-            if (points >= 80) return "FOARTE BINE! Ai făcut o treabă extraordinară! 🌟";
-            if (points >= 70) return "BINE! Ai arătat cunoștințe solide în matematică! 😊";
-            if (points >= 60) return "SUFICIENT! Mai ai puțin de lucru, dar ești pe drumul cel bun! 🙂";
-            if (points >= 50) return "ACCEPTABIL! Nu te descuraja, poți mai bine! 😉";
-            if (points >= 40) return "SLAB! Încearcă să exersezi mai mult! 😕";
-            if (points >= 30) return "FOARTE SLAB! Ai nevoie de mult exercițiu! 😞";
-            if (points >= 20) return "NEACCEPTABIL! Trebuie să înveți din nou noțiunile de bază! 😢";
-            if (points >= 10) return "DEZASTRU! Concentrează-te mai mult data viitoare! 😭";
-            return "CATASTROFĂ! Ai nevoie de ajutor urgent! 💀";
         }
         
         // Update mistake indicators
@@ -669,6 +749,9 @@
         const levelScreen = document.getElementById('level-screen');
         const gameScreen = document.getElementById('game-screen');
         const problemEl = document.getElementById('problem');
+        const countingContainer = document.getElementById('counting-container');
+        const sequenceContainer = document.getElementById('sequence-container');
+        const additionContainer = document.getElementById('addition-container');
         const optionsContainer = document.getElementById('options-container');
         const resultEl = document.getElementById('result');
         const timerEl = document.querySelector('.timer');
@@ -677,18 +760,21 @@
         const backToLevelBtn = document.getElementById('back-to-level-btn');
         const questionCountEl = document.getElementById('question-count');
         const mistakesCountEl = document.getElementById('mistakes-count');
+        const countingInstruction = document.getElementById('counting-instruction');
+        const sequenceInstruction = document.getElementById('sequence-instruction');
+        const additionInstruction = document.getElementById('addition-instruction');
         const levelButtons = document.querySelectorAll('.level-btn');
         const container = document.querySelector('.container');
         
         // Game state
         let points = 100;
         let questionCount = 1;
-        let timeLeft = 20;
+        let timeLeft = 30;
         let timerInterval;
         let currentAnswer;
         let gameActive = true;
         let isPenaltyQuestion = false;
-        let currentLevel = 'easy';
+        let currentLevel = 'very-easy';
         let overtimeMode = false; // Flag to track if we're in overtime mode
         let overtimeSeconds = 0; // Track seconds in overtime
         let correctAnswersFirst10 = 0; // Track correct answers in first 10 questions
@@ -698,6 +784,15 @@
         
         // Level descriptions with updated timing rules
         const levelInfo = {
+            'very-easy': {
+                name: 'Foarte Ușor',
+                operations: ['sequence', 'counting', 'addition'],
+                maxNumbers: [2, 2],
+                penaltyMax: 100,
+                timeFirst10: 30, // First 10 questions: 30 seconds
+                timeAfter10: 30,  // After 10 correct answers: 30 seconds (no change)
+                penaltyTime: 30   // Penalty questions: 30 seconds
+            },
             easy: {
                 name: 'Ușor',
                 operations: ['+', '-'],
@@ -705,7 +800,7 @@
                 penaltyMax: 100,
                 timeFirst10: 20, // First 10 questions: 20 seconds
                 timeAfter10: 10,  // After 10 correct answers: 10 seconds
-                penaltyTime: 25   // Penalty questions: 25 seconds (as requested)
+                penaltyTime: 25   // Penalty questions: 25 seconds
             },
             medium: {
                 name: 'Mediu',
@@ -714,18 +809,21 @@
                 penaltyMax: 50,
                 timeFirst10: 20, // First 10 questions: 20 seconds
                 timeAfter10: 10,  // After 10 correct answers: 10 seconds
-                penaltyTime: 25   // Penalty questions: 25 seconds (as requested)
+                penaltyTime: 25   // Penalty questions: 25 seconds
             },
             hard: {
                 name: 'Greu',
                 operations: ['*', '/', '^'],
                 maxNumbers: [10, 5],
                 penaltyMax: 30,
-                timeFirst10: 20, // First 10 questions: 20 seconds
-                timeAfter10: 25,  // After 10 correct answers: 25 seconds
-                penaltyTime: 25   // Penalty questions: 25 seconds (as requested)
+                timeFirst10: 70, // First 10 questions: 70 seconds (as requested)
+                timeAfter10: 70,  // After 10 correct answers: 70 seconds (no change)
+                penaltyTime: 70   // Penalty questions: 70 seconds
             }
         };
+        
+        // Items for very easy level (boy-friendly)
+        const veryEasyItems = ['🚗', '⚽', '🧸', '🐶', '🐱', '🍎', '🍌', '🎈', '⭐', '🌈', '🍕', '🍦'];
         
         // Check if addition has no carry-over (fără trecere peste ordin)
         function hasNoCarry(num1, num2) {
@@ -778,32 +876,62 @@
         
         // Generate random math problem based on level
         function generateProblem() {
+            // Hide all special containers first
+            countingContainer.style.display = 'none';
+            sequenceContainer.style.display = 'none';
+            additionContainer.style.display = 'none';
+            problemEl.style.display = 'none';
+            countingInstruction.style.display = 'none';
+            sequenceInstruction.style.display = 'none';
+            additionInstruction.style.display = 'none';
+            
             if (isPenaltyQuestion) {
                 // Handle penalty questions based on level
-                if (currentLevel === 'easy') {
+                if (currentLevel === 'very-easy') {
+                    // Very easy penalty: cycle through all three types
+                    const penaltyTypes = ['sequence', 'counting', 'addition'];
+                    const randomType = penaltyTypes[Math.floor(Math.random() * penaltyTypes.length)];
+                    if (randomType === 'sequence') {
+                        return generateSequenceProblem(true);
+                    } else if (randomType === 'counting') {
+                        return generateCountingProblem(true);
+                    } else {
+                        return generateAdditionProblem(true);
+                    }
+                } else if (currentLevel === 'easy') {
                     // Easy level penalty: alternate between 3-digit addition without carry-over and 3-digit subtraction with borrowing
                     if (Math.random() < 0.5) {
                         // 3-digit addition without carry-over
                         const { num1, num2, answer } = generateNoCarryAddition();
-                        return { problem: `${num1} + ${num2}`, answer, isEarthquake: false };
+                        return { problem: `${num1} + ${num2}`, answer, isEarthquake: false, type: 'normal' };
                     } else {
                         // 3-digit subtraction with borrowing (trecere peste ordin)
                         const { minuend, subtrahend, answer } = generateSubtractionWithBorrowing();
-                        return { problem: `${minuend} - ${subtrahend}`, answer, isEarthquake: true };
+                        return { problem: `${minuend} - ${subtrahend}`, answer, isEarthquake: true, type: 'normal' };
                     }
                 } else if (currentLevel === 'medium') {
                     // Medium level penalty: harder multiplication/division
                     const result = generateHardMediumProblem();
-                    return { ...result, isEarthquake: false };
+                    return { ...result, isEarthquake: false, type: 'normal' };
                 } else if (currentLevel === 'hard') {
                     // Hard level penalty: harder powers
                     const result = generateHardPowerProblem();
-                    return { ...result, isEarthquake: false };
+                    return { ...result, isEarthquake: false, type: 'normal' };
                 }
             }
             
             const level = levelInfo[currentLevel];
             const operation = level.operations[Math.floor(Math.random() * level.operations.length)];
+            
+            if (currentLevel === 'very-easy') {
+                if (operation === 'sequence') {
+                    return generateSequenceProblem(false);
+                } else if (operation === 'counting') {
+                    return generateCountingProblem(false);
+                } else if (operation === 'addition') {
+                    return generateAdditionProblem(false);
+                }
+            }
             
             let num1, num2, answer;
             
@@ -843,16 +971,150 @@
                 problem = `${num1} ${operation} ${num2}`;
             }
             
-            return { problem, answer, isEarthquake: false };
+            return { problem, answer, isEarthquake: false, type: 'normal' };
+        }
+        
+        // Generate sequence problem (find next number in sequence) - using pictures for toddlers
+        function generateSequenceProblem(isPenalty = false) {
+            // Generate a sequence of 2 identical items (since we're working with numbers 1-2)
+            const item = veryEasyItems[Math.floor(Math.random() * veryEasyItems.length)];
+            const sequenceLength = Math.floor(Math.random() * 2) + 1; // 1 or 2 items
+            const sequence = Array(sequenceLength).fill(item);
+            const answer = sequenceLength + 1; // Next count (max 3, but we'll cap at 2 for options)
+            
+            // Display instruction
+            sequenceInstruction.textContent = "Câte sunt aici?";
+            sequenceInstruction.style.display = 'block';
+            
+            // Display sequence
+            sequenceContainer.style.display = 'flex';
+            sequenceContainer.innerHTML = '';
+            sequence.forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'sequence-item';
+                itemEl.textContent = item;
+                sequenceContainer.appendChild(itemEl);
+            });
+            
+            return { 
+                problem: '', 
+                answer, 
+                isEarthquake: false, 
+                type: 'sequence',
+                sequence: sequence
+            };
+        }
+        
+        // Generate counting problem (count objects) - using pictures for toddlers
+        function generateCountingProblem(isPenalty = false) {
+            // Generate 1-2 objects (perfect for 3 year olds)
+            const count = Math.floor(Math.random() * 2) + 1; // 1 or 2
+            const item = veryEasyItems[Math.floor(Math.random() * veryEasyItems.length)];
+            
+            // Display instruction
+            countingInstruction.textContent = "Câte obiecte vezi?";
+            countingInstruction.style.display = 'block';
+            
+            // Display objects
+            countingContainer.style.display = 'flex';
+            countingContainer.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'counting-item';
+                itemEl.textContent = item;
+                countingContainer.appendChild(itemEl);
+            }
+            
+            return { 
+                problem: '', 
+                answer: count, 
+                isEarthquake: false, 
+                type: 'counting',
+                itemCount: count
+            };
+        }
+        
+        // Generate addition problem for very easy level (using pictures, numbers under 3)
+        function generateAdditionProblem(isPenalty = false) {
+            // Generate two groups that add up to 2 or 3 (since we want results under 3, but max answer is 2)
+            const group1 = Math.floor(Math.random() * 2) + 1; // 1 or 2
+            const group2 = Math.floor(Math.random() * (3 - group1)) + 1; // Ensure sum <= 3
+            const answer = group1 + group2;
+            const item1 = veryEasyItems[Math.floor(Math.random() * veryEasyItems.length)];
+            const item2 = veryEasyItems[Math.floor(Math.random() * veryEasyItems.length)];
+            
+            // Display instruction
+            additionInstruction.textContent = "Câte sunt în total?";
+            additionInstruction.style.display = 'block';
+            
+            // Display addition problem with pictures
+            additionContainer.style.display = 'flex';
+            additionContainer.innerHTML = '';
+            
+            const group1Container = document.createElement('div');
+            group1Container.className = 'addition-group';
+            for (let i = 0; i < group1; i++) {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'counting-item';
+                itemEl.textContent = item1;
+                itemEl.style.fontSize = '35px';
+                group1Container.appendChild(itemEl);
+            }
+            additionContainer.appendChild(group1Container);
+            
+            const plusEl = document.createElement('div');
+            plusEl.className = 'plus-sign';
+            plusEl.textContent = '+';
+            additionContainer.appendChild(plusEl);
+            
+            const group2Container = document.createElement('div');
+            group2Container.className = 'addition-group';
+            for (let i = 0; i < group2; i++) {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'counting-item';
+                itemEl.textContent = item2;
+                itemEl.style.fontSize = '35px';
+                group2Container.appendChild(itemEl);
+            }
+            additionContainer.appendChild(group2Container);
+            
+            return { 
+                problem: '', 
+                answer, 
+                isEarthquake: false, 
+                type: 'addition',
+                group1: group1,
+                group2: group2
+            };
         }
         
         // Generate wrong answers based on level and question type
-        function generateWrongAnswers(correctAnswer) {
+        function generateWrongAnswers(correctAnswer, problemType = 'normal') {
             const wrongAnswers = new Set();
             const maxAttempts = 20;
             let attempts = 0;
             
-            if (isPenaltyQuestion) {
+            if (currentLevel === 'very-easy') {
+                // For very easy (toddlers), wrong answers should be 1-2 but not the correct answer
+                while (wrongAnswers.size < 2 && attempts < maxAttempts) { // Only 2 wrong answers for toddlers
+                    const wrongAnswer = Math.floor(Math.random() * 2) + 1; // 1-2
+                    if (wrongAnswer !== correctAnswer) {
+                        wrongAnswers.add(wrongAnswer);
+                    }
+                    attempts++;
+                }
+                // Ensure we have exactly 2 wrong answers
+                if (wrongAnswers.size < 2) {
+                    let filler = 1;
+                    while (wrongAnswers.size < 2) {
+                        if (filler !== correctAnswer) {
+                            wrongAnswers.add(filler);
+                        }
+                        filler++;
+                        if (filler > 2) filler = 1;
+                    }
+                }
+            } else if (isPenaltyQuestion) {
                 // For penalty questions, generate more challenging wrong answers
                 if (currentLevel === 'easy') {
                     while (wrongAnswers.size < 4 && attempts < maxAttempts) {
@@ -898,9 +1160,9 @@
             }
             
             // If we couldn't generate enough unique wrong answers, fill with sequential numbers
-            if (wrongAnswers.size < 4) {
+            if (wrongAnswers.size < (currentLevel === 'very-easy' ? 2 : 4)) {
                 let filler = correctAnswer + 1;
-                while (wrongAnswers.size < 4) {
+                while (wrongAnswers.size < (currentLevel === 'very-easy' ? 2 : 4)) {
                     if (filler !== correctAnswer) {
                         wrongAnswers.add(filler);
                     }
@@ -913,8 +1175,8 @@
         
         // Display problem and options
         function displayProblem() {
-            const { problem, answer, isEarthquake } = generateProblem();
-            currentAnswer = answer;
+            const problemData = generateProblem();
+            currentAnswer = problemData.answer;
             
             if (!isPenaltyQuestion) {
                 questionCountEl.textContent = questionCount;
@@ -926,7 +1188,7 @@
             
             // Set timer based on level, question count, and whether it's a penalty question
             if (isPenaltyQuestion) {
-                timeLeft = levelInfo[currentLevel].penaltyTime; // Always 25 seconds for penalty (as requested)
+                timeLeft = levelInfo[currentLevel].penaltyTime;
             } else {
                 // Check if we have 10 or more correct answers in the first 10 questions
                 if (correctAnswersFirst10 >= 10) {
@@ -937,28 +1199,37 @@
             }
             timerEl.textContent = timeLeft;
             
-            problemEl.innerHTML = problem;
-            
-            // Apply earthquake effect if needed
-            problemEl.classList.remove('problem-earthquake');
-            if (isEarthquake) {
-                problemEl.classList.add('problem-earthquake');
-                // Add earthquake warning label
-                const warning = document.createElement('div');
-                warning.className = 'earthquake-warning';
-                warning.textContent = '⚠️ CUTREMUR!';
-                problemEl.appendChild(warning);
+            // Apply earthquake effect if needed (only for normal problems)
+            if (problemData.type === 'normal') {
+                problemEl.style.display = 'flex';
+                problemEl.innerHTML = problemData.problem;
+                problemEl.classList.remove('problem-earthquake');
+                if (problemData.isEarthquake) {
+                    problemEl.classList.add('problem-earthquake');
+                    // Add earthquake warning label
+                    const warning = document.createElement('div');
+                    warning.className = 'earthquake-warning';
+                    warning.textContent = '⚠️ CUTREMUR!';
+                    problemEl.appendChild(warning);
+                }
             }
             
-            const wrongAnswers = generateWrongAnswers(answer);
-            const allAnswers = [...wrongAnswers, answer];
+            const wrongAnswers = generateWrongAnswers(currentAnswer, problemData.type);
+            const allAnswers = [...wrongAnswers, currentAnswer];
             const shuffledAnswers = allAnswers.sort(() => Math.random() - 0.5);
             
             optionsContainer.innerHTML = '';
             shuffledAnswers.forEach(ans => {
                 const option = document.createElement('div');
                 option.className = 'option';
-                option.textContent = ans;
+                
+                if (currentLevel === 'very-easy') {
+                    // For very easy level, show only numbers (no emojis over numbers)
+                    option.innerHTML = `<div class="option-number">${ans}</div>`;
+                } else {
+                    option.textContent = ans;
+                }
+                
                 option.addEventListener('click', () => selectAnswer(ans));
                 optionsContainer.appendChild(option);
             });
@@ -997,21 +1268,18 @@
                 createFireworks();
             }
             
-            const finalEmoji = getEmojiForPoints(points);
-            const performanceMessage = isVictory ? getPerformanceMessage(points) : "Ai acumulat 5 greșeli! Încearcă din nou!";
+            const performanceMessage = isVictory ? "Ai completat cu succes toate cele 20 de întrebări! 🎉" : "Ai acumulat 5 greșeli! Încearcă din nou!";
             
             const modal = document.createElement('div');
             modal.className = 'prize-modal';
             modal.innerHTML = `
                 <div class="prize-content">
-                    <div class="trophy">${finalEmoji}</div>
-                    <div class="prize-title">${isVictory ? 'Felicitări, Super Eroine! 🌈' : 'Oh nu! 😢'}</div>
+                    <div class="trophy">🏆</div>
+                    <div class="prize-title">${isVictory ? 'Felicitări, Super Erou Mic! 🌈' : 'Oh nu! 😢'}</div>
                     <div class="prize-message">
-                        ${isVictory ? 'Ai completat cu succes toate cele 20 de întrebări!' : 'Ai făcut prea multe greșeli!'}
+                        ${performanceMessage}
                         <br>
                         ${isVictory ? `Ai terminat cu <strong>${points} puncte</strong>! ✨` : ''}
-                        <br>
-                        ${performanceMessage}
                     </div>
                     <button class="btn" id="final-restart-btn">Joacă din nou! 🎀</button>
                     <button class="back-btn" style="margin-top: 15px;" id="final-back-btn">❮ Înapoi la Alegere</button>
@@ -1039,7 +1307,8 @@
             
             const options = document.querySelectorAll('.option');
             options.forEach(option => {
-                const optionValue = parseInt(option.textContent);
+                const optionText = option.textContent || option.querySelector('.option-number')?.textContent;
+                const optionValue = parseInt(optionText);
                 if (optionValue === currentAnswer) {
                     option.classList.add('correct');
                 } else if (optionValue === selectedAnswer) {
@@ -1064,7 +1333,6 @@
                 points -= 5; // Deduct 5 points for each wrong answer
                 if (points < 0) points = 0;
                 pointsValueEl.textContent = points;
-                updateEmojiDisplay();
                 
                 mistakes++;
                 mistakesCountEl.textContent = mistakes;
@@ -1138,7 +1406,6 @@
                     points--;
                     if (points < 0) points = 0;
                     pointsValueEl.textContent = points;
-                    updateEmojiDisplay();
                     
                     // If more than 5 seconds in overtime, automatically mark as wrong
                     if (overtimeSeconds > 5) {
@@ -1151,7 +1418,6 @@
                         points -= 5;
                         if (points < 0) points = 0;
                         pointsValueEl.textContent = points;
-                        updateEmojiDisplay();
                         
                         mistakes++;
                         mistakesCountEl.textContent = mistakes;
@@ -1186,7 +1452,6 @@
             isPenaltyQuestion = false;
             pointsValueEl.textContent = points;
             mistakesCountEl.textContent = mistakes;
-            updateEmojiDisplay();
             updateMistakeIndicators();
             restartBtn.classList.add('hidden');
             displayProblem();
@@ -1223,7 +1488,6 @@
         
         // Initialize game and add decorative elements
         addStars();
-        updateEmojiDisplay();
         updateMistakeIndicators();
     </script>
 </body>
