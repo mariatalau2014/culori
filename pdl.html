@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joc Pistolet de Lipit</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #4b0082; /* Fundal Violet preferat */
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+
+        h1 {
+            margin-top: 10px;
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 4px #000000;
+        }
+
+        #game-container {
+            position: relative;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); /* Efect de lumină subtil */
+            border: 4px solid #fff;
+            border-radius: 8px;
+            background-color: #f0f0f0; /* Foaia de hârtie */
+            cursor: crosshair;
+            touch-action: none; /* Previne scroll-ul pe mobil în timp ce desenezi */
+        }
+
+        canvas {
+            display: block;
+            border-radius: 4px;
+        }
+
+        #controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 15px;
+        }
+
+        .color-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .color-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px white;
+        }
+
+        .color-btn.active {
+            border: 3px solid #ffff00;
+            transform: scale(1.2);
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            background-color: #ff4500;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 4px #b33200;
+        }
+
+        .action-btn:active {
+            box-shadow: 0 2px #b33200;
+            transform: translateY(2px);
+        }
+
+        #instruction {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Atelierul de Lipit Virtual</h1>
+    <div id="instruction">Apasă și trage mouse-ul (sau degetul) pentru a pune biluțe de lipici.</div>
+
+    <div id="game-container">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <div id="controls">
+        <!-- Culori calde preferate -->
+        <div class="color-btn active" style="background-color: #ff0000;" onclick="setColor('#ff0000', this)" title="Roșu"></div>
+        <div class="color-btn" style="background-color: #ff8c00;" onclick="setColor('#ff8c00', this)" title="Portocaliu"></div>
+        <div class="color-btn" style="background-color: #ffd700;" onclick="setColor('#ffd700', this)" title="Galben"></div>
+        <div class="color-btn" style="background-color: #ff69b4;" onclick="setColor('#ff69b4', this)" title="Roz Calд"></div>
+        
+        <button class="action-btn" onclick="clearCanvas()">Șterge Foaia</button>
+        <button class="action-btn" style="background-color: #4CAF50; box-shadow: 0 4px #2E7D32;" onclick="saveImage()">Salvează</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('game-container');
+
+        // Setăm dimensiunea foilor A4 aproximativ sau maxim pe ecran
+        function resizeCanvas() {
+            const maxWidth = window.innerWidth - 40;
+            const maxHeight = window.innerHeight - 200;
+            
+            // Dimensiuni fixe pentru consistență, dar responsive
+            canvas.width = Math.min(800, maxWidth);
+            canvas.height = Math.min(600, maxHeight);
+            
+            // Umplem fundalul cu alb (hârtie)
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        let isDrawing = false;
+        let currentColor = '#ff0000';
+        let lastX = 0;
+        let lastY = 0;
+
+        // Funcție pentru a crea efectul de "biluță" de lipici
+        function drawDot(x, y) {
+            ctx.beginPath();
+            ctx.arc(x, y, 8, 0, Math.PI * 2); // Raza biluței
+            ctx.fillStyle = currentColor;
+            ctx.fill();
+            
+            // Adăugăm un mic reflex pentru efect 3D (lumină)
+            ctx.beginPath();
+            ctx.arc(x - 2, y - 2, 3, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+            ctx.fill();
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = getCoordinates(e);
+            drawDot(lastX, lastY);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault(); // Previne scroll pe mobil
+            
+            const [x, y] = getCoordinates(e);
+            
+            // Desenăm multiple puncte între ultima poziție și cea curentă
+            // pentru a face linia continuă ca un fir de lipici
+            const dist = Math.hypot(x - lastX, y - lastY);
+            const angle = Math.atan2(y - lastY, x - lastX);
+            
+            for (let i = 0; i < dist; i += 5) {
+                const dotX = lastX + (Math.cos(angle) * i);
+                const dotY = lastY + (Math.sin(angle) * i);
+                drawDot(dotX, dotY);
+            }
+
+            [lastX, lastY] = [x, y];
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function getCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            let clientX, clientY;
+
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            return [clientX - rect.left, clientY - rect.top];
+        }
+
+        // Evenimente Mouse
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        // Evenimente Touch (pentru telefon/tabletă)
+        canvas.addEventListener('touchstart', startDrawing, { passive: false });
+        canvas.addEventListener('touchmove', draw, { passive: false });
+        canvas.addEventListener('touchend', stopDrawing);
+
+        // Funcții butoane
+        function setColor(color, element) {
+            currentColor = color;
+            // Actualizăm stilul butoanelor
+            document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function clearCanvas() {
+            if(confirm("Ești sigur că vrei să ștergi tot desenul?")) {
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function saveImage() {
+            const link = document.createElement('a');
+            link.download = 'desen-lipici.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    </script>
+</body>
+</html>
