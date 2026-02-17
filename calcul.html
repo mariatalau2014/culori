@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joc Matematică: Fracții Avansate</title>
+    <title>Joc Matematică: Zecimale Fără Răspuns</title>
     <style>
         :root {
             /* BOY THEME (Kindergarten) */
@@ -275,34 +275,15 @@
         }
 
         .problem-display {
-            font-size: 3.5rem; /* Slightly smaller to fit fractions */
+            font-size: 4rem;
             font-weight: 900;
             margin: 1rem 0;
             color: var(--girl-primary);
             transition: color 0.5s;
-            line-height: 1.2;
         }
 
         body.boy-theme .problem-display { color: var(--boy-primary); }
         body.pro-theme .problem-display { color: var(--pro-accent); }
-
-        .fraction {
-            display: inline-block;
-            vertical-align: middle;
-            text-align: center;
-            font-size: 0.8em;
-            margin: 0 5px;
-        }
-        .fraction > span {
-            display: block;
-            padding: 0 5px;
-        }
-        .fraction span.numerator {
-            border-bottom: 2px solid currentColor;
-        }
-        .fraction span.denominator {
-            border-top: 0px;
-        }
 
         .input-group {
             display: flex;
@@ -449,7 +430,7 @@
 
         @media (max-width: 600px) {
             h1 { font-size: 2rem; }
-            .problem-display { font-size: 2.5rem; }
+            .problem-display { font-size: 3rem; }
             .menu-grid { grid-template-columns: 1fr; }
             .card { min-height: 160px; }
             .choices-grid { grid-template-columns: 1fr; }
@@ -498,7 +479,7 @@
                 <div class="card pro-card" onclick="openSubmenu('pro_menu')">
                     <div class="card-icon">⚛️</div>
                     <div class="card-title">5 Pro</div>
-                    <div class="card-desc">Congruențe și Fracții Avansate</div>
+                    <div class="card-desc">Congruențe și Aritmetică Modulară</div>
                 </div>
             </div>
         </div>
@@ -526,7 +507,7 @@
             <div id="choicesContainer" class="choices-grid" style="display: none;"></div>
 
             <div id="inputContainer" class="input-group" style="display: none;">
-                <input type="number" id="answerInput" placeholder="?" autocomplete="off" step="0.01">
+                <input type="number" id="answerInput" placeholder="?" autocomplete="off" step="0.1">
                 <button class="btn btn-primary" onclick="checkAnswer()">Verifică</button>
             </div>
 
@@ -545,7 +526,7 @@
         let maxTime = 0;
         let timerInterval;
         let difficultyLevel = 1; 
-        let problemHTML = '';
+        let problemHTML = ''; 
 
         // --- DOM Elements ---
         const mainMenu = document.getElementById('mainMenu');
@@ -606,18 +587,18 @@
                 title: 'Clasa 5+',
                 theme: 'girl',
                 items: [
-                    { id: 'hard_frac', icon: '🍰', title: 'Fracții (Adunare)', desc: 'Același numitor' },
+                    { id: 'hard_frac', icon: '🍰', title: 'Fracții', desc: 'Adunări cu fracții' },
                     { id: 'hard_dec', icon: '💧', title: 'Zecimale', desc: 'Calcule cu virgulă' },
-                    { id: 'hard_pow', icon: '⚡', title: 'Puteri', desc: 'Calcul avansat' }
+                    { id: 'hard_pow', icon: '⚡', title: 'Puteri & Radicali', desc: 'Calcul avansat' }
                 ]
             },
             'pro_menu': {
                 title: '5 Pro (Avansat)',
                 theme: 'pro',
                 items: [
-                    { id: 'pro_cong', icon: '⚛️', title: 'Congruențe', desc: 'Aritmetică modulară' },
-                    { id: 'pro_frac_mul', icon: '✖️', title: 'Fracții x Fracții', desc: 'Înmulțirea fracțiilor' },
-                    { id: 'pro_frac_div', icon: '➗', title: 'Fracții : Fracții', desc: 'Împărțirea fracțiilor' }
+                    { id: 'pro_cong', icon: '⚛️', title: 'Congruențe', desc: 'Aritmetică modulară (mod n)' },
+                    { id: 'pro_last', icon: '🔢', title: 'Ultima Cifră', desc: 'Determină ultima cifră' },
+                    { id: 'pro_div', icon: '➗', title: 'Criterii Divizibilitate', desc: 'Restul împărțirii' }
                 ]
             }
         };
@@ -760,11 +741,6 @@
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
-        // Helper to simplify fractions for display
-        function gcd(a, b) {
-            return b == 0 ? a : gcd(b, a % b);
-        }
-
         function generateChoices(correctAnswer, minVal, maxVal) {
             let choices = new Set();
             choices.add(correctAnswer);
@@ -822,8 +798,8 @@
             }
 
             // --- PROBLEM GENERATION LOGIC ---
-
-            // KINDERGARTEN
+            
+            // KINDERGARTEN (Quiz Mode)
             if (currentMode === 'kg_count') {
                 const maxCount = difficultyLevel === 1 ? 5 : 10;
                 const count = getRandomInt(1, maxCount);
@@ -858,7 +834,7 @@
                 renderChoices(generateChoices(currentAnswer, 2, maxNum * 2 + 2));
             }
 
-            // SCHOOL CATEGORIES
+            // SCHOOL CATEGORIES (Show ? initially)
             else if (currentMode === 'easy_math') {
                 const rangeMax = difficultyLevel === 1 ? 50 : 90;
                 const op = Math.random() > 0.5 ? '+' : '-';
@@ -951,7 +927,7 @@
                 gameContent.innerHTML = problemHTML;
             }
 
-            // 5+ CLS (Basic Fractions)
+            // 5+ CLS
             else if (currentMode === 'hard_frac') {
                 const den = getRandomInt(2, 9);
                 const n1 = getRandomInt(1, den-1);
@@ -960,13 +936,17 @@
                 problemHTML = `<div style="font-size:1.5rem; color:#666;">Calcul (zecimal):</div><div class="problem-display">${n1}/${den} + ${n2}/${den} = <span class="missing-number">?</span></div>`;
                 gameContent.innerHTML = problemHTML;
             }
+            
+            // --- UPDATED: DECIMALS (Show ? initially) ---
             else if (currentMode === 'hard_dec') {
                 const n1 = getRandomInt(10, 50) / 10;
                 const n2 = getRandomInt(10, 50) / 10;
                 currentAnswer = n1 + n2;
-                problemHTML = `<div class="problem-display">${n1} + ${n2} = ?</div>`;
+                // Display with Question Mark
+                problemHTML = `<div class="problem-display">${n1} + ${n2} = <span class="missing-number">?</span></div>`;
                 gameContent.innerHTML = problemHTML;
             }
+            
             else if (currentMode === 'hard_pow') {
                 const base = getRandomInt(2, 5);
                 const exp = getRandomInt(2, 3);
@@ -975,7 +955,7 @@
                 gameContent.innerHTML = problemHTML;
             }
 
-            // 5 PRO (ADVANCED FRACTIONS)
+            // 5 PRO (CONGRUENCES)
             else if (currentMode === 'pro_cong') {
                 const n = difficultyLevel === 1 ? getRandomInt(2, 5) : getRandomInt(6, 12);
                 const a = getRandomInt(10, 100);
@@ -983,62 +963,19 @@
                 problemHTML = `<div style="font-size:1.5rem; color:#666;">Congruență:</div><div class="problem-display">${a} ≡ <span class="missing-number">?</span> (mod ${n})</div>`;
                 gameContent.innerHTML = problemHTML;
             }
-            else if (currentMode === 'pro_frac_mul') {
-                // Fraction Multiplication: (a/b) * (c/d)
-                let b = getRandomInt(2, 9);
-                let d = getRandomInt(2, 9);
-                let a = getRandomInt(1, b-1);
-                let c = getRandomInt(1, d-1);
-                
-                // Calculate result
-                let num = a * c;
-                let den = b * d;
-                currentAnswer = num / den;
-
-                // Simplify for display if possible
-                let common = gcd(num, den);
-                let dispNum = num / common;
-                let dispDen = den / common;
-
-                problemHTML = `
-                    <div style="font-size:1.5rem; color:#666;">Înmulțirea fracțiilor:</div>
-                    <div class="problem-display">
-                        <div class="fraction"><span class="numerator">${a}</span><span class="denominator">${b}</span></div>
-                        ×
-                        <div class="fraction"><span class="numerator">${c}</span><span class="denominator">${d}</span></div>
-                        = <span class="missing-number">?</span>
-                        <div style="font-size:0.5em; color:#888; margin-top:5px;">(Rezultat zecimal)</div>
-                    </div>
-                `;
+            else if (currentMode === 'pro_last') {
+                const a = getRandomInt(10, 99);
+                const b = getRandomInt(2, 5);
+                const val = Math.pow(a, b);
+                currentAnswer = val % 10;
+                problemHTML = `<div style="font-size:1.5rem; color:#666;">Ultima cifră a lui ${a}<sup>${b}</sup>:</div><div class="problem-display">${a}<sup>${b}</sup> ≡ <span class="missing-number">?</span> (mod 10)</div>`;
                 gameContent.innerHTML = problemHTML;
             }
-            else if (currentMode === 'pro_frac_div') {
-                // Fraction Division: (a/b) / (c/d) = (a*d) / (b*c)
-                let b = getRandomInt(2, 6);
-                let d = getRandomInt(2, 6);
-                let a = getRandomInt(1, b-1);
-                let c = getRandomInt(1, d-1);
-                
-                // Calculate result
-                let num = a * d;
-                let den = b * c;
-                currentAnswer = num / den;
-
-                // Simplify for display
-                let common = gcd(num, den);
-                let dispNum = num / common;
-                let dispDen = den / common;
-
-                problemHTML = `
-                    <div style="font-size:1.5rem; color:#666;">Împărțirea fracțiilor:</div>
-                    <div class="problem-display">
-                        <div class="fraction"><span class="numerator">${a}</span><span class="denominator">${b}</span></div>
-                        :
-                        <div class="fraction"><span class="numerator">${c}</span><span class="denominator">${d}</span></div>
-                        = <span class="missing-number">?</span>
-                        <div style="font-size:0.5em; color:#888; margin-top:5px;">(Rezultat zecimal)</div>
-                    </div>
-                `;
+            else if (currentMode === 'pro_div') {
+                const div = difficultyLevel === 1 ? 3 : 7;
+                const a = getRandomInt(20, 100);
+                currentAnswer = a % div;
+                problemHTML = `<div style="font-size:1.5rem; color:#666;">Restul împărțirii:</div><div class="problem-display">${a} : ${div} rest <span class="missing-number">?</span></div>`;
                 gameContent.innerHTML = problemHTML;
             }
         }
@@ -1047,20 +984,22 @@
             if(problemHTML) {
                 const correctedHTML = problemHTML.replace(
                     /<span class="missing-number">\?<\/span>/g, 
-                    `<span style="color:var(--success)">${Number(currentAnswer.toFixed(2))}</span>`
+                    `<span style="color:var(--success)">${currentAnswer}</span>`
                 );
                 gameContent.innerHTML = correctedHTML;
             }
             
-            feedbackText.innerHTML = `Greșit. <br>Răspunsul corect era <strong>${Number(currentAnswer.toFixed(2))}</strong>. 😊`;
+            feedbackText.innerHTML = `Greșit. <br>Răspunsul corect era <strong>${currentAnswer}</strong>. 😊`;
             feedbackText.className = "feedback wrong";
             difficultyLevel++;
             answerInput.value = '';
+            
             setTimeout(nextProblem, 2500);
         }
 
         function checkAnswer() {
             const isBoy = currentMode.startsWith('kg');
+            
             if(isBoy) return;
 
             const userVal = parseFloat(answerInput.value);
@@ -1080,7 +1019,6 @@
                 return;
             }
 
-            // Allow small floating point error
             if (Math.abs(userVal - currentAnswer) < 0.01) { 
                 score++;
                 scoreDisplay.textContent = `Puncte: ${score} 🏆`;
