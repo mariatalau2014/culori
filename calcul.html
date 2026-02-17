@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Joc Matematică: 19 Exerciții</title>
+<title>Joc Matematică: Final Corect</title>
 <style>
 :root {
 --boy-bg: #E3F2FD; --boy-primary: #2196F3; --boy-secondary: #4FC3F7; --boy-accent: #4CAF50;
@@ -185,8 +185,9 @@ let timerInterval;
 let difficultyLevel = 1;
 let problemHTML = '';
 let questionCount = 0;
-const MAX_QUESTIONS = 19; // MODIFICAT: De la 20 la 19
+const MAX_QUESTIONS = 19; // Setat la 19 exerciții
 let currentSubMenuKey = '';
+let isGameEnding = false; // Flag nou pentru a preveni buclele
 
 // --- DOM Elements ---
 const mainMenu = document.getElementById('mainMenu');
@@ -304,6 +305,7 @@ leaderboardScreen.style.display = 'none';
 backBtn.style.display = 'none';
 answerInput.value = '';
 body.classList.remove('boy-theme', 'pro-theme');
+isGameEnding = false;
 }
 
 function openSubmenu(menuKey) {
@@ -333,6 +335,7 @@ currentMode = mode;
 score = 100;
 questionCount = 0;
 difficultyLevel = 1;
+isGameEnding = false;
 updateStats();
 subMenu.style.display = 'none';
 gameArea.style.display = 'block';
@@ -382,7 +385,11 @@ else if (percentage > 20) timerBar.style.backgroundColor = 'var(--timer-warning)
 else timerBar.style.backgroundColor = 'var(--timer-danger)';
 }
 
-function handleTimeout() { showCorrectAnswer(); }
+function handleTimeout() { 
+    // La timeout, tratăm ca pe un răspuns greșit, dar permitem continuarea
+    showCorrectAnswer(false); 
+}
+
 function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
 function generateChoices(correctAnswer, minVal, maxVal) {
@@ -408,25 +415,62 @@ choicesContainer.appendChild(btn);
 });
 }
 
+// Funcție modificată pentru a valida RĂSPUNSUL înainte de a verifica sfârșitul jocului
 function handleChoiceClick(val) {
-if(questionCount >= MAX_QUESTIONS) return;
-if(val === currentAnswer) {
-feedbackText.textContent = "Bravo! Corect! 🎉";
-feedbackText.className = "feedback correct";
-difficultyLevel = 1;
-setTimeout(nextProblem, 1500);
+if(isGameEnding) return; // Previne click-uri multiple în timpul tranziției
+
+let isCorrect = (val === currentAnswer);
+processResult(isCorrect);
+}
+
+function checkAnswer() {
+const isBoy = currentMode.startsWith('kg');
+if(isBoy) return;
+if(isGameEnding) return;
+
+const userVal = parseFloat(answerInput.value);
+if (isNaN(userVal)) return;
+
+let isCorrect = false;
+if(currentMode === 'easy_comp') {
+    isCorrect = (userVal === currentAnswer);
 } else {
-score -= 5;
-updateStats();
-feedbackText.textContent = "Greșit! -5 puncte. 😢";
-feedbackText.className = "feedback wrong";
-difficultyLevel++;
-setTimeout(nextProblem, 1500);
+    isCorrect = (Math.abs(userVal - currentAnswer) < 0.01);
+}
+processResult(isCorrect);
+}
+
+// Noua funcție centralizată pentru procesarea rezultatului
+function processResult(isCorrect) {
+if(isCorrect) {
+    feedbackText.textContent = "Bravo! Corect! 🎉";
+    feedbackText.className = "feedback correct";
+    difficultyLevel = 1;
+    // Nu oprim jocul aici, chiar dacă e ultima întrebare. Lăsăm utilizatorul să vadă mesajul.
+} else {
+    score -= 5;
+    updateStats();
+    feedbackText.textContent = "Greșit! -5 puncte. 😢";
+    feedbackText.className = "feedback wrong";
+    difficultyLevel++;
+}
+
+// Verificăm dacă am ajuns la limită ABIA DUPĂ ce am procesat răspunsul
+if (questionCount >= MAX_QUESTIONS) {
+    isGameEnding = true;
+    setTimeout(endGame, 1500); // Așteptăm să vezi mesajul de feedback
+} else {
+    setTimeout(nextProblem, 1500);
 }
 }
 
 function nextProblem() {
-if (questionCount >= MAX_QUESTIONS) { endGame(); return; }
+// Verificare de siguranță
+if (questionCount >= MAX_QUESTIONS) { 
+    endGame(); 
+    return; 
+}
+
 questionCount++;
 updateStats();
 answerInput.value = '';
@@ -434,6 +478,7 @@ feedbackText.textContent = '';
 feedbackText.className = 'feedback';
 gameContent.innerHTML = '';
 choicesContainer.innerHTML = '';
+problemHTML = ''; // Reset HTML
 
 if (currentMode.startsWith('kg')) { if (difficultyLevel === 1) startTimer(30); else startTimer(40); } 
 else { if (difficultyLevel === 1) startTimer(20); else startTimer(30); }
@@ -672,41 +717,28 @@ leaderboardBody.innerHTML += row;
 }
 }
 
-function showCorrectAnswer() {
+function showCorrectAnswer(isTimeout) {
 if(problemHTML) {
 const correctedHTML = problemHTML.replace(/<span class="missing-number">\?<\/span>/g, `<span style="color:var(--success)">${currentAnswer}</span>`);
 gameContent.innerHTML = correctedHTML;
 }
-feedbackText.innerHTML = `Greșit. <br>Răspunsul corect era <strong>${currentAnswer}</strong>. (-5 puncte)`;
+if(isTimeout) {
+    feedbackText.innerHTML = `Timp expirat! <br>Răspunsul corect era <strong>${currentAnswer}</strong>. (-5 puncte)`;
+} else {
+    feedbackText.innerHTML = `Greșit. <br>Răspunsul corect era <strong>${currentAnswer}</strong>. (-5 puncte)`;
+}
 feedbackText.className = "feedback wrong";
 score -= 5;
 updateStats();
 difficultyLevel++;
 answerInput.value = '';
-setTimeout(nextProblem, 2500);
-}
 
-function checkAnswer() {
-const isBoy = currentMode.startsWith('kg');
-if(isBoy) return;
-const userVal = parseFloat(answerInput.value);
-if (isNaN(userVal)) return;
-if(currentMode === 'easy_comp') {
-if(userVal === currentAnswer) {
-feedbackText.textContent = "Bravo! Corect! 🎉";
-feedbackText.className = "feedback correct";
-difficultyLevel = 1;
-setTimeout(nextProblem, 1500);
-} else { showCorrectAnswer(); }
-return;
-}
-if (Math.abs(userVal - currentAnswer) < 0.01) {
-feedbackText.textContent = "Bravo! Ești campion! 🎉";
-feedbackText.className = "feedback correct";
-difficultyLevel = 1;
-setTimeout(nextProblem, 1500);
+// Și aici verificăm dacă e ultima întrebare după ce am arătat răspunsul corect
+if (questionCount >= MAX_QUESTIONS) {
+    isGameEnding = true;
+    setTimeout(endGame, 2500);
 } else {
-showCorrectAnswer();
+    setTimeout(nextProblem, 2500);
 }
 }
 
