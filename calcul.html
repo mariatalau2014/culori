@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joc Matematică: Clasament Secure</title>
+    <title>Joc Matematică: Scor și Limită</title>
     <style>
         :root {
             /* BOY THEME (Kindergarten) */
@@ -31,9 +31,6 @@
             --error: #EF5350;
             --timer-warning: #FF9800;
             --timer-danger: #F44336;
-            --gold: #FFD700;
-            --silver: #C0C0C0;
-            --bronze: #CD7F32;
         }
 
         * {
@@ -134,7 +131,6 @@
             align-items: center;
             justify-content: center;
             min-height: 200px;
-            position: relative;
         }
 
         body.pro-theme .card {
@@ -163,37 +159,6 @@
         .card-desc { font-size: 0.9rem; line-height: 1.4; font-weight: 600; }
         body.pro-theme .card-desc { color: #B0BEC5; }
         body:not(.pro-theme) .card-desc { color: #78909C; }
-
-        /* Leaderboard Button on Card - Fixed Positioning */
-        .card-lb-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--gold);
-            color: #fff;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: 0 4px 0 #B8860B;
-            transition: transform 0.2s;
-            z-index: 5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0; /* Prevent shrinking */
-        }
-
-        .card-lb-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .card-lb-btn:active {
-            transform: scale(0.95);
-            box-shadow: 0 2px 0 #B8860B;
-        }
 
         .game-area {
             display: none;
@@ -327,7 +292,7 @@
             margin-bottom: 1.5rem;
         }
 
-        input[type="number"], input[type="text"] {
+        input[type="number"] {
             width: 130px;
             padding: 0.8rem;
             font-size: 2.2rem;
@@ -339,8 +304,8 @@
             font-family: inherit;
             background: #FFF;
         }
-
-        body.pro-theme input[type="number"], body.pro-theme input[type="text"] {
+        
+        body.pro-theme input[type="number"] {
             border-color: var(--pro-accent);
             background: #263238;
             color: white;
@@ -348,7 +313,7 @@
 
         body:not(.pro-theme) input[type="number"] { color: var(--text-color); }
 
-        input[type="number"]:focus, input[type="text"]:focus {
+        input[type="number"]:focus {
             border-color: var(--girl-primary);
             transform: scale(1.05);
         }
@@ -463,105 +428,12 @@
         }
         .back-btn:hover { transform: scale(1.1); }
 
-        /* Award & Leaderboard Styles */
-        .award-container, .leaderboard-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: white;
-            padding: 2rem;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .award-icon {
-            font-size: 8rem;
-            margin: 1rem 0;
-            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));
-            animation: float 3s infinite ease-in-out;
-        }
-
-        .award-title {
-            font-size: 3rem;
-            font-weight: 900;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-        }
-
-        .award-gold { color: var(--gold); text-shadow: 2px 2px 0 #B8860B; }
-        .award-silver { color: var(--silver); text-shadow: 2px 2px 0 #78909C; }
-        .award-bronze { color: var(--bronze); text-shadow: 2px 2px 0 #8D6E63; }
-        .award-mention { color: var(--boy-primary); text-shadow: 2px 2px 0 #1565C0; }
-        .award-try { color: var(--error); text-shadow: 2px 2px 0 #C62828; }
-
-        .final-score {
-            font-size: 2rem;
-            color: var(--text-color);
-            margin-bottom: 1rem;
-            font-weight: bold;
-        }
-
-        .name-input-group {
-            margin: 1.5rem 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .name-input-group label {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--text-color);
-        }
-
-        .name-input-group input {
-            width: 100%;
-            font-size: 1.5rem;
-            padding: 0.5rem;
-        }
-
-        /* Leaderboard Table */
-        .leaderboard-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-            font-size: 1.1rem;
-        }
-
-        .leaderboard-table th {
-            background: var(--girl-primary);
-            color: white;
-            padding: 10px;
-            border-radius: 10px 10px 0 0;
-        }
-        
-        body.pro-theme .leaderboard-table th { background: var(--pro-accent); color: var(--pro-bg); }
-        body.boy-theme .leaderboard-table th { background: var(--boy-primary); }
-
-        .leaderboard-table td {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            text-align: center;
-        }
-
-        .leaderboard-table tr:nth-child(even) { background-color: #f9f9f9; }
-        .leaderboard-table tr:first-child td { font-weight: bold; color: var(--gold); }
-        .leaderboard-table tr:nth-child(2) td { font-weight: bold; color: var(--silver); }
-        .leaderboard-table tr:nth-child(3) td { font-weight: bold; color: var(--bronze); }
-
         @media (max-width: 600px) {
             h1 { font-size: 2rem; }
             .problem-display { font-size: 3rem; }
             .menu-grid { grid-template-columns: 1fr; }
             .card { min-height: 160px; }
             .choices-grid { grid-template-columns: 1fr; }
-            .award-icon { font-size: 6rem; }
-            .award-title { font-size: 2rem; }
         }
     </style>
 </head>
@@ -578,8 +450,37 @@
         <!-- MAIN MENU -->
         <div id="mainMenu">
             <h1>Jocuri Matematice</h1>
-            <div class="menu-grid" id="mainMenuGrid">
-                <!-- Cards injected via JS -->
+            <div class="menu-grid">
+                <div class="card kg-card" onclick="openSubmenu('kg')">
+                    <div class="card-icon">🚀</div>
+                    <div class="card-title">Grădiniță</div>
+                    <div class="card-desc">Numărat, Culori și Forme</div>
+                </div>
+                <div class="card easy-card" onclick="openSubmenu('easy_menu')">
+                    <div class="card-icon">🦄</div>
+                    <div class="card-title">1 - 2 cls</div>
+                    <div class="card-desc">Adunări, Scăderi, Șiruri</div>
+                </div>
+                <div class="card max-card" onclick="openSubmenu('max_menu')">
+                    <div class="card-icon">👑</div>
+                    <div class="card-title">1 - 2 max</div>
+                    <div class="card-desc">Cu trecere peste ordin</div>
+                </div>
+                <div class="card med-card" onclick="openSubmenu('med_menu')">
+                    <div class="card-icon">🌸</div>
+                    <div class="card-title">Clasa 3 - 4</div>
+                    <div class="card-desc">Înmulțiri, Rotunjiri, Ecuații</div>
+                </div>
+                <div class="card hard-card" onclick="openSubmenu('hard_menu')">
+                    <div class="card-icon">⭐</div>
+                    <div class="card-title">Clasa 5+</div>
+                    <div class="card-desc">Fracții, Zecimale, Ordinea Operațiilor</div>
+                </div>
+                <div class="card pro-card" onclick="openSubmenu('pro_menu')">
+                    <div class="card-icon">⚛️</div>
+                    <div class="card-title">5 Pro</div>
+                    <div class="card-desc">Congruențe și Aritmetică Modulară</div>
+                </div>
             </div>
         </div>
 
@@ -614,45 +515,12 @@
             <button class="btn btn-secondary" onclick="showMenu()">Ieșire</button>
         </div>
 
-        <!-- AWARD SCREEN -->
-        <div id="awardScreen" class="award-container">
-            <div class="award-icon" id="awardIcon">🏆</div>
-            <div class="award-title" id="awardTitle">Premiul 1</div>
-            <div class="final-score" id="finalScoreText">Scor Final: 100</div>
-            
-            <div class="name-input-group" id="nameInputGroup" style="display: none;">
-                <label for="playerName">Introdu numele tău:</label>
-                <input type="text" id="playerName" placeholder="Nume..." maxlength="15">
-                <button class="btn btn-primary" onclick="saveScore()">Salvează Scorul</button>
-            </div>
-
-            <button class="btn btn-secondary" id="closeAwardBtn" onclick="showMenu()" style="display: none;">Înapoi la Meniu</button>
-        </div>
-
-        <!-- LEADERBOARD SCREEN -->
-        <div id="leaderboardScreen" class="leaderboard-container">
-            <h2 id="leaderboardTitle">Clasament</h2>
-            <table class="leaderboard-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Nume</th>
-                        <th>Scor</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboardBody">
-                    <!-- Rows injected via JS -->
-                </tbody>
-            </table>
-            <button class="btn btn-secondary" onclick="showMenu()">Înapoi</button>
-        </div>
-
     </div>
 
     <script>
         // --- Game State ---
         let currentMode = '';
-        let score = 100;
+        let score = 100; // Start with 100
         let currentAnswer = 0;
         let timeLeft = 0;
         let maxTime = 0;
@@ -661,25 +529,13 @@
         let problemHTML = ''; 
         let questionCount = 0;
         const MAX_QUESTIONS = 20;
-        let currentSubMenuKey = ''; 
 
         // --- DOM Elements ---
         const mainMenu = document.getElementById('mainMenu');
-        const mainMenuGrid = document.getElementById('mainMenuGrid');
         const subMenu = document.getElementById('subMenu');
         const subMenuTitle = document.getElementById('subMenuTitle');
         const subMenuGrid = document.getElementById('subMenuGrid');
         const gameArea = document.getElementById('gameArea');
-        const awardScreen = document.getElementById('awardScreen');
-        const leaderboardScreen = document.getElementById('leaderboardScreen');
-        const leaderboardBody = document.getElementById('leaderboardBody');
-        const leaderboardTitle = document.getElementById('leaderboardTitle');
-        const awardIcon = document.getElementById('awardIcon');
-        const awardTitle = document.getElementById('awardTitle');
-        const finalScoreText = document.getElementById('finalScoreText');
-        const nameInputGroup = document.getElementById('nameInputGroup');
-        const playerNameInput = document.getElementById('playerName');
-        const closeAwardBtn = document.getElementById('closeAwardBtn');
         const backBtn = document.getElementById('backBtn');
         const gameContent = document.getElementById('gameContent');
         const answerInput = document.getElementById('answerInput');
@@ -751,7 +607,6 @@
 
         function init() {
             createBackgroundShapes();
-            renderMainMenu();
             answerInput.addEventListener("keypress", function(event) {
                 if (event.key === "Enter") checkAnswer();
             });
@@ -776,48 +631,17 @@
             }
         }
 
-        function renderMainMenu() {
-            mainMenuGrid.innerHTML = '';
-            Object.keys(menus).forEach(key => {
-                const menuData = menus[key];
-                const card = document.createElement('div');
-                card.className = `card ${menuData.theme === 'boy' ? 'kg-card' : (menuData.theme === 'pro' ? 'pro-card' : 'easy-card')}`;
-                
-                // Leaderboard Button
-                const lbBtn = document.createElement('button');
-                lbBtn.className = 'card-lb-btn';
-                lbBtn.innerHTML = '🏆';
-                lbBtn.title = 'Vezi Clasament';
-                lbBtn.onclick = (e) => {
-                    e.stopPropagation(); // Prevent opening submenu
-                    showLeaderboard(key);
-                };
-
-                card.innerHTML = `
-                    <div class="card-icon">${menuData.items[0].icon}</div>
-                    <div class="card-title">${menuData.title}</div>
-                    <div class="card-desc">${menuData.items[0].desc}</div>
-                `;
-                card.appendChild(lbBtn);
-                card.onclick = () => openSubmenu(key);
-                mainMenuGrid.appendChild(card);
-            });
-        }
-
         function showMenu() {
             clearInterval(timerInterval);
             mainMenu.style.display = 'block';
             subMenu.style.display = 'none';
             gameArea.style.display = 'none';
-            awardScreen.style.display = 'none';
-            leaderboardScreen.style.display = 'none';
             backBtn.style.display = 'none';
             answerInput.value = '';
             body.classList.remove('boy-theme', 'pro-theme');
         }
 
         function openSubmenu(menuKey) {
-            currentSubMenuKey = menuKey;
             const menuData = menus[menuKey];
             if(!menuData) return;
 
@@ -848,15 +672,13 @@
 
         function startGame(mode) {
             currentMode = mode;
-            score = 100;
-            questionCount = 0;
+            score = 100; // Reset score to 100
+            questionCount = 0; // Reset counter
             difficultyLevel = 1;
             updateStats();
             
             subMenu.style.display = 'none';
             gameArea.style.display = 'block';
-            awardScreen.style.display = 'none';
-            leaderboardScreen.style.display = 'none';
             backBtn.style.display = 'flex';
             
             const isBoy = mode.startsWith('kg');
@@ -956,11 +778,13 @@
             if(questionCount >= MAX_QUESTIONS) return;
 
             if(val === currentAnswer) {
+                // Correct: No point change (or could add points if desired, but prompt only specified penalty)
                 feedbackText.textContent = "Bravo! Corect! 🎉";
                 feedbackText.className = "feedback correct";
                 difficultyLevel = 1;
                 setTimeout(nextProblem, 1500);
             } else {
+                // Wrong: -5 points
                 score -= 5;
                 updateStats();
                 feedbackText.textContent = "Greșit! -5 puncte. 😢";
@@ -985,6 +809,7 @@
             gameContent.innerHTML = '';
             choicesContainer.innerHTML = '';
 
+            // Timer Logic
             if (currentMode.startsWith('kg')) {
                 if (difficultyLevel === 1) startTimer(30); else startTimer(40);
             } else {
@@ -992,6 +817,8 @@
             }
 
             // --- PROBLEM GENERATION LOGIC ---
+            
+            // KINDERGARTEN
             if (currentMode === 'kg_count') {
                 const maxCount = difficultyLevel === 1 ? 5 : 10;
                 const count = getRandomInt(1, maxCount);
@@ -1025,6 +852,8 @@
                 gameContent.innerHTML = html + `<div class="problem-display">${n1} + ${n2} = ?</div>`;
                 renderChoices(generateChoices(currentAnswer, 2, maxNum * 2 + 2));
             }
+
+            // SCHOOL CATEGORIES
             else if (currentMode === 'easy_math') {
                 const rangeMax = difficultyLevel === 1 ? 50 : 90;
                 const op = Math.random() > 0.5 ? '+' : '-';
@@ -1142,10 +971,11 @@
                 gameContent.innerHTML = problemHTML;
             }
             else if (currentMode === 'pro_last') {
-                const base = getRandomInt(11, 99);
-                const exp = getRandomInt(2, 5);
-                currentAnswer = Math.pow(base, exp) % 10;
-                problemHTML = `<div style="font-size:1.5rem; color:#666;">Ultima cifră a lui ${base}<sup>${exp}</sup>:</div><div class="problem-display">${base}<sup>${exp}</sup> → <span class="missing-number">?</span></div>`;
+                const a = getRandomInt(10, 99);
+                const b = getRandomInt(2, 5);
+                const val = Math.pow(a, b);
+                currentAnswer = val % 10;
+                problemHTML = `<div style="font-size:1.5rem; color:#666;">Ultima cifră a lui ${a}<sup>${b}</sup>:</div><div class="problem-display">${a}<sup>${b}</sup> ≡ <span class="missing-number">?</span> (mod 10)</div>`;
                 gameContent.innerHTML = problemHTML;
             }
             else if (currentMode === 'pro_div') {
@@ -1159,133 +989,11 @@
 
         function endGame() {
             clearInterval(timerInterval);
-            gameArea.style.display = 'none';
-            awardScreen.style.display = 'flex';
-            
-            finalScoreText.textContent = `Scor Final: ${score}`;
-            
-            let icon = '';
-            let title = '';
-            let titleClass = '';
-            let showInput = false;
-            
-            if (score === 100) {
-                icon = '🏆';
-                title = 'PREMIUL 1';
-                titleClass = 'award-gold';
-                showInput = true;
-            } else if (score === 95) {
-                icon = '🥈';
-                title = 'PREMIUL 2';
-                titleClass = 'award-silver';
-                showInput = true;
-            } else if (score === 90) {
-                icon = '🥉';
-                title = 'PREMIUL 3';
-                titleClass = 'award-bronze';
-                showInput = true;
-            } else if (score >= 70 && score <= 85) {
-                icon = '🎖️';
-                title = 'MENȚIUNE';
-                titleClass = 'award-mention';
-                showInput = true;
-            } else {
-                icon = '💪';
-                title = 'ÎNCEARCĂ DIN NOU';
-                titleClass = 'award-try';
-                showInput = false;
-            }
-            
-            awardIcon.textContent = icon;
-            awardTitle.textContent = title;
-            awardTitle.className = 'award-title ' + titleClass;
-            
-            if(showInput) {
-                nameInputGroup.style.display = 'flex';
-                closeAwardBtn.style.display = 'none';
-                playerNameInput.value = '';
-                playerNameInput.focus();
-            } else {
-                nameInputGroup.style.display = 'none';
-                closeAwardBtn.style.display = 'inline-block';
-            }
-        }
-
-        function saveScore() {
-            const name = playerNameInput.value.trim() || "Anonim";
-            const leaderboardKey = `math_leaderboard_${currentMode}`;
-            
-            try {
-                let scores = JSON.parse(localStorage.getItem(leaderboardKey) || "[]");
-                scores.push({ name: name, score: score, date: new Date().toLocaleDateString() });
-                scores.sort((a, b) => b.score - a.score);
-                scores = scores.slice(0, 10);
-                localStorage.setItem(leaderboardKey, JSON.stringify(scores));
-                
-                nameInputGroup.style.display = 'none';
-                closeAwardBtn.style.display = 'inline-block';
-            } catch (e) {
-                console.error("Eroare la salvarea scorului:", e);
-                alert("A apărut o eroare la salvarea scorului. Te rugăm să încerci din nou.");
-            }
-        }
-
-        function showLeaderboard(categoryKey) {
-            // Determine the key to use
-            const key = categoryKey || currentSubMenuKey;
-            const menuData = menus[key];
-            
-            if (!menuData) {
-                console.error("Categorie invalidă:", key);
-                return;
-            }
-            
-            gameArea.style.display = 'none';
-            awardScreen.style.display = 'none';
-            subMenu.style.display = 'none';
-            mainMenu.style.display = 'none';
-            leaderboardScreen.style.display = 'flex';
-            backBtn.style.display = 'flex';
-            
-            backBtn.onclick = () => {
-                leaderboardScreen.style.display = 'none';
-                if(categoryKey) mainMenu.style.display = 'block';
-                else subMenu.style.display = 'block';
-            };
-
-            leaderboardTitle.textContent = `Clasament: ${menuData.title}`;
-            
-            // Aggregate scores from all items in this category safely
-            let allScores = [];
-            if (menuData.items && Array.isArray(menuData.items)) {
-                menuData.items.forEach(item => {
-                    try {
-                        const itemKey = `math_leaderboard_${item.id}`;
-                        const itemScores = JSON.parse(localStorage.getItem(itemKey) || "[]");
-                        allScores = allScores.concat(itemScores);
-                    } catch (e) {
-                        console.warn(`Eroare la citirea scorurilor pentru ${item.id}:`, e);
-                    }
-                });
-            }
-            
-            // Sort and slice
-            allScores.sort((a, b) => b.score - a.score);
-            allScores = allScores.slice(0, 10);
-            
-            leaderboardBody.innerHTML = '';
-            if(allScores.length === 0) {
-                leaderboardBody.innerHTML = '<tr><td colspan="3">Nu există încă scoruri.</td></tr>';
-            } else {
-                allScores.forEach((entry, index) => {
-                    const row = `<tr>
-                        <td>${index + 1}</td>
-                        <td>${entry.name}</td>
-                        <td>${entry.score}</td>
-                    </tr>`;
-                    leaderboardBody.innerHTML += row;
-                });
-            }
+            gameContent.innerHTML = `<div style="font-size:2rem; color:var(--girl-primary);">Joc Terminat!</div><div style="font-size:4rem; font-weight:900; margin:1rem 0;">Scor Final: ${score}</div>`;
+            inputContainer.style.display = 'none';
+            choicesContainer.style.display = 'none';
+            timerBar.style.width = '0%';
+            timeText.textContent = "Gata";
         }
 
         function showCorrectAnswer() {
@@ -1300,6 +1008,7 @@
             feedbackText.innerHTML = `Greșit. <br>Răspunsul corect era <strong>${currentAnswer}</strong>. (-5 puncte)`;
             feedbackText.className = "feedback wrong";
             
+            // Apply Penalty
             score -= 5;
             updateStats();
             
