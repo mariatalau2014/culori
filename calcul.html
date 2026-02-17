@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joc Matematică: Multiple Choice & Input</title>
+    <title>Joc Matematică: Corectare la Greșeală</title>
     <style>
         :root {
             /* BOY THEME (Kindergarten) */
@@ -17,6 +17,12 @@
             --girl-primary: #EC407A;
             --girl-secondary: #F48FB1;
             --girl-accent: #AB47BC;
+            
+            /* PRO THEME (5 Pro) */
+            --pro-bg: #263238;
+            --pro-card: #37474F;
+            --pro-text: #ECEFF1;
+            --pro-accent: #00E5FF;
             
             /* Shared */
             --text-color: #455A64;
@@ -32,7 +38,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
-            user-select: none; /* Prevent text selection for game feel */
+            user-select: none;
         }
 
         body {
@@ -53,6 +59,12 @@
         body.boy-theme {
             background-color: var(--boy-bg);
             background-image: radial-gradient(#BBDEFB 15%, transparent 16%), radial-gradient(#BBDEFB 15%, transparent 16%);
+        }
+
+        body.pro-theme {
+            background-color: var(--pro-bg);
+            background-image: radial-gradient(#455A64 15%, transparent 16%);
+            color: var(--pro-text);
         }
 
         .background-shapes {
@@ -92,8 +104,11 @@
             transition: color 0.5s;
         }
 
-        body.boy-theme h1 { color: var(--boy-primary); }
+        body.boy-theme h1 { color: var(--boy-primary); text-shadow: none; }
+        body.pro-theme h1 { color: var(--pro-accent); text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
+        
         body.boy-theme h2 { color: var(--boy-primary); }
+        body.pro-theme h2 { color: var(--pro-accent); }
         h2 { margin-bottom: 1.5rem; font-size: 2rem; }
 
         .menu-grid {
@@ -118,6 +133,12 @@
             min-height: 200px;
         }
 
+        body.pro-theme .card {
+            background: var(--pro-card);
+            color: var(--pro-text);
+            border: 2px solid var(--pro-accent);
+        }
+
         .card:hover {
             transform: translateY(-8px) scale(1.03);
             box-shadow: 0 15px 0 rgba(0,0,0,0.1);
@@ -128,10 +149,16 @@
         .card.max-card { border-bottom: 6px solid var(--girl-primary); }
         .card.med-card { border-bottom: 6px solid var(--girl-accent); }
         .card.hard-card { border-bottom: 6px solid var(--girl-primary); }
+        .card.pro-card { border-bottom: 6px solid var(--pro-accent); }
 
         .card-icon { font-size: 3.5rem; margin-bottom: 1rem; }
-        .card-title { font-weight: 900; font-size: 1.4rem; color: var(--text-color); margin-bottom: 0.5rem; }
-        .card-desc { font-size: 0.9rem; color: #78909C; line-height: 1.4; font-weight: 600; }
+        .card-title { font-weight: 900; font-size: 1.4rem; margin-bottom: 0.5rem; }
+        body.pro-theme .card-title { color: var(--pro-text); }
+        body:not(.pro-theme) .card-title { color: var(--text-color); }
+        
+        .card-desc { font-size: 0.9rem; line-height: 1.4; font-weight: 600; }
+        body.pro-theme .card-desc { color: #B0BEC5; }
+        body:not(.pro-theme) .card-desc { color: #78909C; }
 
         .game-area {
             display: none;
@@ -143,10 +170,15 @@
             max-width: 600px;
             animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: 5px solid var(--girl-secondary);
-            transition: border-color 0.5s;
+            transition: border-color 0.5s, background 0.5s, color 0.5s;
         }
 
         body.boy-theme .game-area { border-color: var(--boy-secondary); }
+        body.pro-theme .game-area { 
+            border-color: var(--pro-accent); 
+            background: var(--pro-card);
+            color: var(--pro-text);
+        }
 
         @keyframes popIn {
             from { opacity: 0; transform: scale(0.8); }
@@ -169,6 +201,11 @@
         body.boy-theme .stats-bar {
             color: var(--boy-primary);
             background: #BBDEFB;
+        }
+
+        body.pro-theme .stats-bar {
+            color: var(--pro-bg);
+            background: var(--pro-accent);
         }
 
         .timer-container {
@@ -216,9 +253,10 @@
             font-size: 3.5rem;
             font-weight: 900;
             letter-spacing: 5px;
-            color: var(--text-color);
             margin: 20px 0;
         }
+        body:not(.pro-theme) .sequence-display { color: var(--text-color); }
+        body.pro-theme .sequence-display { color: var(--pro-text); }
 
         .missing-number {
             color: var(--girl-primary);
@@ -230,6 +268,11 @@
             color: var(--boy-primary);
             border-bottom-color: var(--boy-primary);
         }
+        
+        body.pro-theme .missing-number {
+            color: var(--pro-accent);
+            border-bottom-color: var(--pro-accent);
+        }
 
         .problem-display {
             font-size: 4rem;
@@ -240,8 +283,8 @@
         }
 
         body.boy-theme .problem-display { color: var(--boy-primary); }
+        body.pro-theme .problem-display { color: var(--pro-accent); }
 
-        /* Input Styles (School) */
         .input-group {
             display: flex;
             gap: 1rem;
@@ -259,11 +302,16 @@
             outline: none;
             transition: all 0.3s;
             font-family: inherit;
-            color: var(--text-color);
             background: #FFF;
         }
+        
+        body.pro-theme input[type="number"] {
+            border-color: var(--pro-accent);
+            background: #263238;
+            color: white;
+        }
 
-        body.boy-theme input[type="number"] { border-color: var(--boy-secondary); }
+        body:not(.pro-theme) input[type="number"] { color: var(--text-color); }
 
         input[type="number"]:focus {
             border-color: var(--girl-primary);
@@ -271,12 +319,12 @@
         }
 
         body.boy-theme input[type="number"]:focus { border-color: var(--boy-primary); }
+        body.pro-theme input[type="number"]:focus { border-color: var(--pro-accent); }
 
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
 
-        /* Multiple Choice Styles (Kindergarten) */
         .choices-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -298,14 +346,8 @@
             font-family: inherit;
         }
 
-        .choice-btn:active {
-            transform: translateY(6px);
-            box-shadow: none;
-        }
-
-        .choice-btn:hover {
-            background: #E1F5FE;
-        }
+        .choice-btn:active { transform: translateY(6px); box-shadow: none; }
+        .choice-btn:hover { background: #E1F5FE; }
 
         .btn {
             padding: 1rem 2rem;
@@ -334,6 +376,12 @@
             background-color: var(--boy-primary);
             box-shadow: 0 5px 0 #1565C0;
         }
+
+        body.pro-theme .btn-primary {
+            background-color: var(--pro-accent);
+            color: var(--pro-bg);
+            box-shadow: 0 5px 0 #00B8D4;
+        }
         
         .btn-secondary { 
             background-color: #B0BEC5; 
@@ -344,10 +392,11 @@
         }
 
         .feedback {
-            height: 2.5rem;
+            height: 3rem;
             margin-top: 1rem;
             font-weight: 900;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
+            line-height: 1.4;
         }
         .feedback.correct { color: var(--success); }
         .feedback.wrong { color: var(--error); }
@@ -373,6 +422,10 @@
         }
 
         body.boy-theme .back-btn { color: var(--boy-primary); }
+        body.pro-theme .back-btn { 
+            color: var(--pro-bg); 
+            background: var(--pro-accent);
+        }
         .back-btn:hover { transform: scale(1.1); }
 
         @media (max-width: 600px) {
@@ -401,51 +454,40 @@
                 <div class="card kg-card" onclick="openSubmenu('kg')">
                     <div class="card-icon">🚀</div>
                     <div class="card-title">Grădiniță</div>
-                    <div class="card-desc">Numărat, Mașinuțe și Roboței</div>
+                    <div class="card-desc">Numărat, Culori și Forme</div>
                 </div>
-                <div class="card easy-card" onclick="startGame('easy')">
+                <div class="card easy-card" onclick="openSubmenu('easy_menu')">
                     <div class="card-icon">🦄</div>
                     <div class="card-title">1 - 2 cls</div>
-                    <div class="card-desc">Adunări/scăderi FĂRĂ trecere peste ordin</div>
+                    <div class="card-desc">Adunări, Scăderi, Șiruri</div>
                 </div>
-                <div class="card max-card" onclick="startGame('max')">
+                <div class="card max-card" onclick="openSubmenu('max_menu')">
                     <div class="card-icon">👑</div>
                     <div class="card-title">1 - 2 max</div>
-                    <div class="card-desc">Adunări/scăderi CU trecere peste ordin</div>
+                    <div class="card-desc">Cu trecere peste ordin</div>
                 </div>
-                <div class="card med-card" onclick="startGame('medium')">
+                <div class="card med-card" onclick="openSubmenu('med_menu')">
                     <div class="card-icon">🌸</div>
                     <div class="card-title">Clasa 3 - 4</div>
-                    <div class="card-desc">Înmulțiri și împărțiri</div>
+                    <div class="card-desc">Înmulțiri, Rotunjiri, Ecuații</div>
                 </div>
-                <div class="card hard-card" onclick="startGame('hard')">
+                <div class="card hard-card" onclick="openSubmenu('hard_menu')">
                     <div class="card-icon">⭐</div>
                     <div class="card-title">Clasa 5+</div>
-                    <div class="card-desc">Probleme complexe</div>
+                    <div class="card-desc">Fracții, Zecimale, Ordinea Operațiilor</div>
+                </div>
+                <div class="card pro-card" onclick="openSubmenu('pro_menu')">
+                    <div class="card-icon">⚛️</div>
+                    <div class="card-title">5 Pro</div>
+                    <div class="card-desc">Congruențe și Aritmetică Modulară</div>
                 </div>
             </div>
         </div>
 
-        <!-- KINDERGARTEN SUB-MENU -->
-        <div id="kgSubMenu" style="display: none;">
-            <h2>Alege activitatea:</h2>
-            <div class="menu-grid">
-                <div class="card kg-card" onclick="startGame('kg_count')">
-                    <div class="card-icon">🚗</div>
-                    <div class="card-title">Numără Mașinuțele</div>
-                    <div class="card-desc">Câte mașinuțe sunt?</div>
-                </div>
-                <div class="card kg-card" onclick="startGame('kg_sequence')">
-                    <div class="card-icon">🤖</div>
-                    <div class="card-title">Codul Robotului</div>
-                    <div class="card-desc">Continuă șirul numeric</div>
-                </div>
-                <div class="card kg-card" onclick="startGame('kg_add')">
-                    <div class="card-icon">⚽</div>
-                    <div class="card-title">Goluri la Poartă</div>
-                    <div class="card-desc">Adunări mici (sub 5)</div>
-                </div>
-            </div>
+        <!-- SUB-MENU CONTAINER -->
+        <div id="subMenu" style="display: none;">
+            <h2 id="subMenuTitle">Alege activitatea:</h2>
+            <div class="menu-grid" id="subMenuGrid"></div>
             <button class="btn btn-secondary" onclick="showMenu()" style="margin-top: 2rem;">Înapoi la Meniu</button>
         </div>
 
@@ -462,12 +504,10 @@
 
             <div id="gameContent"></div>
 
-            <!-- Container for Multiple Choice (Kindergarten) -->
             <div id="choicesContainer" class="choices-grid" style="display: none;"></div>
 
-            <!-- Container for Text Input (School) -->
             <div id="inputContainer" class="input-group" style="display: none;">
-                <input type="number" id="answerInput" placeholder="?" autocomplete="off">
+                <input type="number" id="answerInput" placeholder="?" autocomplete="off" step="0.1">
                 <button class="btn btn-primary" onclick="checkAnswer()">Verifică</button>
             </div>
 
@@ -486,10 +526,13 @@
         let maxTime = 0;
         let timerInterval;
         let difficultyLevel = 1; 
+        let problemHTML = ''; // Store HTML to update it later
 
         // --- DOM Elements ---
         const mainMenu = document.getElementById('mainMenu');
-        const kgSubMenu = document.getElementById('kgSubMenu');
+        const subMenu = document.getElementById('subMenu');
+        const subMenuTitle = document.getElementById('subMenuTitle');
+        const subMenuGrid = document.getElementById('subMenuGrid');
         const gameArea = document.getElementById('gameArea');
         const backBtn = document.getElementById('backBtn');
         const gameContent = document.getElementById('gameContent');
@@ -501,6 +544,64 @@
         const choicesContainer = document.getElementById('choicesContainer');
         const inputContainer = document.getElementById('inputContainer');
         const body = document.body;
+
+        // --- Sub Menu Configurations ---
+        const menus = {
+            'kg': {
+                title: 'Grădiniță',
+                theme: 'boy',
+                items: [
+                    { id: 'kg_count', icon: '🚗', title: 'Numără Obiecte', desc: 'Câte mașinuțe sunt?' },
+                    { id: 'kg_sequence', icon: '🤖', title: 'Șir Numeric', desc: 'Continuă șirul (1-10)' },
+                    { id: 'kg_add', icon: '⚽', title: 'Adunări Vizuale', desc: 'Adună bilele' }
+                ]
+            },
+            'easy_menu': {
+                title: 'Clasa 1 - 2 (Fără Trecere)',
+                theme: 'girl',
+                items: [
+                    { id: 'easy_math', icon: '🦄', title: 'Calcule', desc: 'Adunări și scăderi simple' },
+                    { id: 'easy_seq', icon: '🔢', title: 'Șiruri Numerice', desc: 'Găsește următorul număr' },
+                    { id: 'easy_comp', icon: '⚖️', title: 'Comparații', desc: 'Care e mai mare?' }
+                ]
+            },
+            'max_menu': {
+                title: 'Clasa 1 - 2 (Cu Trecere)',
+                theme: 'girl',
+                items: [
+                    { id: 'max_math', icon: '👑', title: 'Calcule Avansate', desc: 'Cu trecere peste ordin' },
+                    { id: 'max_seq', icon: '🧩', title: 'Șiruri Complexe', desc: 'Salturi de 2, 5, 10' },
+                    { id: 'max_eq', icon: '❓', title: 'Ecuații Simple', desc: 'Găsește numărul lipsă' }
+                ]
+            },
+            'med_menu': {
+                title: 'Clasa 3 - 4',
+                theme: 'girl',
+                items: [
+                    { id: 'med_math', icon: '🌸', title: 'Înmulțiri & Împărțiri', desc: 'Tabelele înmulțirii' },
+                    { id: 'med_round', icon: '🎯', title: 'Rotunjiri', desc: 'La zece sau sută' },
+                    { id: 'med_order', icon: '📝', title: 'Ordinea Operațiilor', desc: 'Calcul cu paranteze' }
+                ]
+            },
+            'hard_menu': {
+                title: 'Clasa 5+',
+                theme: 'girl',
+                items: [
+                    { id: 'hard_frac', icon: '🍰', title: 'Fracții', desc: 'Adunări cu fracții' },
+                    { id: 'hard_dec', icon: '💧', title: 'Zecimale', desc: 'Calcule cu virgulă' },
+                    { id: 'hard_pow', icon: '⚡', title: 'Puteri & Radicali', desc: 'Calcul avansat' }
+                ]
+            },
+            'pro_menu': {
+                title: '5 Pro (Avansat)',
+                theme: 'pro',
+                items: [
+                    { id: 'pro_cong', icon: '⚛️', title: 'Congruențe', desc: 'Aritmetică modulară (mod n)' },
+                    { id: 'pro_last', icon: '🔢', title: 'Ultima Cifră', desc: 'Determină ultima cifră' },
+                    { id: 'pro_div', icon: '➗', title: 'Criterii Divizibilitate', desc: 'Restul împărțirii' }
+                ]
+            }
+        };
 
         function init() {
             createBackgroundShapes();
@@ -531,21 +632,40 @@
         function showMenu() {
             clearInterval(timerInterval);
             mainMenu.style.display = 'block';
-            kgSubMenu.style.display = 'none';
+            subMenu.style.display = 'none';
             gameArea.style.display = 'none';
             backBtn.style.display = 'none';
             answerInput.value = '';
-            body.classList.remove('boy-theme');
+            body.classList.remove('boy-theme', 'pro-theme');
         }
 
-        function openSubmenu(type) {
-            if(type === 'kg') {
-                mainMenu.style.display = 'none';
-                kgSubMenu.style.display = 'block';
-                backBtn.style.display = 'flex';
-                backBtn.onclick = showMenu;
-                body.classList.add('boy-theme');
-            }
+        function openSubmenu(menuKey) {
+            const menuData = menus[menuKey];
+            if(!menuData) return;
+
+            mainMenu.style.display = 'none';
+            subMenu.style.display = 'block';
+            backBtn.style.display = 'flex';
+            backBtn.onclick = showMenu;
+
+            subMenuTitle.textContent = menuData.title;
+            subMenuGrid.innerHTML = '';
+
+            body.classList.remove('boy-theme', 'pro-theme');
+            if(menuData.theme === 'boy') body.classList.add('boy-theme');
+            if(menuData.theme === 'pro') body.classList.add('pro-theme');
+
+            menuData.items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = `card ${menuData.theme === 'boy' ? 'kg-card' : (menuData.theme === 'pro' ? 'pro-card' : 'easy-card')}`;
+                card.innerHTML = `
+                    <div class="card-icon">${item.icon}</div>
+                    <div class="card-title">${item.title}</div>
+                    <div class="card-desc">${item.desc}</div>
+                `;
+                card.onclick = () => startGame(item.id);
+                subMenuGrid.appendChild(card);
+            });
         }
 
         function startGame(mode) {
@@ -554,33 +674,37 @@
             difficultyLevel = 1;
             scoreDisplay.textContent = `Puncte: 0 🏆`;
             
-            mainMenu.style.display = 'none';
-            kgSubMenu.style.display = 'none';
+            subMenu.style.display = 'none';
             gameArea.style.display = 'block';
             backBtn.style.display = 'flex';
             
-            if(mode.startsWith('kg')) {
+            const isBoy = mode.startsWith('kg');
+            const isPro = mode.startsWith('pro');
+            
+            if(isBoy) {
                 body.classList.add('boy-theme');
-                // Show Multiple Choice, Hide Input
                 choicesContainer.style.display = 'grid';
                 inputContainer.style.display = 'none';
-                
                 backBtn.onclick = () => {
                     clearInterval(timerInterval);
                     gameArea.style.display = 'none';
-                    kgSubMenu.style.display = 'block';
+                    subMenu.style.display = 'block';
                 };
             } else {
-                body.classList.remove('boy-theme');
-                // Hide Multiple Choice, Show Input
+                if(isPro) body.classList.add('pro-theme');
+                else body.classList.remove('boy-theme', 'pro-theme');
+                
                 choicesContainer.style.display = 'none';
                 inputContainer.style.display = 'flex';
-                
-                backBtn.onclick = showMenu;
+                backBtn.onclick = () => {
+                    clearInterval(timerInterval);
+                    gameArea.style.display = 'none';
+                    subMenu.style.display = 'block';
+                };
             }
 
             nextProblem();
-            if(!mode.startsWith('kg')) answerInput.focus();
+            if(!isBoy) answerInput.focus();
         }
 
         function startTimer(seconds) {
@@ -592,7 +716,6 @@
             timerInterval = setInterval(() => {
                 timeLeft--;
                 updateTimerVisuals();
-                
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     handleTimeout();
@@ -605,20 +728,14 @@
             const percentage = (timeLeft / maxTime) * 100;
             timerBar.style.width = `${percentage}%`;
             
-            if (percentage > 50) {
-                timerBar.style.backgroundColor = 'var(--success)';
-            } else if (percentage > 20) {
-                timerBar.style.backgroundColor = 'var(--timer-warning)';
-            } else {
-                timerBar.style.backgroundColor = 'var(--timer-danger)';
-            }
+            if (percentage > 50) timerBar.style.backgroundColor = 'var(--success)';
+            else if (percentage > 20) timerBar.style.backgroundColor = 'var(--timer-warning)';
+            else timerBar.style.backgroundColor = 'var(--timer-danger)';
         }
 
         function handleTimeout() {
-            feedbackText.textContent = "Timpul a expirat! 😢";
-            feedbackText.className = "feedback wrong";
-            difficultyLevel++; 
-            setTimeout(nextProblem, 2000);
+            // Show correct answer on timeout
+            showCorrectAnswer();
         }
 
         function getRandomInt(min, max) {
@@ -628,20 +745,15 @@
         function generateChoices(correctAnswer, minVal, maxVal) {
             let choices = new Set();
             choices.add(correctAnswer);
-            
             while(choices.size < 3) {
-                let offset = getRandomInt(-3, 3);
+                let offset = getRandomInt(-5, 5);
                 let wrong = correctAnswer + offset;
-                if(wrong >= minVal && wrong <= maxVal && wrong !== correctAnswer) {
-                    choices.add(wrong);
-                } else {
-                    // Fallback random if offset goes out of bounds
+                if(wrong >= minVal && wrong <= maxVal && wrong !== correctAnswer) choices.add(wrong);
+                else {
                     let r = getRandomInt(minVal, maxVal);
                     if(r !== correctAnswer) choices.add(r);
                 }
             }
-            
-            // Convert to array and shuffle
             return Array.from(choices).sort(() => Math.random() - 0.5);
         }
 
@@ -681,14 +793,15 @@
 
             // Timer Logic
             if (currentMode.startsWith('kg')) {
-                if (difficultyLevel === 1) startTimer(30);
-                else startTimer(40);
+                if (difficultyLevel === 1) startTimer(30); else startTimer(40);
             } else {
-                if (difficultyLevel === 1) startTimer(20);
-                else startTimer(30);
+                if (difficultyLevel === 1) startTimer(20); else startTimer(30);
             }
 
-            // Problem Generation
+            // --- PROBLEM GENERATION LOGIC ---
+            // Note: All school/pro modes now use '?' initially
+            
+            // KINDERGARTEN (Quiz Mode)
             if (currentMode === 'kg_count') {
                 const maxCount = difficultyLevel === 1 ? 5 : 10;
                 const count = getRandomInt(1, maxCount);
@@ -696,24 +809,20 @@
                 let html = '<div class="visual-container">';
                 const icons = ['🚗', '⚽', '🚀', '🤖', '🚲'];
                 const icon = icons[Math.floor(Math.random() * icons.length)];
-                for(let i=0; i<count; i++) {
-                    html += `<div style="font-size: 3rem; animation: bounce 2s infinite; animation-delay: ${i*0.1}s">${icon}</div>`;
-                }
+                for(let i=0; i<count; i++) html += `<div style="font-size: 3rem; animation: bounce 2s infinite; animation-delay: ${i*0.1}s">${icon}</div>`;
                 html += '</div><p style="font-size: 1.3rem; color: #546E7A; font-weight:bold;">Câte sunt?</p>';
                 gameContent.innerHTML = html;
                 renderChoices(generateChoices(currentAnswer, 1, maxCount + 2));
-
-            } else if (currentMode === 'kg_sequence') {
+            } 
+            else if (currentMode === 'kg_sequence') {
                 const start = getRandomInt(0, difficultyLevel === 1 ? 3 : 6);
-                const length = 3;
                 let sequence = [];
-                for(let i=0; i<length; i++) sequence.push(start + i);
-                currentAnswer = start + length;
-                let displaySeq = sequence.join(' , ');
-                gameContent.innerHTML = `<p style="font-size: 1.3rem; color: #546E7A; font-weight:bold;">Completează codul:</p><div class="sequence-display">${displaySeq} , <span class="missing-number">?</span></div>`;
+                for(let i=0; i<3; i++) sequence.push(start + i);
+                currentAnswer = start + 3;
+                gameContent.innerHTML = `<p style="font-size: 1.3rem; color: #546E7A; font-weight:bold;">Completează codul:</p><div class="sequence-display">${sequence.join(' , ')} , <span class="missing-number">?</span></div>`;
                 renderChoices(generateChoices(currentAnswer, 0, 10));
-
-            } else if (currentMode === 'kg_add') {
+            }
+            else if (currentMode === 'kg_add') {
                 const maxNum = difficultyLevel === 1 ? 4 : 9;
                 const n1 = getRandomInt(1, maxNum);
                 const n2 = getRandomInt(1, maxNum);
@@ -725,72 +834,194 @@
                 html += '</div>';
                 gameContent.innerHTML = html + `<div class="problem-display">${n1} + ${n2} = ?</div>`;
                 renderChoices(generateChoices(currentAnswer, 2, maxNum * 2 + 2));
+            }
 
-            } else if (currentMode === 'easy') {
+            // SCHOOL CATEGORIES (Show ? initially)
+            else if (currentMode === 'easy_math') {
                 const rangeMax = difficultyLevel === 1 ? 50 : 90;
                 const op = Math.random() > 0.5 ? '+' : '-';
                 let n1 = getRandomInt(10, rangeMax);
                 let n2;
-
                 if(op === '+') {
-                    let d1_10 = Math.floor(n1 / 10);
-                    let d1_1 = n1 % 10;
-                    let d2_10 = getRandomInt(0, 9 - d1_10);
-                    let d2_1 = getRandomInt(0, 9 - d1_1);
-                    n2 = (d2_10 * 10) + d2_1;
-                    if(n2===0) n2=1;
+                    let d1_10 = Math.floor(n1 / 10); let d1_1 = n1 % 10;
+                    let d2_10 = getRandomInt(0, 9 - d1_10); let d2_1 = getRandomInt(0, 9 - d1_1);
+                    n2 = (d2_10 * 10) + d2_1; if(n2===0) n2=1;
                     currentAnswer = n1 + n2;
-                    gameContent.innerHTML = `<div class="problem-display">${n1} + ${n2} = ?</div>`;
                 } else {
-                    let d1_10 = Math.floor(n1 / 10);
-                    let d1_1 = n1 % 10;
-                    let d2_10 = getRandomInt(0, d1_10);
-                    let d2_1 = getRandomInt(0, d1_1);
-                    n2 = (d2_10 * 10) + d2_1;
-                    if(n2===0) n2=1;
-                    if(n2 >= n1) n2 = getRandomInt(1, n1-1);
+                    let d1_10 = Math.floor(n1 / 10); let d1_1 = n1 % 10;
+                    let d2_10 = getRandomInt(0, d1_10); let d2_1 = getRandomInt(0, d1_1);
+                    n2 = (d2_10 * 10) + d2_1; if(n2===0) n2=1; if(n2 >= n1) n2 = getRandomInt(1, n1-1);
                     currentAnswer = n1 - n2;
-                    gameContent.innerHTML = `<div class="problem-display">${n1} - ${n2} = ?</div>`;
                 }
+                problemHTML = `<div class="problem-display">${n1} ${op} ${n2} = ?</div>`;
+                gameContent.innerHTML = problemHTML;
+            }
+            else if (currentMode === 'easy_seq') {
+                const start = getRandomInt(1, 20);
+                const step = 1;
+                let seq = [start, start+step, start+step*2];
+                currentAnswer = start + step*3;
+                problemHTML = `<div class="sequence-display">${seq.join(', ')}, <span class="missing-number">?</span></div>`;
+                gameContent.innerHTML = problemHTML;
+            }
+            else if (currentMode === 'easy_comp') {
+                const n1 = getRandomInt(10, 50);
+                const n2 = getRandomInt(10, 50);
+                currentAnswer = n1 > n2 ? 1 : 2;
+                const symbol = n1 > n2 ? '>' : '<';
+                problemHTML = `<div style="font-size:1.5rem; color:#666;">Compară numerele:</div><div class="problem-display">${n1} <span class="missing-number">?</span> ${n2}</div><div style="font-size:1.2rem; color:#666;">(1 pentru stânga, 2 pentru dreapta)</div>`;
+                gameContent.innerHTML = problemHTML;
+            }
 
-            } else if (currentMode === 'max') {
+            // 1-2 MAX
+            else if (currentMode === 'max_math') {
                 const op = Math.random() > 0.5 ? '+' : '-';
                 let n1, n2;
-
                 if(op === '+') {
-                    let u1 = getRandomInt(1, 9);
-                    let minU2 = 10 - u1;
-                    let u2 = getRandomInt(minU2, 9);
-                    let t1 = getRandomInt(1, difficultyLevel === 1 ? 4 : 8);
-                    let t2 = getRandomInt(0, 9 - t1);
-                    n1 = (t1 * 10) + u1;
-                    n2 = (t2 * 10) + u2;
-                    currentAnswer = n1 + n2;
-                    gameContent.innerHTML = `<div class="problem-display">${n1} + ${n2} = ?</div>`;
+                    let u1 = getRandomInt(1, 9); let u2 = getRandomInt(10-u1, 9);
+                    let t1 = getRandomInt(1, 8); let t2 = getRandomInt(0, 9-t1);
+                    n1 = t1*10+u1; n2 = t2*10+u2; currentAnswer = n1+n2;
                 } else {
-                    let u1 = getRandomInt(0, 8);
-                    let u2 = getRandomInt(u1 + 1, 9);
-                    let t1 = getRandomInt(difficultyLevel === 1 ? 2 : 5, 9);
-                    let t2 = getRandomInt(0, t1 - 1);
-                    n1 = (t1 * 10) + u1;
-                    n2 = (t2 * 10) + u2;
-                    currentAnswer = n1 - n2;
-                    gameContent.innerHTML = `<div class="problem-display">${n1} - ${n2} = ?</div>`;
+                    let u1 = getRandomInt(0, 8); let u2 = getRandomInt(u1+1, 9);
+                    let t1 = getRandomInt(2, 9); let t2 = getRandomInt(0, t1-1);
+                    n1 = t1*10+u1; n2 = t2*10+u2; currentAnswer = n1-n2;
                 }
+                problemHTML = `<div class="problem-display">${n1} ${op} ${n2} = ?</div>`;
+                gameContent.innerHTML = problemHTML;
+            }
+            else if (currentMode === 'max_seq') {
+                const step = difficultyLevel === 1 ? 2 : 5;
+                const start = getRandomInt(1, 10);
+                let seq = [start, start+step, start+step*2];
+                currentAnswer = start + step*3;
+                problemHTML = `<div class="sequence-display">${seq.join(', ')}, <span class="missing-number">?</span></div>`;
+                gameContent.innerHTML = problemHTML;
+            }
+            else if (currentMode === 'max_eq') {
+                const res = getRandomInt(10, 50);
+                const add = getRandomInt(1, 9);
+                currentAnswer = res - add;
+                problemHTML = `<div class="problem-display"><span class="missing-number">?</span> + ${add} = ${res}</div>`;
+                gameContent.innerHTML = problemHTML;
+            }
 
-            } else {
+            // 3-4 CLS
+            else if (currentMode === 'med_math') {
                 const n1 = getRandomInt(2, 9);
                 const n2 = getRandomInt(2, 9);
                 currentAnswer = n1 * n2;
-                gameContent.innerHTML = `<div class="problem-display">${n1} × ${n2} = ?</div>`;
+                problemHTML = `<div class="problem-display">${n1} × ${n2} = ?</div>`;
+                gameContent.innerHTML = problemHTML;
+            }
+            else if (currentMode === 'med_round') {
+                const num = getRandomInt(15, 985);
+                const roundTo = difficultyLevel === 1 ? 10 : 100;
+                currentAnswer = Math.round(num / roundTo) * roundTo;
+                problemHTML = `<div style="font-size:1.5rem; color:#666;">Rotunjire la ${roundTo}:</div><div class="problem-display">${num} ≈ <span class="missing-number">?</span></div>`;
+                gameContent.innerHTML = problemHTML;
+            }
+            else if (currentMode === 'med_order') {
+                const a = getRandomInt(2, 5);
+                const b = getRandomInt(2, 5);
+                const c = getRandomInt(1, 10);
+                currentAnswer = (a + b) * c;
+                problemHTML = `<div class="problem-display">(${a} + ${b}) × ${c} = ?</div>`;
+                gameContent.innerHTML = problemHTML;
+            }
+
+            // 5+ CLS
+            else if (currentMode === 'hard_frac') {
+                const den = getRandomInt(2, 9);
+                const n1 = getRandomInt(1, den-1);
+                const n2 = getRandomInt(1, den-n1);
+                currentAnswer = (n1 + n2) / den;
+                problemHTML = `<div style="font-size:1.5rem; color:#666;">Calcul (zecimal):</div><div class="problem-display">${n1}/${den} + ${n2}/${den} = <span class="missing-number">?</span></div>`;
+                gameContent.innerHTML = problemHTML;
+            }
+            else if (currentMode === 'hard_dec') {
+                const n1 = getRandomInt(10, 50) / 10;
+                const n2 = getRandomInt(10, 50) / 10;
+                currentAnswer = n1 + n2;
+                problemHTML = `<div class="problem-display">${n1} + ${n2} = ?</div>`;
+                gameContent.innerHTML = problemHTML;
+            }
+            else if (currentMode === 'hard_pow') {
+                const base = getRandomInt(2, 5);
+                const exp = getRandomInt(2, 3);
+                currentAnswer = Math.pow(base, exp);
+                problemHTML = `<div class="problem-display">${base}<sup>${exp}</sup> = <span class="missing-number">?</span></div>`;
+                gameContent.innerHTML = problemHTML;
+            }
+
+            // 5 PRO (CONGRUENCES)
+            else if (currentMode === 'pro_cong') {
+                const n = difficultyLevel === 1 ? getRandomInt(2, 5) : getRandomInt(6, 12);
+                const a = getRandomInt(10, 100);
+                currentAnswer = a % n;
+                problemHTML = `<div style="font-size:1.5rem; color:#666;">Congruență:</div><div class="problem-display">${a} ≡ <span class="missing-number">?</span> (mod ${n})</div>`;
+                gameContent.innerHTML = problemHTML;
+            }
+            else if (currentMode === 'pro_last') {
+                const a = getRandomInt(10, 99);
+                const b = getRandomInt(2, 5);
+                const val = Math.pow(a, b);
+                currentAnswer = val % 10;
+                problemHTML = `<div style="font-size:1.5rem; color:#666;">Ultima cifră a lui ${a}<sup>${b}</sup>:</div><div class="problem-display">${a}<sup>${b}</sup> ≡ <span class="missing-number">?</span> (mod 10)</div>`;
+                gameContent.innerHTML = problemHTML;
+            }
+            else if (currentMode === 'pro_div') {
+                const div = difficultyLevel === 1 ? 3 : 7;
+                const a = getRandomInt(20, 100);
+                currentAnswer = a % div;
+                problemHTML = `<div style="font-size:1.5rem; color:#666;">Restul împărțirii:</div><div class="problem-display">${a} : ${div} rest <span class="missing-number">?</span></div>`;
+                gameContent.innerHTML = problemHTML;
             }
         }
 
+        // Function to replace ? with the correct answer in green
+        function showCorrectAnswer() {
+            if(problemHTML) {
+                // Replace the missing-number span with the actual answer in green
+                const correctedHTML = problemHTML.replace(
+                    /<span class="missing-number">\?<\/span>/g, 
+                    `<span style="color:var(--success)">${currentAnswer}</span>`
+                );
+                gameContent.innerHTML = correctedHTML;
+            }
+            
+            feedbackText.innerHTML = `Greșit. <br>Răspunsul corect era <strong>${currentAnswer}</strong>. 😊`;
+            feedbackText.className = "feedback wrong";
+            difficultyLevel++;
+            answerInput.value = '';
+            
+            // Wait 2.5 seconds then next problem
+            setTimeout(nextProblem, 2500);
+        }
+
         function checkAnswer() {
-            const userVal = parseInt(answerInput.value);
+            const isBoy = currentMode.startsWith('kg');
+            
+            if(isBoy) return; // Handled by handleChoiceClick
+
+            const userVal = parseFloat(answerInput.value);
             if (isNaN(userVal)) return;
 
-            if (userVal === currentAnswer) {
+            // Special handling for comparison mode
+            if(currentMode === 'easy_comp') {
+                if(userVal === currentAnswer) {
+                    score++;
+                    scoreDisplay.textContent = `Puncte: ${score} 🏆`;
+                    feedbackText.textContent = "Bravo! Corect! 🎉";
+                    feedbackText.className = "feedback correct";
+                    difficultyLevel = 1;
+                    setTimeout(nextProblem, 1500);
+                } else {
+                    showCorrectAnswer();
+                }
+                return;
+            }
+
+            if (Math.abs(userVal - currentAnswer) < 0.01) { 
                 score++;
                 scoreDisplay.textContent = `Puncte: ${score} 🏆`;
                 feedbackText.textContent = "Bravo! Ești campion! 🎉";
@@ -798,12 +1029,7 @@
                 difficultyLevel = 1;
                 setTimeout(nextProblem, 1500);
             } else {
-                feedbackText.textContent = "Mai încearcă o dată! (Dificultate crescută) 😊";
-                feedbackText.className = "feedback wrong";
-                difficultyLevel++;
-                answerInput.value = '';
-                answerInput.focus();
-                setTimeout(nextProblem, 1500);
+                showCorrectAnswer();
             }
         }
 
