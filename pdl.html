@@ -3,234 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joc Pistolet de Lipit</title>
+    <title>Mozaic cu Cristale</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #4b0082; /* Fundal Violet preferat */
+            background-color: #4b0082; /* Fundal Violet */
             font-family: 'Arial', sans-serif;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             color: white;
+            user-select: none; /* Previne selectarea textului */
         }
 
         h1 {
-            margin-top: 10px;
-            font-size: 1.5rem;
+            margin: 15px 0 5px 0;
+            font-size: 1.6rem;
             text-shadow: 2px 2px 4px #000000;
+            text-align: center;
         }
 
-        #game-container {
+        p {
+            margin: 0 0 15px 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        #game-area {
             position: relative;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); /* Efect de lumină subtil */
-            border: 4px solid #fff;
-            border-radius: 8px;
-            background-color: #f0f0f0; /* Foaia de hârtie */
-            cursor: crosshair;
-            touch-action: none; /* Previne scroll-ul pe mobil în timp ce desenezi */
+            background-color: #ffffff;
+            border: 5px solid #ffd700; /* Bordură aurie pentru contrast */
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.4); /* Efect de lumină */
+            display: grid;
+            /* Grid-ul va fi generat din JS */
+            gap: 2px;
+            background-color: #ccc; /* Culoarea liniilor dintre pătrate */
+            border-radius: 4px;
+            overflow: hidden;
+            touch-action: none;
         }
 
-        canvas {
-            display: block;
-            border-radius: 4px;
+        .cell {
+            background-color: #f9f9f9;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.1s;
+            position: relative;
+        }
+
+        .cell:hover {
+            background-color: #eee;
+        }
+
+        /* Stilul cristalului */
+        .crystal {
+            width: 70%;
+            height: 70%;
+            border-radius: 4px; /* Ușor rotunjit ca o gemă tăiată */
+            transform: rotate(45deg); /* Formă de romb */
+            box-shadow: 
+                inset 2px 2px 5px rgba(255, 255, 255, 0.8),
+                inset -2px -2px 5px rgba(0, 0, 0, 0.3),
+                2px 2px 5px rgba(0,0,0,0.4);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        /* Reflexie suplimentară pentru efect de lumină */
+        .crystal::after {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 30%;
+            height: 30%;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            filter: blur(1px);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0) rotate(45deg); opacity: 0; }
+            100% { transform: scale(1) rotate(45deg); opacity: 1; }
         }
 
         #controls {
-            margin-top: 15px;
+            margin-top: 20px;
             display: flex;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
             justify-content: center;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 10px;
-            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
         }
 
         .color-btn {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             border: 3px solid white;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
         .color-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 10px white;
+            transform: scale(1.15);
+            box-shadow: 0 0 15px white;
         }
 
         .color-btn.active {
             border: 3px solid #ffff00;
             transform: scale(1.2);
+            box-shadow: 0 0 20px #ffff00;
         }
 
         .action-btn {
-            padding: 10px 20px;
+            padding: 12px 24px;
             background-color: #ff4500;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: bold;
-            cursor: pointer;
             font-size: 1rem;
-            box-shadow: 0 4px #b33200;
+            cursor: pointer;
+            box-shadow: 0 5px #b33200;
+            transition: all 0.1s;
         }
 
         .action-btn:active {
             box-shadow: 0 2px #b33200;
-            transform: translateY(2px);
+            transform: translateY(3px);
         }
 
-        #instruction {
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            opacity: 0.9;
+        .action-btn.secondary {
+            background-color: #4CAF50;
+            box-shadow: 0 5px #2E7D32;
         }
+        .action-btn.secondary:active {
+            box-shadow: 0 2px #2E7D32;
+        }
+
     </style>
 </head>
 <body>
 
-    <h1>Atelierul de Lipit Virtual</h1>
-    <div id="instruction">Apasă și trage mouse-ul (sau degetul) pentru a pune biluțe de lipici.</div>
+    <h1>Mozaic cu Cristale</h1>
+    <p>Alege o culoare și atinge pătratele pentru a pune cristale.</p>
 
-    <div id="game-container">
-        <canvas id="canvas"></canvas>
+    <div id="game-area">
+        <!-- Celulele vor fi generate aici -->
     </div>
 
     <div id="controls">
-        <!-- Culori calde preferate -->
-        <div class="color-btn active" style="background-color: #ff0000;" onclick="setColor('#ff0000', this)" title="Roșu"></div>
-        <div class="color-btn" style="background-color: #ff8c00;" onclick="setColor('#ff8c00', this)" title="Portocaliu"></div>
-        <div class="color-btn" style="background-color: #ffd700;" onclick="setColor('#ffd700', this)" title="Galben"></div>
-        <div class="color-btn" style="background-color: #ff69b4;" onclick="setColor('#ff69b4', this)" title="Roz Calд"></div>
-        
-        <button class="action-btn" onclick="clearCanvas()">Șterge Foaia</button>
-        <button class="action-btn" style="background-color: #4CAF50; box-shadow: 0 4px #2E7D32;" onclick="saveImage()">Salvează</button>
+        <!-- Culori calde -->
+        <div class="color-btn active" style="background: linear-gradient(135deg, #ff0000, #cc0000);" onclick="setColor('#ff0000', this)" title="Roșu Rubin"></div>
+        <div class="color-btn" style="background: linear-gradient(135deg, #ff8c00, #cc7000);" onclick="setColor('#ff8c00', this)" title="Portocaliu Topaz"></div>
+        <div class="color-btn" style="background: linear-gradient(135deg, #ffd700, #ccaa00);" onclick="setColor('#ffd700', this)" title="Galben Citrin"></div>
+        <div class="color-btn" style="background: linear-gradient(135deg, #ff69b4, #cc5590);" onclick="setColor('#ff69b4', this)" title="Roz Safir"></div>
+        <div class="color-btn" style="background: linear-gradient(135deg, #9400d3, #7700aa);" onclick="setColor('#9400d3', this)" title="Violet Ametist"></div>
+
+        <button class="action-btn" onclick="clearGrid()">Șterge Tot</button>
+        <button class="action-btn secondary" onclick="saveImage()">Salvează</button>
     </div>
 
     <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const container = document.getElementById('game-container');
-
-        // Setăm dimensiunea foilor A4 aproximativ sau maxim pe ecran
-        function resizeCanvas() {
-            const maxWidth = window.innerWidth - 40;
-            const maxHeight = window.innerHeight - 200;
-            
-            // Dimensiuni fixe pentru consistență, dar responsive
-            canvas.width = Math.min(800, maxWidth);
-            canvas.height = Math.min(600, maxHeight);
-            
-            // Umplem fundalul cu alb (hârtie)
-            ctx.fillStyle = "#ffffff";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        let isDrawing = false;
+        const gameArea = document.getElementById('game-area');
         let currentColor = '#ff0000';
-        let lastX = 0;
-        let lastY = 0;
+        
+        // Configurare grilă
+        const rows = 12;
+        const cols = 10; // 10x12 = 120 pătrate perfecte
+        
+        function initGrid() {
+            gameArea.style.gridTemplateColumns = `repeat(${cols}, 40px)`;
+            gameArea.style.gridTemplateRows = `repeat(${rows}, 40px)`;
+            gameArea.innerHTML = '';
 
-        // Funcție pentru a crea efectul de "biluță" de lipici
-        function drawDot(x, y) {
-            ctx.beginPath();
-            ctx.arc(x, y, 8, 0, Math.PI * 2); // Raza biluței
-            ctx.fillStyle = currentColor;
-            ctx.fill();
-            
-            // Adăugăm un mic reflex pentru efect 3D (lumină)
-            ctx.beginPath();
-            ctx.arc(x - 2, y - 2, 3, 0, Math.PI * 2);
-            ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
-            ctx.fill();
-        }
+            for (let i = 0; i < rows * cols; i++) {
+                const cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.dataset.index = i;
+                
+                // Evenimente pentru mouse și touch
+                cell.addEventListener('mousedown', handleInteraction);
+                cell.addEventListener('touchstart', handleTouchInteraction, { passive: false });
+                
+                // Prevenim menu-ul contextual pe click dreapta
+                cell.addEventListener('contextmenu', (e) => e.preventDefault());
 
-        function startDrawing(e) {
-            isDrawing = true;
-            [lastX, lastY] = getCoordinates(e);
-            drawDot(lastX, lastY);
-        }
-
-        function draw(e) {
-            if (!isDrawing) return;
-            e.preventDefault(); // Previne scroll pe mobil
-            
-            const [x, y] = getCoordinates(e);
-            
-            // Desenăm multiple puncte între ultima poziție și cea curentă
-            // pentru a face linia continuă ca un fir de lipici
-            const dist = Math.hypot(x - lastX, y - lastY);
-            const angle = Math.atan2(y - lastY, x - lastX);
-            
-            for (let i = 0; i < dist; i += 5) {
-                const dotX = lastX + (Math.cos(angle) * i);
-                const dotY = lastY + (Math.sin(angle) * i);
-                drawDot(dotX, dotY);
+                gameArea.appendChild(cell);
             }
-
-            [lastX, lastY] = [x, y];
         }
 
-        function stopDrawing() {
-            isDrawing = false;
-        }
-
-        function getCoordinates(e) {
-            const rect = canvas.getBoundingClientRect();
-            let clientX, clientY;
-
-            if (e.touches && e.touches.length > 0) {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
+        function handleInteraction(e) {
+            if (e.button === 0) { // Click stânga
+                placeCrystal(e.target);
+            } else if (e.button === 2) { // Click dreapta (ștergere)
+                removeCrystal(e.target);
             }
-
-            return [clientX - rect.left, clientY - rect.top];
         }
 
-        // Evenimente Mouse
-        canvas.addEventListener('mousedown', startDrawing);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDrawing);
-        canvas.addEventListener('mouseout', stopDrawing);
+        function handleTouchInteraction(e) {
+            e.preventDefault(); // Previne scroll și zoom
+            const touch = e.touches[0];
+            const target = document.elementFromPoint(touch.clientX, touch.clientY);
+            
+            if (target && target.classList.contains('cell')) {
+                // Dacă ținem apăsat, putem șterge? Sau doar punem?
+                // Pentru simplitate: touch = pune cristal. 
+                // Pentru ștergere vom folosi un mod special sau dublu tap dacă e nevoie.
+                // Acum: Touch simplu = pune cristal.
+                placeCrystal(target);
+            }
+        }
 
-        // Evenimente Touch (pentru telefon/tabletă)
-        canvas.addEventListener('touchstart', startDrawing, { passive: false });
-        canvas.addEventListener('touchmove', draw, { passive: false });
-        canvas.addEventListener('touchend', stopDrawing);
+        // Adăugăm funcționalitate de "drag to paint" pentru mouse
+        let isMouseDown = false;
+        document.body.addEventListener('mousedown', () => isMouseDown = true);
+        document.body.addEventListener('mouseup', () => isMouseDown = false);
+        
+        gameArea.addEventListener('mouseover', (e) => {
+            if (isMouseDown && e.target.classList.contains('cell')) {
+                placeCrystal(e.target);
+            }
+        });
 
-        // Funcții butoane
-        function setColor(color, element) {
+        function placeCrystal(cell) {
+            if (cell.querySelector('.crystal')) return; // Deja ocupat
+
+            const crystal = document.createElement('div');
+            crystal.classList.add('crystal');
+            crystal.style.backgroundColor = currentColor;
+            
+            // Efect de lumină dinamic bazat pe culoare
+            crystal.style.boxShadow = `
+                inset 2px 2px 5px rgba(255, 255, 255, 0.8),
+                inset -2px -2px 5px rgba(0, 0, 0, 0.3),
+                0 0 10px ${currentColor}
+            `;
+
+            cell.appendChild(crystal);
+        }
+
+        function removeCrystal(cell) {
+            const crystal = cell.querySelector('.crystal');
+            if (crystal) {
+                crystal.remove();
+            }
+        }
+
+        function setColor(color, btn) {
             currentColor = color;
-            // Actualizăm stilul butoanelor
-            document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('active'));
-            element.classList.add('active');
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
         }
 
-        function clearCanvas() {
-            if(confirm("Ești sigur că vrei să ștergi tot desenul?")) {
-                ctx.fillStyle = "#ffffff";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+        function clearGrid() {
+            if(confirm("Sigur vrei să scoți toate cristalele?")) {
+                const crystals = document.querySelectorAll('.crystal');
+                crystals.forEach(c => c.remove());
             }
         }
 
         function saveImage() {
-            const link = document.createElement('a');
-            link.download = 'desen-lipici.png';
-            link.href = canvas.toDataURL();
-            link.click();
+            // Această funcție necesită html2canvas pentru a salva exact ce se vede, 
+            // dar pentru simplitate fără librării externe, vom salva o versiune simplificată
+            // sau vom afișa un mesaj că funcția necesită setup avansat.
+            // Alternativ, facem o captură simplă a stilurilor inline.
+            
+            alert("Pentru a salva imaginea, poți face o captură de ecran (Screenshot).\nPe telefon: Apasă butoanele Power + Volum Jos.\nPe PC: Apasă PrintScreen sau Win+Shift+S.");
+            
+            // Notă: Implementarea completă a saveImage fără librării externe este complexă 
+            // deoarece trebuie să randăm CSS-ul (box-shadows, gradients) într-un canvas.
+            // Recomand screenshot-ul pentru cea mai bună calitate vizuală.
         }
+
+        // Inițializare
+        initGrid();
+
+        // Suport pentru redimensionare (opțional, menține dimensiunea celulelor fixe)
+        window.addEventListener('resize', () => {
+            // Putem ajusta mărimea celulelor dacă ecranul e foarte mic
+            const width = window.innerWidth;
+            if (width < 450) {
+                document.querySelectorAll('.cell').forEach(cell => {
+                    cell.style.width = '30px';
+                    cell.style.height = '30px';
+                });
+                gameArea.style.gridTemplateColumns = `repeat(${cols}, 30px)`;
+                gameArea.style.gridTemplateRows = `repeat(${rows}, 30px)`;
+            }
+        });
+
     </script>
 </body>
 </html>
+
