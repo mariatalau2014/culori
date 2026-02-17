@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Joc Matematică: Debug Activ</title>
+<title>Joc Matematică: 19 Exerciții</title>
 <style>
-/* ... (Toate stilurile anterioare rămân la fel) ... */
 :root {
 --boy-bg: #E3F2FD; --boy-primary: #2196F3; --boy-secondary: #4FC3F7; --boy-accent: #4CAF50;
 --girl-bg: #FCE4EC; --girl-primary: #EC407A; --girl-secondary: #F48FB1; --girl-accent: #AB47BC;
@@ -14,13 +13,13 @@
 --timer-warning: #FF9800; --timer-danger: #F44336; --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; user-select: none; }
-body { background-color: var(--girl-bg); background-image: radial-gradient(#F8BBD0 15%, transparent 16%), radial-gradient(#F8BBD0 15%, transparent 16%); background-size: 60px 60px; background-position: 0 0, 30px 30px; color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; transition: background 0.5s ease; position: relative; }
+body { background-color: var(--girl-bg); background-image: radial-gradient(#F8BBD0 15%, transparent 16%), radial-gradient(#F8BBD0 15%, transparent 16%); background-size: 60px 60px; background-position: 0 0, 30px 30px; color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; transition: background 0.5s ease; }
 body.boy-theme { background-color: var(--boy-bg); background-image: radial-gradient(#BBDEFB 15%, transparent 16%), radial-gradient(#BBDEFB 15%, transparent 16%); }
 body.pro-theme { background-color: var(--pro-bg); background-image: radial-gradient(#455A64 15%, transparent 16%); color: var(--pro-text); }
 .background-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
 .shape { position: absolute; opacity: 0.4; animation: float 15s infinite linear; }
 @keyframes float { 0% { transform: translateY(100vh) rotate(0deg); } 100% { transform: translateY(-100px) rotate(360deg); } }
-.container { width: 90%; max-width: 900px; text-align: center; padding: 2rem; position: relative; z-index: 1; }
+.container { width: 90%; max-width: 900px; text-align: center; padding: 2rem; }
 h1 { font-size: 2.8rem; margin-bottom: 2rem; color: var(--girl-primary); text-shadow: 2px 2px 0px #FFF; transition: color 0.5s; }
 body.boy-theme h1 { color: var(--boy-primary); text-shadow: none; }
 body.pro-theme h1 { color: var(--pro-accent); text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
@@ -115,32 +114,6 @@ body.boy-theme .leaderboard-table th { background: var(--boy-primary); }
 .leaderboard-table tr:first-child td { font-weight: bold; color: var(--gold); }
 .leaderboard-table tr:nth-child(2) td { font-weight: bold; color: var(--silver); }
 .leaderboard-table tr:nth-child(3) td { font-weight: bold; color: var(--bronze); }
-
-/* NOU: Stiluri pentru afișarea erorilor pe ecran */
-#error-overlay {
-    display: none;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #ffebee;
-    border-top: 4px solid #ef5350;
-    color: #c62828;
-    padding: 15px;
-    font-family: monospace;
-    font-size: 14px;
-    z-index: 9999;
-    box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
-    text-align: left;
-    max-height: 200px;
-    overflow-y: auto;
-}
-#error-overlay h3 { margin-bottom: 5px; font-size: 16px; text-transform: uppercase; }
-#error-overlay ul { list-style: none; padding-left: 0; margin: 0; }
-#error-overlay li { margin-bottom: 5px; border-bottom: 1px solid #ffcdd2; padding-bottom: 5px; }
-.close-error { float: right; cursor: pointer; font-weight: bold; border: 1px solid #c62828; padding: 2px 8px; border-radius: 4px; }
-.close-error:hover { background: #c62828; color: white; }
-
 @media (max-width: 600px) {
 h1 { font-size: 2rem; }
 .problem-display { font-size: 3rem; }
@@ -153,19 +126,11 @@ h1 { font-size: 2rem; }
 </style>
 </head>
 <body>
-
-<!-- NOU: Container pentru afișarea erorilor -->
-<div id="error-overlay">
-    <span class="close-error" onclick="document.getElementById('error-overlay').style.display='none'">X Închide</span>
-    <h3>⚠️ Erori detectate:</h3>
-    <ul id="error-list"></ul>
-</div>
-
 <div class="background-shapes" id="bg-shapes"></div>
 <button class="back-btn" id="backBtn" style="display: none;" onclick="showMenu()">← Înapoi</button>
 <div class="container">
 <div id="mainMenu">
-<h1>Jocuri Matematice (20 Ex)</h1>
+<h1>Jocuri Matematice (19 Ex)</h1>
 <div class="menu-grid" id="mainMenuGrid"></div>
 </div>
 <div id="subMenu" style="display: none;">
@@ -176,7 +141,7 @@ h1 { font-size: 2rem; }
 <div id="gameArea" class="game-area">
 <div class="stats-bar">
 <span id="scoreDisplay">Scor: 100</span>
-<span id="progressDisplay">Exercițiul: 1/20</span>
+<span id="progressDisplay">Exercițiul: 1/19</span>
 </div>
 <div class="timer-container"><div class="timer-bar" id="timerBar"></div></div>
 <div id="gameContent"></div>
@@ -210,26 +175,6 @@ h1 { font-size: 2rem; }
 </div>
 
 <script>
-// --- Sistem de capturare erori ---
-const errorList = document.getElementById('error-list');
-const errorOverlay = document.getElementById('error-overlay');
-let errorCount = 0;
-
-window.onerror = function(message, source, lineno, colno, error) {
-    const li = document.createElement('li');
-    li.textContent = `${message} (Linia: ${lineno})`;
-    errorList.appendChild(li);
-    errorOverlay.style.display = 'block';
-    errorCount++;
-    if(errorCount > 5) {
-        const warning = document.createElement('li');
-        warning.textContent = "... și alte erori. Verifică consola (F12).";
-        warning.style.fontStyle = "italic";
-        errorList.appendChild(warning);
-    }
-    return true; // Previne comportamentul default al browserului dacă e necesar
-};
-
 // --- Game State ---
 let currentMode = '';
 let score = 100;
@@ -240,7 +185,7 @@ let timerInterval;
 let difficultyLevel = 1;
 let problemHTML = '';
 let questionCount = 0;
-const MAX_QUESTIONS = 20;
+const MAX_QUESTIONS = 19; // MODIFICAT: De la 20 la 19
 let currentSubMenuKey = '';
 
 // --- DOM Elements ---
@@ -493,7 +438,7 @@ choicesContainer.innerHTML = '';
 if (currentMode.startsWith('kg')) { if (difficultyLevel === 1) startTimer(30); else startTimer(40); } 
 else { if (difficultyLevel === 1) startTimer(20); else startTimer(30); }
 
-// Logica generare probleme (identică cu cea originală)
+// Logica generare probleme (identică)
 if (currentMode === 'kg_count') {
 const maxCount = difficultyLevel === 1 ? 5 : 10;
 const count = getRandomInt(1, maxCount);
@@ -690,8 +635,6 @@ closeAwardBtn.style.display = 'inline-block';
 } catch (e) {
 console.error("Eroare la salvarea scorului:", e);
 alert("A apărut o eroare la salvarea scorului. Te rugăm să încerci din nou.");
-// Afișează eroarea și pe ecran prin handler-ul global
-throw e; 
 }
 }
 
@@ -771,3 +714,4 @@ init();
 </script>
 </body>
 </html>
+
