@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Joc Matematică: Final Corect</title>
+<title>Joc Matematică: Afișare Rezultat Corect</title>
 <style>
 :root {
 --boy-bg: #E3F2FD; --boy-primary: #2196F3; --boy-secondary: #4FC3F7; --boy-accent: #4CAF50;
@@ -130,7 +130,7 @@ h1 { font-size: 2rem; }
 <button class="back-btn" id="backBtn" style="display: none;" onclick="showMenu()">← Înapoi</button>
 <div class="container">
 <div id="mainMenu">
-<h1>Jocuri Matematice (19 Ex)</h1>
+<h1>Jocuri Matematice</h1>
 <div class="menu-grid" id="mainMenuGrid"></div>
 </div>
 <div id="subMenu" style="display: none;">
@@ -141,7 +141,7 @@ h1 { font-size: 2rem; }
 <div id="gameArea" class="game-area">
 <div class="stats-bar">
 <span id="scoreDisplay">Scor: 100</span>
-<span id="progressDisplay">Exercițiul: 1/19</span>
+<span id="progressDisplay">Exercițiul: 1/20</span>
 </div>
 <div class="timer-container"><div class="timer-bar" id="timerBar"></div></div>
 <div id="gameContent"></div>
@@ -185,9 +185,9 @@ let timerInterval;
 let difficultyLevel = 1;
 let problemHTML = '';
 let questionCount = 0;
-const MAX_QUESTIONS = 19; // Setat la 19 exerciții
+const MAX_QUESTIONS = 20;
 let currentSubMenuKey = '';
-let isGameEnding = false; // Flag nou pentru a preveni buclele
+let isGameEnding = false;
 
 // --- DOM Elements ---
 const mainMenu = document.getElementById('mainMenu');
@@ -386,8 +386,7 @@ else timerBar.style.backgroundColor = 'var(--timer-danger)';
 }
 
 function handleTimeout() { 
-    // La timeout, tratăm ca pe un răspuns greșit, dar permitem continuarea
-    showCorrectAnswer(false); 
+    showCorrectAnswer(true); 
 }
 
 function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
@@ -415,10 +414,8 @@ choicesContainer.appendChild(btn);
 });
 }
 
-// Funcție modificată pentru a valida RĂSPUNSUL înainte de a verifica sfârșitul jocului
 function handleChoiceClick(val) {
-if(isGameEnding) return; // Previne click-uri multiple în timpul tranziției
-
+if(isGameEnding) return;
 let isCorrect = (val === currentAnswer);
 processResult(isCorrect);
 }
@@ -440,37 +437,32 @@ if(currentMode === 'easy_comp') {
 processResult(isCorrect);
 }
 
-// Noua funcție centralizată pentru procesarea rezultatului
 function processResult(isCorrect) {
 if(isCorrect) {
     feedbackText.textContent = "Bravo! Corect! 🎉";
     feedbackText.className = "feedback correct";
     difficultyLevel = 1;
-    // Nu oprim jocul aici, chiar dacă e ultima întrebare. Lăsăm utilizatorul să vadă mesajul.
 } else {
     score -= 5;
     updateStats();
-    feedbackText.textContent = "Greșit! -5 puncte. 😢";
+    feedbackText.textContent = "Greșit! Vezi răspunsul corect mai sus. 😢";
     feedbackText.className = "feedback wrong";
     difficultyLevel++;
+    // AICI ESTE MODIFICAREA PRINCIPALĂ: Arătăm răspunsul corect
+    showCorrectAnswer(false);
+    return; // Oprim execuția aici pentru a nu continua imediat
 }
 
-// Verificăm dacă am ajuns la limită ABIA DUPĂ ce am procesat răspunsul
 if (questionCount >= MAX_QUESTIONS) {
     isGameEnding = true;
-    setTimeout(endGame, 1500); // Așteptăm să vezi mesajul de feedback
+    setTimeout(endGame, 1500);
 } else {
     setTimeout(nextProblem, 1500);
 }
 }
 
 function nextProblem() {
-// Verificare de siguranță
-if (questionCount >= MAX_QUESTIONS) { 
-    endGame(); 
-    return; 
-}
-
+if (questionCount >= MAX_QUESTIONS) { endGame(); return; }
 questionCount++;
 updateStats();
 answerInput.value = '';
@@ -478,7 +470,7 @@ feedbackText.textContent = '';
 feedbackText.className = 'feedback';
 gameContent.innerHTML = '';
 choicesContainer.innerHTML = '';
-problemHTML = ''; // Reset HTML
+problemHTML = '';
 
 if (currentMode.startsWith('kg')) { if (difficultyLevel === 1) startTimer(30); else startTimer(40); } 
 else { if (difficultyLevel === 1) startTimer(20); else startTimer(30); }
@@ -717,15 +709,22 @@ leaderboardBody.innerHTML += row;
 }
 }
 
+// Funcție modificată pentru a afișa RĂSPUNSUL CORECT vizual
 function showCorrectAnswer(isTimeout) {
+// Înlocuiește semnul întrebării cu răspunsul corect în HTML-ul problemei
 if(problemHTML) {
-const correctedHTML = problemHTML.replace(/<span class="missing-number">\?<\/span>/g, `<span style="color:var(--success)">${currentAnswer}</span>`);
-gameContent.innerHTML = correctedHTML;
+    const correctedHTML = problemHTML.replace(
+        /<span class="missing-number">\?<\/span>/g, 
+        `<span style="color:var(--success); font-weight:900; border-bottom: 4px solid var(--success);">${currentAnswer}</span>`
+    );
+    gameContent.innerHTML = correctedHTML;
 }
+
+// Mesaj de feedback
 if(isTimeout) {
-    feedbackText.innerHTML = `Timp expirat! <br>Răspunsul corect era <strong>${currentAnswer}</strong>. (-5 puncte)`;
+    feedbackText.innerHTML = `Timp expirat! <br>Răspunsul corect este <strong>${currentAnswer}</strong>. (-5 puncte)`;
 } else {
-    feedbackText.innerHTML = `Greșit. <br>Răspunsul corect era <strong>${currentAnswer}</strong>. (-5 puncte)`;
+    feedbackText.innerHTML = `Greșit! <br>Răspunsul corect este <strong>${currentAnswer}</strong>. (-5 puncte)`;
 }
 feedbackText.className = "feedback wrong";
 score -= 5;
@@ -733,12 +732,12 @@ updateStats();
 difficultyLevel++;
 answerInput.value = '';
 
-// Și aici verificăm dacă e ultima întrebare după ce am arătat răspunsul corect
+// Așteptăm puțin ca utilizatorul să vadă răspunsul corect înainte de a trece mai departe
 if (questionCount >= MAX_QUESTIONS) {
     isGameEnding = true;
-    setTimeout(endGame, 2500);
+    setTimeout(endGame, 3000); // Timp mai lung la final
 } else {
-    setTimeout(nextProblem, 2500);
+    setTimeout(nextProblem, 3000); // 3 secunde pentru a citi răspunsul
 }
 }
 
