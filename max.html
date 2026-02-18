@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Super Jocuri Educaționale</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&family=Comic+Sans+MS&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Comic+Sans+MS&display=swap" rel="stylesheet">
 <style>
-/* --- STILURI GENERALE & MENIU PRINCIPAL --- */
 :root {
 --boy-bg: #E3F2FD; --boy-primary: #2196F3; --boy-secondary: #4FC3F7; --boy-accent: #4CAF50;
 --girl-bg: #FCE4EC; --girl-primary: #EC407A; --girl-secondary: #F48FB1; --girl-accent: #AB47BC;
@@ -46,8 +45,6 @@ body.pro-theme .card { background: var(--pro-card); color: var(--pro-text); bord
 .card-icon { font-size: 3rem; margin-bottom: 0.5rem; }
 .card-title { font-weight: 900; font-size: 1.3rem; margin-bottom: 0.5rem; }
 .card-desc { font-size: 0.9rem; line-height: 1.4; font-weight: 600; opacity: 0.8; }
-.card-lb-btn { position: absolute; top: 10px; right: 10px; background: var(--gold); color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; box-shadow: 0 4px 0 #B8860B; transition: transform 0.2s; z-index: 5; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.card-lb-btn:hover { transform: scale(1.1); }
 
 .game-area { display: none; background: var(--card-bg); border-radius: 30px; padding: 2.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 600px; animation: popIn 0.5s; border: 5px solid var(--girl-secondary); transition: border-color 0.5s, background 0.5s, color 0.5s; }
 body.boy-theme .game-area { border-color: var(--boy-secondary); }
@@ -145,52 +142,6 @@ body.boy-theme .leaderboard-table th { background: var(--boy-primary); }
     color: white; z-index: 30; text-align: center;
 }
 
-/* Stiluri pentru Jocul Literelor */
-#letterGameContainer {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: #FFF0F5;
-    background-image: url('https://image.qwenlm.ai/public_source/9d076338-2b12-4553-8888-4cf6f0866228/1206da42b-50bc-4579-b502-e76be98f8371.png');
-    background-size: cover;
-    z-index: 200;
-    touch-action: none;
-    font-family: 'Nunito', sans-serif;
-}
-#letterCard {
-    background: rgba(255, 255, 255, 0.95);
-    width: 95%; height: 95%; max-height: 800px;
-    border-radius: 30px;
-    box-shadow: 0 10px 25px rgba(255, 133, 162, 0.3);
-    display: flex; flex-direction: column; align-items: center;
-    padding: 15px; position: relative; backdrop-filter: blur(5px);
-    margin: auto;
-}
-#letterHeader { text-align: center; width: 100%; margin-bottom: 5px; flex-shrink: 0; }
-#letterTitle { font-family: 'Fredoka One', cursive; color: #FF85A2; font-size: 1.8rem; margin: 0; text-shadow: 2px 2px 0px #FFE5EC; }
-#letterScore { background: #A2D2FF; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 1.1rem; display: inline-block; margin-top: 5px; box-shadow: 0 4px 0 #7AB8E8; }
-#letterPlayArea { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; min-height: 0; }
-#letterTargetCard { background: #FFC8DD; width: 100px; height: 100px; border-radius: 25px; display: flex; justify-content: center; align-items: center; font-family: 'Fredoka One', cursive; font-size: 4rem; color: #FF85A2; box-shadow: 0 8px 0 #FFB3C6; transition: transform 0.2s; position: relative; flex-shrink: 0; border: 4px solid transparent; }
-#letterTargetCard.bounce { animation: bounce 0.5s; }
-#letterTargetCard.shake { animation: shake 0.5s; border-color: #FF6B6B; }
-@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-#letterCanvasContainer { position: relative; width: 100%; max-width: 350px; aspect-ratio: 1; background: white; border: 4px dashed #A2D2FF; border-radius: 25px; box-shadow: inset 0 0 20px rgba(0,0,0,0.05); flex-shrink: 0; }
-#letterDrawCanvas { border-radius: 20px; width: 100%; height: 100%; display: block; position: absolute; top: 0; left: 0; z-index: 2; }
-#letterGuideCanvas { border-radius: 20px; width: 100%; height: 100%; display: block; position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none; }
-#letterClearBtn { position: absolute; top: 5px; right: 5px; background: #FFD1DC; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 0 #FFB3C6; z-index: 10; }
-#letterClearBtn:active { transform: translateY(4px); box-shadow: none; }
-#letterClearBtn svg { width: 18px; height: 18px; fill: #D65A78; }
-#letterActionBtn { background: #FF85A2; color: white; border: none; padding: 15px 30px; font-family: 'Fredoka One', cursive; font-size: 1.4rem; border-radius: 50px; cursor: pointer; box-shadow: 0 6px 0 #D65A78; transition: all 0.1s; width: 90%; max-width: 300px; flex-shrink: 0; margin-top: auto; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; gap: 10px; }
-#letterActionBtn:active { transform: translateY(6px); box-shadow: none; }
-#letterActionBtn.next { background: #BDE0FE; box-shadow: 0 6px 0 #8AC4E0; }
-#letterActionBtn.skip { background: #FFD93D; color: #5E6472; box-shadow: 0 6px 0 #E5C335; }
-#letterFeedback { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'Fredoka One', cursive; font-size: 3rem; pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 100; border-radius: 30px; text-align: center; padding: 20px; }
-#letterFeedback.show { opacity: 1; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-#letterFeedback.fail { color: #FF6B6B; }
-#letterFeedback.success { color: #FF85A2; }
-#letterConfetti { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 200; border-radius: 30px; }
-#letterMascot { position: absolute; top: -40px; right: -30px; width: 90px; height: auto; z-index: 5; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); }
-
 @media (max-width: 600px) {
 h1 { font-size: 2rem; }
 .problem-display { font-size: 3rem; }
@@ -220,12 +171,6 @@ h1 { font-size: 2rem; }
             <div class="big-card-icon">🦕</div>
             <div class="big-card-title">Aventura Eroului</div>
             <div class="big-card-desc">Sari peste obstacole și câștigă trofee!</div>
-        </div>
-        <!-- Buton Joc Litere -->
-        <div class="big-card" onclick="openLetterGame()">
-            <div class="big-card-icon">✏️</div>
-            <div class="big-card-title">Jocul Literelor</div>
-            <div class="big-card-desc">Învață să scrii litere și cifre!</div>
         </div>
     </div>
 </div>
@@ -303,50 +248,6 @@ h1 { font-size: 2rem; }
     </div>
 </div>
 
-<!-- Interfață Joc Litere -->
-<div id="letterGameContainer">
-    <div class="game-card" id="letterCard">
-        <canvas id="letterConfetti"></canvas>
-        
-        <header id="letterHeader">
-            <h1 id="letterTitle">Jocul Literelor</h1>
-            <div id="letterScore">Steluțe: <span id="letterScoreVal">0</span> ⭐</div>
-        </header>
-
-        <div id="letterPlayArea">
-            <!-- Litera de copiat -->
-            <div id="letterTargetCard">
-                <span id="letterTargetChar">A</span>
-                <img src="https://image.qwenlm.ai/public_source/9d076338-2b12-4553-8888-4cf6f0866228/173d93ddf-8170-4865-8cf4-97af1e0962e2.png" alt="Mascot" id="letterMascot">
-            </div>
-
-            <!-- Zona de desen cu 2 canvas-uri suprapuse -->
-            <div id="letterCanvasContainer">
-                <!-- Canvas-ul din spate pentru contur -->
-                <canvas id="letterGuideCanvas"></canvas>
-                <!-- Canvas-ul din față pentru desenul utilizatorului -->
-                <canvas id="letterDrawCanvas"></canvas>
-                
-                <button id="letterClearBtn" onclick="clearLetterCanvas()" title="Șterge">
-                    <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                </button>
-            </div>
-
-            <!-- Buton Acțiune -->
-            <button id="letterActionBtn" onclick="handleLetterAction()">
-                <span>Verifică!</span>
-            </button>
-        </div>
-
-        <div id="letterFeedback">
-            <div id="letterFeedbackIcon" style="font-size: 4rem; margin-bottom: 10px;">🎉</div>
-            <div id="letterFeedbackText">Bravo!</div>
-        </div>
-        
-        <button class="btn btn-secondary" onclick="closeLetterGame()" style="position:absolute; bottom:10px; left:10px; z-index:50;">Ieșire</button>
-    </div>
-</div>
-
 <script>
 // ==========================================
 // LOGICA GENERALĂ & NAVIGARE
@@ -356,7 +257,6 @@ function showMainMenu() {
     document.getElementById('mathContainer').style.display = 'none';
     document.getElementById('mathBackBtn').style.display = 'none';
     closeJumpGame();
-    closeLetterGame();
 }
 
 function openMathMenu() {
@@ -384,17 +284,6 @@ function closeJumpGame() {
     document.getElementById('jumpGameContainer').style.display = 'none';
     document.getElementById('jumpMenu').style.display = 'flex';
     document.getElementById('jumpWinScreen').style.display = 'none';
-}
-
-function openLetterGame() {
-    document.getElementById('mainContainer').style.display = 'none';
-    document.getElementById('mathContainer').style.display = 'none';
-    document.getElementById('letterGameContainer').style.display = 'block';
-    initLetterGame();
-}
-
-function closeLetterGame() {
-    document.getElementById('letterGameContainer').style.display = 'none';
 }
 
 // ==========================================
@@ -1097,260 +986,6 @@ function jumpGameOver() {
 function jumpGameWin() {
     jumpGameRunning = false;
     jumpWinScreen.style.display = 'flex';
-}
-
-// ==========================================
-// LOGICA JOC LITERE (Codul Nou Adăugat)
-// ==========================================
-const letterLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const letterNumbers = "0123456789";
-const letterAllChars = letterLetters + letterNumbers;
-
-let letterCurrentChar = '';
-let letterScore = 0;
-let letterIsLevelComplete = false;
-let letterHasDrawnSomething = false;
-
-const letterDrawCanvas = document.getElementById('letterDrawCanvas');
-const letterDrawCtx = letterDrawCanvas.getContext('2d');
-const letterGuideCanvas = document.getElementById('letterGuideCanvas');
-const letterGuideCtx = letterGuideCanvas.getContext('2d');
-
-const letterTargetCharEl = document.getElementById('letterTargetChar');
-const letterTargetCard = document.getElementById('letterTargetCard');
-const letterActionBtn = document.getElementById('letterActionBtn');
-const letterFeedbackEl = document.getElementById('letterFeedback');
-const letterFeedbackText = document.getElementById('letterFeedbackText');
-const letterFeedbackIcon = document.getElementById('letterFeedbackIcon');
-const letterScoreEl = document.getElementById('letterScoreVal');
-const letterConfettiCanvas = document.getElementById('letterConfetti');
-const letterConfettiCtx = letterConfettiCanvas.getContext('2d');
-
-function initLetterGame() {
-    resizeLetterCanvases();
-    window.addEventListener('resize', resizeLetterCanvases);
-    setupLetterDrawing();
-    nextLetterLevel();
-}
-
-function resizeLetterCanvases() {
-    const container = document.getElementById('letterCanvasContainer');
-    if(!container) return;
-    
-    [letterDrawCanvas, letterGuideCanvas].forEach(c => {
-        c.width = container.clientWidth;
-        c.height = container.clientHeight;
-    });
-    
-    letterDrawCtx.lineCap = 'round';
-    letterDrawCtx.lineJoin = 'round';
-    letterDrawCtx.lineWidth = Math.max(10, container.clientWidth / 20);
-    letterDrawCtx.strokeStyle = '#5E6472';
-    
-    if(letterCurrentChar) drawLetterGuide();
-}
-
-function drawLetterGuide() {
-    letterGuideCtx.clearRect(0, 0, letterGuideCanvas.width, letterGuideCanvas.height);
-    letterGuideCtx.fillStyle = '#E0E0E0';
-    letterGuideCtx.font = `bold ${letterGuideCanvas.height * 0.8}px 'Fredoka One'`;
-    letterGuideCtx.textAlign = 'center';
-    letterGuideCtx.textBaseline = 'middle';
-    letterGuideCtx.fillText(letterCurrentChar, letterGuideCanvas.width / 2, letterGuideCanvas.height / 2 + (letterGuideCanvas.height * 0.05));
-}
-
-function setupLetterDrawing() {
-    let isDrawing = false;
-
-    function getPos(e) {
-        const rect = letterDrawCanvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return { x: clientX - rect.left, y: clientY - rect.top };
-    }
-
-    function startDraw(e) {
-        if (letterIsLevelComplete) return;
-        isDrawing = true;
-        letterHasDrawnSomething = true;
-        const pos = getPos(e);
-        letterDrawCtx.beginPath();
-        letterDrawCtx.moveTo(pos.x, pos.y);
-        if(e.cancelable) e.preventDefault();
-    }
-
-    function draw(e) {
-        if (!isDrawing || letterIsLevelComplete) return;
-        const pos = getPos(e);
-        letterDrawCtx.lineTo(pos.x, pos.y);
-        letterDrawCtx.stroke();
-        if(e.cancelable) e.preventDefault();
-    }
-
-    function stopDraw() {
-        isDrawing = false;
-        letterDrawCtx.closePath();
-    }
-
-    letterDrawCanvas.addEventListener('mousedown', startDraw);
-    letterDrawCanvas.addEventListener('mousemove', draw);
-    letterDrawCanvas.addEventListener('mouseup', stopDraw);
-    letterDrawCanvas.addEventListener('mouseout', stopDraw);
-    letterDrawCanvas.addEventListener('touchstart', startDraw, { passive: false });
-    letterDrawCanvas.addEventListener('touchmove', draw, { passive: false });
-    letterDrawCanvas.addEventListener('touchend', stopDraw);
-}
-
-function nextLetterLevel() {
-    letterIsLevelComplete = false;
-    letterHasDrawnSomething = false;
-    letterCurrentChar = letterAllChars.charAt(Math.floor(Math.random() * letterAllChars.length));
-    letterTargetCharEl.textContent = letterCurrentChar;
-    
-    clearLetterCanvas();
-    drawLetterGuide();
-    
-    letterTargetCard.classList.remove('bounce', 'shake');
-    void letterTargetCard.offsetWidth; 
-    letterTargetCard.classList.add('bounce');
-
-    updateLetterButton('check');
-    hideLetterFeedback();
-}
-
-function clearLetterCanvas() {
-    letterDrawCtx.clearRect(0, 0, letterDrawCanvas.width, letterDrawCanvas.height);
-    letterHasDrawnSomething = false;
-    if (letterIsLevelComplete) {
-        letterIsLevelComplete = false;
-        updateLetterButton('check');
-        hideLetterFeedback();
-    }
-}
-
-function updateLetterButton(state) {
-    letterActionBtn.innerHTML = '';
-    letterActionBtn.className = 'action-btn';
-    
-    if (state === 'check') {
-        letterActionBtn.textContent = "Verifică!";
-        letterActionBtn.onclick = handleLetterCheck;
-    } else if (state === 'skip') {
-        letterActionBtn.innerHTML = "<span>🔄 Altă Literă</span>";
-        letterActionBtn.classList.add('skip');
-        letterActionBtn.onclick = nextLetterLevel;
-    } else if (state === 'next') {
-        letterActionBtn.textContent = "Următoarea ➡️";
-        letterActionBtn.classList.add('next');
-        letterActionBtn.onclick = nextLetterLevel;
-    }
-}
-
-function handleLetterAction() {
-    if(letterIsLevelComplete) nextLetterLevel();
-}
-
-function handleLetterCheck() {
-    if (!letterHasDrawnSomething) {
-        showLetterFeedback("Desenează pe contur!", "fail", "✏️");
-        return;
-    }
-
-    const analysis = analyzeLetterDrawing();
-    
-    if (analysis.matchRatio < 0.35) {
-        showLetterFeedback("Nu ai respectat conturul!", "fail", "🤔");
-        letterTargetCard.classList.add('shake');
-        setTimeout(() => letterTargetCard.classList.remove('shake'), 500);
-        updateLetterButton('skip');
-        return;
-    }
-
-    winLetterLevel();
-}
-
-function analyzeLetterDrawing() {
-    const drawData = letterDrawCtx.getImageData(0, 0, letterDrawCanvas.width, letterDrawCanvas.height).data;
-    const guideData = letterGuideCtx.getImageData(0, 0, letterGuideCanvas.width, letterGuideCanvas.height).data;
-    
-    let drawPixels = 0;
-    let guidePixels = 0;
-    let matchPixels = 0;
-
-    for (let i = 0; i < drawData.length; i += 4) {
-        const isDraw = drawData[i + 3] > 0;
-        const isGuide = guideData[i + 3] > 0;
-
-        if (isDraw) drawPixels++;
-        if (isGuide) guidePixels++;
-        if (isDraw && isGuide) matchPixels++;
-    }
-
-    if (guidePixels === 0) return { matchRatio: 0 };
-    
-    const coverage = matchPixels / guidePixels; 
-    const precision = matchPixels / (drawPixels || 1);
-    const score = (coverage * 0.7) + (precision * 0.3);
-    
-    return { matchRatio: score };
-}
-
-function winLetterLevel() {
-    letterIsLevelComplete = true;
-    letterScore += 1;
-    letterScoreEl.textContent = letterScore;
-    showLetterFeedback("Bravo! E corect!", "success", "🌟");
-    updateLetterButton('next');
-    fireLetterConfetti();
-}
-
-function showLetterFeedback(text, type, icon) {
-    letterFeedbackText.textContent = text;
-    letterFeedbackIcon.textContent = icon;
-    letterFeedbackEl.className = `feedback-overlay show ${type}`;
-    setTimeout(hideLetterFeedback, 2000);
-}
-
-function hideLetterFeedback() {
-    letterFeedbackEl.classList.remove('show');
-}
-
-let letterParticles = [];
-function resizeLetterConfetti() {
-    letterConfettiCanvas.width = window.innerWidth;
-    letterConfettiCanvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeLetterConfetti);
-resizeLetterConfetti();
-
-function fireLetterConfetti() {
-    const colors = ['#FF85A2', '#A2D2FF', '#FFC8DD', '#FFD93D'];
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-    for (let i = 0; i < 80; i++) {
-        letterParticles.push({
-            x: centerX, y: centerY,
-            vx: (Math.random() - 0.5) * 15,
-            vy: (Math.random() - 0.5) * 15 - 5,
-            size: Math.random() * 8 + 4,
-            color: colors[Math.floor(Math.random() * colors.length)],
-            life: 100
-        });
-    }
-    animateLetterConfetti();
-}
-
-function animateLetterConfetti() {
-    letterConfettiCtx.clearRect(0, 0, letterConfettiCanvas.width, letterConfettiCanvas.height);
-    letterParticles.forEach((p, index) => {
-        p.x += p.vx; p.y += p.vy; p.vy += 0.5; p.life--;
-        letterConfettiCtx.fillStyle = p.color;
-        letterConfettiCtx.beginPath();
-        letterConfettiCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        letterConfettiCtx.fill();
-        if (p.life <= 0) letterParticles.splice(index, 1);
-    });
-    if (letterParticles.length > 0) requestAnimationFrame(animateLetterConfetti);
 }
 
 // Inițializare
