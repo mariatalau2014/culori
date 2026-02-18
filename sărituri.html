@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Joc Sărituri</title>
+    <title>Aventura cu Stații</title>
     <style>
         body {
             margin: 0;
@@ -11,25 +11,32 @@
             overflow: hidden;
             background-color: #222;
             font-family: 'Arial', sans-serif;
-            touch-action: none; /* Blochează zoom-ul */
+            touch-action: none;
             user-select: none;
         }
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
+        canvas { display: block; width: 100%; height: 100%; }
+        
         #ui {
             position: absolute;
             top: 20px;
             left: 20px;
             color: white;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
             text-shadow: 2px 2px 4px #000;
             z-index: 10;
             pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
+        .badge {
+            background: rgba(0,0,0,0.5);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
         #menu {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -52,66 +59,105 @@
             color: white;
             font-weight: bold;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: transform 0.1s;
         }
         .btn:active { transform: scale(0.95); }
         .btn.selected {
             background: #fff;
             color: #ff9a9e;
             transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(255,255,255,0.5);
         }
         .hidden { display: none !important; }
-        h1 { font-size: 36px; margin-bottom: 30px; text-align: center; color: #fff; }
-        p { color: #ccc; font-size: 18px; margin-top: 20px; }
+        h1 { font-size: 36px; margin-bottom: 20px; text-align: center; }
+        p { color: #ccc; font-size: 18px; }
+        
+        #win-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(46, 213, 115, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 30;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
-    <div id="ui">Scor: <span id="scoreVal">0</span></div>
+    <div id="ui">
+        <div class="badge">⭐ Scor: <span id="scoreVal">0</span></div>
+        <div class="badge">🚩 Stația: <span id="stationVal">0</span>/15</div>
+    </div>
     
     <div id="menu">
-        <h1>Alege Personajul</h1>
+        <h1>Alege Eroul</h1>
         <div>
             <button class="btn selected" id="btnGirl" onclick="pick('girl')">🌟 Fata</button>
             <button class="btn" id="btnBoy" onclick="pick('boy')">🦕 Băiat</button>
         </div>
         <button class="btn" id="startBtn" onclick="startGame()" style="background:#2ed573; margin-top:30px;">START JOC</button>
-        <p>Apasă oriunde pe ecran pentru a sări SUS!</p>
+        <p>Apasă oriunde pentru a sări SUS!</p>
+    </div>
+
+    <div id="win-screen" class="hidden">
+        <h1 style="font-size: 50px;">VICTORIE! 🏆</h1>
+        <p style="font-size: 24px; color: #fff;">Ai trecut prin toate cele 15 stații!</p>
+        <button class="btn" onclick="location.reload()" style="background:#fff; color:#2ed573; margin-top:30px;">Joacă Din Nou</button>
     </div>
 
     <canvas id="gameCanvas"></canvas>
 
     <script>
-        // --- CONFIGURARE ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreEl = document.getElementById('scoreVal');
+        const stationEl = document.getElementById('stationVal');
         const menu = document.getElementById('menu');
+        const winScreen = document.getElementById('win-screen');
         const btnGirl = document.getElementById('btnGirl');
         const btnBoy = document.getElementById('btnBoy');
-        const startBtn = document.getElementById('startBtn');
         const title = document.querySelector('#menu h1');
+        const startBtn = document.getElementById('startBtn');
 
         let w, h;
         let gameRunning = false;
         let score = 0;
+        let station = 0;
+        const maxStations = 15;
         let frame = 0;
         let speed = 6;
         let charType = 'girl';
 
-        // Setări fizică (Săritură FOARTE ÎNALTĂ)
+        // Fizică (Săritură Înaltă)
         const gravity = 0.5;
-        const jumpPower = -20; // Valoare mare pentru săritură înaltă
+        const jumpPower = -20; 
         const groundH = 100;
 
-        const player = {
-            x: 100, y: 0, size: 80, dy: 0, angle: 0, grounded: false
-        };
-
+        const player = { x: 100, y: 0, size: 80, dy: 0, angle: 0, grounded: false };
         let obstacles = [];
 
-        // Redimensionare automată
+        // Culori pentru cele 15 stații + Fundal final
+        const themes = [
+            {bg: ['#ff9a9e', '#fecfef'], ground: '#6ab04c'}, // 0
+            {bg: ['#4facfe', '#00f2fe'], ground: '#0097e6'}, // 1
+            {bg: ['#fddb92', '#d1fdff'], ground: '#eccc68'}, // 2
+            {bg: ['#96fbc4', '#f9f586'], ground: '#2ed573'}, // 3
+            {bg: ['#c2e9fb', '#a1c4fd'], ground: '#3742fa'}, // 4
+            {bg: ['#ffecd2', '#fcb69f'], ground: '#ff7f50'}, // 5
+            {bg: ['#e0c3fc', '#8ec5fc'], ground: '#a55eea'}, // 6
+            {bg: ['#ffecd2', '#ffd1ff'], ground: '#ff4757'}, // 7
+            {bg: ['#d299c2', '#fef9d7'], ground: '#8c7ae6'}, // 8
+            {bg: ['#85FFBD', '#FFFB7D'], ground: '#26de81'}, // 9
+            {bg: ['#C9FFBF', '#FFAFBD'], ground: '#fc5c65'}, // 10
+            {bg: ['#FAD961', '#F76B1C'], ground: '#e58e26'}, // 11
+            {bg: ['#B5FFFC', '#D5FFEA'], ground: '#0be881'}, // 12
+            {bg: ['#FFDEE9', '#B5FFFC'], ground: '#4834d4'}, // 13
+            {bg: ['#F6D365', '#FDA085'], ground: '#be2edd'}, // 14
+            {bg: ['#667eea', '#764ba2'], ground: '#ffffff'}  // 15 (Final)
+        ];
+
         function resize() {
             w = window.innerWidth;
             h = window.innerHeight;
@@ -128,7 +174,6 @@
         window.addEventListener('resize', resize);
         resize();
 
-        // Selectare personaj
         window.pick = function(type) {
             charType = type;
             if(type === 'girl') {
@@ -140,61 +185,50 @@
             }
         };
 
-        // Start Joc
         window.startGame = function() {
             menu.classList.add('hidden');
             gameRunning = true;
             score = 0;
+            station = 0;
             speed = 6;
             frame = 0;
             obstacles = [];
             player.y = h - groundH - player.size;
             player.dy = 0;
-            player.angle = 0;
-            scoreEl.innerText = score;
+            updateUI();
             loop();
         };
 
-        // Funcția de săritură
         function jump() {
             if (!gameRunning) return;
-            // Sare doar dacă e aproape de sol
             if (player.grounded || player.y > h - groundH - player.size - 10) {
                 player.dy = jumpPower;
                 player.grounded = false;
             }
         }
 
-        // Controale universale (Touch, Mouse, Tastatură)
-        // Folosim 'pointerdown' care merge peste tot
         window.addEventListener('pointerdown', function(e) {
-            // Ignorăm click-urile pe butoanele din meniu dacă jocul nu rulează
             if(e.target.tagName === 'BUTTON') return;
             jump();
         });
-
         window.addEventListener('keydown', function(e) {
-            if ((e.code === 'Space' || e.code === 'ArrowUp') && gameRunning) {
-                jump();
-            }
+            if ((e.code === 'Space' || e.code === 'ArrowUp') && gameRunning) jump();
         });
 
-        // Bucla jocului
+        function updateUI() {
+            scoreEl.innerText = score;
+            stationEl.innerText = Math.min(station, maxStations);
+        }
+
         function loop() {
             if (!gameRunning) return;
             requestAnimationFrame(loop);
             frame++;
 
-            update();
-            draw();
-        }
-
-        function update() {
             // Fizică
             player.dy += gravity;
             player.y += player.dy;
 
-            // Sol
             if (player.y + player.size > h - groundH) {
                 player.y = h - groundH - player.size;
                 player.dy = 0;
@@ -202,7 +236,7 @@
                 player.angle = 0;
             } else {
                 player.grounded = false;
-                player.angle += 0.1; // Rotire în aer
+                player.angle += 0.1;
             }
 
             // Obstacole
@@ -215,39 +249,46 @@
                 let o = obstacles[i];
                 o.x -= speed;
 
-                // Coliziune
                 if (player.x < o.x + o.w && player.x + player.size > o.x &&
                     player.y < o.y + o.h && player.y + player.size > o.y) {
                     gameOver();
                 }
 
-                // Scor
                 if (o.x + o.w < player.x && !o.passed) {
                     score++;
-                    scoreEl.innerText = score;
+                    // Logica Stațiilor: La fiecare 5 puncte
+                    if (score % 5 === 0) {
+                        station++;
+                        speed += 0.5;
+                        if (station >= maxStations) {
+                            gameWin();
+                            return;
+                        }
+                    }
+                    updateUI();
                     o.passed = true;
-                    if(score % 5 === 0) speed += 0.5;
                 }
             }
-
             if (obstacles.length > 0 && obstacles[0].x < -50) obstacles.shift();
+
+            draw();
         }
 
         function draw() {
+            // Tema curentă bazată pe stație
+            let t = themes[Math.min(station, themes.length - 1)];
+            
             // Fundal
             let grad = ctx.createLinearGradient(0, 0, 0, h);
-            if(charType === 'girl') {
-                grad.addColorStop(0, "#ff9a9e"); grad.addColorStop(1, "#fecfef");
-            } else {
-                grad.addColorStop(0, "#4facfe"); grad.addColorStop(1, "#00f2fe");
-            }
+            grad.addColorStop(0, t.bg[0]);
+            grad.addColorStop(1, t.bg[1]);
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, w, h);
 
             // Sol
-            ctx.fillStyle = "#6ab04c";
+            ctx.fillStyle = t.ground;
             ctx.fillRect(0, h - groundH, w, groundH);
-            ctx.fillStyle = "#badc58";
+            ctx.fillStyle = "rgba(255,255,255,0.3)";
             ctx.fillRect(0, h - groundH, w, 10);
 
             // Obstacole
@@ -274,8 +315,13 @@
         function gameOver() {
             gameRunning = false;
             menu.classList.remove('hidden');
-            title.innerText = "Joc Terminat!\nScor: " + score;
-            startBtn.innerText = "Joacă Din Nou";
+            title.innerText = "Joc Terminat!\nScor: " + score + "\nStația: " + station;
+            startBtn.innerText = "Încearcă Din Nou";
+        }
+
+        function gameWin() {
+            gameRunning = false;
+            winScreen.classList.remove('hidden');
         }
     </script>
 </body>
