@@ -3,359 +3,266 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Super Jocuri Educaționale</title>
+<title>Super Jocuri Compact</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&family=Comic+Sans+MS&display=swap" rel="stylesheet">
 <style>
-/* --- STILURI GENERALE & VARIABILE --- */
+/* --- STILURI COMPACTE --- */
 :root {
---boy-bg: #E3F2FD; --boy-primary: #2196F3; --boy-secondary: #4FC3F7; --boy-accent: #4CAF50;
---girl-bg: #FCE4EC; --girl-primary: #EC407A; --girl-secondary: #F48FB1; --girl-accent: #AB47BC;
+--boy-bg: #E3F2FD; --boy-primary: #2196F3; --boy-secondary: #4FC3F7;
+--girl-bg: #FCE4EC; --girl-primary: #EC407A; --girl-secondary: #F48FB1;
 --pro-bg: #263238; --pro-card: #37474F; --pro-text: #ECEFF1; --pro-accent: #00E5FF;
 --text-color: #455A64; --card-bg: #FFFFFF; --success: #66BB6A; --error: #EF5350;
---timer-warning: #FF9800; --timer-danger: #F44336; --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
+--gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
 --letter-primary: #FF85A2; --letter-secondary: #A2D2FF; --letter-accent: #FFC8DD;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
-body { background-color: var(--girl-bg); background-image: radial-gradient(#F8BBD0 15%, transparent 16%), radial-gradient(#F8BBD0 15%, transparent 16%); background-size: 60px 60px; background-position: 0 0, 30px 30px; color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; transition: background 0.5s ease; }
-body.boy-theme { background-color: var(--boy-bg); background-image: radial-gradient(#BBDEFB 15%, transparent 16%), radial-gradient(#BBDEFB 15%, transparent 16%); }
-body.pro-theme { background-color: var(--pro-bg); background-image: radial-gradient(#455A64 15%, transparent 16%); color: var(--pro-text); }
-.background-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
-.shape { position: absolute; opacity: 0.4; animation: float 15s infinite linear; }
-@keyframes float { 0% { transform: translateY(100vh) rotate(0deg); } 100% { transform: translateY(-100px) rotate(360deg); } }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
+body { background-color: var(--girl-bg); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; overflow-x: hidden; padding-top: 10px; transition: background 0.5s; }
+body.boy-theme { background-color: var(--boy-bg); }
+body.pro-theme { background-color: var(--pro-bg); color: var(--pro-text); }
 
-/* --- MENIU PRINCIPAL --- */
-.container { width: 95%; max-width: 500px; text-align: center; padding: 1rem; }
-h1 { font-size: 2.2rem; margin-bottom: 1.5rem; color: var(--girl-primary); text-shadow: 2px 2px 0px #FFF; transition: color 0.5s; font-family: 'Fredoka One', cursive; }
+/* Container Principal Mic */
+.container { width: 95%; max-width: 400px; text-align: center; padding: 5px; }
+h1 { font-size: 1.6rem; margin: 5px 0 10px 0; color: var(--girl-primary); font-family: 'Fredoka One', cursive; text-shadow: 1px 1px 0 #FFF; }
 body.boy-theme h1 { color: var(--boy-primary); text-shadow: none; }
-body.pro-theme h1 { color: var(--pro-accent); text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
-.menu-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; width: 100%; margin-bottom: 1.5rem; }
-.big-card { background: var(--card-bg); border-radius: 20px; padding: 1.2rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 8px 0 rgba(0,0,0,0.1); border: 4px solid #FFF; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; min-height: 100px; position: relative; gap: 15px; }
-body.pro-theme .big-card { background: var(--pro-card); color: var(--pro-text); border: 2px solid var(--pro-accent); }
-.big-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 12px 0 rgba(0,0,0,0.1); }
-.big-card-icon { font-size: 2.5rem; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2)); flex-shrink: 0; }
-.big-card-content { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
-.big-card-title { font-weight: 900; font-size: 1.3rem; margin-bottom: 0.3rem; font-family: 'Fredoka One', cursive; }
-body.pro-theme .big-card-title { color: var(--pro-text); }
-body:not(.pro-theme) .big-card-title { color: var(--text-color); }
-.big-card-desc { font-size: 0.9rem; line-height: 1.3; font-weight: 600; opacity: 0.8; }
+body.pro-theme h1 { color: var(--pro-accent); text-shadow: 0 0 5px rgba(0,229,255,0.5); }
 
-/* --- STILURI JOC MATEMATIC --- */
-.sub-menu-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; width: 100%; }
-.card { background: var(--card-bg); border-radius: 20px; padding: 1rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 6px 0 rgba(0,0,0,0.1); border: 3px solid #FFF; display: flex; flex-direction: row; align-items: center; gap: 15px; min-height: 90px; text-align: left; }
-body.pro-theme .card { background: var(--pro-card); color: var(--pro-text); border: 2px solid var(--pro-accent); }
-.card:hover { transform: translateY(-5px); box-shadow: 0 10px 0 rgba(0,0,0,0.1); }
-.card.kg-card { border-bottom: 4px solid var(--boy-accent); }
-.card.easy-card { border-bottom: 4px solid var(--girl-secondary); }
-.card.pro-card { border-bottom: 4px solid var(--pro-accent); }
-.card-icon { font-size: 2rem; flex-shrink: 0; }
-.card-title { font-weight: 900; font-size: 1.1rem; margin-bottom: 0.2rem; }
-.card-desc { font-size: 0.8rem; line-height: 1.3; font-weight: 600; opacity: 0.8; }
-.game-area { display: none; background: var(--card-bg); border-radius: 20px; padding: 1.5rem; box-shadow: 0 8px 20px rgba(0,0,0,0.1); width: 100%; max-width: 400px; animation: popIn 0.5s; border: 4px solid var(--girl-secondary); transition: border-color 0.5s, background 0.5s, color 0.5s; }
+/* Meniu Grid Compact */
+.menu-grid, .sub-menu-grid { display: grid; grid-template-columns: 1fr; gap: 8px; width: 100%; }
+.big-card, .card { background: var(--card-bg); border-radius: 12px; padding: 10px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 0 rgba(0,0,0,0.1); border: 2px solid #FFF; display: flex; align-items: center; gap: 10px; min-height: 70px; position: relative; }
+body.pro-theme .big-card, body.pro-theme .card { background: var(--pro-card); border: 1px solid var(--pro-accent); color: var(--pro-text); }
+.big-card:active, .card:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
+.big-card-icon, .card-icon { font-size: 2rem; flex-shrink: 0; }
+.big-card-content, .card-title-wrap { flex: 1; text-align: left; }
+.big-card-title, .card-title { font-weight: 900; font-size: 1rem; line-height: 1.2; font-family: 'Fredoka One', cursive; }
+.big-card-desc, .card-desc { font-size: 0.75rem; opacity: 0.8; margin-top: 2px; }
+.card.kg-card { border-bottom: 3px solid var(--boy-primary); }
+.card.easy-card { border-bottom: 3px solid var(--girl-secondary); }
+.card.pro-card { border-bottom: 3px solid var(--pro-accent); }
+
+/* Zona de Joc Compactă */
+.game-area { display: none; background: var(--card-bg); border-radius: 15px; padding: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 100%; border: 3px solid var(--girl-secondary); margin-top: 10px; }
 body.boy-theme .game-area { border-color: var(--boy-secondary); }
 body.pro-theme .game-area { border-color: var(--pro-accent); background: var(--pro-card); color: var(--pro-text); }
-@keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-.stats-bar { display: flex; justify-content: space-between; margin-bottom: 0.8rem; font-size: 1.1rem; font-weight: 800; color: var(--girl-primary); background: #F8BBD0; padding: 8px 15px; border-radius: 30px; transition: all 0.5s; }
-body.boy-theme .stats-bar { color: var(--boy-primary); background: #BBDEFB; }
-body.pro-theme .stats-bar { color: var(--pro-bg); background: var(--pro-accent); }
-.timer-container { width: 100%; height: 12px; background-color: #eee; border-radius: 8px; margin-bottom: 1rem; overflow: hidden; border: 2px solid #ddd; }
-.timer-bar { height: 100%; width: 100%; background-color: var(--success); transition: width 1s linear, background-color 0.5s; }
-.visual-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 15px 0; min-height: 60px; align-items: center; }
-.ball { width: 35px; height: 35px; border-radius: 50%; box-shadow: inset -3px -3px 10px rgba(0,0,0,0.1), 3px 3px 5px rgba(0,0,0,0.15); animation: bounce 2s infinite ease-in-out; border: 2px solid rgba(255,255,255,0.3); }
-@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-.sequence-display { font-size: 2.5rem; font-weight: 900; letter-spacing: 3px; margin: 15px 0; }
-body:not(.pro-theme) .sequence-display { color: var(--text-color); }
-body.pro-theme .sequence-display { color: var(--pro-text); }
-.missing-number { color: var(--girl-primary); border-bottom: 3px dashed var(--girl-primary); padding: 0 8px; }
-body.boy-theme .missing-number { color: var(--boy-primary); border-bottom-color: var(--boy-primary); }
-body.pro-theme .missing-number { color: var(--pro-accent); border-bottom-color: var(--pro-accent); }
-.problem-display { font-size: 3rem; font-weight: 900; margin: 0.8rem 0; color: var(--girl-primary); transition: color 0.5s; }
+
+.stats-bar { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 800; background: #F8BBD0; padding: 5px 10px; border-radius: 20px; margin-bottom: 8px; }
+body.boy-theme .stats-bar { background: #BBDEFB; color: var(--boy-primary); }
+body.pro-theme .stats-bar { background: var(--pro-accent); color: var(--pro-bg); }
+
+.timer-container { width: 100%; height: 8px; background: #eee; border-radius: 4px; margin-bottom: 8px; overflow: hidden; }
+.timer-bar { height: 100%; width: 100%; background: var(--success); transition: width 1s linear; }
+
+.visual-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; margin: 5px 0; min-height: 40px; }
+.visual-item { font-size: 1.5rem; animation: bounce 1.5s infinite; }
+@keyframes bounce { 50% { transform: translateY(-5px); } }
+
+.sequence-display, .problem-display { font-size: 2rem; font-weight: 900; margin: 5px 0; color: var(--girl-primary); }
 body.boy-theme .problem-display { color: var(--boy-primary); }
 body.pro-theme .problem-display { color: var(--pro-accent); }
-.input-group { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1rem; }
-input[type="number"], input[type="text"] { width: 100px; padding: 0.6rem; font-size: 1.8rem; text-align: center; border: 2px solid var(--girl-secondary); border-radius: 15px; outline: none; transition: all 0.3s; font-family: inherit; background: #FFF; }
-body.pro-theme input[type="number"], body.pro-theme input[type="text"] { border-color: var(--pro-accent); background: #263238; color: white; }
-body:not(.pro-theme) input[type="number"] { color: var(--text-color); }
-input[type="number"]:focus, input[type="text"]:focus { border-color: var(--girl-primary); transform: scale(1.05); }
-body.boy-theme input[type="number"]:focus { border-color: var(--boy-primary); }
-body.pro-theme input[type="number"]:focus { border-color: var(--pro-accent); }
-input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-input[type=number] { -moz-appearance: textfield; }
-.choices-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 1.5rem; }
-.choice-btn { background: white; border: 3px solid var(--boy-secondary); border-radius: 15px; padding: 1rem; font-size: 1.5rem; font-weight: 900; color: var(--boy-primary); cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 0 #0277BD; font-family: inherit; }
-.choice-btn:active { transform: translateY(4px); box-shadow: none; }
-.choice-btn:hover { background: #E1F5FE; }
-.btn { padding: 0.8rem 1.5rem; font-size: 1.1rem; border: none; border-radius: 40px; cursor: pointer; font-weight: 900; transition: all 0.2s; color: white; font-family: inherit; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 0 rgba(0,0,0,0.1); }
-.btn:active { transform: translateY(3px); box-shadow: none; }
-.btn-primary { background-color: var(--girl-primary); box-shadow: 0 4px 0 #C2185B; transition: background 0.5s, box-shadow 0.5s; }
-body.boy-theme .btn-primary { background-color: var(--boy-primary); box-shadow: 0 4px 0 #1565C0; }
-body.pro-theme .btn-primary { background-color: var(--pro-accent); color: var(--pro-bg); box-shadow: 0 4px 0 #00B8D4; }
-.btn-secondary { background-color: #B0BEC5; box-shadow: 0 4px 0 #78909C; margin-top: 0.8rem; font-size: 0.9rem; padding: 0.6rem 1.2rem; }
-.feedback { height: 2.5rem; margin-top: 0.8rem; font-weight: 900; font-size: 1.1rem; line-height: 1.3; }
+.missing-number { color: var(--girl-primary); border-bottom: 2px dashed currentColor; }
+
+/* Input și Butoane Mici */
+.input-group { display: flex; gap: 5px; justify-content: center; margin: 8px 0; }
+input[type="number"] { width: 80px; padding: 5px; font-size: 1.5rem; text-align: center; border: 2px solid var(--girl-secondary); border-radius: 8px; background: #FFF; }
+body.pro-theme input { border-color: var(--pro-accent); background: #263238; color: white; }
+
+.choices-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px; }
+.choice-btn { background: white; border: 2px solid var(--boy-secondary); border-radius: 10px; padding: 10px 5px; font-size: 1.2rem; font-weight: 900; color: var(--boy-primary); box-shadow: 0 3px 0 #0277BD; }
+body.pro-theme .choice-btn { background: #37474F; border-color: var(--pro-accent); color: var(--pro-accent); box-shadow: 0 3px 0 #00838F; }
+.choice-btn:active { transform: translateY(3px); box-shadow: none; }
+
+.btn { padding: 8px 15px; font-size: 0.9rem; border: none; border-radius: 20px; cursor: pointer; font-weight: 900; color: white; box-shadow: 0 3px 0 rgba(0,0,0,0.2); }
+.btn:active { transform: translateY(2px); box-shadow: none; }
+.btn-primary { background: var(--girl-primary); box-shadow: 0 3px 0 #C2185B; }
+body.boy-theme .btn-primary { background: var(--boy-primary); box-shadow: 0 3px 0 #1565C0; }
+body.pro-theme .btn-primary { background: var(--pro-accent); color: var(--pro-bg); box-shadow: 0 3px 0 #00838F; }
+.btn-secondary { background: #B0BEC5; box-shadow: 0 3px 0 #78909C; font-size: 0.8rem; padding: 6px 12px; margin-top: 5px; }
+
+.feedback { height: 1.2rem; font-size: 0.9rem; font-weight: bold; margin: 5px 0; }
 .feedback.correct { color: var(--success); }
 .feedback.wrong { color: var(--error); }
-.back-btn { position: absolute; top: 10px; left: 10px; background: white; border: none; padding: 8px 15px; border-radius: 40px; cursor: pointer; font-weight: 900; box-shadow: 0 3px 8px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 5px; z-index: 10; font-family: inherit; color: var(--girl-primary); transition: all 0.5s; font-size: 0.9rem; }
-body.boy-theme .back-btn { color: var(--boy-primary); }
-body.pro-theme .back-btn { color: var(--pro-bg); background: var(--pro-accent); }
-.back-btn:hover { transform: scale(1.05); }
-.award-container, .leaderboard-container { display: none; flex-direction: column; align-items: center; justify-content: center; animation: popIn 0.8s; background: white; padding: 1.5rem; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); max-width: 90%; margin: 0 auto; }
-.award-icon { font-size: 5rem; margin: 0.5rem 0; filter: drop-shadow(0 8px 8px rgba(0,0,0,0.2)); animation: float 3s infinite ease-in-out; }
-.award-title { font-size: 2rem; font-weight: 900; margin-bottom: 0.8rem; text-transform: uppercase; }
-.award-gold { color: var(--gold); text-shadow: 2px 2px 0 #B8860B; }
-.award-silver { color: var(--silver); text-shadow: 2px 2px 0 #78909C; }
-.award-bronze { color: var(--bronze); text-shadow: 2px 2px 0 #8D6E63; }
-.award-mention { color: var(--boy-primary); text-shadow: 2px 2px 0 #1565C0; }
-.award-try { color: var(--error); text-shadow: 2px 2px 0 #C62828; }
-.final-score { font-size: 1.5rem; color: var(--text-color); margin-bottom: 0.8rem; font-weight: bold; }
-.name-input-group { margin: 1rem 0; display: flex; flex-direction: column; gap: 8px; align-items: center; }
-.name-input-group label { font-size: 1rem; font-weight: bold; color: var(--text-color); }
-.name-input-group input { width: 100%; font-size: 1.2rem; padding: 0.4rem; }
-.leaderboard-table { width: 100%; border-collapse: collapse; margin: 0.8rem 0; font-size: 0.9rem; }
-.leaderboard-table th { background: var(--girl-primary); color: white; padding: 8px; border-radius: 8px 8px 0 0; }
-body.pro-theme .leaderboard-table th { background: var(--pro-accent); color: var(--pro-bg); }
-body.boy-theme .leaderboard-table th { background: var(--boy-primary); }
-.leaderboard-table td { padding: 8px; border-bottom: 1px solid #eee; text-align: center; }
-.leaderboard-table tr:nth-child(even) { background-color: #f9f9f9; }
-.leaderboard-table tr:first-child td { font-weight: bold; color: var(--gold); }
-.leaderboard-table tr:nth-child(2) td { font-weight: bold; color: var(--silver); }
-.leaderboard-table tr:nth-child(3) td { font-weight: bold; color: var(--bronze); }
 
-/* --- STILURI JOC SĂRITURI --- */
+.back-btn { position: absolute; top: 5px; left: 5px; background: white; border: none; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; color: var(--girl-primary); }
+body.pro-theme .back-btn { background: var(--pro-accent); color: var(--pro-bg); }
+
+/* Ecrane Premiu/Clasament Compacte */
+.award-container, .leaderboard-container { display: none; flex-direction: column; align-items: center; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); width: 95%; max-width: 350px; margin: 10px auto; }
+.award-icon { font-size: 4rem; margin: 5px 0; }
+.award-title { font-size: 1.5rem; font-weight: 900; margin-bottom: 5px; text-transform: uppercase; }
+.final-score { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; }
+.name-input-group { margin: 10px 0; display: flex; flex-direction: column; gap: 5px; width: 100%; }
+.name-input-group input { width: 100%; font-size: 1rem; padding: 5px; border: 1px solid #ccc; border-radius: 5px; }
+.leaderboard-table { width: 100%; font-size: 0.8rem; border-collapse: collapse; margin: 5px 0; }
+.leaderboard-table th { background: var(--girl-primary); color: white; padding: 4px; }
+body.pro-theme .leaderboard-table th { background: var(--pro-accent); color: var(--pro-bg); }
+.leaderboard-table td { padding: 4px; border-bottom: 1px solid #eee; text-align: center; }
+
+/* Joc Sărituri Fullscreen */
 #jumpGameContainer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #222; z-index: 200; touch-action: none; }
 #jumpCanvas { display: block; width: 100%; height: 100%; }
-#jumpUI { position: absolute; top: 10px; left: 10px; color: white; font-size: 16px; font-weight: bold; text-shadow: 2px 2px 4px #000; z-index: 10; pointer-events: none; display: flex; flex-direction: column; gap: 5px; }
-#jumpMenu { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; z-index: 20; padding: 20px; }
-#jumpWinScreen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(46, 213, 115, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; color: white; z-index: 30; text-align: center; padding: 20px; }
+#jumpUI { position: absolute; top: 10px; left: 10px; color: white; font-size: 14px; font-weight: bold; text-shadow: 1px 1px 2px black; z-index: 10; }
+#jumpMenu, #jumpWinScreen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; z-index: 20; padding: 20px; text-align: center; }
+#jumpWinScreen { background: rgba(46, 213, 115, 0.9); display: none; }
+#jumpMenu h1 { font-size: 1.5rem; color: white; text-shadow: none; margin-bottom: 15px; }
+#jumpMenu p { font-size: 0.9rem; margin: 10px 0; }
 
-/* --- STILURI JOC LITERE --- */
-#letterGameContainer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #FFF0F5; background-image: url('https://image.qwenlm.ai/public_source/9d076338-2b12-4553-8888-4cf6f0866228/1206da42b-50bc-4579-b502-e76be98f8371.png'); background-size: cover; z-index: 200; touch-action: none; font-family: 'Nunito', sans-serif; }
-.letter-card-ui { background: rgba(255, 255, 255, 0.95); width: 95%; height: 95%; max-height: 90vh; border-radius: 20px; box-shadow: 0 8px 20px rgba(255, 133, 162, 0.3); display: flex; flex-direction: column; align-items: center; padding: 10px; position: relative; backdrop-filter: blur(5px); margin: 2.5% auto; }
-.letter-header { text-align: center; width: 100%; margin-bottom: 5px; flex-shrink: 0; }
-.letter-header h1 { font-family: 'Fredoka One', cursive; color: var(--letter-primary); font-size: 1.5rem; margin: 0; text-shadow: 2px 2px 0px #FFE5EC; }
-.letter-score { background: var(--letter-secondary); color: white; padding: 4px 12px; border-radius: 15px; font-weight: bold; font-size: 1rem; display: inline-block; margin-top: 5px; box-shadow: 0 3px 0 #7AB8E8; }
-.letter-play-area { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 0; }
-.letter-card-display { background: var(--letter-accent); width: 80px; height: 80px; border-radius: 20px; display: flex; justify-content: center; align-items: center; font-family: 'Fredoka One', cursive; font-size: 3rem; color: var(--letter-primary); box-shadow: 0 6px 0 #FFB3C6; transition: transform 0.2s; position: relative; flex-shrink: 0; border: 3px solid transparent; }
-.letter-card-display.bounce { animation: bounce 0.5s; }
-.letter-card-display.shake { animation: shake 0.5s; border-color: var(--error); }
-@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
-.letter-canvas-container { position: relative; width: 100%; max-width: 300px; aspect-ratio: 1; background: white; border: 3px dashed var(--letter-secondary); border-radius: 20px; box-shadow: inset 0 0 15px rgba(0,0,0,0.05); flex-shrink: 0; }
-.letter-canvas-container canvas { border-radius: 15px; width: 100%; height: 100%; display: block; position: absolute; top: 0; left: 0; }
+/* Joc Litere Compact */
+#letterGameContainer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #FFF0F5; z-index: 200; touch-action: none; }
+.letter-card-ui { background: rgba(255,255,255,0.95); width: 95%; height: 95%; max-height: 500px; border-radius: 15px; margin: 2.5% auto; display: flex; flex-direction: column; align-items: center; padding: 10px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.letter-header h1 { font-size: 1.2rem; margin: 0; color: var(--letter-primary); }
+.letter-score { font-size: 0.9rem; background: var(--letter-secondary); color: white; padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 2px; }
+.letter-play-area { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+.letter-card-display { width: 60px; height: 60px; border-radius: 12px; background: var(--letter-accent); display: flex; justify-content: center; align-items: center; font-size: 2.5rem; font-family: 'Fredoka One'; color: var(--letter-primary); box-shadow: 0 4px 0 #FFB3C6; position: relative; }
+.letter-canvas-container { position: relative; width: 100%; max-width: 250px; aspect-ratio: 1; background: white; border: 2px dashed var(--letter-secondary); border-radius: 12px; }
+.letter-canvas-container canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 10px; }
 #guideCanvas { z-index: 1; pointer-events: none; }
 #drawCanvas { z-index: 2; }
-.letter-clear-btn { position: absolute; top: 5px; right: 5px; background: #FFD1DC; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 3px 0 #FFB3C6; z-index: 10; }
-.letter-clear-btn:active { transform: translateY(3px); box-shadow: none; }
-.letter-clear-btn svg { width: 15px; height: 15px; fill: #D65A78; }
-.letter-action-btn { background: var(--letter-primary); color: white; border: none; padding: 12px 25px; font-family: 'Fredoka One', cursive; font-size: 1.2rem; border-radius: 40px; cursor: pointer; box-shadow: 0 5px 0 #D65A78; transition: all 0.1s; width: 90%; max-width: 250px; flex-shrink: 0; margin-top: auto; margin-bottom: 5px; display: flex; justify-content: center; align-items: center; gap: 8px; }
-.letter-action-btn:active { transform: translateY(5px); box-shadow: none; }
-.letter-action-btn.next { background: var(--success); box-shadow: 0 5px 0 #8AC4E0; }
-.letter-action-btn.skip { background: var(--timer-warning); color: #5E6472; box-shadow: 0 5px 0 #E5C335; }
-.letter-feedback-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'Fredoka One', cursive; font-size: 2.5rem; pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 100; border-radius: 20px; text-align: center; padding: 15px; }
-.letter-feedback-overlay.show { opacity: 1; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-.letter-feedback-overlay.fail { color: var(--error); }
-.letter-feedback-overlay.success { color: var(--letter-primary); }
-#letterConfetti { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 200; border-radius: 20px; }
-.letter-mascot-img { position: absolute; top: -30px; right: -20px; width: 70px; height: auto; z-index: 5; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1)); }
+.letter-clear-btn { position: absolute; top: 2px; right: 2px; width: 24px; height: 24px; background: #FFD1DC; border: none; border-radius: 50%; z-index: 10; display: flex; align-items: center; justify-content: center; }
+.letter-clear-btn svg { width: 12px; height: 12px; fill: #D65A78; }
+.letter-action-btn { width: 90%; max-width: 200px; padding: 8px; font-size: 1rem; background: var(--letter-primary); color: white; border: none; border-radius: 20px; font-weight: bold; box-shadow: 0 3px 0 #D65A78; margin-top: auto; }
+.letter-action-btn:active { transform: translateY(3px); box-shadow: none; }
+.letter-feedback-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 2rem; font-weight: bold; border-radius: 15px; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 100; }
+.letter-feedback-overlay.show { opacity: 1; }
+.letter-mascot-img { position: absolute; top: -20px; right: -15px; width: 50px; }
 
-/* --- STILURI JOC COORDONATE --- */
-#coordGameContainer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #4b0082; z-index: 200; touch-action: none; font-family: 'Arial', sans-serif; color: white; overflow-y: auto; }
-.coord-wrapper { display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 5px; }
-.coord-h1 { margin: 5px 0 3px 0; font-size: 1.2rem; text-align: center; font-family: 'Fredoka One', cursive; color: #ffd700; }
-.coord-p { margin: 0 0 8px 0; font-size: 0.8rem; text-align: center; max-width: 95%; color: #ddd; }
-#coord-board-wrapper { display: grid; grid-template-columns: 30px 1fr; grid-template-rows: 30px 1fr; gap: 1px; background-color: #ccc; border: 4px solid #ffd700; box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); border-radius: 4px; overflow: hidden; touch-action: none; }
-.corner-box { background-color: #2a0a4a; grid-column: 1; grid-row: 1; display: flex; justify-content: center; align-items: center; font-size: 0.7rem; color: #aaa; }
-#axis-x { grid-column: 2; grid-row: 1; display: grid; gap: 1px; background-color: #ccc; }
-#axis-y { grid-column: 1; grid-row: 2; display: grid; gap: 1px; background-color: #ccc; }
-#game-area-coord { grid-column: 2; grid-row: 2; display: grid; gap: 1px; background-color: #ccc; position: relative; }
-.axis-number { background-color: #2a0a4a; color: #ffd700; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 0.8rem; width: 100%; height: 100%; }
-.cell-coord { background-color: #f9f9f9; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative; }
-.cell-coord.highlight { animation: blink 1s infinite; background-color: #e0e0e0; }
-@keyframes blink { 0% { background-color: #e0e0e0; } 50% { background-color: #ffffff; } 100% { background-color: #e0e0e0; } }
-.crystal { width: 70%; height: 70%; border-radius: 4px; transform: rotate(45deg); box-shadow: inset 2px 2px 5px rgba(255,255,255,0.8), inset -2px -2px 5px rgba(0,0,0,0.3), 0 0 6px currentColor; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
-.crystal::after { content: ''; position: absolute; top: 10%; left: 10%; width: 30%; height: 30%; background: rgba(255,255,255,0.9); border-radius: 50%; filter: blur(1px); }
-@keyframes popIn { from { transform: scale(0) rotate(45deg); opacity: 0; } to { transform: scale(1) rotate(45deg); opacity: 1; } }
-#coord-controls { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 15px; width: 95%; max-width: 400px; align-items: center; }
-.color-btn { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; transition: all 0.3s; flex-shrink: 0; opacity: 0.6; }
-.color-btn.auto-selected { border: 3px solid #ffff00; transform: scale(1.3); opacity: 1; box-shadow: 0 0 15px #ffff00; z-index: 10; }
-.action-btn-coord { padding: 8px 12px; border: none; border-radius: 6px; font-weight: bold; color: white; cursor: pointer; box-shadow: 0 3px rgba(0,0,0,0.3); font-size: 0.8rem; }
-.action-btn-coord:active { transform: translateY(2px); box-shadow: 0 1px rgba(0,0,0,0.3); }
-.btn-start { background-color: #4CAF50; box-shadow: 0 3px #2E7D32; }
-.btn-clear { background-color: #d32f2f; box-shadow: 0 3px #b71c1c; border: 2px solid #ffeb3b; }
-.btn-clear:hover { background-color: #f44336; transform: scale(1.05); }
-.btn-clear:active { box-shadow: 0 1px #b71c1c; transform: translateY(2px); }
-.btn-undo { background-color: #2196F3; width: 35px; height: 35px; padding: 0; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
-.btn-undo:disabled { background-color: #ccc; box-shadow: none; opacity: 0.5; cursor: not-allowed; }
-#status-box { margin-top: 8px; padding: 10px; background: rgba(255, 255, 255, 0.15); border-radius: 6px; text-align: center; font-weight: bold; min-height: 20px; color: #ffd700; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2); }
+/* Joc Coordonate Compact */
+#coordGameContainer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #4b0082; z-index: 200; color: white; overflow-y: auto; }
+.coord-wrapper { display: flex; flex-direction: column; align-items: center; padding: 5px; min-height: 100vh; }
+.coord-h1 { font-size: 1.1rem; margin: 5px 0; color: #ffd700; font-family: 'Fredoka One'; }
+.coord-p { font-size: 0.75rem; margin: 0 0 5px 0; color: #ddd; text-align: center; }
+#coord-board-wrapper { display: grid; grid-template-columns: 25px 1fr; grid-template-rows: 25px 1fr; gap: 1px; background: #ccc; border: 3px solid #ffd700; }
+.corner-box, .axis-number, .cell-coord { display: flex; justify-content: center; align-items: center; }
+.axis-number { background: #2a0a4a; color: #ffd700; font-size: 0.7rem; font-weight: bold; }
+.cell-coord { background: #f9f9f9; width: 25px; height: 25px; cursor: pointer; position: relative; }
+.cell-coord.highlight { background: #e0e0e0; animation: blink 0.5s infinite; }
+@keyframes blink { 50% { background: #fff; } }
+.crystal { width: 60%; height: 60%; border-radius: 2px; transform: rotate(45deg); box-shadow: inset 1px 1px 3px rgba(255,255,255,0.8), 0 0 4px currentColor; }
+#coord-controls { margin-top: 8px; display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; background: rgba(0,0,0,0.4); padding: 8px; border-radius: 10px; width: 95%; }
+.color-btn { width: 24px; height: 24px; border-radius: 50%; border: 1px solid white; opacity: 0.6; }
+.color-btn.auto-selected { border: 2px solid yellow; transform: scale(1.2); opacity: 1; box-shadow: 0 0 10px yellow; }
+.action-btn-coord { padding: 6px 10px; border: none; border-radius: 5px; font-size: 0.75rem; font-weight: bold; color: white; }
+.btn-start { background: #4CAF50; }
+.btn-clear { background: #d32f2f; border: 1px solid yellow; }
+.btn-undo { background: #2196F3; width: 30px; height: 30px; padding: 0; display: flex; align-items: center; justify-content: center; }
+#status-box { margin-top: 5px; padding: 5px; background: rgba(255,255,255,0.1); border-radius: 5px; font-size: 0.8rem; text-align: center; min-height: 20px; color: #ffd700; }
 
-@media (max-width: 400px) {
-  h1 { font-size: 1.8rem; }
-  .problem-display { font-size: 2.5rem; }
-  .card, .big-card { min-height: 80px; }
-  .choices-grid { grid-template-columns: 1fr; }
-  .award-icon { font-size: 4rem; }
-  .award-title { font-size: 1.5rem; }
-  .letter-card-display { width: 70px; height: 70px; font-size: 2.5rem; }
-  .cell-coord { width: 25px; height: 25px; }
-  #axis-x, #axis-y { grid-template-columns: repeat(10, 25px); grid-template-rows: repeat(12, 25px); }
-}
 </style>
 </head>
 <body>
-<div class="background-shapes" id="bg-shapes"></div>
+
 <!-- Meniu Principal -->
 <div class="container" id="mainContainer">
 <h1>Super Jocuri</h1>
 <div class="menu-grid">
-<!-- Buton Joc Matematic -->
 <div class="big-card" onclick="openMathMenu()">
 <div class="big-card-icon">🧮</div>
 <div class="big-card-content">
-<div class="big-card-title">Joc Matematic</div>
-<div class="big-card-desc">Exerciții de adunare, scădere, înmulțire!</div>
+<div class="big-card-title">Matematică</div>
+<div class="big-card-desc">Calcule și șiruri</div>
 </div>
 </div>
-<!-- Buton Joc Sărituri -->
 <div class="big-card" onclick="openJumpGame()">
 <div class="big-card-icon">🦕</div>
 <div class="big-card-content">
-<div class="big-card-title">Aventura Eroului</div>
-<div class="big-card-desc">Sari peste obstacole și câștigă trofee!</div>
+<div class="big-card-title">Sărituri</div>
+<div class="big-card-desc">Aventura eroului</div>
 </div>
 </div>
-<!-- Buton Joc Litere -->
 <div class="big-card" onclick="openLetterGame()">
 <div class="big-card-icon">✏️</div>
 <div class="big-card-content">
-<div class="big-card-title">Litere Magice</div>
-<div class="big-card-desc">Desenează literele și numerele pe contur!</div>
+<div class="big-card-title">Litere</div>
+<div class="big-card-desc">Desenează contururi</div>
 </div>
 </div>
-<!-- Buton Joc Coordonate -->
 <div class="big-card" onclick="openCoordGame()">
 <div class="big-card-icon">💎</div>
 <div class="big-card-content">
 <div class="big-card-title">Coordonate</div>
-<div class="big-card-desc">Găsește poziția corectă pe tablă!</div>
+<div class="big-card-desc">Găsește poziția</div>
 </div>
 </div>
 </div>
 </div>
 
-<!-- Interfață Joc Matematic -->
-<button class="back-btn" id="mathBackBtn" style="display: none;" onclick="showMainMenu()">← Înapoi</button>
-<div class="container" id="mathContainer" style="display: none;">
-<div id="mathMainMenu">
-<h1>Alege Nivelul</h1>
-<div class="sub-menu-grid" id="mathMenuGrid"></div>
-<button class="btn btn-secondary" onclick="showMainMenu()" style="margin-top: 1.5rem;">Înapoi la Meniu</button>
-</div>
-<div id="mathSubMenu" style="display: none;">
-<h2 id="mathSubMenuTitle">Activități:</h2>
-<div class="sub-menu-grid" id="mathSubMenuGrid"></div>
-<button class="btn btn-secondary" onclick="openMathMenu()" style="margin-top: 1.5rem;">Înapoi</button>
-</div>
+<!-- Interfață Matematică -->
+<button class="back-btn" id="mathBackBtn" style="display:none;" onclick="showMainMenu()">←</button>
+<div class="container" id="mathContainer" style="display:none;">
+<div id="mathMainMenu"><h1>Alege Nivelul</h1><div class="sub-menu-grid" id="mathMenuGrid"></div><button class="btn btn-secondary" onclick="showMainMenu()" style="margin-top:10px; width:100%">Înapoi</button></div>
+<div id="mathSubMenu" style="display:none;"><h2 id="mathSubMenuTitle" style="font-size:1.2rem; margin:5px 0;">Activități:</h2><div class="sub-menu-grid" id="mathSubMenuGrid"></div><button class="btn btn-secondary" onclick="openMathMenu()" style="margin-top:10px; width:100%">Înapoi</button></div>
 <div id="mathGameArea" class="game-area">
-<div class="stats-bar">
-<span id="mathScoreDisplay">Scor: 100</span>
-<span id="mathProgressDisplay">Exercițiul: 1/20</span>
-</div>
+<div class="stats-bar"><span id="mathScoreDisplay">Scor: 100</span><span id="mathProgressDisplay">1/20</span></div>
 <div class="timer-container"><div class="timer-bar" id="mathTimerBar"></div></div>
 <div id="mathGameContent"></div>
-<div id="mathChoicesContainer" class="choices-grid" style="display: none;"></div>
-<div id="mathInputContainer" class="input-group" style="display: none;">
-<input type="number" id="mathAnswerInput" placeholder="?" autocomplete="off" step="0.1">
-<button class="btn btn-primary" onclick="checkMathAnswer()">Verifică</button>
+<div id="mathChoicesContainer" class="choices-grid" style="display:none;"></div>
+<div id="mathInputContainer" class="input-group" style="display:none;">
+<input type="number" id="mathAnswerInput" placeholder="?">
+<button class="btn btn-primary" onclick="checkMathAnswer()">OK</button>
 </div>
 <div class="feedback" id="mathFeedbackText"></div>
-<button class="btn btn-secondary" onclick="openMathMenu()">Ieșire</button>
+<button class="btn btn-secondary" onclick="openMathMenu()" style="width:100%">Ieșire</button>
 </div>
 <div id="mathAwardScreen" class="award-container">
 <div class="award-icon" id="mathAwardIcon">🏆</div>
 <div class="award-title" id="mathAwardTitle">Premiul 1</div>
-<div class="final-score" id="mathFinalScoreText">Scor Final: 100</div>
-<div class="name-input-group" id="mathNameInputGroup" style="display: none;">
-<label for="mathPlayerName">Introdu numele tău:</label>
-<input type="text" id="mathPlayerName" placeholder="Nume..." maxlength="15">
-<button class="btn btn-primary" onclick="saveMathScore()">Salvează Scorul</button>
+<div class="final-score" id="mathFinalScoreText">Scor: 100</div>
+<div class="name-input-group" id="mathNameInputGroup" style="display:none;">
+<label>Nume:</label><input type="text" id="mathPlayerName" placeholder="Nume...">
+<button class="btn btn-primary" onclick="saveMathScore()">Salvează</button>
 </div>
-<button class="btn btn-secondary" id="mathCloseAwardBtn" onclick="openMathMenu()" style="display: none;">Înapoi</button>
+<button class="btn btn-secondary" id="mathCloseAwardBtn" onclick="openMathMenu()" style="display:none; width:100%">Înapoi</button>
 </div>
 <div id="mathLeaderboardScreen" class="leaderboard-container">
-<h2 id="mathLeaderboardTitle">Clasament</h2>
-<table class="leaderboard-table">
-<thead><tr><th>#</th><th>Nume</th><th>Scor</th></tr></thead>
-<tbody id="mathLeaderboardBody"></tbody>
-</table>
-<button class="btn btn-secondary" onclick="openMathMenu()">Înapoi</button>
+<h2 style="font-size:1.2rem; margin-bottom:5px;">Clasament</h2>
+<table class="leaderboard-table"><thead><tr><th>#</th><th>Nume</th><th>Scor</th></tr></thead><tbody id="mathLeaderboardBody"></tbody></table>
+<button class="btn btn-secondary" onclick="openMathMenu()" style="width:100%">Înapoi</button>
 </div>
 </div>
 
-<!-- Interfață Joc Sărituri -->
+<!-- Joc Sărituri -->
 <div id="jumpGameContainer">
 <canvas id="jumpCanvas"></canvas>
-<div id="jumpUI">
-<div class="badge">⭐ Scor: <span id="jumpScoreVal">0</span></div>
-<div class="badge">🚩 Stația: <span id="jumpStationVal">0</span>/15</div>
-</div>
+<div id="jumpUI"><div>⭐ <span id="jumpScoreVal">0</span></div><div>🚩 <span id="jumpStationVal">0</span>/15</div></div>
 <div id="jumpMenu">
 <h1>Alege Eroul</h1>
-<div style="margin-bottom: 20px; display:flex; gap:10px;">
-<button class="btn selected" id="jumpBtnGirl" onclick="setJumpChar('girl')">🌟 Fata</button>
-<button class="btn" id="jumpBtnBoy" onclick="setJumpChar('boy')">🦕 Băiat</button>
+<div style="display:flex; gap:10px; margin-bottom:15px;">
+<button class="btn" id="jumpBtnGirl" onclick="setJumpChar('girl')" style="background:#EC407A">🌟 Fata</button>
+<button class="btn" id="jumpBtnBoy" onclick="setJumpChar('boy')" style="background:#2196F3">🦕 Băiat</button>
 </div>
-<button class="btn" id="jumpStartBtn" onclick="startJumpGame()" style="background:#2ed573; margin-top:20px;">START JOC</button>
-<p style="margin-top: 15px; font-size:0.9rem;">Apasă oriunde pentru a sări SUS!</p>
-<button class="btn btn-secondary" onclick="closeJumpGame()" style="margin-top: 15px;">Înapoi la Meniu</button>
+<button class="btn" id="jumpStartBtn" onclick="startJumpGame()" style="background:#2ed573; font-size:1.1rem; padding:10px 20px;">START</button>
+<p>Apasă oriunde pentru a sări!</p>
+<button class="btn btn-secondary" onclick="closeJumpGame()">Ieșire</button>
 </div>
 <div id="jumpWinScreen">
-<h1 style="font-size: 2.5rem;">VICTORIE! 🏆</h1>
-<p style="font-size: 1.2rem; color: #fff;">Ai trecut prin toate cele 15 stații!</p>
-<button class="btn" onclick="closeJumpGame()" style="background:#fff; color:#2ed573; margin-top:20px;">Înapoi la Meniu</button>
+<h1 style="color:white; font-size:2rem;">VICTORIE! 🏆</h1>
+<p>Ai trecut toate stațiile!</p>
+<button class="btn" onclick="closeJumpGame()" style="background:white; color:#2ed573; margin-top:15px;">Meniu</button>
 </div>
 </div>
 
-<!-- Interfață Joc Litere -->
+<!-- Joc Litere -->
 <div id="letterGameContainer">
 <div class="letter-card-ui">
-<canvas id="letterConfetti"></canvas>
-<header class="letter-header">
-<h1>Jocul Literelor</h1>
-<div class="letter-score">Steluțe: <span id="letterScore">0</span> ⭐</div>
-</header>
+<header class="letter-header"><h1>Litere</h1><div class="letter-score">⭐ <span id="letterScore">0</span></div></header>
 <div class="letter-play-area">
-<div class="letter-card-display" id="letterTargetCard">
-<span id="letterTargetChar">A</span>
-<img src="https://image.qwenlm.ai/public_source/9d076338-2b12-4553-8888-4cf6f0866228/173d93ddf-8170-4865-8cf4-97af1e0962e2.png" alt="Mascot" class="letter-mascot-img">
-</div>
+<div class="letter-card-display" id="letterTargetCard"><span id="letterTargetChar">A</span><img src="https://image.qwenlm.ai/public_source/9d076338-2b12-4553-8888-4cf6f0866228/173d93ddf-8170-4865-8cf4-97af1e0962e2.png" class="letter-mascot-img"></div>
 <div class="letter-canvas-container">
-<canvas id="guideCanvas"></canvas>
-<canvas id="drawCanvas"></canvas>
-<button class="letter-clear-btn" onclick="clearLetterCanvas()" title="Șterge">
-<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-</button>
+<canvas id="guideCanvas"></canvas><canvas id="drawCanvas"></canvas>
+<button class="letter-clear-btn" onclick="clearLetterCanvas()"><svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
 </div>
-<button id="letterMainBtn" class="letter-action-btn" onclick="handleLetterAction()">
-<span>Verifică!</span>
-</button>
+<button id="letterMainBtn" class="letter-action-btn" onclick="handleLetterAction()">Verifică!</button>
 </div>
-<div class="letter-feedback-overlay" id="letterFeedback">
-<div id="letterFeedbackIcon" style="font-size: 3rem; margin-bottom: 8px;">🎉</div>
-<div id="letterFeedbackText">Bravo!</div>
-</div>
-<button class="btn btn-secondary" onclick="closeLetterGame()" style="position:absolute; bottom:5px; left:5px; z-index:50; font-size:0.8rem; padding:5px 10px;">Ieșire</button>
+<div class="letter-feedback-overlay" id="letterFeedback"><div id="letterFeedbackIcon" style="font-size:3rem">🎉</div><div id="letterFeedbackText">Bravo!</div></div>
+<button class="btn btn-secondary" onclick="closeLetterGame()" style="position:absolute; bottom:5px; left:5px; font-size:0.7rem; padding:4px 8px;">Ieșire</button>
 </div>
 </div>
 
-<!-- Interfață Joc Coordonate -->
+<!-- Joc Coordonate -->
 <div id="coordGameContainer">
 <div class="coord-wrapper">
-<h1 class="coord-h1">Joc Coordonate Automate</h1>
-<p class="coord-p">Culoarea se selectează singură! Tu doar găsește coordonatele.</p>
-<div id="coord-board-wrapper">
-<div class="corner-box">X/Y</div>
-<div id="axis-x"></div>
-<div id="axis-y"></div>
-<div id="game-area-coord"></div>
-</div>
-<div id="status-box">Apasă "Start Joc"!</div>
+<h1 class="coord-h1">Coordonate</h1>
+<p class="coord-p">Culoarea se schimbă automat. Găsește locul!</p>
+<div id="coord-board-wrapper"><div class="corner-box">X/Y</div><div id="axis-x"></div><div id="axis-y"></div><div id="game-area-coord"></div></div>
+<div id="status-box">Apasă Start!</div>
 <div id="coord-controls">
 <div class="color-btn" style="background:#ff0000" data-color="#ff0000"></div>
 <div class="color-btn" style="background:#ff8c00" data-color="#ff8c00"></div>
@@ -364,30 +271,28 @@ body.boy-theme .leaderboard-table th { background: var(--boy-primary); }
 <div class="color-btn" style="background:#1e90ff" data-color="#1e90ff"></div>
 <div class="color-btn" style="background:#4b0082" data-color="#4b0082"></div>
 <div class="color-btn" style="background:#ffffff" data-color="#ffffff"></div>
-<button class="action-btn-coord btn-start" onclick="startCoordGame()">Start Joc</button>
-<button class="action-btn-coord btn-undo" id="undoBtn" onclick="undoLast()">&larr;</button>
-<button class="action-btn-coord btn-clear" onclick="clearGridNow()">Șterge Tot</button>
+<button class="action-btn-coord btn-start" onclick="startCoordGame()">Start</button>
+<button class="action-btn-coord btn-undo" id="undoBtn" onclick="undoLast()">↩</button>
+<button class="action-btn-coord btn-clear" onclick="clearGridNow()">Șterge</button>
 </div>
-<button class="btn btn-secondary" onclick="closeCoordGame()" style="margin-top: 10px; font-size:0.9rem;">Înapoi la Meniu</button>
+<button class="btn btn-secondary" onclick="closeCoordGame()" style="margin-top:5px; font-size:0.8rem;">Înapoi</button>
 </div>
 </div>
 
 <script>
 // ==========================================
-// LOGICA GENERALĂ & NAVIGARE
+// LOGICA GENERALĂ
 // ==========================================
 function showMainMenu() {
 document.getElementById('mainContainer').style.display = 'block';
 document.getElementById('mathContainer').style.display = 'none';
 document.getElementById('mathBackBtn').style.display = 'none';
-closeJumpGame();
-closeLetterGame();
-closeCoordGame();
+closeJumpGame(); closeLetterGame(); closeCoordGame();
 }
 function openMathMenu() {
 document.getElementById('mainContainer').style.display = 'none';
 document.getElementById('mathContainer').style.display = 'block';
-document.getElementById('mathBackBtn').style.display = 'flex';
+document.getElementById('mathBackBtn').style.display = 'block';
 document.getElementById('mathBackBtn').onclick = showMainMenu;
 document.getElementById('mathMainMenu').style.display = 'block';
 document.getElementById('mathSubMenu').style.display = 'none';
@@ -396,575 +301,210 @@ document.getElementById('mathAwardScreen').style.display = 'none';
 document.getElementById('mathLeaderboardScreen').style.display = 'none';
 renderMathMainMenu();
 }
-function openJumpGame() {
-document.getElementById('mainContainer').style.display = 'none';
-document.getElementById('mathContainer').style.display = 'none';
-document.getElementById('jumpGameContainer').style.display = 'block';
-initJumpGame();
-}
-function closeJumpGame() {
-jumpGameRunning = false;
-document.getElementById('jumpGameContainer').style.display = 'none';
-document.getElementById('jumpMenu').style.display = 'flex';
-document.getElementById('jumpWinScreen').style.display = 'none';
-}
-function openLetterGame() {
-document.getElementById('mainContainer').style.display = 'none';
-document.getElementById('mathContainer').style.display = 'none';
-document.getElementById('letterGameContainer').style.display = 'block';
-initLetterGame();
-}
-function closeLetterGame() {
-document.getElementById('letterGameContainer').style.display = 'none';
-}
-function openCoordGame() {
-document.getElementById('mainContainer').style.display = 'none';
-document.getElementById('mathContainer').style.display = 'none';
-document.getElementById('coordGameContainer').style.display = 'block';
-initCoordGame();
-}
-function closeCoordGame() {
-document.getElementById('coordGameContainer').style.display = 'none';
-}
+function openJumpGame() { document.getElementById('mainContainer').style.display = 'none'; document.getElementById('mathContainer').style.display = 'none'; document.getElementById('jumpGameContainer').style.display = 'block'; initJumpGame(); }
+function closeJumpGame() { jumpGameRunning = false; document.getElementById('jumpGameContainer').style.display = 'none'; document.getElementById('jumpMenu').style.display = 'flex'; document.getElementById('jumpWinScreen').style.display = 'none'; }
+function openLetterGame() { document.getElementById('mainContainer').style.display = 'none'; document.getElementById('mathContainer').style.display = 'none'; document.getElementById('letterGameContainer').style.display = 'block'; initLetterGame(); }
+function closeLetterGame() { document.getElementById('letterGameContainer').style.display = 'none'; }
+function openCoordGame() { document.getElementById('mainContainer').style.display = 'none'; document.getElementById('mathContainer').style.display = 'none'; document.getElementById('coordGameContainer').style.display = 'block'; initCoordGame(); }
+function closeCoordGame() { document.getElementById('coordGameContainer').style.display = 'none'; }
 
 // ==========================================
-// LOGICA JOC MATEMATIC
+// LOGICA MATEMATICĂ
 // ==========================================
-let mathCurrentMode = '';
-let mathScore = 100;
-let mathCurrentAnswer = 0;
-let mathTimeLeft = 0;
-let mathMaxTime = 0;
-let mathTimerInterval;
-let mathDifficultyLevel = 1;
-let mathProblemHTML = '';
-let mathQuestionCount = 0;
+let mathCurrentMode = '', mathScore = 100, mathCurrentAnswer = 0, mathTimeLeft = 0, mathMaxTime = 0, mathTimerInterval, mathDifficultyLevel = 1, mathProblemHTML = '', mathQuestionCount = 0, mathCurrentSubMenuKey = '', isMathGameEnding = false;
 const MAX_QUESTIONS = 20;
-let mathCurrentSubMenuKey = '';
-let isMathGameEnding = false;
 const mathMenus = {
-'kg': { title: 'Grădiniță', theme: 'boy', items: [
-{ id: 'kg_count', icon: '🚗', title: 'Numără Obiecte', desc: 'Câte mașinuțe sunt?' },
-{ id: 'kg_sequence', icon: '🤖', title: 'Șir Numeric', desc: 'Continuă șirul (1-10)' },
-{ id: 'kg_add', icon: '⚽', title: 'Adunări Vizuale', desc: 'Adună bilele' }
-]},
-'easy_menu': { title: 'Clasa 1 - 2 (Fără Trecere)', theme: 'girl', items: [
-{ id: 'easy_math', icon: '🦄', title: 'Calcule', desc: 'Adunări și scăderi simple' },
-{ id: 'easy_seq', icon: '🔢', title: 'Șiruri Numerice', desc: 'Găsește următorul număr' },
-{ id: 'easy_comp', icon: '⚖️', title: 'Comparații', desc: 'Care e mai mare?' }
-]},
-'max_menu': { title: 'Clasa 1 - 2 (Cu Trecere)', theme: 'girl', items: [
-{ id: 'max_math', icon: '👑', title: 'Calcule Avansate', desc: 'Cu trecere peste ordin' },
-{ id: 'max_seq', icon: '🧩', title: 'Șiruri Complexe', desc: 'Salturi de 2, 5, 10' },
-{ id: 'max_eq', icon: '❓', title: 'Ecuații Simple', desc: 'Găsește numărul lipsă' }
-]},
-'med_menu': { title: 'Clasa 3 - 4', theme: 'girl', items: [
-{ id: 'med_math', icon: '🌸', title: 'Înmulțiri & Împărțiri', desc: 'Tabelele înmulțirii' },
-{ id: 'med_round', icon: '🎯', title: 'Rotunjiri', desc: 'La zece sau sută' },
-{ id: 'med_order', icon: '📝', title: 'Ordinea Operațiilor', desc: 'Calcul cu paranteze' }
-]},
-'hard_menu': { title: 'Clasa 5+', theme: 'girl', items: [
-{ id: 'hard_frac', icon: '🍰', title: 'Fracții', desc: 'Adunări cu fracții' },
-{ id: 'hard_dec', icon: '💧', title: 'Zecimale', desc: 'Calcule cu virgulă' },
-{ id: 'hard_pow', icon: '⚡', title: 'Puteri & Radicali', desc: 'Calcul avansat' }
-]},
-'pro_menu': { title: '5 Pro (Avansat)', theme: 'pro', items: [
-{ id: 'pro_cong', icon: '⚛️', title: 'Congruențe', desc: 'Aritmetică modulară (mod n)' },
-{ id: 'pro_last', icon: '🔢', title: 'Ultima Cifră', desc: 'Determină ultima cifră' },
-{ id: 'pro_div', icon: '➗', title: 'Criterii Divizibilitate', desc: 'Restul împărțirii' }
-]}
+'kg': { title: 'Grădiniță', theme: 'boy', items: [{id:'kg_count', icon:'🚗', title:'Numără', desc:'Câte sunt?'}, {id:'kg_sequence', icon:'🤖', title:'Șir', desc:'Continuă șirul'}, {id:'kg_add', icon:'⚽', title:'Adună', desc:'Adună vizual'}] },
+'easy_menu': { title: 'Clasa 1-2 (Fără Trecere)', theme: 'girl', items: [{id:'easy_math', icon:'🦄', title:'Calcule', desc:'Adunări/Scăderi'}, {id:'easy_seq', icon:'🔢', title:'Șiruri', desc:'Următorul nr'}, {id:'easy_comp', icon:'⚖️', title:'Compară', desc:'Mai mare/mic'}] },
+'max_menu': { title: 'Clasa 1-2 (Cu Trecere)', theme: 'girl', items: [{id:'max_math', icon:'👑', title:'Calcule+', desc:'Cu trecere'}, {id:'max_seq', icon:'🧩', title:'Șiruri+', desc:'Salturi 2,5,10'}, {id:'max_eq', icon:'❓', title:'Ecuații', desc:'Nr lipsă'}] },
+'med_menu': { title: 'Clasa 3-4', theme: 'girl', items: [{id:'med_math', icon:'🌸', title:'Înmulțiri', desc:'Tabele'}, {id:'med_round', icon:'🎯', title:'Rotunjiri', desc:'La 10 sau 100'}, {id:'med_order', icon:'📝', title:'Ordine', desc:'Cu paranteze'}] },
+'hard_menu': { title: 'Clasa 5+', theme: 'girl', items: [{id:'hard_frac', icon:'🍰', title:'Fracții', desc:'Adunări fracții'}, {id:'hard_dec', icon:'💧', title:'Zecimale', desc:'Cu virgulă'}, {id:'hard_pow', icon:'⚡', title:'Puteri', desc:'Calcul avansat'}] },
+'pro_menu': { title: '5 Pro', theme: 'pro', items: [{id:'pro_cong', icon:'⚛️', title:'Congruențe', desc:'Mod n'}, {id:'pro_last', icon:'🔢', title:'Ultima Cifră', desc:'Determină'}, {id:'pro_div', icon:'➗', title:'Divizibilitate', desc:'Restul'}] }
 };
 
-function initMath() {
-createBackgroundShapes();
-renderMathMainMenu();
-document.getElementById('mathAnswerInput').addEventListener("keypress", function(event) {
-if (event.key === "Enter") checkMathAnswer();
-});
-}
-
-function createBackgroundShapes() {
-const container = document.getElementById('bg-shapes');
-const colors = ['#FFCC80', '#FFAB91', '#FFE082', '#A5D6A7', '#90CAF9'];
-for(let i=0; i<12; i++) {
-const shape = document.createElement('div');
-shape.classList.add('shape');
-const size = Math.random() * 60 + 30;
-const color = colors[Math.floor(Math.random() * colors.length)];
-shape.style.width = `${size}px`;
-shape.style.height = `${size}px`;
-shape.style.left = `${Math.random() * 100}%`;
-shape.style.backgroundColor = color;
-shape.style.borderRadius = Math.random() > 0.5 ? '50%' : '15%';
-shape.style.animationDuration = `${Math.random() * 10 + 15}s`;
-shape.style.animationDelay = `-${Math.random() * 20}s`;
-container.appendChild(shape);
-}
-}
-
+function initMath() { renderMathMainMenu(); document.getElementById('mathAnswerInput').addEventListener("keypress", e => { if(e.key==="Enter") checkMathAnswer(); }); }
 function renderMathMainMenu() {
-const grid = document.getElementById('mathMenuGrid');
-grid.innerHTML = '';
+const grid = document.getElementById('mathMenuGrid'); grid.innerHTML = '';
 Object.keys(mathMenus).forEach(key => {
-const menuData = mathMenus[key];
+const m = mathMenus[key];
 const card = document.createElement('div');
-card.className = `card ${menuData.theme === 'boy' ? 'kg-card' : (menuData.theme === 'pro' ? 'pro-card' : 'easy-card')}`;
-const lbBtn = document.createElement('button');
-lbBtn.className = 'card-lb-btn';
-lbBtn.innerHTML = '🏆';
-lbBtn.title = 'Vezi Clasament';
-lbBtn.style.position = 'absolute';
-lbBtn.style.top = '5px';
-lbBtn.style.right = '5px';
-lbBtn.style.background = 'none';
-lbBtn.style.border = 'none';
-lbBtn.style.fontSize = '1.2rem';
-lbBtn.style.cursor = 'pointer';
-lbBtn.onclick = (e) => { e.stopPropagation(); showMathLeaderboard(key); };
-card.innerHTML = `<div class="card-icon">${menuData.items[0].icon}</div><div style="flex:1;"><div class="card-title">${menuData.title}</div><div class="card-desc">${menuData.items[0].desc}</div></div>`;
-card.appendChild(lbBtn);
-card.onclick = () => openMathSubmenu(key);
-grid.appendChild(card);
+card.className = `card ${m.theme==='boy'?'kg-card':(m.theme==='pro'?'pro-card':'easy-card')}`;
+const lbBtn = document.createElement('button'); lbBtn.innerHTML='🏆'; lbBtn.style.position='absolute'; lbBtn.style.top='5px'; lbBtn.style.right='5px'; lbBtn.style.background='none'; lbBtn.style.border='none'; lbBtn.style.fontSize='1.2rem'; lbBtn.onclick=(e)=>{e.stopPropagation(); showMathLeaderboard(key);};
+card.innerHTML = `<div class="card-icon">${m.items[0].icon}</div><div class="card-title-wrap"><div class="card-title">${m.title}</div><div class="card-desc">${m.items[0].desc}</div></div>`;
+card.appendChild(lbBtn); card.onclick = () => openMathSubmenu(key); grid.appendChild(card);
 });
 }
-
-function openMathSubmenu(menuKey) {
-mathCurrentSubMenuKey = menuKey;
-const menuData = mathMenus[menuKey];
-if(!menuData) return;
-document.getElementById('mathMainMenu').style.display = 'none';
-document.getElementById('mathSubMenu').style.display = 'block';
-document.getElementById('mathSubMenuTitle').textContent = menuData.title;
-const subGrid = document.getElementById('mathSubMenuGrid');
-subGrid.innerHTML = '';
-document.body.classList.remove('boy-theme', 'pro-theme');
-if(menuData.theme === 'boy') document.body.classList.add('boy-theme');
-if(menuData.theme === 'pro') document.body.classList.add('pro-theme');
-menuData.items.forEach(item => {
+function openMathSubmenu(key) {
+mathCurrentSubMenuKey = key; const m = mathMenus[key]; if(!m) return;
+document.getElementById('mathMainMenu').style.display='none'; document.getElementById('mathSubMenu').style.display='block';
+document.getElementById('mathSubMenuTitle').textContent = m.title;
+const subGrid = document.getElementById('mathSubMenuGrid'); subGrid.innerHTML='';
+document.body.classList.remove('boy-theme','pro-theme');
+if(m.theme==='boy') document.body.classList.add('boy-theme');
+if(m.theme==='pro') document.body.classList.add('pro-theme');
+m.items.forEach(item => {
 const card = document.createElement('div');
-card.className = `card ${menuData.theme === 'boy' ? 'kg-card' : (menuData.theme === 'pro' ? 'pro-card' : 'easy-card')}`;
-card.innerHTML = `<div class="card-icon">${item.icon}</div><div style="flex:1;"><div class="card-title">${item.title}</div><div class="card-desc">${item.desc}</div></div>`;
-card.onclick = () => startMathGame(item.id);
-subGrid.appendChild(card);
+card.className = `card ${m.theme==='boy'?'kg-card':(m.theme==='pro'?'pro-card':'easy-card')}`;
+card.innerHTML = `<div class="card-icon">${item.icon}</div><div class="card-title-wrap"><div class="card-title">${item.title}</div><div class="card-desc">${item.desc}</div></div>`;
+card.onclick = () => startMathGame(item.id); subGrid.appendChild(card);
 });
 }
-
 function startMathGame(mode) {
-mathCurrentMode = mode;
-mathScore = 100;
-mathQuestionCount = 0;
-mathDifficultyLevel = 1;
-isMathGameEnding = false;
+mathCurrentMode = mode; mathScore = 100; mathQuestionCount = 0; mathDifficultyLevel = 1; isMathGameEnding = false;
 updateMathStats();
-document.getElementById('mathSubMenu').style.display = 'none';
-document.getElementById('mathGameArea').style.display = 'block';
-document.getElementById('mathAwardScreen').style.display = 'none';
-document.getElementById('mathLeaderboardScreen').style.display = 'none';
-const isBoy = mode.startsWith('kg');
-const isPro = mode.startsWith('pro');
-if(isBoy) {
-document.body.classList.add('boy-theme');
-document.getElementById('mathChoicesContainer').style.display = 'grid';
-document.getElementById('mathInputContainer').style.display = 'none';
-} else {
-if(isPro) document.body.classList.add('pro-theme');
-else document.body.classList.remove('boy-theme', 'pro-theme');
-document.getElementById('mathChoicesContainer').style.display = 'none';
-document.getElementById('mathInputContainer').style.display = 'flex';
+document.getElementById('mathSubMenu').style.display='none'; document.getElementById('mathGameArea').style.display='block';
+document.getElementById('mathAwardScreen').style.display='none'; document.getElementById('mathLeaderboardScreen').style.display='none';
+const isBoy = mode.startsWith('kg'), isPro = mode.startsWith('pro');
+if(isBoy) { document.body.classList.add('boy-theme'); document.getElementById('mathChoicesContainer').style.display='grid'; document.getElementById('mathInputContainer').style.display='none'; }
+else { if(isPro) document.body.classList.add('pro-theme'); else document.body.classList.remove('boy-theme','pro-theme'); document.getElementById('mathChoicesContainer').style.display='none'; document.getElementById('mathInputContainer').style.display='flex'; }
+nextMathProblem(); if(!isBoy) document.getElementById('mathAnswerInput').focus();
 }
-nextMathProblem();
-if(!isBoy) document.getElementById('mathAnswerInput').focus();
+function updateMathStats() { document.getElementById('mathScoreDisplay').textContent=`Scor: ${mathScore}`; document.getElementById('mathProgressDisplay').textContent=`${mathQuestionCount+1}/${MAX_QUESTIONS}`; }
+function startMathTimer(s) { clearInterval(mathTimerInterval); mathMaxTime=s; mathTimeLeft=s; updateMathTimerVisuals(); mathTimerInterval=setInterval(()=>{ mathTimeLeft--; updateMathTimerVisuals(); if(mathTimeLeft<=0){ clearInterval(mathTimerInterval); handleMathTimeout(); } }, 1000); }
+function updateMathTimerVisuals() { const p=(mathTimeLeft/mathMaxTime)*100; document.getElementById('mathTimerBar').style.width=`${p}%`; document.getElementById('mathTimerBar').style.backgroundColor = p>50?'var(--success)':(p>20?'var(--timer-warning)':'var(--timer-danger)'); }
+function handleMathTimeout() { showMathCorrectAnswer(true); }
+function getRandomInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function generateMathChoices(correct, min, max) {
+let s=new Set(); s.add(correct);
+while(s.size<3) { let o=getRandomInt(-5,5), w=correct+o; if(w>=min && w<=max && w!==correct) s.add(w); else { let r=getRandomInt(min,max); if(r!==correct) s.add(r); } }
+return Array.from(s).sort(()=>Math.random()-0.5);
 }
-
-function updateMathStats() {
-document.getElementById('mathScoreDisplay').textContent = `Scor: ${mathScore}`;
-document.getElementById('mathProgressDisplay').textContent = `Exercițiul: ${mathQuestionCount + 1}/${MAX_QUESTIONS}`;
-}
-
-function startMathTimer(seconds) {
-clearInterval(mathTimerInterval);
-mathMaxTime = seconds;
-mathTimeLeft = seconds;
-updateMathTimerVisuals();
-mathTimerInterval = setInterval(() => {
-mathTimeLeft--;
-updateMathTimerVisuals();
-if (mathTimeLeft <= 0) { clearInterval(mathTimerInterval); handleMathTimeout(); }
-}, 1000);
-}
-
-function updateMathTimerVisuals() {
-const percentage = (mathTimeLeft / mathMaxTime) * 100;
-document.getElementById('mathTimerBar').style.width = `${percentage}%`;
-if (percentage > 50) document.getElementById('mathTimerBar').style.backgroundColor = 'var(--success)';
-else if (percentage > 20) document.getElementById('mathTimerBar').style.backgroundColor = 'var(--timer-warning)';
-else document.getElementById('mathTimerBar').style.backgroundColor = 'var(--timer-danger)';
-}
-
-function handleMathTimeout() {
-showMathCorrectAnswer(true);
-}
-
-function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-
-function generateMathChoices(correctAnswer, minVal, maxVal) {
-let choices = new Set();
-choices.add(correctAnswer);
-while(choices.size < 3) {
-let offset = getRandomInt(-5, 5);
-let wrong = correctAnswer + offset;
-if(wrong >= minVal && wrong <= maxVal && wrong !== correctAnswer) choices.add(wrong);
-else { let r = getRandomInt(minVal, maxVal); if(r !== correctAnswer) choices.add(r); }
-}
-return Array.from(choices).sort(() => Math.random() - 0.5);
-}
-
 function renderMathChoices(choices) {
-const container = document.getElementById('mathChoicesContainer');
-container.innerHTML = '';
-choices.forEach(val => {
-const btn = document.createElement('button');
-btn.className = 'choice-btn';
-btn.textContent = val;
-btn.onclick = () => handleMathChoiceClick(val);
-container.appendChild(btn);
-});
+const c=document.getElementById('mathChoicesContainer'); c.innerHTML='';
+choices.forEach(v=>{ const b=document.createElement('button'); b.className='choice-btn'; b.textContent=v; b.onclick=()=>handleMathChoiceClick(v); c.appendChild(b); });
 }
-
-function handleMathChoiceClick(val) {
-if(isMathGameEnding) return;
-let isCorrect = (val === mathCurrentAnswer);
-processMathResult(isCorrect);
-}
-
+function handleMathChoiceClick(v) { if(isMathGameEnding) return; processMathResult(v===mathCurrentAnswer); }
 function checkMathAnswer() {
-const isBoy = mathCurrentMode.startsWith('kg');
-if(isBoy) return;
-if(isMathGameEnding) return;
-const userVal = parseFloat(document.getElementById('mathAnswerInput').value);
-if (isNaN(userVal)) return;
-let isCorrect = false;
-if(mathCurrentMode === 'easy_comp') {
-isCorrect = (userVal === mathCurrentAnswer);
-} else {
-isCorrect = (Math.abs(userVal - mathCurrentAnswer) < 0.01);
+if(mathCurrentMode.startsWith('kg') || isMathGameEnding) return;
+const u=parseFloat(document.getElementById('mathAnswerInput').value); if(isNaN(u)) return;
+let ok = mathCurrentMode==='easy_comp' ? (u===mathCurrentAnswer) : (Math.abs(u-mathCurrentAnswer)<0.01);
+processMathResult(ok);
 }
-processMathResult(isCorrect);
+function processMathResult(ok) {
+if(ok) { document.getElementById('mathFeedbackText').textContent="Bravo! 🎉"; document.getElementById('mathFeedbackText').className="feedback correct"; mathDifficultyLevel=1; }
+else { mathScore-=5; updateMathStats(); document.getElementById('mathFeedbackText').textContent="Greșit! 😢"; document.getElementById('mathFeedbackText').className="feedback wrong"; mathDifficultyLevel++; showMathCorrectAnswer(false); return; }
+if(mathQuestionCount>=MAX_QUESTIONS) { isMathGameEnding=true; setTimeout(endMathGame,1000); } else { setTimeout(nextMathProblem,1000); }
 }
-
-function processMathResult(isCorrect) {
-if(isCorrect) {
-document.getElementById('mathFeedbackText').textContent = "Bravo! Corect! 🎉";
-document.getElementById('mathFeedbackText').className = "feedback correct";
-mathDifficultyLevel = 1;
-} else {
-mathScore -= 5;
-updateMathStats();
-document.getElementById('mathFeedbackText').textContent = "Greșit! Vezi răspunsul corect mai sus. 😢";
-document.getElementById('mathFeedbackText').className = "feedback wrong";
-mathDifficultyLevel++;
-showMathCorrectAnswer(false);
-return;
-}
-if (mathQuestionCount >= MAX_QUESTIONS) {
-isMathGameEnding = true;
-setTimeout(endMathGame, 1500);
-} else {
-setTimeout(nextMathProblem, 1500);
-}
-}
-
 function nextMathProblem() {
-if (mathQuestionCount >= MAX_QUESTIONS) { endMathGame(); return; }
-mathQuestionCount++;
-updateMathStats();
-document.getElementById('mathAnswerInput').value = '';
-document.getElementById('mathFeedbackText').textContent = '';
-document.getElementById('mathFeedbackText').className = 'feedback';
-document.getElementById('mathGameContent').innerHTML = '';
-document.getElementById('mathChoicesContainer').innerHTML = '';
-mathProblemHTML = '';
-if (mathCurrentMode.startsWith('kg')) { if (mathDifficultyLevel === 1) startMathTimer(30); else startMathTimer(40); }
-else { if (mathDifficultyLevel === 1) startMathTimer(20); else startMathTimer(30); }
+if(mathQuestionCount>=MAX_QUESTIONS){ endMathGame(); return; }
+mathQuestionCount++; updateMathStats();
+document.getElementById('mathAnswerInput').value=''; document.getElementById('mathFeedbackText').textContent=''; document.getElementById('mathFeedbackText').className='feedback';
+document.getElementById('mathGameContent').innerHTML=''; document.getElementById('mathChoicesContainer').innerHTML=''; mathProblemHTML='';
+if(mathCurrentMode.startsWith('kg')) startMathTimer(mathDifficultyLevel===1?20:30); else startMathTimer(mathDifficultyLevel===1?15:25);
 
-// Generare probleme (codul original păstrat, dar adaptat vizual dacă e nevoie)
-if (mathCurrentMode === 'kg_count') {
-const maxCount = mathDifficultyLevel === 1 ? 5 : 10;
-const count = getRandomInt(1, maxCount);
-mathCurrentAnswer = count;
-let html = '<div class="visual-container">';
-const icons = ['🚗', '⚽', '🚀', '🤖', '🚲'];
-const icon = icons[Math.floor(Math.random() * icons.length)];
-for(let i=0; i<count; i++) html += `<div style="font-size: 2.5rem; animation: bounce 2s infinite; animation-delay: ${i*0.1}s">${icon}</div>`;
-html += '</div><p style="font-size: 1.1rem; color: #546E7A; font-weight:bold;">Câte sunt?</p>';
-document.getElementById('mathGameContent').innerHTML = html;
-renderMathChoices(generateMathChoices(mathCurrentAnswer, 1, maxCount + 2));
+// Generare Probleme (scurtată logic, same as before but compact)
+if(mathCurrentMode==='kg_count'){ const mc=mathDifficultyLevel===1?5:10, c=getRandomInt(1,mc); mathCurrentAnswer=c; let h='<div class="visual-container>'; const icons=['🚗','⚽','🚀']; for(let i=0;i<c;i++) h+=`<div class="visual-item">${icons[i%3]}</div>`; h+='</div><p style="font-size:0.9rem;font-weight:bold;">Câte?</p>'; document.getElementById('mathGameContent').innerHTML=h; renderMathChoices(generateMathChoices(c,1,mc+2)); }
+else if(mathCurrentMode==='kg_sequence'){ const st=getRandomInt(0,mathDifficultyLevel===1?3:6), seq=[st,st+1,st+2]; mathCurrentAnswer=st+3; document.getElementById('mathGameContent').innerHTML=`<p style="font-size:0.9rem;font-weight:bold;">Continuă:</p><div class="sequence-display">${seq.join(',')} <span class="missing-number">?</span></div>`; renderMathChoices(generateMathChoices(mathCurrentAnswer,0,10)); }
+else if(mathCurrentMode==='kg_add'){ const mn=mathDifficultyLevel===1?4:9, n1=getRandomInt(1,mn), n2=getRandomInt(1,mn); mathCurrentAnswer=n1+n2; let h='<div class="visual-container">'; for(let i=0;i<n1;i++) h+='<div style="font-size:1.5rem">⚽</div>'; h+='<div style="font-weight:900;color:#2196F3">+</div>'; for(let i=0;i<n2;i++) h+='<div style="font-size:1.5rem">⚽</div>'; h+='</div>'; document.getElementById('mathGameContent').innerHTML=h+`<div class="problem-display">${n1}+${n2}=?</div>`; renderMathChoices(generateMathChoices(mathCurrentAnswer,2,mn*2+2)); }
+else if(mathCurrentMode==='easy_math'){ const rm=mathDifficultyLevel===1?50:90, op=Math.random()>0.5?'+':'-'; let n1=getRandomInt(10,rm), n2; if(op==='+'){ let d1_10=Math.floor(n1/10), d1_1=n1%10, d2_10=getRandomInt(0,9-d1_10), d2_1=getRandomInt(0,9-d1_1); n2=(d2_10*10)+d2_1; if(n2===0)n2=1; mathCurrentAnswer=n1+n2; } else { let d1_10=Math.floor(n1/10), d1_1=n1%10, d2_10=getRandomInt(0,d1_10), d2_1=getRandomInt(0,d1_1); n2=(d2_10*10)+d2_1; if(n2===0)n2=1; if(n2>=n1)n2=getRandomInt(1,n1-1); mathCurrentAnswer=n1-n2; } mathProblemHTML=`<div class="problem-display">${n1} ${op} ${n2} = ?</div>`; document.getElementById('mathGameContent').innerHTML=mathProblemHTML; }
+else if(mathCurrentMode==='easy_seq'){ const st=getRandomInt(1,20), seq=[st,st+1,st+2]; mathCurrentAnswer=st+3; mathProblemHTML=`<div class="sequence-display">${seq.join(',')}, <span class="missing-number">?</span></div>`; document.getElementById('mathGameContent').innerHTML=mathProblemHTML; }
+else if(mathCurrentMode==='easy_comp'){ const n1=getRandomInt(10,50), n2=getRandomInt(10,50); mathCurrentAnswer=n1>n2?1:2; mathProblemHTML=`<div style="font-size:1rem;color:#666;">Compară:</div><div class="problem-display">${n1} <span class="missing-number">?</span> ${n2}</div><div style="font-size:0.8rem;color:#666;">(1 stânga, 2 dreapta)</div>`; document.getElementById('mathGameContent').innerHTML=mathProblemHTML; }
+else if(mathCurrentMode==='max_math'){ const op=Math.random()>0.5?'+':'-'; let n1,n2; if(op==='+'){ let u1=getRandomInt(1,9), u2=getRandomInt(10-u1,9), t1=getRandomInt(1,8), t2=getRandomInt(0,9-t1); n1=t1*10+u1; n2=t2*10+u2; mathCurrentAnswer=n1+n2; } else { let u1=getRandomInt(0,8), u2=getRandomInt(u1+1,9), t1=getRandomInt(2,9), t2=getRandomInt(0,t1-1); n1=t1*10+u1; n2=t2*10+u2; mathCurrentAnswer=n1-n2; } mathProblemHTML=`<div class="problem-display">${n1} ${op} ${n2} = ?</div>`; document.getElementById('mathGameContent').innerHTML=mathProblemHTML; }
+else if(mathCurrentMode==='max_seq'){ const step=mathDifficultyLevel===1?2:5, st=getRandomInt(1,10), seq=[st,st+step,st+step*2]; mathCurrentAnswer=st+step*3; mathProblemHTML=`<div class="sequence-display">${seq.join(',')}, <span class="missing-number">?</span></div>`; document.getElementById('mathGameContent').innerHTML=mathProblemHTML; }
+else if(mathCurrentMode==='max_eq'){ const res=getRandomInt(10,50), add=getRandomInt(1,9); mathCurrentAnswer=res-add; mathProblemHTML=`<div class="problem-display"><span class="missing-number">?</span> + ${add} = ${res}</div>`; document.getElementById('mathGameContent').innerHTML=mathProblemHTML; }
+else if(mathCurrentMode==='med_math'){ const n1=getRandomInt(2,9), n2=getRandomInt(2,9); mathCurrentAnswer=n1*n2; mathProblemHTML=`<div class="problem-display">${n1} × ${n2} = ?</div>`; document.getElementById('mathGameContent').innerHTML=mathProblemHTML; }
+else if(mathCurrentMode==='med_round'){ const num=getRandomInt(15,985), rt=mathDifficultyLevel===1?10:100; mathCurrentAnswer=Math.round(num/rt)*rt; mathProblemHTML=`<div style="font-size:1rem;color:#666;">Rotunjire la ${rt}:</div><div class="problem-display">${num} ≈ <span class="missing-number">?</span></div>`; document.getElementById('mathGameContent').innerHTML=mathProblemHTML; }
+else if(mathCurrentMode==='med_order'){ const a=getRandomInt(2,5), b=getRandomInt(2,5), c=getRandomInt(1,10); mathCurrentAnswer=(a+b)*c; mathProblemHTML=`<div class="problem-display">(${a}+${b})×${c}=?</div>`; document.getElementById('mathGameContent').innerHTML=mathProblemHTML; }
+else if(mathCurrentMode==='hard_frac'){ const den=getRandomInt(2,9), n1=getRandomInt(1,den-1), n2=getRandomInt(1,den-n1); mathCurrentAnswer=(n1+n2)/den; mathProblemHTML=`<div style="font-size:1rem;color:#666;">Calcul:</div><div class="problem-display">${n1}/${den}+${n2}/${den}=<span class="missing-number">?</span></div>`; document.getElementById('mathGameContent').innerHTML=mathProblemHTML; }
+else if(mathCurrentMode==='hard_dec'){ const n1=getRandomInt(10,50)/10, n2=getRandomInt(10,50)/10; mathCurrentAnswer=n1+n2; mathProblemHTML=`<div class="problem-display">${n1}+${n2}=<span class="missing-number">?</span></div>`; document.getElementById('mathGameContent').innerHTML=mathProblemHTML; }
+else if(mathCurrentMode==='hard_pow'){ const b=getRandomInt(2,5), e=getRandomInt(2,3); mathCurrentAnswer=Math.pow(b,e); mathProblemHTML=`<div class="problem-display">${b}<sup>${e}</sup>=<span class="missing-number">?</span></div>`; document.getElementById('mathGameContent').innerHTML=mathProblemHTML; }
+else if(mathCurrentMode==='pro_cong'){ const n=mathDifficultyLevel===1?getRandomInt(2,5):getRandomInt(6,12), a=getRandomInt(10,100); mathCurrentAnswer=a%n; mathProblemHTML=`<div style="font-size:1rem;color:#666;">Congruență:</div><div class="problem-display">${a}≡<span class="missing-number">?</span>(mod ${n})</div>`; document.getElementById('mathGameContent').innerHTML=mathProblemHTML; }
+else if(mathCurrentMode==='pro_last'){ const b=getRandomInt(11,99), e=getRandomInt(2,5); mathCurrentAnswer=Math.pow(b,e)%10; mathProblemHTML=`<div style="font-size:1rem;color:#666;">Ultima cifră:</div><div class="problem-display">${b}<sup>${e}</sup>→<span class="missing-number">?</span></div>`; document.getElementById('mathGameContent').innerHTML=mathProblemHTML; }
+else if(mathCurrentMode==='pro_div'){ const d=mathDifficultyLevel===1?3:7, a=getRandomInt(20,100); mathCurrentAnswer=a%d; mathProblemHTML=`<div style="font-size:1rem;color:#666;">Rest:</div><div class="problem-display">${a}:${d} rest <span class="missing-number">?</span></div>`; document.getElementById('mathGameContent').innerHTML=mathProblemHTML; }
 }
-else if (mathCurrentMode === 'kg_sequence') {
-const start = getRandomInt(0, mathDifficultyLevel === 1 ? 3 : 6);
-let sequence = [];
-for(let i=0; i<3; i++) sequence.push(start + i);
-mathCurrentAnswer = start + 3;
-document.getElementById('mathGameContent').innerHTML = `<p style="font-size: 1.1rem; color: #546E7A; font-weight:bold;">Completează codul:</p><div class="sequence-display">${sequence.join(' , ')} , <span class="missing-number">?</span></div>`;
-renderMathChoices(generateMathChoices(mathCurrentAnswer, 0, 10));
-}
-else if (mathCurrentMode === 'kg_add') {
-const maxNum = mathDifficultyLevel === 1 ? 4 : 9;
-const n1 = getRandomInt(1, maxNum);
-const n2 = getRandomInt(1, maxNum);
-mathCurrentAnswer = n1 + n2;
-let html = '<div class="visual-container">';
-for(let i=0; i<n1; i++) html += `<div style="font-size: 2rem;">⚽</div>`;
-html += '<div style="width:15px; font-weight:900; color:#2196F3; font-size:1.2rem;">+</div>';
-for(let i=0; i<n2; i++) html += `<div style="font-size: 2rem;">⚽</div>`;
-html += '</div>';
-document.getElementById('mathGameContent').innerHTML = html + `<div class="problem-display">${n1} + ${n2} = ?</div>`;
-renderMathChoices(generateMathChoices(mathCurrentAnswer, 2, maxNum * 2 + 2));
-}
-else if (mathCurrentMode === 'easy_math') {
-const rangeMax = mathDifficultyLevel === 1 ? 50 : 90;
-const op = Math.random() > 0.5 ? '+' : '-';
-let n1 = getRandomInt(10, rangeMax);
-let n2;
-if(op === '+') {
-let d1_10 = Math.floor(n1 / 10); let d1_1 = n1 % 10;
-let d2_10 = getRandomInt(0, 9 - d1_10); let d2_1 = getRandomInt(0, 9 - d1_1);
-n2 = (d2_10 * 10) + d2_1; if(n2===0) n2=1;
-mathCurrentAnswer = n1 + n2;
-} else {
-let d1_10 = Math.floor(n1 / 10); let d1_1 = n1 % 10;
-let d2_10 = getRandomInt(0, d1_10); let d2_1 = getRandomInt(0, d1_1);
-n2 = (d2_10 * 10) + d2_1; if(n2===0) n2=1; if(n2 >= n1) n2 = getRandomInt(1, n1-1);
-mathCurrentAnswer = n1 - n2;
-}
-mathProblemHTML = `<div class="problem-display">${n1} ${op} ${n2} = ?</div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'easy_seq') {
-const start = getRandomInt(1, 20);
-const step = 1;
-let seq = [start, start+step, start+step*2];
-mathCurrentAnswer = start + step*3;
-mathProblemHTML = `<div class="sequence-display">${seq.join(', ')}, <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'easy_comp') {
-const n1 = getRandomInt(10, 50);
-const n2 = getRandomInt(10, 50);
-mathCurrentAnswer = n1 > n2 ? 1 : 2;
-mathProblemHTML = `<div style="font-size:1.2rem; color:#666;">Compară numerele:</div><div class="problem-display">${n1} <span class="missing-number">?</span> ${n2}</div><div style="font-size:1rem; color:#666;">(1 stânga, 2 dreapta)</div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'max_math') {
-const op = Math.random() > 0.5 ? '+' : '-';
-let n1, n2;
-if(op === '+') {
-let u1 = getRandomInt(1, 9); let u2 = getRandomInt(10-u1, 9);
-let t1 = getRandomInt(1, 8); let t2 = getRandomInt(0, 9-t1);
-n1 = t1*10+u1; n2 = t2*10+u2; mathCurrentAnswer = n1+n2;
-} else {
-let u1 = getRandomInt(0, 8); let u2 = getRandomInt(u1+1, 9);
-let t1 = getRandomInt(2, 9); let t2 = getRandomInt(0, t1-1);
-n1 = t1*10+u1; n2 = t2*10+u2; mathCurrentAnswer = n1-n2;
-}
-mathProblemHTML = `<div class="problem-display">${n1} ${op} ${n2} = ?</div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'max_seq') {
-const step = mathDifficultyLevel === 1 ? 2 : 5;
-const start = getRandomInt(1, 10);
-let seq = [start, start+step, start+step*2];
-mathCurrentAnswer = start + step*3;
-mathProblemHTML = `<div class="sequence-display">${seq.join(', ')}, <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'max_eq') {
-const res = getRandomInt(10, 50);
-const add = getRandomInt(1, 9);
-mathCurrentAnswer = res - add;
-mathProblemHTML = `<div class="problem-display"><span class="missing-number">?</span> + ${add} = ${res}</div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'med_math') {
-const n1 = getRandomInt(2, 9);
-const n2 = getRandomInt(2, 9);
-mathCurrentAnswer = n1 * n2;
-mathProblemHTML = `<div class="problem-display">${n1} × ${n2} = ?</div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'med_round') {
-const num = getRandomInt(15, 985);
-const roundTo = mathDifficultyLevel === 1 ? 10 : 100;
-mathCurrentAnswer = Math.round(num / roundTo) * roundTo;
-mathProblemHTML = `<div style="font-size:1.2rem; color:#666;">Rotunjire la ${roundTo}:</div><div class="problem-display">${num} ≈ <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'med_order') {
-const a = getRandomInt(2, 5);
-const b = getRandomInt(2, 5);
-const c = getRandomInt(1, 10);
-mathCurrentAnswer = (a + b) * c;
-mathProblemHTML = `<div class="problem-display">(${a} + ${b}) × ${c} = ?</div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'hard_frac') {
-const den = getRandomInt(2, 9);
-const n1 = getRandomInt(1, den-1);
-const n2 = getRandomInt(1, den-n1);
-mathCurrentAnswer = (n1 + n2) / den;
-mathProblemHTML = `<div style="font-size:1.2rem; color:#666;">Calcul (zecimal):</div><div class="problem-display">${n1}/${den} + ${n2}/${den} = <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'hard_dec') {
-const n1 = getRandomInt(10, 50) / 10;
-const n2 = getRandomInt(10, 50) / 10;
-mathCurrentAnswer = n1 + n2;
-mathProblemHTML = `<div class="problem-display">${n1} + ${n2} = <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'hard_pow') {
-const base = getRandomInt(2, 5);
-const exp = getRandomInt(2, 3);
-mathCurrentAnswer = Math.pow(base, exp);
-mathProblemHTML = `<div class="problem-display">${base}<sup>${exp}</sup> = <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'pro_cong') {
-const n = mathDifficultyLevel === 1 ? getRandomInt(2, 5) : getRandomInt(6, 12);
-const a = getRandomInt(10, 100);
-mathCurrentAnswer = a % n;
-mathProblemHTML = `<div style="font-size:1.2rem; color:#666;">Congruență:</div><div class="problem-display">${a} ≡ <span class="missing-number">?</span> (mod ${n})</div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'pro_last') {
-const base = getRandomInt(11, 99);
-const exp = getRandomInt(2, 5);
-mathCurrentAnswer = Math.pow(base, exp) % 10;
-mathProblemHTML = `<div style="font-size:1.2rem; color:#666;">Ultima cifră:</div><div class="problem-display">${base}<sup>${exp}</sup> → <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'pro_div') {
-const div = mathDifficultyLevel === 1 ? 3 : 7;
-const a = getRandomInt(20, 100);
-mathCurrentAnswer = a % div;
-mathProblemHTML = `<div style="font-size:1.2rem; color:#666;">Restul împărțirii:</div><div class="problem-display">${a} : ${div} rest <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-}
-
 function endMathGame() {
-clearInterval(mathTimerInterval);
-document.getElementById('mathGameArea').style.display = 'none';
-document.getElementById('mathAwardScreen').style.display = 'flex';
-document.getElementById('mathFinalScoreText').textContent = `Scor Final: ${mathScore}`;
-let icon = '', title = '', titleClass = '', showInput = false;
-if (mathScore === 100) { icon = '🏆'; title = 'PREMIUL 1'; titleClass = 'award-gold'; showInput = true; }
-else if (mathScore === 95) { icon = '🥈'; title = 'PREMIUL 2'; titleClass = 'award-silver'; showInput = true; }
-else if (mathScore === 90) { icon = '🥉'; title = 'PREMIUL 3'; titleClass = 'award-bronze'; showInput = true; }
-else if (mathScore >= 70 && mathScore <= 85) { icon = '🎖️'; title = 'MENȚIUNE'; titleClass = 'award-mention'; showInput = true; }
-else { icon = '💪'; title = 'ÎNCEARCĂ DIN NOU'; titleClass = 'award-try'; showInput = false; }
-document.getElementById('mathAwardIcon').textContent = icon;
-document.getElementById('mathAwardTitle').textContent = title;
-document.getElementById('mathAwardTitle').className = 'award-title ' + titleClass;
-if(showInput) { document.getElementById('mathNameInputGroup').style.display = 'flex'; document.getElementById('mathCloseAwardBtn').style.display = 'none'; document.getElementById('mathPlayerName').value = ''; document.getElementById('mathPlayerName').focus(); }
-else { document.getElementById('mathNameInputGroup').style.display = 'none'; document.getElementById('mathCloseAwardBtn').style.display = 'inline-block'; }
+clearInterval(mathTimerInterval); document.getElementById('mathGameArea').style.display='none'; document.getElementById('mathAwardScreen').style.display='flex';
+document.getElementById('mathFinalScoreText').textContent=`Scor Final: ${mathScore}`;
+let icon='', title='', tClass='', showIn=false;
+if(mathScore===100){icon='🏆';title='PREMIUL 1';tClass='award-gold';showIn=true;}
+else if(mathScore===95){icon='🥈';title='PREMIUL 2';tClass='award-silver';showIn=true;}
+else if(mathScore===90){icon='🥉';title='PREMIUL 3';tClass='award-bronze';showIn=true;}
+else if(mathScore>=70){icon='🎖️';title='MENȚIUNE';tClass='award-mention';showIn=true;}
+else{icon='💪';title='ÎNCEARCĂ DIN NOU';tClass='award-try';showIn=false;}
+document.getElementById('mathAwardIcon').textContent=icon; document.getElementById('mathAwardTitle').textContent=title; document.getElementById('mathAwardTitle').className='award-title '+tClass;
+if(showIn){ document.getElementById('mathNameInputGroup').style.display='flex'; document.getElementById('mathCloseAwardBtn').style.display='none'; document.getElementById('mathPlayerName').value=''; document.getElementById('mathPlayerName').focus(); }
+else{ document.getElementById('mathNameInputGroup').style.display='none'; document.getElementById('mathCloseAwardBtn').style.display='inline-block'; }
 }
-
 function saveMathScore() {
-const name = document.getElementById('mathPlayerName').value.trim() || "Anonim";
-const leaderboardKey = `math_leaderboard_${mathCurrentMode}`;
-try {
-let scores = JSON.parse(localStorage.getItem(leaderboardKey) || "[]");
-scores.push({ name: name, score: mathScore, date: new Date().toLocaleDateString() });
-scores.sort((a, b) => b.score - a.score);
-scores = scores.slice(0, 10);
-localStorage.setItem(leaderboardKey, JSON.stringify(scores));
-document.getElementById('mathNameInputGroup').style.display = 'none';
-document.getElementById('mathCloseAwardBtn').style.display = 'inline-block';
-} catch (e) {
-console.error("Eroare la salvarea scorului:", e);
-alert("A apărut o eroare la salvarea scorului.");
+const name=document.getElementById('mathPlayerName').value.trim()||"Anonim"; const k=`math_leaderboard_${mathCurrentMode}`;
+try{ let s=JSON.parse(localStorage.getItem(k)||"[]"); s.push({name:name,score:mathScore,date:new Date().toLocaleDateString()}); s.sort((a,b)=>b.score-a.score); s=s.slice(0,10); localStorage.setItem(k,JSON.stringify(s)); document.getElementById('mathNameInputGroup').style.display='none'; document.getElementById('mathCloseAwardBtn').style.display='inline-block'; }catch(e){alert("Eroare salvare");}
 }
+function showMathLeaderboard(catKey) {
+const k=catKey||mathCurrentSubMenuKey, m=mathMenus[k]; if(!m) return;
+document.getElementById('mathGameArea').style.display='none'; document.getElementById('mathAwardScreen').style.display='none'; document.getElementById('mathSubMenu').style.display='none'; document.getElementById('mathMainMenu').style.display='none';
+document.getElementById('mathLeaderboardScreen').style.display='flex'; document.getElementById('mathBackBtn').style.display='block';
+document.getElementById('mathBackBtn').onclick=()=>{ document.getElementById('mathLeaderboardScreen').style.display='none'; if(catKey) document.getElementById('mathMainMenu').style.display='block'; else document.getElementById('mathSubMenu').style.display='block'; };
+document.getElementById('mathLeaderboardTitle').textContent=`Clasament: ${m.title}`;
+let all=[]; if(m.items) m.items.forEach(it=>{ try{ const ik=`math_leaderboard_${it.id}`, is=JSON.parse(localStorage.getItem(ik)||"[]"); all=all.concat(is); }catch(e){} });
+all.sort((a,b)=>b.score-a.score); all=all.slice(0,10);
+const tb=document.getElementById('mathLeaderboardBody'); tb.innerHTML='';
+if(all.length===0) tb.innerHTML='<tr><td colspan="3">Fără scoruri.</td></tr>';
+else all.forEach((e,i)=>{ tb.innerHTML+=`<tr><td>${i+1}</td><td>${e.name}</td><td>${e.score}</td></tr>`; });
 }
-
-function showMathLeaderboard(categoryKey) {
-const key = categoryKey || mathCurrentSubMenuKey;
-const menuData = mathMenus[key];
-if (!menuData) return;
-document.getElementById('mathGameArea').style.display = 'none';
-document.getElementById('mathAwardScreen').style.display = 'none';
-document.getElementById('mathSubMenu').style.display = 'none';
-document.getElementById('mathMainMenu').style.display = 'none';
-document.getElementById('mathLeaderboardScreen').style.display = 'flex';
-document.getElementById('mathBackBtn').style.display = 'flex';
-document.getElementById('mathBackBtn').onclick = () => { document.getElementById('mathLeaderboardScreen').style.display = 'none'; if(categoryKey) document.getElementById('mathMainMenu').style.display = 'block'; else document.getElementById('mathSubMenu').style.display = 'block'; };
-document.getElementById('mathLeaderboardTitle').textContent = `Clasament: ${menuData.title}`;
-let allScores = [];
-if (menuData.items && Array.isArray(menuData.items)) {
-menuData.items.forEach(item => {
-try {
-const itemKey = `math_leaderboard_${item.id}`;
-const itemScores = JSON.parse(localStorage.getItem(itemKey) || "[]");
-allScores = allScores.concat(itemScores);
-} catch (e) { console.warn(`Eroare la citirea scorurilor pentru ${item.id}:`, e); }
-});
-}
-allScores.sort((a, b) => b.score - a.score);
-allScores = allScores.slice(0, 10);
-const tbody = document.getElementById('mathLeaderboardBody');
-tbody.innerHTML = '';
-if(allScores.length === 0) { tbody.innerHTML = '<tr><td colspan="3">Nu există încă scoruri.</td></tr>'; }
-else {
-allScores.forEach((entry, index) => {
-const row = `<tr><td>${index + 1}</td><td>${entry.name}</td><td>${entry.score}</td></tr>`;
-tbody.innerHTML += row;
-});
-}
-}
-
-function showMathCorrectAnswer(isTimeout) {
-if(mathProblemHTML) {
-const correctedHTML = mathProblemHTML.replace(
-/<span class="missing-number">\?<\/span>/g,
-`<span style="color:var(--success); font-weight:900; border-bottom: 3px solid var(--success);">${mathCurrentAnswer}</span>`
-);
-document.getElementById('mathGameContent').innerHTML = correctedHTML;
-}
-if(isTimeout) {
-document.getElementById('mathFeedbackText').innerHTML = `Timp expirat! <br>Răspunsul corect este <strong>${mathCurrentAnswer}</strong>. (-5 puncte)`;
-} else {
-document.getElementById('mathFeedbackText').innerHTML = `Greșit! <br>Răspunsul corect este <strong>${mathCurrentAnswer}</strong>. (-5 puncte)`;
-}
-document.getElementById('mathFeedbackText').className = "feedback wrong";
-mathScore -= 5;
-updateMathStats();
-mathDifficultyLevel++;
-document.getElementById('mathAnswerInput').value = '';
-if (mathQuestionCount >= MAX_QUESTIONS) {
-isMathGameEnding = true;
-setTimeout(endMathGame, 3000);
-} else {
-setTimeout(nextMathProblem, 3000);
-}
+function showMathCorrectAnswer(isT) {
+if(mathProblemHTML) document.getElementById('mathGameContent').innerHTML=mathProblemHTML.replace(/<span class="missing-number">\?<\/span>/g, `<span style="color:var(--success);font-weight:900;border-bottom:2px solid var(--success)">${mathCurrentAnswer}</span>`);
+document.getElementById('mathFeedbackText').innerHTML=isT?`Timp! Răspuns: <strong>${mathCurrentAnswer}</strong>.`:`Greșit! Răspuns: <strong>${mathCurrentAnswer}</strong>.`;
+document.getElementById('mathFeedbackText').className="feedback wrong"; mathScore-=5; updateMathStats(); mathDifficultyLevel++; document.getElementById('mathAnswerInput').value='';
+if(mathQuestionCount>=MAX_QUESTIONS){ isMathGameEnding=true; setTimeout(endMathGame,2000); } else { setTimeout(nextMathProblem,2000); }
 }
 
 // ==========================================
-// LOGICA JOC SĂRITURI
+// LOGICA SĂRITURI
 // ==========================================
-const jumpCanvas = document.getElementById('jumpCanvas');
-const jumpCtx = jumpCanvas.getContext('2d');
-const jumpScoreEl = document.getElementById('jumpScoreVal');
-const jumpStationEl = document.getElementById('jumpStationVal');
-const jumpMenu = document.getElementById('jumpMenu');
-const jumpWinScreen = document.getElementById('jumpWinScreen');
-const jumpBtnGirl = document.getElementById('jumpBtnGirl');
-const jumpBtnBoy = document.getElementById('jumpBtnBoy');
-let jumpGameRunning = false;
-let jumpScore = 0;
-let jumpStation = 0;
-const maxStations = 15;
-let jumpFrame = 0;
-let jumpSpeed = 6;
-let jumpCharType = 'girl';
-const jumpGravity = 0.5;
-const jumpPower = -
+const jumpCanvas=document.getElementById('jumpCanvas'), jumpCtx=jumpCanvas.getContext('2d'), jumpScoreEl=document.getElementById('jumpScoreVal'), jumpStationEl=document.getElementById('jumpStationVal'), jumpMenu=document.getElementById('jumpMenu'), jumpWinScreen=document.getElementById('jumpWinScreen'), jumpBtnGirl=document.getElementById('jumpBtnGirl'), jumpBtnBoy=document.getElementById('jumpBtnBoy');
+let jumpGameRunning=false, jumpScore=0, jumpStation=0, maxStations=15, jumpFrame=0, jumpSpeed=6, jumpCharType='girl', jumpGravity=0.5, jumpPower=-15, jumpGroundH=80, jumpPlayer={x:80,y:0,size:60,dy:0,angle:0,grounded:false}, jumpObstacles=[];
+const jumpThemes=[{bg:['#ff9a9e','#fecfef'],gr:'#6ab04c'},{bg:['#4facfe','#00f2fe'],gr:'#0097e6'},{bg:['#fddb92','#d1fdff'],gr:'#eccc68'},{bg:['#96fbc4','#f9f586'],gr:'#2ed573'},{bg:['#c2e9fb','#a1c4fd'],gr:'#3742fa'},{bg:['#ffecd2','#fcb69f'],gr:'#ff7f50'},{bg:['#e0c3fc','#8ec5fc'],gr:'#a55eea'},{bg:['#ffecd2','#ffd1ff'],gr:'#ff4757'},{bg:['#d299c2','#fef9d7'],gr:'#8c7ae6'},{bg:['#85FFBD','#FFFB7D'],gr:'#26de81'},{bg:['#C9FFBF','#FFAFBD'],gr:'#fc5c65'},{bg:['#FAD961','#F76B1C'],gr:'#e58e26'},{bg:['#B5FFFC','#D5FFEA'],gr:'#0be881'},{bg:['#FFDEE9','#B5FFFC'],gr:'#4834d4'},{bg:['#F6D365','#FDA085'],gr:'#be2edd'},{bg:['#667eea','#764ba2'],gr:'#ffffff'}];
+function initJumpGame(){ resizeJumpCanvas(); window.addEventListener('resize',resizeJumpCanvas); window.addEventListener('pointerdown',e=>{if(e.target.tagName==='BUTTON')return;jumpDoJump();}); window.addEventListener('keydown',e=>{if((e.code==='Space'||e.code==='ArrowUp')&&jumpGameRunning)jumpDoJump();}); }
+function resizeJumpCanvas(){ jumpCanvas.width=window.innerWidth; jumpCanvas.height=window.innerHeight; if(!jumpGameRunning){ jumpPlayer.y=jumpCanvas.height-jumpGroundH-jumpPlayer.size; jumpPlayer.x=jumpCanvas.width*0.15; drawJump(); } else { jumpPlayer.x=jumpCanvas.width*0.15; } }
+window.setJumpChar=function(t){ jumpCharType=t; if(t==='girl'){jumpBtnGirl.classList.add('selected');jumpBtnBoy.classList.remove('selected');}else{jumpBtnBoy.classList.add('selected');jumpBtnGirl.classList.remove('selected');} };
+window.startJumpGame=function(){ jumpMenu.style.display='none'; jumpGameRunning=true; jumpScore=0; jumpStation=0; jumpSpeed=6; jumpFrame=0; jumpObstacles=[]; jumpPlayer.y=jumpCanvas.height-jumpGroundH-jumpPlayer.size; jumpPlayer.dy=0; updateJumpUI(); jumpLoop(); };
+function jumpDoJump(){ if(!jumpGameRunning)return; if(jumpPlayer.grounded||jumpPlayer.y>jumpCanvas.height-jumpGroundH-jumpPlayer.size-10){ jumpPlayer.dy=jumpPower; jumpPlayer.grounded=false; } }
+function updateJumpUI(){ jumpScoreEl.innerText=jumpScore; jumpStationEl.innerText=Math.min(jumpStation,maxStations); }
+function jumpLoop(){ if(!jumpGameRunning)return; requestAnimationFrame(jumpLoop); jumpFrame++; updateJump(); drawJump(); }
+function updateJump(){ jumpPlayer.dy+=jumpGravity; jumpPlayer.y+=jumpPlayer.dy; if(jumpPlayer.y+jumpPlayer.size>jumpCanvas.height-jumpGroundH){ jumpPlayer.y=jumpCanvas.height-jumpGroundH-jumpPlayer.size; jumpPlayer.dy=0; jumpPlayer.grounded=true; jumpPlayer.angle=0; }else{ jumpPlayer.grounded=false; jumpPlayer.angle+=0.1; } if(jumpFrame%Math.floor(800/jumpSpeed)===0){ let oh=30+Math.random()*30; jumpObstacles.push({x:jumpCanvas.width,y:jumpCanvas.height-jumpGroundH-oh,w:30,h:oh,passed:false}); } for(let i=0;i<jumpObstacles.length;i++){ let o=jumpObstacles[i]; o.x-=jumpSpeed; if(jumpPlayer.x<o.x+o.w && jumpPlayer.x+jumpPlayer.size>o.x && jumpPlayer.y<o.y+o.h && jumpPlayer.y+jumpPlayer.size>o.y){ jumpGameOver(); } if(o.x+o.w<jumpPlayer.x&&!o.passed){ jumpScore++; if(jumpScore%5===0){ jumpStation++; jumpSpeed+=0.5; if(jumpStation>=maxStations){ jumpGameWin(); return; } } updateJumpUI(); o.passed=true; } } if(jumpObstacles.length>0&&jumpObstacles[0].x<-50)jumpObstacles.shift(); }
+function drawJump(){ let t=jumpThemes[Math.min(jumpStation,jumpThemes.length-1)]; let g=jumpCtx.createLinearGradient(0,0,0,jumpCanvas.height); g.addColorStop(0,t.bg[0]); g.addColorStop(1,t.bg[1]); jumpCtx.fillStyle=g; jumpCtx.fillRect(0,0,jumpCanvas.width,jumpCanvas.height); jumpCtx.fillStyle=t.gr; jumpCtx.fillRect(0,jumpCanvas.height-jumpGroundH,jumpCanvas.width,jumpGroundH); jumpCtx.fillStyle="rgba(255,255,255,0.3)"; jumpCtx.fillRect(0,jumpCanvas.height-jumpGroundH,jumpCanvas.width,5); jumpCtx.fillStyle="#ff4757"; jumpObstacles.forEach(o=>{ jumpCtx.beginPath(); jumpCtx.moveTo(o.x,o.y+o.h); jumpCtx.lineTo(o.x+o.w/2,o.y); jumpCtx.lineTo(o.x+o.w,o.y+o.h); jumpCtx.fill(); }); jumpCtx.save(); jumpCtx.translate(jumpPlayer.x+jumpPlayer.size/2,jumpPlayer.y+jumpPlayer.size/2); jumpCtx.rotate(jumpPlayer.angle); jumpCtx.font=jumpPlayer.size+"px Arial"; jumpCtx.textAlign="center"; jumpCtx.textBaseline="middle"; jumpCtx.fillText(jumpCharType==='girl'?"🌟":"🦕",0,0); jumpCtx.restore(); }
+function jumpGameOver(){ jumpGameRunning=false; jumpMenu.style.display='flex'; document.querySelector('#jumpMenu h1').innerText="Joc Terminat!\nScor: "+jumpScore; document.getElementById('jumpStartBtn').innerText="Încearcă Din Nou"; }
+function jumpGameWin(){ jumpGameRunning=false; jumpWinScreen.style.display='flex'; }
+
+// ==========================================
+// LOGICA LITERE
+// ==========================================
+const letterAllChars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", letterDrawCanvas=document.getElementById('drawCanvas'), letterDrawCtx=letterDrawCanvas.getContext('2d'), letterGuideCanvas=document.getElementById('guideCanvas'), letterGuideCtx=letterGuideCanvas.getContext('2d'), letterTargetCharEl=document.getElementById('letterTargetChar'), letterTargetCard=document.getElementById('letterTargetCard'), letterMainBtn=document.getElementById('letterMainBtn'), letterFeedbackEl=document.getElementById('letterFeedback'), letterFeedbackText=document.getElementById('letterFeedbackText'), letterFeedbackIcon=document.getElementById('letterFeedbackIcon'), letterScoreEl=document.getElementById('letterScore');
+let letterCurrentChar='', letterScore=0, letterIsLevelComplete=false, letterHasDrawnSomething=false;
+function initLetterGame(){ resizeLetterCanvases(); window.addEventListener('resize',resizeLetterCanvases); setupLetterDrawing(); nextLetterLevel(); }
+function resizeLetterCanvases(){ const c=letterDrawCanvas.parentElement; [letterDrawCanvas,letterGuideCanvas].forEach(cv=>{ cv.width=c.clientWidth; cv.height=c.clientHeight; }); letterDrawCtx.lineCap='round'; letterDrawCtx.lineJoin='round'; letterDrawCtx.lineWidth=Math.max(8,c.clientWidth/20); letterDrawCtx.strokeStyle='#5E6472'; if(letterCurrentChar)drawLetterGuide(); }
+function drawLetterGuide(){ letterGuideCtx.clearRect(0,0,letterGuideCanvas.width,letterGuideCanvas.height); letterGuideCtx.fillStyle='#E0E0E0'; letterGuideCtx.font=`bold ${letterGuideCanvas.height*0.8}px 'Fredoka One'`; letterGuideCtx.textAlign='center'; letterGuideCtx.textBaseline='middle'; letterGuideCtx.fillText(letterCurrentChar,letterGuideCanvas.width/2,letterGuideCanvas.height/2+(letterGuideCanvas.height*0.05)); }
+function setupLetterDrawing(){ let drawing=false; function getPos(e){ const r=letterDrawCanvas.getBoundingClientRect(), cx=e.touches?e.touches[0].clientX:e.clientX, cy=e.touches?e.touches[0].clientY:e.clientY; return{x:cx-r.left,y:cy-r.top}; } function start(e){ if(letterIsLevelComplete)return; drawing=true; letterHasDrawnSomething=true; const p=getPos(e); letterDrawCtx.beginPath(); letterDrawCtx.moveTo(p.x,p.y); if(e.cancelable)e.preventDefault(); } function move(e){ if(!drawing||letterIsLevelComplete)return; const p=getPos(e); letterDrawCtx.lineTo(p.x,p.y); letterDrawCtx.stroke(); if(e.cancelable)e.preventDefault(); } function stop(){ drawing=false; letterDrawCtx.closePath(); } letterDrawCanvas.addEventListener('mousedown',start); letterDrawCanvas.addEventListener('mousemove',move); letterDrawCanvas.addEventListener('mouseup',stop); letterDrawCanvas.addEventListener('mouseout',stop); letterDrawCanvas.addEventListener('touchstart',start,{passive:false}); letterDrawCanvas.addEventListener('touchmove',move,{passive:false}); letterDrawCanvas.addEventListener('touchend',stop); }
+function nextLetterLevel(){ letterIsLevelComplete=false; letterHasDrawnSomething=false; letterCurrentChar=letterAllChars.charAt(Math.floor(Math.random()*letterAllChars.length)); letterTargetCharEl.textContent=letterCurrentChar; clearLetterCanvas(); drawLetterGuide(); letterTargetCard.classList.remove('bounce','shake'); void letterTargetCard.offsetWidth; letterTargetCard.classList.add('bounce'); updateLetterButton('check'); hideLetterFeedback(); }
+function clearLetterCanvas(){ letterDrawCtx.clearRect(0,0,letterDrawCanvas.width,letterDrawCanvas.height); letterHasDrawnSomething=false; if(letterIsLevelComplete){ letterIsLevelComplete=false; updateLetterButton('check'); hideLetterFeedback(); } }
+function updateLetterButton(st){ letterMainBtn.innerHTML=''; letterMainBtn.className='letter-action-btn'; if(st==='check'){ letterMainBtn.textContent="Verifică!"; letterMainBtn.onclick=handleLetterCheck; } else if(st==='skip'){ letterMainBtn.innerHTML="<span>🔄 Altă</span>"; letterMainBtn.onclick=nextLetterLevel; } else if(st==='next'){ letterMainBtn.textContent="Următoarea ➡️"; letterMainBtn.onclick=nextLetterLevel; } }
+function handleLetterAction(){ if(letterIsLevelComplete)nextLetterLevel(); }
+function handleLetterCheck(){ if(!letterHasDrawnSomething){ showLetterFeedback("Desenează!", "fail", "✏️"); return; } const a=analyzeLetterDrawing(); if(a.matchRatio<0.35){ showLetterFeedback("Nu e bine!", "fail", "🤔"); letterTargetCard.classList.add('shake'); setTimeout(()=>letterTargetCard.classList.remove('shake'),500); updateLetterButton('skip'); return; } winLetterLevel(); }
+function analyzeLetterDrawing(){ const dD=letterDrawCtx.getImageData(0,0,letterDrawCanvas.width,letterDrawCanvas.height).data, gD=letterGuideCtx.getImageData(0,0,letterGuideCanvas.width,letterGuideCanvas.height).data; let dP=0,gP=0,mP=0; for(let i=0;i<dD.length;i+=4){ const isD=dD[i+3]>0, isG=gD[i+3]>0; if(isD)dP++; if(isG)gP++; if(isD&&isG)mP++; } if(gP===0)return{matchRatio:0}; return{matchRatio:(mP/gP*0.7)+(mP/(dP||1)*0.3)}; }
+function winLetterLevel(){ letterIsLevelComplete=true; letterScore++; letterScoreEl.textContent=letterScore; showLetterFeedback("Bravo!", "success", "🌟"); updateLetterButton('next'); }
+function showLetterFeedback(txt,type,icon){ letterFeedbackText.textContent=txt; letterFeedbackIcon.textContent=icon; letterFeedbackEl.className=`letter-feedback-overlay show ${type}`; setTimeout(hideLetterFeedback,1500); }
+function hideLetterFeedback(){ letterFeedbackEl.classList.remove('show'); }
+
+// ==========================================
+// LOGICA COORDONATE
+// ==========================================
+const gameAreaCoord=document.getElementById('game-area-coord'), axisX=document.getElementById('axis-x'), axisY=document.getElementById('axis-y'), statusBox=document.getElementById('status-box'), undoBtn=document.getElementById('undoBtn'), colorButtons=document.querySelectorAll('.color-btn'), ROWS=12, COLS=10;
+let actionHistory=[], isCoordGameMode=false, targetCoord=null, targetColor=null;
+function initCoordBoard(){ axisX.style.gridTemplateColumns=`repeat(${COLS},25px)`; for(let i=1;i<=COLS;i++){ const n=document.createElement('div'); n.className='axis-number'; n.textContent=i; axisX.appendChild(n); } axisY.style.gridTemplateRows=`repeat(${ROWS},25px)`; for(let i=1;i<=ROWS;i++){ const n=document.createElement('div'); n.className='axis-number'; n.textContent=i; axisY.appendChild(n); } gameAreaCoord.style.gridTemplateColumns=`repeat(${COLS},25px)`; gameAreaCoord.style.gridTemplateRows=`repeat(${ROWS},25px)`; for(let r=1;r<=ROWS;r++){ for(let c=1;c<=COLS;c++){ const cell=document.createElement('div'); cell.classList.add('cell-coord'); cell.dataset.r=r; cell.dataset.c=c; cell.addEventListener('mousedown',e=>{if(e.button===0)handleCellClick(cell);}); cell.addEventListener('touchstart',e=>{e.preventDefault();handleCellClick(cell);},{passive:false}); gameAreaCoord.appendChild(cell); } } }
+function highlightColorButton(hex){ colorButtons.forEach(b=>{ b.classList.remove('auto-selected'); if(b.dataset.color===hex)b.classList.add('auto-selected'); }); }
+function handleCellClick(cell){ if(!isCoordGameMode)return; const r=parseInt(cell.dataset.r), c=parseInt(cell.dataset.c); checkMove(cell,r,c); }
+function placeCrystal(cell,color){ if(cell.querySelector('.crystal'))return; const cr=document.createElement('div'); cr.classList.add('crystal'); cr.style.backgroundColor=color; let sh=color; if(color==='#ffffff'||color==='#ffd700')sh='#ccc'; cr.style.boxShadow=`inset 1px 1px 3px rgba(255,255,255,0.8), inset -1px -1px 3px rgba(0,0,0,0.3), 0 0 4px ${sh}`; cell.appendChild(cr); actionHistory.push({cell:cell,crystal:cr}); updateUndoBtn(); }
+function startCoordGame(){ isCoordGameMode=true; clearGridNow(); nextLevel(); }
+function updateStatus(){ if(!isCoordGameMode||!targetCoord)return; statusBox.innerHTML=`Pune cristalul <span style="color:${targetColor};font-size:1.1em">●</span> la:<br><strong>Col ${targetCoord.c}, Rând ${targetCoord.r}</strong>`; statusBox.style.color="#fff"; }
+function checkMove(cell,r,c){ if(!targetCoord)return; if(r===targetCoord.r&&c===targetCoord.c){ placeCrystal(cell,targetColor); statusBox.innerHTML="<span style='color:#4CAF50;font-size:1.1rem'>BRAVO!</span>"; setTimeout(nextLevel,800); } else { statusBox.innerHTML=`<span style='color:#ff6b6b'>Greșit! Caută Col ${targetCoord.c}, Rând ${targetCoord.r}.</span>`; cell.style.backgroundColor="#ffcccc"; setTimeout(()=>cell.style.backgroundColor="#f9f9f9",200); } }
+function nextLevel(){ const r=Math.floor(Math.random()*ROWS)+1, c=Math.floor(Math.random()*COLS)+1, colors=['#ff0000','#ff8c00','#ffd700','#008000','#1e90ff','#4b0082','#ffffff'], color=colors[Math.floor(Math.random()*colors.length)], existing=document.querySelector(`.cell-coord[data-r='${r}'][data-c='${c}'] .crystal`); if(existing){nextLevel();return;} targetCoord={r,c}; targetColor=color; highlightColorButton(color); const tc=document.querySelector(`.cell-coord[data-r='${r}'][data-c='${c}']`); if(tc){ tc.classList.add('highlight'); setTimeout(()=>tc.classList.remove('highlight'),1000); } updateStatus(); }
+function undoLast(){ if(actionHistory.length===0)return; const l=actionHistory.pop(); if(l.crystal&&l.crystal.parentNode)l.crystal.remove(); updateUndoBtn(); }
+function updateUndoBtn(){ undoBtn.disabled=actionHistory.length===0; }
+function clearGridNow(){ document.querySelectorAll('.crystal').forEach(c=>{if(c.parentNode)c.parentNode.removeChild(c);}); actionHistory=[]; isCoordGameMode=false; targetCoord=null; targetColor=null; updateUndoBtn(); colorButtons.forEach(b=>b.classList.remove('auto-selected')); statusBox.textContent="Tabla curată! Apasă Start."; statusBox.style.backgroundColor="rgba(255,255,255,0.1)"; }
+function initCoordGame(){ initCoordBoard(); }
+
+initMath();
+</script>
+</body>
+</html>
+
