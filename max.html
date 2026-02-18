@@ -6,7 +6,7 @@
 <title>Super Jocuri Educaționale</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&family=Comic+Sans+MS&display=swap" rel="stylesheet">
 <style>
-/* --- STILURI GENERALE & VARIABILE --- */
+/* --- STILURI GENERALE --- */
 :root {
 --boy-bg: #E3F2FD; --boy-primary: #2196F3; --boy-secondary: #4FC3F7; --boy-accent: #4CAF50;
 --girl-bg: #FCE4EC; --girl-primary: #EC407A; --girl-secondary: #F48FB1; --girl-accent: #AB47BC;
@@ -154,17 +154,19 @@ body.boy-theme .leaderboard-table th { background: var(--boy-primary); }
 #letterConfetti { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 200; border-radius: 30px; }
 .letter-mascot-img { position: absolute; top: -40px; right: -30px; width: 90px; height: auto; z-index: 5; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); }
 
-/* --- STILURI JOC COORDONATE (REPARAT) --- */
+/* --- STILURI JOC COORDONATE (REPARAT STATIC) --- */
 #coordGameContainer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #4b0082; z-index: 200; touch-action: none; font-family: 'Arial', sans-serif; color: white; overflow-y: auto; }
-.coord-wrapper { display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px; width: 100%; }
+.coord-wrapper { display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px; }
 .coord-h1 { margin: 10px 0 5px 0; font-size: 1.5rem; text-align: center; font-family: 'Fredoka One', cursive; color: #ffd700; }
 .coord-p { margin: 0 0 10px 0; font-size: 0.9rem; text-align: center; max-width: 90%; color: #ddd; }
 
-/* Grila fixă pentru cristale */
+/* Grila fixă definită în CSS pentru a garanta afișarea */
 #coord-board-wrapper { 
     display: grid; 
-    grid-template-columns: 40px repeat(10, 40px); /* 40px pentru axa Y + 10 coloane de 40px */
-    grid-template-rows: 40px repeat(12, 40px);    /* 40px pentru axa X + 12 rânduri de 40px */
+    /* 40px pentru axa Y + 10 coloane de 40px */
+    grid-template-columns: 40px repeat(10, 40px); 
+    /* 40px pentru axa X + 12 rânduri de 40px */
+    grid-template-rows: 40px repeat(12, 40px);    
     gap: 2px; 
     background-color: #ccc; 
     border: 5px solid #ffd700; 
@@ -177,7 +179,17 @@ body.boy-theme .leaderboard-table th { background: var(--boy-primary); }
 .corner-box { background-color: #2a0a4a; grid-column: 1; grid-row: 1; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; color: #aaa; }
 #axis-x { grid-column: 2 / span 10; grid-row: 1; display: grid; grid-template-columns: repeat(10, 40px); gap: 2px; background-color: #ccc; }
 #axis-y { grid-column: 1; grid-row: 2 / span 12; display: grid; grid-template-rows: repeat(12, 40px); gap: 2px; background-color: #ccc; }
-#game-area-coord { grid-column: 2 / span 10; grid-row: 2 / span 12; display: grid; grid-template-columns: repeat(10, 40px); grid-template-rows: repeat(12, 40px); gap: 2px; background-color: #ccc; position: relative; }
+#game-area-coord { 
+    grid-column: 2 / span 10; 
+    grid-row: 2 / span 12; 
+    display: grid; 
+    /* Definim explicit grila internă */
+    grid-template-columns: repeat(10, 40px); 
+    grid-template-rows: repeat(12, 40px); 
+    gap: 2px; 
+    background-color: #ccc; 
+    position: relative; 
+}
 
 .axis-number { background-color: #2a0a4a; color: #ffd700; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1rem; width: 100%; height: 100%; }
 .cell-coord { background-color: #f9f9f9; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative; }
@@ -314,7 +326,7 @@ h1 { font-size: 2rem; }
 </div>
 <button class="btn" id="jumpStartBtn" onclick="startJumpGame()" style="background:#2ed573; margin-top:30px;">START JOC</button>
 <p style="margin-top: 20px;">Apasă oriunde pentru a sări SUS!</p>
-<button class="btn btn-secondary" onclick="showMainMenu()">Înapoi la Meniu</button>
+<button class="btn btn-secondary" onclick="showMainMenu()" style="margin-top: 20px;">Înapoi la Meniu</button>
 </div>
 <div id="jumpWinScreen">
 <h1 style="font-size: 50px;">VICTORIE! 🏆</h1>
@@ -355,17 +367,67 @@ h1 { font-size: 2rem; }
 </div>
 </div>
 
-<!-- Interfață Joc Coordonate -->
+<!-- Interfață Joc Coordonate (GRILA STATICĂ) -->
 <div id="coordGameContainer">
 <div class="coord-wrapper">
 <h1 class="coord-h1">Joc Coordonate Automate</h1>
 <p class="coord-p">Culoarea se selectează singură! Tu doar găsește coordonatele.</p>
+
+<!-- Grila este acum scrisă static în HTML pentru a apărea sigur -->
 <div id="coord-board-wrapper">
-<div class="corner-box">X/Y</div>
-<div id="axis-x"></div>
-<div id="axis-y"></div>
-<div id="game-area-coord"></div>
+    <div class="corner-box">X/Y</div>
+    <!-- Axa X (1-10) -->
+    <div id="axis-x">
+        <div class="axis-number">1</div><div class="axis-number">2</div><div class="axis-number">3</div><div class="axis-number">4</div><div class="axis-number">5</div>
+        <div class="axis-number">6</div><div class="axis-number">7</div><div class="axis-number">8</div><div class="axis-number">9</div><div class="axis-number">10</div>
+    </div>
+    <!-- Axa Y (1-12) -->
+    <div id="axis-y">
+        <div class="axis-number">1</div><div class="axis-number">2</div><div class="axis-number">3</div><div class="axis-number">4</div>
+        <div class="axis-number">5</div><div class="axis-number">6</div><div class="axis-number">7</div><div class="axis-number">8</div>
+        <div class="axis-number">9</div><div class="axis-number">10</div><div class="axis-number">11</div><div class="axis-number">12</div>
+    </div>
+    <!-- Zona de joc cu celule generate static -->
+    <div id="game-area-coord">
+        <!-- Rândul 1 -->
+        <div class="cell-coord" data-r="1" data-c="1"></div><div class="cell-coord" data-r="1" data-c="2"></div><div class="cell-coord" data-r="1" data-c="3"></div><div class="cell-coord" data-r="1" data-c="4"></div><div class="cell-coord" data-r="1" data-c="5"></div>
+        <div class="cell-coord" data-r="1" data-c="6"></div><div class="cell-coord" data-r="1" data-c="7"></div><div class="cell-coord" data-r="1" data-c="8"></div><div class="cell-coord" data-r="1" data-c="9"></div><div class="cell-coord" data-r="1" data-c="10"></div>
+        <!-- Rândul 2 -->
+        <div class="cell-coord" data-r="2" data-c="1"></div><div class="cell-coord" data-r="2" data-c="2"></div><div class="cell-coord" data-r="2" data-c="3"></div><div class="cell-coord" data-r="2" data-c="4"></div><div class="cell-coord" data-r="2" data-c="5"></div>
+        <div class="cell-coord" data-r="2" data-c="6"></div><div class="cell-coord" data-r="2" data-c="7"></div><div class="cell-coord" data-r="2" data-c="8"></div><div class="cell-coord" data-r="2" data-c="9"></div><div class="cell-coord" data-r="2" data-c="10"></div>
+        <!-- Rândul 3 -->
+        <div class="cell-coord" data-r="3" data-c="1"></div><div class="cell-coord" data-r="3" data-c="2"></div><div class="cell-coord" data-r="3" data-c="3"></div><div class="cell-coord" data-r="3" data-c="4"></div><div class="cell-coord" data-r="3" data-c="5"></div>
+        <div class="cell-coord" data-r="3" data-c="6"></div><div class="cell-coord" data-r="3" data-c="7"></div><div class="cell-coord" data-r="3" data-c="8"></div><div class="cell-coord" data-r="3" data-c="9"></div><div class="cell-coord" data-r="3" data-c="10"></div>
+        <!-- Rândul 4 -->
+        <div class="cell-coord" data-r="4" data-c="1"></div><div class="cell-coord" data-r="4" data-c="2"></div><div class="cell-coord" data-r="4" data-c="3"></div><div class="cell-coord" data-r="4" data-c="4"></div><div class="cell-coord" data-r="4" data-c="5"></div>
+        <div class="cell-coord" data-r="4" data-c="6"></div><div class="cell-coord" data-r="4" data-c="7"></div><div class="cell-coord" data-r="4" data-c="8"></div><div class="cell-coord" data-r="4" data-c="9"></div><div class="cell-coord" data-r="4" data-c="10"></div>
+        <!-- Rândul 5 -->
+        <div class="cell-coord" data-r="5" data-c="1"></div><div class="cell-coord" data-r="5" data-c="2"></div><div class="cell-coord" data-r="5" data-c="3"></div><div class="cell-coord" data-r="5" data-c="4"></div><div class="cell-coord" data-r="5" data-c="5"></div>
+        <div class="cell-coord" data-r="5" data-c="6"></div><div class="cell-coord" data-r="5" data-c="7"></div><div class="cell-coord" data-r="5" data-c="8"></div><div class="cell-coord" data-r="5" data-c="9"></div><div class="cell-coord" data-r="5" data-c="10"></div>
+        <!-- Rândul 6 -->
+        <div class="cell-coord" data-r="6" data-c="1"></div><div class="cell-coord" data-r="6" data-c="2"></div><div class="cell-coord" data-r="6" data-c="3"></div><div class="cell-coord" data-r="6" data-c="4"></div><div class="cell-coord" data-r="6" data-c="5"></div>
+        <div class="cell-coord" data-r="6" data-c="6"></div><div class="cell-coord" data-r="6" data-c="7"></div><div class="cell-coord" data-r="6" data-c="8"></div><div class="cell-coord" data-r="6" data-c="9"></div><div class="cell-coord" data-r="6" data-c="10"></div>
+        <!-- Rândul 7 -->
+        <div class="cell-coord" data-r="7" data-c="1"></div><div class="cell-coord" data-r="7" data-c="2"></div><div class="cell-coord" data-r="7" data-c="3"></div><div class="cell-coord" data-r="7" data-c="4"></div><div class="cell-coord" data-r="7" data-c="5"></div>
+        <div class="cell-coord" data-r="7" data-c="6"></div><div class="cell-coord" data-r="7" data-c="7"></div><div class="cell-coord" data-r="7" data-c="8"></div><div class="cell-coord" data-r="7" data-c="9"></div><div class="cell-coord" data-r="7" data-c="10"></div>
+        <!-- Rândul 8 -->
+        <div class="cell-coord" data-r="8" data-c="1"></div><div class="cell-coord" data-r="8" data-c="2"></div><div class="cell-coord" data-r="8" data-c="3"></div><div class="cell-coord" data-r="8" data-c="4"></div><div class="cell-coord" data-r="8" data-c="5"></div>
+        <div class="cell-coord" data-r="8" data-c="6"></div><div class="cell-coord" data-r="8" data-c="7"></div><div class="cell-coord" data-r="8" data-c="8"></div><div class="cell-coord" data-r="8" data-c="9"></div><div class="cell-coord" data-r="8" data-c="10"></div>
+        <!-- Rândul 9 -->
+        <div class="cell-coord" data-r="9" data-c="1"></div><div class="cell-coord" data-r="9" data-c="2"></div><div class="cell-coord" data-r="9" data-c="3"></div><div class="cell-coord" data-r="9" data-c="4"></div><div class="cell-coord" data-r="9" data-c="5"></div>
+        <div class="cell-coord" data-r="9" data-c="6"></div><div class="cell-coord" data-r="9" data-c="7"></div><div class="cell-coord" data-r="9" data-c="8"></div><div class="cell-coord" data-r="9" data-c="9"></div><div class="cell-coord" data-r="9" data-c="10"></div>
+        <!-- Rândul 10 -->
+        <div class="cell-coord" data-r="10" data-c="1"></div><div class="cell-coord" data-r="10" data-c="2"></div><div class="cell-coord" data-r="10" data-c="3"></div><div class="cell-coord" data-r="10" data-c="4"></div><div class="cell-coord" data-r="10" data-c="5"></div>
+        <div class="cell-coord" data-r="10" data-c="6"></div><div class="cell-coord" data-r="10" data-c="7"></div><div class="cell-coord" data-r="10" data-c="8"></div><div class="cell-coord" data-r="10" data-c="9"></div><div class="cell-coord" data-r="10" data-c="10"></div>
+        <!-- Rândul 11 -->
+        <div class="cell-coord" data-r="11" data-c="1"></div><div class="cell-coord" data-r="11" data-c="2"></div><div class="cell-coord" data-r="11" data-c="3"></div><div class="cell-coord" data-r="11" data-c="4"></div><div class="cell-coord" data-r="11" data-c="5"></div>
+        <div class="cell-coord" data-r="11" data-c="6"></div><div class="cell-coord" data-r="11" data-c="7"></div><div class="cell-coord" data-r="11" data-c="8"></div><div class="cell-coord" data-r="11" data-c="9"></div><div class="cell-coord" data-r="11" data-c="10"></div>
+        <!-- Rândul 12 -->
+        <div class="cell-coord" data-r="12" data-c="1"></div><div class="cell-coord" data-r="12" data-c="2"></div><div class="cell-coord" data-r="12" data-c="3"></div><div class="cell-coord" data-r="12" data-c="4"></div><div class="cell-coord" data-r="12" data-c="5"></div>
+        <div class="cell-coord" data-r="12" data-c="6"></div><div class="cell-coord" data-r="12" data-c="7"></div><div class="cell-coord" data-r="12" data-c="8"></div><div class="cell-coord" data-r="12" data-c="9"></div><div class="cell-coord" data-r="12" data-c="10"></div>
+    </div>
 </div>
+
 <div id="status-box">Apasă "Start Joc"!</div>
 <div id="coord-controls">
 <div class="color-btn" style="background:#ff0000" data-color="#ff0000"></div>
@@ -385,71 +447,60 @@ h1 { font-size: 2rem; }
 
 <script>
 // ==========================================
-// LOGICA GENERALĂ & NAVIGARE (REPARATĂ)
+// LOGICA GENERALĂ & NAVIGARE
 // ==========================================
 function showMainMenu() {
-    // Ascunde toate containerele de jocuri
-    document.getElementById('mainContainer').style.display = 'block';
-    document.getElementById('mathContainer').style.display = 'none';
-    document.getElementById('mathBackBtn').style.display = 'none';
-    
-    // Oprește jocurile active
-    closeJumpGame();
-    closeLetterGame();
-    closeCoordGame();
-    
-    // Resetare teme
-    document.body.classList.remove('boy-theme', 'pro-theme');
+document.getElementById('mainContainer').style.display = 'block';
+document.getElementById('mathContainer').style.display = 'none';
+document.getElementById('mathBackBtn').style.display = 'none';
+closeJumpGame();
+closeLetterGame();
+closeCoordGame();
+document.body.classList.remove('boy-theme', 'pro-theme');
 }
-
 function openMathMenu() {
-    document.getElementById('mainContainer').style.display = 'none';
-    document.getElementById('mathContainer').style.display = 'block';
-    document.getElementById('mathBackBtn').style.display = 'flex';
-    document.getElementById('mathBackBtn').onclick = showMainMenu;
-    document.getElementById('mathMainMenu').style.display = 'block';
-    document.getElementById('mathSubMenu').style.display = 'none';
-    document.getElementById('mathGameArea').style.display = 'none';
-    document.getElementById('mathAwardScreen').style.display = 'none';
-    document.getElementById('mathLeaderboardScreen').style.display = 'none';
-    renderMathMainMenu();
+document.getElementById('mainContainer').style.display = 'none';
+document.getElementById('mathContainer').style.display = 'block';
+document.getElementById('mathBackBtn').style.display = 'flex';
+document.getElementById('mathBackBtn').onclick = showMainMenu;
+document.getElementById('mathMainMenu').style.display = 'block';
+document.getElementById('mathSubMenu').style.display = 'none';
+document.getElementById('mathGameArea').style.display = 'none';
+document.getElementById('mathAwardScreen').style.display = 'none';
+document.getElementById('mathLeaderboardScreen').style.display = 'none';
+renderMathMainMenu();
 }
-
 function openJumpGame() {
-    document.getElementById('mainContainer').style.display = 'none';
-    document.getElementById('mathContainer').style.display = 'none';
-    document.getElementById('jumpGameContainer').style.display = 'block';
-    initJumpGame();
+document.getElementById('mainContainer').style.display = 'none';
+document.getElementById('mathContainer').style.display = 'none';
+document.getElementById('jumpGameContainer').style.display = 'block';
+initJumpGame();
 }
-
 function closeJumpGame() {
-    jumpGameRunning = false;
-    document.getElementById('jumpGameContainer').style.display = 'none';
-    document.getElementById('jumpMenu').style.display = 'flex';
-    document.getElementById('jumpWinScreen').style.display = 'none';
+jumpGameRunning = false;
+document.getElementById('jumpGameContainer').style.display = 'none';
+document.getElementById('jumpMenu').style.display = 'flex';
+document.getElementById('jumpWinScreen').style.display = 'none';
 }
-
 function openLetterGame() {
-    document.getElementById('mainContainer').style.display = 'none';
-    document.getElementById('mathContainer').style.display = 'none';
-    document.getElementById('letterGameContainer').style.display = 'block';
-    initLetterGame();
+document.getElementById('mainContainer').style.display = 'none';
+document.getElementById('mathContainer').style.display = 'none';
+document.getElementById('letterGameContainer').style.display = 'block';
+initLetterGame();
 }
-
 function closeLetterGame() {
-    document.getElementById('letterGameContainer').style.display = 'none';
+document.getElementById('letterGameContainer').style.display = 'none';
 }
-
 function openCoordGame() {
-    document.getElementById('mainContainer').style.display = 'none';
-    document.getElementById('mathContainer').style.display = 'none';
-    document.getElementById('coordGameContainer').style.display = 'block';
-    // Asigură-te că grila este generată corect la deschidere
-    setTimeout(initCoordBoard, 100); 
+document.getElementById('mainContainer').style.display = 'none';
+document.getElementById('mathContainer').style.display = 'none';
+document.getElementById('coordGameContainer').style.display = 'block';
+// Nu mai avem nevoie de initCoordBoard() deoarece grila e statică
+// Doar resetăm starea dacă e necesar
+clearGridNow();
 }
-
 function closeCoordGame() {
-    document.getElementById('coordGameContainer').style.display = 'none';
+document.getElementById('coordGameContainer').style.display = 'none';
 }
 
 // ==========================================
@@ -499,7 +550,6 @@ const mathMenus = {
 { id: 'pro_div', icon: '➗', title: 'Criterii Divizibilitate', desc: 'Restul împărțirii' }
 ]}
 };
-
 function initMath() {
 createBackgroundShapes();
 renderMathMainMenu();
@@ -507,7 +557,6 @@ document.getElementById('mathAnswerInput').addEventListener("keypress", function
 if (event.key === "Enter") checkMathAnswer();
 });
 }
-
 function createBackgroundShapes() {
 const container = document.getElementById('bg-shapes');
 const colors = ['#FFCC80', '#FFAB91', '#FFE082', '#A5D6A7', '#90CAF9'];
@@ -526,7 +575,6 @@ shape.style.animationDelay = `-${Math.random() * 20}s`;
 container.appendChild(shape);
 }
 }
-
 function renderMathMainMenu() {
 const grid = document.getElementById('mathMenuGrid');
 grid.innerHTML = '';
@@ -545,7 +593,6 @@ card.onclick = () => openMathSubmenu(key);
 grid.appendChild(card);
 });
 }
-
 function openMathSubmenu(menuKey) {
 mathCurrentSubMenuKey = menuKey;
 const menuData = mathMenus[menuKey];
@@ -566,7 +613,6 @@ card.onclick = () => startMathGame(item.id);
 subGrid.appendChild(card);
 });
 }
-
 function startMathGame(mode) {
 mathCurrentMode = mode;
 mathScore = 100;
@@ -593,12 +639,10 @@ document.getElementById('mathInputContainer').style.display = 'flex';
 nextMathProblem();
 if(!isBoy) document.getElementById('mathAnswerInput').focus();
 }
-
 function updateMathStats() {
 document.getElementById('mathScoreDisplay').textContent = `Scor: ${mathScore}`;
 document.getElementById('mathProgressDisplay').textContent = `Exercițiul: ${mathQuestionCount + 1}/${MAX_QUESTIONS}`;
 }
-
 function startMathTimer(seconds) {
 clearInterval(mathTimerInterval);
 mathMaxTime = seconds;
@@ -610,7 +654,6 @@ updateMathTimerVisuals();
 if (mathTimeLeft <= 0) { clearInterval(mathTimerInterval); handleMathTimeout(); }
 }, 1000);
 }
-
 function updateMathTimerVisuals() {
 const percentage = (mathTimeLeft / mathMaxTime) * 100;
 document.getElementById('mathTimerBar').style.width = `${percentage}%`;
@@ -618,13 +661,10 @@ if (percentage > 50) document.getElementById('mathTimerBar').style.backgroundCol
 else if (percentage > 20) document.getElementById('mathTimerBar').style.backgroundColor = 'var(--timer-warning)';
 else document.getElementById('mathTimerBar').style.backgroundColor = 'var(--timer-danger)';
 }
-
 function handleMathTimeout() {
 showMathCorrectAnswer(true);
 }
-
 function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-
 function generateMathChoices(correctAnswer, minVal, maxVal) {
 let choices = new Set();
 choices.add(correctAnswer);
@@ -636,7 +676,6 @@ else { let r = getRandomInt(minVal, maxVal); if(r !== correctAnswer) choices.add
 }
 return Array.from(choices).sort(() => Math.random() - 0.5);
 }
-
 function renderMathChoices(choices) {
 const container = document.getElementById('mathChoicesContainer');
 container.innerHTML = '';
@@ -648,13 +687,11 @@ btn.onclick = () => handleMathChoiceClick(val);
 container.appendChild(btn);
 });
 }
-
 function handleMathChoiceClick(val) {
 if(isMathGameEnding) return;
 let isCorrect = (val === mathCurrentAnswer);
 processMathResult(isCorrect);
 }
-
 function checkMathAnswer() {
 const isBoy = mathCurrentMode.startsWith('kg');
 if(isBoy) return;
@@ -669,7 +706,6 @@ isCorrect = (Math.abs(userVal - mathCurrentAnswer) < 0.01);
 }
 processMathResult(isCorrect);
 }
-
 function processMathResult(isCorrect) {
 if(isCorrect) {
 document.getElementById('mathFeedbackText').textContent = "Bravo! Corect! 🎉";
@@ -691,7 +727,6 @@ setTimeout(endMathGame, 1500);
 setTimeout(nextMathProblem, 1500);
 }
 }
-
 function nextMathProblem() {
 if (mathQuestionCount >= MAX_QUESTIONS) { endMathGame(); return; }
 mathQuestionCount++;
@@ -704,7 +739,6 @@ document.getElementById('mathChoicesContainer').innerHTML = '';
 mathProblemHTML = '';
 if (mathCurrentMode.startsWith('kg')) { if (mathDifficultyLevel === 1) startMathTimer(30); else startMathTimer(40); }
 else { if (mathDifficultyLevel === 1) startMathTimer(20); else startMathTimer(30); }
-
 // Generare probleme
 if (mathCurrentMode === 'kg_count') {
 const maxCount = mathDifficultyLevel === 1 ? 5 : 10;
@@ -869,7 +903,6 @@ mathProblemHTML = `<div style="font-size:1.5rem; color:#666;">Restul împărțir
 document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
 }
 }
-
 function endMathGame() {
 clearInterval(mathTimerInterval);
 document.getElementById('mathGameArea').style.display = 'none';
@@ -887,7 +920,6 @@ document.getElementById('mathAwardTitle').className = 'award-title ' + titleClas
 if(showInput) { document.getElementById('mathNameInputGroup').style.display = 'flex'; document.getElementById('mathCloseAwardBtn').style.display = 'none'; document.getElementById('mathPlayerName').value = ''; document.getElementById('mathPlayerName').focus(); }
 else { document.getElementById('mathNameInputGroup').style.display = 'none'; document.getElementById('mathCloseAwardBtn').style.display = 'inline-block'; }
 }
-
 function saveMathScore() {
 const name = document.getElementById('mathPlayerName').value.trim() || "Anonim";
 const leaderboardKey = `math_leaderboard_${mathCurrentMode}`;
@@ -904,7 +936,6 @@ console.error("Eroare la salvarea scorului:", e);
 alert("A apărut o eroare la salvarea scorului.");
 }
 }
-
 function showMathLeaderboard(categoryKey) {
 const key = categoryKey || mathCurrentSubMenuKey;
 const menuData = mathMenus[key];
@@ -939,7 +970,6 @@ tbody.innerHTML += row;
 });
 }
 }
-
 function showMathCorrectAnswer(isTimeout) {
 if(mathProblemHTML) {
 const correctedHTML = mathProblemHTML.replace(
@@ -1354,66 +1384,29 @@ if (letterParticles.length > 0) requestAnimationFrame(animateLetterConfetti);
 }
 
 // ==========================================
-// LOGICA JOC COORDONATE (REPARATĂ)
+// LOGICA JOC COORDONATE (SIMPLIFICATĂ PENTRU GRILĂ STATICĂ)
 // ==========================================
 const gameAreaCoord = document.getElementById('game-area-coord');
-const axisX = document.getElementById('axis-x');
-const axisY = document.getElementById('axis-y');
 const statusBox = document.getElementById('status-box');
 const undoBtn = document.getElementById('undoBtn');
 const colorButtons = document.querySelectorAll('.color-btn');
-const ROWS = 12;
-const COLS = 10;
 let actionHistory = [];
 let isCoordGameMode = false;
 let targetCoord = null;
 let targetColor = null;
 
-function initCoordBoard() {
-    // Curățăm conținutul anterior pentru a evita dubluri
-    axisX.innerHTML = '';
-    axisY.innerHTML = '';
-    gameAreaCoord.innerHTML = '';
-
-    // Generăm axa X (numere 1-10)
-    for(let i = 1; i <= COLS; i++) {
-        const num = document.createElement('div');
-        num.className = 'axis-number';
-        num.textContent = i;
-        axisX.appendChild(num);
-    }
-    
-    // Generăm axa Y (numere 1-12)
-    for(let i = 1; i <= ROWS; i++) {
-        const num = document.createElement('div');
-        num.className = 'axis-number';
-        num.textContent = i;
-        axisY.appendChild(num);
-    }
-    
-    // Generăm celulele jocului
-    for (let r = 1; r <= ROWS; r++) {
-        for (let c = 1; c <= COLS; c++) {
-            const cell = document.createElement('div');
-            cell.classList.add('cell-coord');
-            cell.dataset.r = r;
-            cell.dataset.c = c;
-            
-            // Eveniment click mouse
-            cell.addEventListener('mousedown', (e) => {
-                if(e.button === 0) handleCellClick(cell);
-            });
-            
-            // Eveniment touch (mobil)
-            cell.addEventListener('touchstart', (e) => {
-                e.preventDefault(); // Previne scroll-ul
-                handleCellClick(cell);
-            }, {passive: false});
-            
-            gameAreaCoord.appendChild(cell);
-        }
-    }
-}
+// Nu mai generăm grila, ea există deja în HTML.
+// Doar atașăm evenimentele de click pe celulele existente.
+const cells = document.querySelectorAll('.cell-coord');
+cells.forEach(cell => {
+    cell.addEventListener('mousedown', (e) => {
+        if(e.button === 0) handleCellClick(cell);
+    });
+    cell.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        handleCellClick(cell);
+    }, {passive: false});
+});
 
 function highlightColorButton(colorHex) {
 colorButtons.forEach(btn => {
@@ -1423,14 +1416,12 @@ btn.classList.add('auto-selected');
 }
 });
 }
-
 function handleCellClick(cell) {
 if (!isCoordGameMode) return;
 const r = parseInt(cell.dataset.r);
 const c = parseInt(cell.dataset.c);
 checkMove(cell, r, c);
 }
-
 function placeCrystal(cell, color) {
 if (cell.querySelector('.crystal')) return;
 const crystal = document.createElement('div');
@@ -1443,19 +1434,16 @@ cell.appendChild(crystal);
 actionHistory.push({ cell: cell, crystal: crystal });
 updateUndoBtn();
 }
-
 function startCoordGame() {
 isCoordGameMode = true;
 clearGridNow();
 nextLevel();
 }
-
 function updateStatus() {
 if(!isCoordGameMode || !targetCoord) return;
 statusBox.innerHTML = `Pune cristalul <span style="color:${targetColor}; font-size:1.3em">●</span> la:<br><strong>Coloana ${targetCoord.c}, Rândul ${targetCoord.r}</strong>`;
 statusBox.style.color = "#fff";
 }
-
 function checkMove(cell, r, c) {
 if (!targetCoord) return;
 if (r === targetCoord.r && c === targetCoord.c) {
@@ -1468,8 +1456,9 @@ cell.style.backgroundColor = "#ffcccc";
 setTimeout(() => cell.style.backgroundColor = "#f9f9f9", 300);
 }
 }
-
 function nextLevel() {
+const ROWS = 12;
+const COLS = 10;
 const r = Math.floor(Math.random() * ROWS) + 1;
 const c = Math.floor(Math.random() * COLS) + 1;
 const colors = ['#ff0000', '#ff8c00', '#ffd700', '#008000', '#1e90ff', '#4b0082', '#ffffff'];
@@ -1486,18 +1475,15 @@ setTimeout(() => targetCell.classList.remove('highlight'), 1500);
 }
 updateStatus();
 }
-
 function undoLast() {
 if (actionHistory.length === 0) return;
 const last = actionHistory.pop();
 if (last.crystal && last.crystal.parentNode) last.crystal.remove();
 updateUndoBtn();
 }
-
 function updateUndoBtn() {
 undoBtn.disabled = actionHistory.length === 0;
 }
-
 function clearGridNow() {
 const crystals = document.querySelectorAll('.crystal');
 crystals.forEach(c => {
@@ -1516,7 +1502,7 @@ wrapper.style.borderColor = "#ff0000";
 setTimeout(() => { wrapper.style.borderColor = "#ffd700"; }, 200);
 }
 
-// Inițializare generală
+// Inițializare
 initMath();
 </script>
 </body>
