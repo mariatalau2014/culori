@@ -6,7 +6,7 @@
 <title>Super Jocuri Educaționale</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&family=Comic+Sans+MS&display=swap" rel="stylesheet">
 <style>
-/* --- STILURI GENERALE --- */
+/* --- STILURI GENERALE & VARIABILE --- */
 :root {
 --boy-bg: #E3F2FD; --boy-primary: #2196F3; --boy-secondary: #4FC3F7; --boy-accent: #4CAF50;
 --girl-bg: #FCE4EC; --girl-primary: #EC407A; --girl-secondary: #F48FB1; --girl-accent: #AB47BC;
@@ -22,7 +22,6 @@ body.pro-theme { background-color: var(--pro-bg); background-image: radial-gradi
 .background-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
 .shape { position: absolute; opacity: 0.4; animation: float 15s infinite linear; }
 @keyframes float { 0% { transform: translateY(100vh) rotate(0deg); } 100% { transform: translateY(-100px) rotate(360deg); } }
-
 /* --- MENIU PRINCIPAL --- */
 .container { width: 90%; max-width: 900px; text-align: center; padding: 2rem; }
 h1 { font-size: 3rem; margin-bottom: 2rem; color: var(--girl-primary); text-shadow: 2px 2px 0px #FFF; transition: color 0.5s; font-family: 'Fredoka One', cursive; }
@@ -37,8 +36,7 @@ body.pro-theme .big-card { background: var(--pro-card); color: var(--pro-text); 
 body.pro-theme .big-card-title { color: var(--pro-text); }
 body:not(.pro-theme) .big-card-title { color: var(--text-color); }
 .big-card-desc { font-size: 1rem; line-height: 1.4; font-weight: 600; opacity: 0.8; }
-
-/* --- STILURI JOC MATEMATIC (Scurtat pentru brevitate, same as before) --- */
+/* --- STILURI JOC MATEMATIC --- */
 .sub-menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; width: 100%; }
 .card { background: var(--card-bg); border-radius: 25px; padding: 1.5rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 8px 0 rgba(0,0,0,0.1); border: 4px solid #FFF; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 160px; }
 body.pro-theme .card { background: var(--pro-card); color: var(--pro-text); border: 2px solid var(--pro-accent); }
@@ -117,14 +115,12 @@ body.boy-theme .leaderboard-table th { background: var(--boy-primary); }
 .leaderboard-table tr:first-child td { font-weight: bold; color: var(--gold); }
 .leaderboard-table tr:nth-child(2) td { font-weight: bold; color: var(--silver); }
 .leaderboard-table tr:nth-child(3) td { font-weight: bold; color: var(--bronze); }
-
 /* --- STILURI JOC SĂRITURI --- */
 #jumpGameContainer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #222; z-index: 200; touch-action: none; }
 #jumpCanvas { display: block; width: 100%; height: 100%; }
 #jumpUI { position: absolute; top: 20px; left: 20px; color: white; font-size: 22px; font-weight: bold; text-shadow: 2px 2px 4px #000; z-index: 10; pointer-events: none; display: flex; flex-direction: column; gap: 10px; }
 #jumpMenu { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; z-index: 20; }
 #jumpWinScreen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(46, 213, 115, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; color: white; z-index: 30; text-align: center; }
-
 /* --- STILURI JOC LITERE --- */
 #letterGameContainer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #FFF0F5; background-image: url('https://image.qwenlm.ai/public_source/9d076338-2b12-4553-8888-4cf6f0866228/1206da42b-50bc-4579-b502-e76be98f8371.png'); background-size: cover; z-index: 200; touch-action: none; font-family: 'Nunito', sans-serif; }
 .letter-card-ui { background: rgba(255, 255, 255, 0.95); width: 95%; height: 95%; max-height: 800px; border-radius: 30px; box-shadow: 0 10px 25px rgba(255, 133, 162, 0.3); display: flex; flex-direction: column; align-items: center; padding: 15px; position: relative; backdrop-filter: blur(5px); margin: 2.5% auto; }
@@ -154,64 +150,6 @@ body.boy-theme .leaderboard-table th { background: var(--boy-primary); }
 #letterConfetti { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 200; border-radius: 30px; }
 .letter-mascot-img { position: absolute; top: -40px; right: -30px; width: 90px; height: auto; z-index: 5; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); }
 
-/* --- STILURI JOC COORDONATE (REPARAT DEFINITIV) --- */
-#coordGameContainer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #4b0082; z-index: 200; touch-action: none; font-family: 'Arial', sans-serif; color: white; overflow-y: auto; }
-.coord-wrapper { display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px; }
-.coord-h1 { margin: 10px 0 5px 0; font-size: 1.5rem; text-align: center; font-family: 'Fredoka One', cursive; color: #ffd700; }
-.coord-p { margin: 0 0 10px 0; font-size: 0.9rem; text-align: center; max-width: 90%; color: #ddd; }
-
-/* Grila fixă definită în CSS pentru a garanta afișarea */
-#coord-board-wrapper { 
-    display: grid; 
-    /* 40px pentru axa Y + 10 coloane de 40px */
-    grid-template-columns: 40px repeat(10, 40px); 
-    /* 40px pentru axa X + 12 rânduri de 40px */
-    grid-template-rows: 40px repeat(12, 40px);    
-    gap: 2px; 
-    background-color: #ccc; 
-    border: 5px solid #ffd700; 
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.4); 
-    border-radius: 4px; 
-    overflow: hidden; 
-    touch-action: none; 
-    margin: 10px 0;
-}
-.corner-box { background-color: #2a0a4a; grid-column: 1; grid-row: 1; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; color: #aaa; }
-#axis-x { grid-column: 2 / span 10; grid-row: 1; display: grid; grid-template-columns: repeat(10, 40px); gap: 2px; background-color: #ccc; }
-#axis-y { grid-column: 1; grid-row: 2 / span 12; display: grid; grid-template-rows: repeat(12, 40px); gap: 2px; background-color: #ccc; }
-#game-area-coord { 
-    grid-column: 2 / span 10; 
-    grid-row: 2 / span 12; 
-    display: grid; 
-    /* Definim explicit grila internă */
-    grid-template-columns: repeat(10, 40px); 
-    grid-template-rows: repeat(12, 40px); 
-    gap: 2px; 
-    background-color: #ccc; 
-    position: relative; 
-}
-
-.axis-number { background-color: #2a0a4a; color: #ffd700; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1rem; width: 100%; height: 100%; }
-.cell-coord { background-color: #f9f9f9; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative; }
-.cell-coord.highlight { animation: blink 1s infinite; background-color: #e0e0e0; }
-@keyframes blink { 0% { background-color: #e0e0e0; } 50% { background-color: #ffffff; } 100% { background-color: #e0e0e0; } }
-.crystal { width: 70%; height: 70%; border-radius: 4px; transform: rotate(45deg); box-shadow: inset 2px 2px 5px rgba(255,255,255,0.8), inset -2px -2px 5px rgba(0,0,0,0.3), 0 0 8px currentColor; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
-.crystal::after { content: ''; position: absolute; top: 10%; left: 10%; width: 30%; height: 30%; background: rgba(255,255,255,0.9); border-radius: 50%; filter: blur(1px); }
-@keyframes popIn { from { transform: scale(0) rotate(45deg); opacity: 0; } to { transform: scale(1) rotate(45deg); opacity: 1; } }
-
-#coord-controls { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 20px; width: 90%; max-width: 700px; align-items: center; }
-.color-btn { width: 35px; height: 35px; border-radius: 50%; border: 2px solid white; transition: all 0.3s; flex-shrink: 0; opacity: 0.6; }
-.color-btn.auto-selected { border: 4px solid #ffff00; transform: scale(1.4); opacity: 1; box-shadow: 0 0 20px #ffff00; z-index: 10; }
-.action-btn-coord { padding: 10px 15px; border: none; border-radius: 8px; font-weight: bold; color: white; cursor: pointer; box-shadow: 0 4px rgba(0,0,0,0.3); font-size: 0.9rem; }
-.action-btn-coord:active { transform: translateY(2px); box-shadow: 0 2px rgba(0,0,0,0.3); }
-.btn-start { background-color: #4CAF50; box-shadow: 0 4px #2E7D32; }
-.btn-clear { background-color: #d32f2f; box-shadow: 0 4px #b71c1c; border: 2px solid #ffeb3b; }
-.btn-clear:hover { background-color: #f44336; transform: scale(1.05); }
-.btn-clear:active { box-shadow: 0 2px #b71c1c; transform: translateY(2px); }
-.btn-undo { background-color: #2196F3; width: 40px; height: 40px; padding: 0; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
-.btn-undo:disabled { background-color: #ccc; box-shadow: none; opacity: 0.5; cursor: not-allowed; }
-#status-box { margin-top: 10px; padding: 12px; background: rgba(255, 255, 255, 0.15); border-radius: 8px; text-align: center; font-weight: bold; min-height: 24px; color: #ffd700; font-size: 1.1rem; border: 1px solid rgba(255,255,255,0.2); }
-
 @media (max-width: 600px) {
 h1 { font-size: 2rem; }
 .problem-display { font-size: 3rem; }
@@ -220,44 +158,32 @@ h1 { font-size: 2rem; }
 .choices-grid { grid-template-columns: 1fr; }
 .award-icon { font-size: 6rem; }
 .award-title { font-size: 2rem; }
-/* Ajustare grilă pentru mobil */
-#coord-board-wrapper { 
-    grid-template-columns: 30px repeat(10, 30px);
-    grid-template-rows: 30px repeat(12, 30px);
-}
-#axis-x { grid-template-columns: repeat(10, 30px); }
-#axis-y { grid-template-rows: repeat(12, 30px); }
-#game-area-coord { grid-template-columns: repeat(10, 30px); grid-template-rows: repeat(12, 30px); }
-.axis-number, .cell-coord { width: 30px; height: 30px; font-size: 0.8rem; }
 }
 </style>
 </head>
 <body>
 <div class="background-shapes" id="bg-shapes"></div>
-
 <!-- Meniu Principal -->
 <div class="container" id="mainContainer">
 <h1>Super Jocuri</h1>
 <div class="menu-grid">
+<!-- Buton Joc Matematic -->
 <div class="big-card" onclick="openMathMenu()">
 <div class="big-card-icon">🧮</div>
 <div class="big-card-title">Joc Matematic</div>
 <div class="big-card-desc">Exerciții de adunare, scădere, înmulțire!</div>
 </div>
+<!-- Buton Joc Sărituri -->
 <div class="big-card" onclick="openJumpGame()">
 <div class="big-card-icon">🦕</div>
 <div class="big-card-title">Aventura Eroului</div>
 <div class="big-card-desc">Sari peste obstacole și câștigă trofee!</div>
 </div>
+<!-- Buton Joc Litere -->
 <div class="big-card" onclick="openLetterGame()">
 <div class="big-card-icon">✏️</div>
 <div class="big-card-title">Litere Magice</div>
 <div class="big-card-desc">Desenează literele și numerele pe contur!</div>
-</div>
-<div class="big-card" onclick="openCoordGame()">
-<div class="big-card-icon">💎</div>
-<div class="big-card-title">Coordonate</div>
-<div class="big-card-desc">Găsește poziția corectă pe tablă!</div>
 </div>
 </div>
 </div>
@@ -288,7 +214,7 @@ h1 { font-size: 2rem; }
 <button class="btn btn-primary" onclick="checkMathAnswer()">Verifică</button>
 </div>
 <div class="feedback" id="mathFeedbackText"></div>
-<button class="btn btn-secondary" onclick="showMainMenu()">Ieșire la Meniu</button>
+<button class="btn btn-secondary" onclick="openMathMenu()">Ieșire</button>
 </div>
 <div id="mathAwardScreen" class="award-container">
 <div class="award-icon" id="mathAwardIcon">🏆</div>
@@ -299,7 +225,7 @@ h1 { font-size: 2rem; }
 <input type="text" id="mathPlayerName" placeholder="Nume..." maxlength="15">
 <button class="btn btn-primary" onclick="saveMathScore()">Salvează Scorul</button>
 </div>
-<button class="btn btn-secondary" id="mathCloseAwardBtn" onclick="showMainMenu()" style="display: none;">Înapoi la Meniu</button>
+<button class="btn btn-secondary" id="mathCloseAwardBtn" onclick="openMathMenu()" style="display: none;">Înapoi</button>
 </div>
 <div id="mathLeaderboardScreen" class="leaderboard-container">
 <h2 id="mathLeaderboardTitle">Clasament</h2>
@@ -307,7 +233,7 @@ h1 { font-size: 2rem; }
 <thead><tr><th>#</th><th>Nume</th><th>Scor</th></tr></thead>
 <tbody id="mathLeaderboardBody"></tbody>
 </table>
-<button class="btn btn-secondary" onclick="showMainMenu()">Înapoi la Meniu</button>
+<button class="btn btn-secondary" onclick="openMathMenu()">Înapoi</button>
 </div>
 </div>
 
@@ -326,12 +252,12 @@ h1 { font-size: 2rem; }
 </div>
 <button class="btn" id="jumpStartBtn" onclick="startJumpGame()" style="background:#2ed573; margin-top:30px;">START JOC</button>
 <p style="margin-top: 20px;">Apasă oriunde pentru a sări SUS!</p>
-<button class="btn btn-secondary" onclick="showMainMenu()" style="margin-top: 20px;">Înapoi la Meniu</button>
+<button class="btn btn-secondary" onclick="closeJumpGame()" style="margin-top: 20px;">Înapoi la Meniu</button>
 </div>
 <div id="jumpWinScreen">
 <h1 style="font-size: 50px;">VICTORIE! 🏆</h1>
 <p style="font-size: 24px; color: #fff;">Ai trecut prin toate cele 15 stații!</p>
-<button class="btn" onclick="showMainMenu()" style="background:#fff; color:#2ed573; margin-top:30px;">Înapoi la Meniu</button>
+<button class="btn" onclick="closeJumpGame()" style="background:#fff; color:#2ed573; margin-top:30px;">Înapoi la Meniu</button>
 </div>
 </div>
 
@@ -363,85 +289,7 @@ h1 { font-size: 2rem; }
 <div id="letterFeedbackIcon" style="font-size: 4rem; margin-bottom: 10px;">🎉</div>
 <div id="letterFeedbackText">Bravo!</div>
 </div>
-<button class="btn btn-secondary" onclick="showMainMenu()" style="position:absolute; bottom:10px; left:10px; z-index:50;">Înapoi la Meniu</button>
-</div>
-</div>
-
-<!-- Interfață Joc Coordonate (GRILA STATICĂ) -->
-<div id="coordGameContainer">
-<div class="coord-wrapper">
-<h1 class="coord-h1">Joc Coordonate Automate</h1>
-<p class="coord-p">Culoarea se selectează singură! Tu doar găsește coordonatele.</p>
-
-<!-- Grila este acum scrisă static în HTML pentru a apărea sigur -->
-<div id="coord-board-wrapper">
-    <div class="corner-box">X/Y</div>
-    <!-- Axa X (1-10) -->
-    <div id="axis-x">
-        <div class="axis-number">1</div><div class="axis-number">2</div><div class="axis-number">3</div><div class="axis-number">4</div><div class="axis-number">5</div>
-        <div class="axis-number">6</div><div class="axis-number">7</div><div class="axis-number">8</div><div class="axis-number">9</div><div class="axis-number">10</div>
-    </div>
-    <!-- Axa Y (1-12) -->
-    <div id="axis-y">
-        <div class="axis-number">1</div><div class="axis-number">2</div><div class="axis-number">3</div><div class="axis-number">4</div>
-        <div class="axis-number">5</div><div class="axis-number">6</div><div class="axis-number">7</div><div class="axis-number">8</div>
-        <div class="axis-number">9</div><div class="axis-number">10</div><div class="axis-number">11</div><div class="axis-number">12</div>
-    </div>
-    <!-- Zona de joc cu celule generate static -->
-    <div id="game-area-coord">
-        <!-- Rândul 1 -->
-        <div class="cell-coord" data-r="1" data-c="1"></div><div class="cell-coord" data-r="1" data-c="2"></div><div class="cell-coord" data-r="1" data-c="3"></div><div class="cell-coord" data-r="1" data-c="4"></div><div class="cell-coord" data-r="1" data-c="5"></div>
-        <div class="cell-coord" data-r="1" data-c="6"></div><div class="cell-coord" data-r="1" data-c="7"></div><div class="cell-coord" data-r="1" data-c="8"></div><div class="cell-coord" data-r="1" data-c="9"></div><div class="cell-coord" data-r="1" data-c="10"></div>
-        <!-- Rândul 2 -->
-        <div class="cell-coord" data-r="2" data-c="1"></div><div class="cell-coord" data-r="2" data-c="2"></div><div class="cell-coord" data-r="2" data-c="3"></div><div class="cell-coord" data-r="2" data-c="4"></div><div class="cell-coord" data-r="2" data-c="5"></div>
-        <div class="cell-coord" data-r="2" data-c="6"></div><div class="cell-coord" data-r="2" data-c="7"></div><div class="cell-coord" data-r="2" data-c="8"></div><div class="cell-coord" data-r="2" data-c="9"></div><div class="cell-coord" data-r="2" data-c="10"></div>
-        <!-- Rândul 3 -->
-        <div class="cell-coord" data-r="3" data-c="1"></div><div class="cell-coord" data-r="3" data-c="2"></div><div class="cell-coord" data-r="3" data-c="3"></div><div class="cell-coord" data-r="3" data-c="4"></div><div class="cell-coord" data-r="3" data-c="5"></div>
-        <div class="cell-coord" data-r="3" data-c="6"></div><div class="cell-coord" data-r="3" data-c="7"></div><div class="cell-coord" data-r="3" data-c="8"></div><div class="cell-coord" data-r="3" data-c="9"></div><div class="cell-coord" data-r="3" data-c="10"></div>
-        <!-- Rândul 4 -->
-        <div class="cell-coord" data-r="4" data-c="1"></div><div class="cell-coord" data-r="4" data-c="2"></div><div class="cell-coord" data-r="4" data-c="3"></div><div class="cell-coord" data-r="4" data-c="4"></div><div class="cell-coord" data-r="4" data-c="5"></div>
-        <div class="cell-coord" data-r="4" data-c="6"></div><div class="cell-coord" data-r="4" data-c="7"></div><div class="cell-coord" data-r="4" data-c="8"></div><div class="cell-coord" data-r="4" data-c="9"></div><div class="cell-coord" data-r="4" data-c="10"></div>
-        <!-- Rândul 5 -->
-        <div class="cell-coord" data-r="5" data-c="1"></div><div class="cell-coord" data-r="5" data-c="2"></div><div class="cell-coord" data-r="5" data-c="3"></div><div class="cell-coord" data-r="5" data-c="4"></div><div class="cell-coord" data-r="5" data-c="5"></div>
-        <div class="cell-coord" data-r="5" data-c="6"></div><div class="cell-coord" data-r="5" data-c="7"></div><div class="cell-coord" data-r="5" data-c="8"></div><div class="cell-coord" data-r="5" data-c="9"></div><div class="cell-coord" data-r="5" data-c="10"></div>
-        <!-- Rândul 6 -->
-        <div class="cell-coord" data-r="6" data-c="1"></div><div class="cell-coord" data-r="6" data-c="2"></div><div class="cell-coord" data-r="6" data-c="3"></div><div class="cell-coord" data-r="6" data-c="4"></div><div class="cell-coord" data-r="6" data-c="5"></div>
-        <div class="cell-coord" data-r="6" data-c="6"></div><div class="cell-coord" data-r="6" data-c="7"></div><div class="cell-coord" data-r="6" data-c="8"></div><div class="cell-coord" data-r="6" data-c="9"></div><div class="cell-coord" data-r="6" data-c="10"></div>
-        <!-- Rândul 7 -->
-        <div class="cell-coord" data-r="7" data-c="1"></div><div class="cell-coord" data-r="7" data-c="2"></div><div class="cell-coord" data-r="7" data-c="3"></div><div class="cell-coord" data-r="7" data-c="4"></div><div class="cell-coord" data-r="7" data-c="5"></div>
-        <div class="cell-coord" data-r="7" data-c="6"></div><div class="cell-coord" data-r="7" data-c="7"></div><div class="cell-coord" data-r="7" data-c="8"></div><div class="cell-coord" data-r="7" data-c="9"></div><div class="cell-coord" data-r="7" data-c="10"></div>
-        <!-- Rândul 8 -->
-        <div class="cell-coord" data-r="8" data-c="1"></div><div class="cell-coord" data-r="8" data-c="2"></div><div class="cell-coord" data-r="8" data-c="3"></div><div class="cell-coord" data-r="8" data-c="4"></div><div class="cell-coord" data-r="8" data-c="5"></div>
-        <div class="cell-coord" data-r="8" data-c="6"></div><div class="cell-coord" data-r="8" data-c="7"></div><div class="cell-coord" data-r="8" data-c="8"></div><div class="cell-coord" data-r="8" data-c="9"></div><div class="cell-coord" data-r="8" data-c="10"></div>
-        <!-- Rândul 9 -->
-        <div class="cell-coord" data-r="9" data-c="1"></div><div class="cell-coord" data-r="9" data-c="2"></div><div class="cell-coord" data-r="9" data-c="3"></div><div class="cell-coord" data-r="9" data-c="4"></div><div class="cell-coord" data-r="9" data-c="5"></div>
-        <div class="cell-coord" data-r="9" data-c="6"></div><div class="cell-coord" data-r="9" data-c="7"></div><div class="cell-coord" data-r="9" data-c="8"></div><div class="cell-coord" data-r="9" data-c="9"></div><div class="cell-coord" data-r="9" data-c="10"></div>
-        <!-- Rândul 10 -->
-        <div class="cell-coord" data-r="10" data-c="1"></div><div class="cell-coord" data-r="10" data-c="2"></div><div class="cell-coord" data-r="10" data-c="3"></div><div class="cell-coord" data-r="10" data-c="4"></div><div class="cell-coord" data-r="10" data-c="5"></div>
-        <div class="cell-coord" data-r="10" data-c="6"></div><div class="cell-coord" data-r="10" data-c="7"></div><div class="cell-coord" data-r="10" data-c="8"></div><div class="cell-coord" data-r="10" data-c="9"></div><div class="cell-coord" data-r="10" data-c="10"></div>
-        <!-- Rândul 11 -->
-        <div class="cell-coord" data-r="11" data-c="1"></div><div class="cell-coord" data-r="11" data-c="2"></div><div class="cell-coord" data-r="11" data-c="3"></div><div class="cell-coord" data-r="11" data-c="4"></div><div class="cell-coord" data-r="11" data-c="5"></div>
-        <div class="cell-coord" data-r="11" data-c="6"></div><div class="cell-coord" data-r="11" data-c="7"></div><div class="cell-coord" data-r="11" data-c="8"></div><div class="cell-coord" data-r="11" data-c="9"></div><div class="cell-coord" data-r="11" data-c="10"></div>
-        <!-- Rândul 12 -->
-        <div class="cell-coord" data-r="12" data-c="1"></div><div class="cell-coord" data-r="12" data-c="2"></div><div class="cell-coord" data-r="12" data-c="3"></div><div class="cell-coord" data-r="12" data-c="4"></div><div class="cell-coord" data-r="12" data-c="5"></div>
-        <div class="cell-coord" data-r="12" data-c="6"></div><div class="cell-coord" data-r="12" data-c="7"></div><div class="cell-coord" data-r="12" data-c="8"></div><div class="cell-coord" data-r="12" data-c="9"></div><div class="cell-coord" data-r="12" data-c="10"></div>
-    </div>
-</div>
-
-<div id="status-box">Apasă "Start Joc"!</div>
-<div id="coord-controls">
-<div class="color-btn" style="background:#ff0000" data-color="#ff0000"></div>
-<div class="color-btn" style="background:#ff8c00" data-color="#ff8c00"></div>
-<div class="color-btn" style="background:#ffd700" data-color="#ffd700"></div>
-<div class="color-btn" style="background:#008000" data-color="#008000"></div>
-<div class="color-btn" style="background:#1e90ff" data-color="#1e90ff"></div>
-<div class="color-btn" style="background:#4b0082" data-color="#4b0082"></div>
-<div class="color-btn" style="background:#ffffff" data-color="#ffffff"></div>
-<button class="action-btn-coord btn-start" onclick="startCoordGame()">Start Joc</button>
-<button class="action-btn-coord btn-undo" id="undoBtn" onclick="undoLast()">&larr;</button>
-<button class="action-btn-coord btn-clear" onclick="clearGridNow()">Șterge Tot</button>
-</div>
-<button class="btn btn-secondary" onclick="showMainMenu()" style="margin-top: 15px;">Înapoi la Meniu</button>
+<button class="btn btn-secondary" onclick="closeLetterGame()" style="position:absolute; bottom:10px; left:10px; z-index:50;">Ieșire</button>
 </div>
 </div>
 
@@ -455,55 +303,63 @@ document.getElementById('mathContainer').style.display = 'none';
 document.getElementById('mathBackBtn').style.display = 'none';
 closeJumpGame();
 closeLetterGame();
-closeCoordGame();
-document.body.classList.remove('boy-theme', 'pro-theme');
 }
+
 function openMathMenu() {
-document.getElementById('mainContainer').style.display = 'none';
-document.getElementById('mathContainer').style.display = 'block';
-document.getElementById('mathBackBtn').style.display = 'flex';
-document.getElementById('mathBackBtn').onclick = showMainMenu;
-document.getElementById('mathMainMenu').style.display = 'block';
-document.getElementById('mathSubMenu').style.display = 'none';
-document.getElementById('mathGameArea').style.display = 'none';
-document.getElementById('mathAwardScreen').style.display = 'none';
-document.getElementById('mathLeaderboardScreen').style.display = 'none';
-renderMathMainMenu();
+try {
+    document.getElementById('mainContainer').style.display = 'none';
+    document.getElementById('mathContainer').style.display = 'block';
+    document.getElementById('mathBackBtn').style.display = 'flex';
+    document.getElementById('mathBackBtn').onclick = showMainMenu;
+    document.getElementById('mathMainMenu').style.display = 'block';
+    document.getElementById('mathSubMenu').style.display = 'none';
+    document.getElementById('mathGameArea').style.display = 'none';
+    document.getElementById('mathAwardScreen').style.display = 'none';
+    document.getElementById('mathLeaderboardScreen').style.display = 'none';
+    renderMathMainMenu();
+} catch (e) {
+    alert("Eroare la deschiderea jocului Matematic: " + e.message);
+    showMainMenu();
 }
+}
+
 function openJumpGame() {
-document.getElementById('mainContainer').style.display = 'none';
-document.getElementById('mathContainer').style.display = 'none';
-document.getElementById('jumpGameContainer').style.display = 'block';
-initJumpGame();
+try {
+    document.getElementById('mainContainer').style.display = 'none';
+    document.getElementById('mathContainer').style.display = 'none';
+    document.getElementById('jumpGameContainer').style.display = 'block';
+    initJumpGame();
+} catch (e) {
+    alert("Eroare la deschiderea jocului Sărituri: " + e.message);
+    showMainMenu();
 }
+}
+
 function closeJumpGame() {
 jumpGameRunning = false;
 document.getElementById('jumpGameContainer').style.display = 'none';
 document.getElementById('jumpMenu').style.display = 'flex';
 document.getElementById('jumpWinScreen').style.display = 'none';
 }
+
 function openLetterGame() {
-document.getElementById('mainContainer').style.display = 'none';
-document.getElementById('mathContainer').style.display = 'none';
-document.getElementById('letterGameContainer').style.display = 'block';
-initLetterGame();
+try {
+    document.getElementById('mainContainer').style.display = 'none';
+    document.getElementById('mathContainer').style.display = 'none';
+    document.getElementById('letterGameContainer').style.display = 'block';
+    initLetterGame();
+} catch (e) {
+    alert("Eroare la deschiderea jocului Litere: " + e.message);
+    showMainMenu();
 }
+}
+
 function closeLetterGame() {
 document.getElementById('letterGameContainer').style.display = 'none';
 }
-function openCoordGame() {
-document.getElementById('mainContainer').style.display = 'none';
-document.getElementById('mathContainer').style.display = 'none';
-document.getElementById('coordGameContainer').style.display = 'block';
-// Resetăm starea la deschidere
-clearGridNow();
-}
-function closeCoordGame() {
-document.getElementById('coordGameContainer').style.display = 'none';
-}
 
 // ==========================================
-// LOGICA JOC MATEMATIC (Scurtată pentru brevitate, same logic as before)
+// LOGICA JOC MATEMATIC
 // ==========================================
 let mathCurrentMode = '';
 let mathScore = 100;
@@ -549,6 +405,7 @@ const mathMenus = {
 { id: 'pro_div', icon: '➗', title: 'Criterii Divizibilitate', desc: 'Restul împărțirii' }
 ]}
 };
+
 function initMath() {
 createBackgroundShapes();
 renderMathMainMenu();
@@ -556,6 +413,7 @@ document.getElementById('mathAnswerInput').addEventListener("keypress", function
 if (event.key === "Enter") checkMathAnswer();
 });
 }
+
 function createBackgroundShapes() {
 const container = document.getElementById('bg-shapes');
 const colors = ['#FFCC80', '#FFAB91', '#FFE082', '#A5D6A7', '#90CAF9'];
@@ -574,6 +432,7 @@ shape.style.animationDelay = `-${Math.random() * 20}s`;
 container.appendChild(shape);
 }
 }
+
 function renderMathMainMenu() {
 const grid = document.getElementById('mathMenuGrid');
 grid.innerHTML = '';
@@ -592,6 +451,7 @@ card.onclick = () => openMathSubmenu(key);
 grid.appendChild(card);
 });
 }
+
 function openMathSubmenu(menuKey) {
 mathCurrentSubMenuKey = menuKey;
 const menuData = mathMenus[menuKey];
@@ -612,6 +472,7 @@ card.onclick = () => startMathGame(item.id);
 subGrid.appendChild(card);
 });
 }
+
 function startMathGame(mode) {
 mathCurrentMode = mode;
 mathScore = 100;
@@ -638,10 +499,12 @@ document.getElementById('mathInputContainer').style.display = 'flex';
 nextMathProblem();
 if(!isBoy) document.getElementById('mathAnswerInput').focus();
 }
+
 function updateMathStats() {
 document.getElementById('mathScoreDisplay').textContent = `Scor: ${mathScore}`;
 document.getElementById('mathProgressDisplay').textContent = `Exercițiul: ${mathQuestionCount + 1}/${MAX_QUESTIONS}`;
 }
+
 function startMathTimer(seconds) {
 clearInterval(mathTimerInterval);
 mathMaxTime = seconds;
@@ -653,6 +516,7 @@ updateMathTimerVisuals();
 if (mathTimeLeft <= 0) { clearInterval(mathTimerInterval); handleMathTimeout(); }
 }, 1000);
 }
+
 function updateMathTimerVisuals() {
 const percentage = (mathTimeLeft / mathMaxTime) * 100;
 document.getElementById('mathTimerBar').style.width = `${percentage}%`;
@@ -660,10 +524,13 @@ if (percentage > 50) document.getElementById('mathTimerBar').style.backgroundCol
 else if (percentage > 20) document.getElementById('mathTimerBar').style.backgroundColor = 'var(--timer-warning)';
 else document.getElementById('mathTimerBar').style.backgroundColor = 'var(--timer-danger)';
 }
+
 function handleMathTimeout() {
 showMathCorrectAnswer(true);
 }
+
 function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
 function generateMathChoices(correctAnswer, minVal, maxVal) {
 let choices = new Set();
 choices.add(correctAnswer);
@@ -675,6 +542,7 @@ else { let r = getRandomInt(minVal, maxVal); if(r !== correctAnswer) choices.add
 }
 return Array.from(choices).sort(() => Math.random() - 0.5);
 }
+
 function renderMathChoices(choices) {
 const container = document.getElementById('mathChoicesContainer');
 container.innerHTML = '';
@@ -686,11 +554,13 @@ btn.onclick = () => handleMathChoiceClick(val);
 container.appendChild(btn);
 });
 }
+
 function handleMathChoiceClick(val) {
 if(isMathGameEnding) return;
 let isCorrect = (val === mathCurrentAnswer);
 processMathResult(isCorrect);
 }
+
 function checkMathAnswer() {
 const isBoy = mathCurrentMode.startsWith('kg');
 if(isBoy) return;
@@ -705,6 +575,7 @@ isCorrect = (Math.abs(userVal - mathCurrentAnswer) < 0.01);
 }
 processMathResult(isCorrect);
 }
+
 function processMathResult(isCorrect) {
 if(isCorrect) {
 document.getElementById('mathFeedbackText').textContent = "Bravo! Corect! 🎉";
@@ -726,6 +597,7 @@ setTimeout(endMathGame, 1500);
 setTimeout(nextMathProblem, 1500);
 }
 }
+
 function nextMathProblem() {
 if (mathQuestionCount >= MAX_QUESTIONS) { endMathGame(); return; }
 mathQuestionCount++;
@@ -738,7 +610,8 @@ document.getElementById('mathChoicesContainer').innerHTML = '';
 mathProblemHTML = '';
 if (mathCurrentMode.startsWith('kg')) { if (mathDifficultyLevel === 1) startMathTimer(30); else startMathTimer(40); }
 else { if (mathDifficultyLevel === 1) startMathTimer(20); else startMathTimer(30); }
-// Generare probleme (same logic as before)
+
+// Generare probleme
 if (mathCurrentMode === 'kg_count') {
 const maxCount = mathDifficultyLevel === 1 ? 5 : 10;
 const count = getRandomInt(1, maxCount);
@@ -902,6 +775,7 @@ mathProblemHTML = `<div style="font-size:1.5rem; color:#666;">Restul împărțir
 document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
 }
 }
+
 function endMathGame() {
 clearInterval(mathTimerInterval);
 document.getElementById('mathGameArea').style.display = 'none';
@@ -919,6 +793,7 @@ document.getElementById('mathAwardTitle').className = 'award-title ' + titleClas
 if(showInput) { document.getElementById('mathNameInputGroup').style.display = 'flex'; document.getElementById('mathCloseAwardBtn').style.display = 'none'; document.getElementById('mathPlayerName').value = ''; document.getElementById('mathPlayerName').focus(); }
 else { document.getElementById('mathNameInputGroup').style.display = 'none'; document.getElementById('mathCloseAwardBtn').style.display = 'inline-block'; }
 }
+
 function saveMathScore() {
 const name = document.getElementById('mathPlayerName').value.trim() || "Anonim";
 const leaderboardKey = `math_leaderboard_${mathCurrentMode}`;
@@ -935,6 +810,7 @@ console.error("Eroare la salvarea scorului:", e);
 alert("A apărut o eroare la salvarea scorului.");
 }
 }
+
 function showMathLeaderboard(categoryKey) {
 const key = categoryKey || mathCurrentSubMenuKey;
 const menuData = mathMenus[key];
@@ -969,6 +845,7 @@ tbody.innerHTML += row;
 });
 }
 }
+
 function showMathCorrectAnswer(isTimeout) {
 if(mathProblemHTML) {
 const correctedHTML = mathProblemHTML.replace(
@@ -1028,6 +905,7 @@ const jumpThemes = [
 {bg: ['#B5FFFC', '#D5FFEA'], ground: '#0be881'}, {bg: ['#FFDEE9', '#B5FFFC'], ground: '#4834d4'},
 {bg: ['#F6D365', '#FDA085'], ground: '#be2edd'}, {bg: ['#667eea', '#764ba2'], ground: '#ffffff'}
 ];
+
 function initJumpGame() {
 resizeJumpCanvas();
 window.addEventListener('resize', resizeJumpCanvas);
@@ -1039,6 +917,7 @@ window.addEventListener('keydown', function(e) {
 if ((e.code === 'Space' || e.code === 'ArrowUp') && jumpGameRunning) jumpDoJump();
 });
 }
+
 function resizeJumpCanvas() {
 jumpCanvas.width = window.innerWidth;
 jumpCanvas.height = window.innerHeight;
@@ -1050,6 +929,7 @@ drawJump();
 jumpPlayer.x = jumpCanvas.width * 0.15;
 }
 }
+
 window.setJumpChar = function(type) {
 jumpCharType = type;
 if(type === 'girl') {
@@ -1060,6 +940,7 @@ jumpBtnBoy.classList.add('selected');
 jumpBtnGirl.classList.remove('selected');
 }
 };
+
 window.startJumpGame = function() {
 jumpMenu.style.display = 'none';
 jumpGameRunning = true;
@@ -1073,6 +954,7 @@ jumpPlayer.dy = 0;
 updateJumpUI();
 jumpLoop();
 };
+
 function jumpDoJump() {
 if (!jumpGameRunning) return;
 if (jumpPlayer.grounded || jumpPlayer.y > jumpCanvas.height - jumpGroundH - jumpPlayer.size - 10) {
@@ -1080,10 +962,12 @@ jumpPlayer.dy = jumpPower;
 jumpPlayer.grounded = false;
 }
 }
+
 function updateJumpUI() {
 jumpScoreEl.innerText = jumpScore;
 jumpStationEl.innerText = Math.min(jumpStation, maxStations);
 }
+
 function jumpLoop() {
 if (!jumpGameRunning) return;
 requestAnimationFrame(jumpLoop);
@@ -1091,6 +975,7 @@ jumpFrame++;
 updateJump();
 drawJump();
 }
+
 function updateJump() {
 jumpPlayer.dy += jumpGravity;
 jumpPlayer.y += jumpPlayer.dy;
@@ -1130,6 +1015,7 @@ o.passed = true;
 }
 if (jumpObstacles.length > 0 && jumpObstacles[0].x < -50) jumpObstacles.shift();
 }
+
 function drawJump() {
 let t = jumpThemes[Math.min(jumpStation, jumpThemes.length - 1)];
 let grad = jumpCtx.createLinearGradient(0, 0, 0, jumpCanvas.height);
@@ -1158,12 +1044,14 @@ jumpCtx.textBaseline = "middle";
 jumpCtx.fillText(jumpCharType === 'girl' ? "🌟" : "🦕", 0, 0);
 jumpCtx.restore();
 }
+
 function jumpGameOver() {
 jumpGameRunning = false;
 jumpMenu.style.display = 'flex';
 document.querySelector('#jumpMenu h1').innerText = "Joc Terminat!\nScor: " + jumpScore;
 document.getElementById('jumpStartBtn').innerText = "Încearcă Din Nou";
 }
+
 function jumpGameWin() {
 jumpGameRunning = false;
 jumpWinScreen.style.display = 'flex';
@@ -1192,12 +1080,14 @@ const letterFeedbackIcon = document.getElementById('letterFeedbackIcon');
 const letterScoreEl = document.getElementById('letterScore');
 const letterConfettiCanvas = document.getElementById('letterConfetti');
 const letterConfettiCtx = letterConfettiCanvas.getContext('2d');
+
 function initLetterGame() {
 resizeLetterCanvases();
 window.addEventListener('resize', resizeLetterCanvases);
 setupLetterDrawing();
 nextLetterLevel();
 }
+
 function resizeLetterCanvases() {
 const container = letterDrawCanvas.parentElement;
 [letterDrawCanvas, letterGuideCanvas].forEach(c => {
@@ -1210,6 +1100,7 @@ letterDrawCtx.lineWidth = Math.max(10, container.clientWidth / 20);
 letterDrawCtx.strokeStyle = '#5E6472';
 if(letterCurrentChar) drawLetterGuide();
 }
+
 function drawLetterGuide() {
 letterGuideCtx.clearRect(0, 0, letterGuideCanvas.width, letterGuideCanvas.height);
 letterGuideCtx.fillStyle = '#E0E0E0';
@@ -1218,6 +1109,7 @@ letterGuideCtx.textAlign = 'center';
 letterGuideCtx.textBaseline = 'middle';
 letterGuideCtx.fillText(letterCurrentChar, letterGuideCanvas.width / 2, letterGuideCanvas.height / 2 + (letterGuideCanvas.height * 0.05));
 }
+
 function setupLetterDrawing() {
 let letterIsDrawing = false;
 function getPos(e) {
@@ -1254,6 +1146,7 @@ letterDrawCanvas.addEventListener('touchstart', startDraw, { passive: false });
 letterDrawCanvas.addEventListener('touchmove', draw, { passive: false });
 letterDrawCanvas.addEventListener('touchend', stopDraw);
 }
+
 function nextLetterLevel() {
 letterIsLevelComplete = false;
 letterHasDrawnSomething = false;
@@ -1267,6 +1160,7 @@ letterTargetCard.classList.add('bounce');
 updateLetterButton('check');
 hideLetterFeedback();
 }
+
 function clearLetterCanvas() {
 letterDrawCtx.clearRect(0, 0, letterDrawCanvas.width, letterDrawCanvas.height);
 letterHasDrawnSomething = false;
@@ -1276,6 +1170,7 @@ updateLetterButton('check');
 hideLetterFeedback();
 }
 }
+
 function updateLetterButton(state) {
 letterMainBtn.innerHTML = '';
 letterMainBtn.className = 'letter-action-btn';
@@ -1292,9 +1187,11 @@ letterMainBtn.classList.add('next');
 letterMainBtn.onclick = nextLetterLevel;
 }
 }
+
 function handleLetterAction() {
 if(letterIsLevelComplete) nextLetterLevel();
 }
+
 function handleLetterCheck() {
 if (!letterHasDrawnSomething) {
 showLetterFeedback("Desenează pe contur!", "fail", "✏️");
@@ -1310,6 +1207,7 @@ return;
 }
 winLetterLevel();
 }
+
 function analyzeLetterDrawing() {
 const drawData = letterDrawCtx.getImageData(0, 0, letterDrawCanvas.width, letterDrawCanvas.height).data;
 const guideData = letterGuideCtx.getImageData(0, 0, letterGuideCanvas.width, letterGuideCanvas.height).data;
@@ -1329,6 +1227,7 @@ const precision = matchPixels / (drawPixels || 1);
 const score = (coverage * 0.7) + (precision * 0.3);
 return { matchRatio: score };
 }
+
 function winLetterLevel() {
 letterIsLevelComplete = true;
 letterScore += 1;
@@ -1337,15 +1236,18 @@ showLetterFeedback("Bravo! E corect!", "success", "🌟");
 updateLetterButton('next');
 fireLetterConfetti();
 }
+
 function showLetterFeedback(text, type, icon) {
 letterFeedbackText.textContent = text;
 letterFeedbackIcon.textContent = icon;
 letterFeedbackEl.className = `letter-feedback-overlay show ${type}`;
 setTimeout(hideLetterFeedback, 2000);
 }
+
 function hideLetterFeedback() {
 letterFeedbackEl.classList.remove('show');
 }
+
 let letterParticles = [];
 function resizeLetterConfetti() {
 letterConfettiCanvas.width = window.innerWidth;
@@ -1353,6 +1255,7 @@ letterConfettiCanvas.height = window.innerHeight;
 }
 window.addEventListener('resize', resizeLetterConfetti);
 resizeLetterConfetti();
+
 function fireLetterConfetti() {
 const colors = ['#FF85A2', '#A2D2FF', '#FFC8DD', '#FFD93D'];
 const centerX = window.innerWidth / 2;
@@ -1369,6 +1272,7 @@ life: 100
 }
 animateLetterConfetti();
 }
+
 function animateLetterConfetti() {
 letterConfettiCtx.clearRect(0, 0, letterConfettiCanvas.width, letterConfettiCanvas.height);
 letterParticles.forEach((p, index) => {
@@ -1380,125 +1284,6 @@ letterConfettiCtx.fill();
 if (p.life <= 0) letterParticles.splice(index, 1);
 });
 if (letterParticles.length > 0) requestAnimationFrame(animateLetterConfetti);
-}
-
-// ==========================================
-// LOGICA JOC COORDONATE (SIMPLIFICATĂ PENTRU GRILĂ STATICĂ)
-// ==========================================
-const gameAreaCoord = document.getElementById('game-area-coord');
-const statusBox = document.getElementById('status-box');
-const undoBtn = document.getElementById('undoBtn');
-const colorButtons = document.querySelectorAll('.color-btn');
-let actionHistory = [];
-let isCoordGameMode = false;
-let targetCoord = null;
-let targetColor = null;
-
-// Nu mai generăm grila, ea există deja în HTML.
-// Doar atașăm evenimentele de click pe celulele existente.
-const cells = document.querySelectorAll('.cell-coord');
-cells.forEach(cell => {
-    cell.addEventListener('mousedown', (e) => {
-        if(e.button === 0) handleCellClick(cell);
-    });
-    cell.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        handleCellClick(cell);
-    }, {passive: false});
-});
-
-function highlightColorButton(colorHex) {
-colorButtons.forEach(btn => {
-btn.classList.remove('auto-selected');
-if(btn.dataset.color === colorHex) {
-btn.classList.add('auto-selected');
-}
-});
-}
-function handleCellClick(cell) {
-if (!isCoordGameMode) return;
-const r = parseInt(cell.dataset.r);
-const c = parseInt(cell.dataset.c);
-checkMove(cell, r, c);
-}
-function placeCrystal(cell, color) {
-if (cell.querySelector('.crystal')) return;
-const crystal = document.createElement('div');
-crystal.classList.add('crystal');
-crystal.style.backgroundColor = color;
-let shadow = color;
-if(color === '#ffffff' || color === '#ffd700') shadow = '#ccc';
-crystal.style.boxShadow = `inset 2px 2px 5px rgba(255,255,255,0.8), inset -2px -2px 5px rgba(0,0,0,0.3), 0 0 8px ${shadow}`;
-cell.appendChild(crystal);
-actionHistory.push({ cell: cell, crystal: crystal });
-updateUndoBtn();
-}
-function startCoordGame() {
-isCoordGameMode = true;
-clearGridNow(); // Curăță tabla
-nextLevel();    // Generează prima coordonată IMEDIAT
-}
-function updateStatus() {
-if(!isCoordGameMode || !targetCoord) return;
-statusBox.innerHTML = `Pune cristalul <span style="color:${targetColor}; font-size:1.3em">●</span> la:<br><strong>Coloana ${targetCoord.c}, Rândul ${targetCoord.r}</strong>`;
-statusBox.style.color = "#fff";
-}
-function checkMove(cell, r, c) {
-if (!targetCoord) return;
-if (r === targetCoord.r && c === targetCoord.c) {
-placeCrystal(cell, targetColor);
-statusBox.innerHTML = "<span style='color:#4CAF50; font-size:1.2rem'>BRAVO! Corect!</span>";
-setTimeout(nextLevel, 1000);
-} else {
-statusBox.innerHTML = `<span style='color:#ff6b6b'>Loc greșit! Caută Col ${targetCoord.c}, Rând ${targetCoord.r}.</span>`;
-cell.style.backgroundColor = "#ffcccc";
-setTimeout(() => cell.style.backgroundColor = "#f9f9f9", 300);
-}
-}
-function nextLevel() {
-const ROWS = 12;
-const COLS = 10;
-const r = Math.floor(Math.random() * ROWS) + 1;
-const c = Math.floor(Math.random() * COLS) + 1;
-const colors = ['#ff0000', '#ff8c00', '#ffd700', '#008000', '#1e90ff', '#4b0082', '#ffffff'];
-const color = colors[Math.floor(Math.random() * colors.length)];
-const existing = document.querySelector(`.cell-coord[data-r='${r}'][data-c='${c}'] .crystal`);
-if(existing) { nextLevel(); return; }
-targetCoord = { r, c };
-targetColor = color;
-highlightColorButton(color);
-const targetCell = document.querySelector(`.cell-coord[data-r='${r}'][data-c='${c}']`);
-if(targetCell) {
-targetCell.classList.add('highlight');
-setTimeout(() => targetCell.classList.remove('highlight'), 1500);
-}
-updateStatus(); // Actualizează mesajul cu coordonata nouă
-}
-function undoLast() {
-if (actionHistory.length === 0) return;
-const last = actionHistory.pop();
-if (last.crystal && last.crystal.parentNode) last.crystal.remove();
-updateUndoBtn();
-}
-function updateUndoBtn() {
-undoBtn.disabled = actionHistory.length === 0;
-}
-function clearGridNow() {
-const crystals = document.querySelectorAll('.crystal');
-crystals.forEach(c => {
-if(c.parentNode) c.parentNode.removeChild(c);
-});
-actionHistory = [];
-isCoordGameMode = false;
-targetCoord = null;
-targetColor = null;
-updateUndoBtn();
-colorButtons.forEach(btn => btn.classList.remove('auto-selected'));
-statusBox.textContent = "Tabla curățată! Apasă Start pentru a juca.";
-statusBox.style.backgroundColor = "rgba(255,255,255,0.1)";
-const wrapper = document.getElementById('coord-board-wrapper');
-wrapper.style.borderColor = "#ff0000";
-setTimeout(() => { wrapper.style.borderColor = "#ffd700"; }, 200);
 }
 
 // Inițializare
