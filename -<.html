@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jocul Timpului</title>
+<style>
+body {
+    background: linear-gradient(135deg,#9370DB,#BA55D3);
+    font-family: Arial, sans-serif;
+    text-align: center;
+    color:#4B0082;
+}
+.container {
+    background:#fff;
+    width:95%;
+    max-width:400px;
+    margin:20px auto;
+    padding:15px;
+    border-radius:15px;
+}
+.year-display {
+    font-size:2rem;
+    margin:10px 0;
+    color:#FF1493;
+}
+button {
+    padding:8px;
+    margin:5px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+.option-btn {
+    display:block;
+    width:100%;
+    background:#87CEEB;
+}
+.correct { background:#32CD32 !important; }
+.wrong { background:#FF69B4 !important; }
+.hidden { display:none; }
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>✨ Jocul Timpului ✨</h2>
+<div>Întrebarea <span id="q-current">1</span>/5</div>
+<div class="year-display" id="year-display"></div>
+
+<div id="event-section">
+<div id="hint"></div>
+<div id="options"></div>
+</div>
+
+<div style="margin-top:10px;">Puncte: <span id="score">0</span></div>
+<button id="nextBtn" class="hidden" onclick="nextQuestion()">Următoarea</button>
+
+<div id="endScreen" class="hidden">
+<h3>Gata!</h3>
+<p>Punctaj final: <span id="finalScore"></span></p>
+<button onclick="restart()">Reîncepe</button>
+</div>
+</div>
+
+<script>
+const baseData = [
+{year:1066,hint:"⚔️ O mare bătălie schimbă istoria Angliei!",
+correct:"Bătălia de la Hastings",
+options:["Bătălia de la Hastings","Căderea Romei","Primul avion"]},
+
+{year:1453,hint:"🏰 Sfârșitul Imperiului Bizantin!",
+correct:"Căderea Constantinopolului",
+options:["Căderea Constantinopolului","Revoluția Industrială","Telefonul"]},
+
+{year:1492,hint:"🌎 Descoperirea Lumii Noi!",
+correct:"Descoperirea Americii",
+options:["Descoperirea Americii","Primul tren","Războiul Rece"]},
+
+{year:1914,hint:"💣 Începe un conflict mondial uriaș!",
+correct:"Primul Război Mondial",
+options:["Primul Război Mondial","Al Doilea Război Mondial","Revoluția Franceză"]},
+
+{year:1969,hint:"🚀 Oamenii ajung pe Lună!",
+correct:"Aselenizarea",
+options:["Aselenizarea","Internetul","Tiparul"]}
+];
+
+let questions = [];
+let current = 0;
+let score = 0;
+
+function initGame(){
+questions = [...baseData];
+current = 0;
+score = 0;
+document.getElementById("score").textContent = score;
+document.getElementById("endScreen").classList.add("hidden");
+document.getElementById("nextBtn").classList.add("hidden");
+loadQuestion();
+}
+
+function loadQuestion(){
+const q = questions[current];
+document.getElementById("year-display").textContent = q.year;
+document.getElementById("q-current").textContent = current+1;
+document.getElementById("hint").textContent = q.hint;
+const container = document.getElementById("options");
+container.innerHTML="";
+q.options.sort(()=>Math.random()-0.5).forEach(opt=>{
+const btn=document.createElement("button");
+btn.textContent=opt;
+btn.className="option-btn";
+btn.onclick=()=>checkAnswer(btn,opt,q.correct);
+container.appendChild(btn);
+});
+}
+
+function checkAnswer(btn,selected,correct){
+document.querySelectorAll(".option-btn").forEach(b=>b.disabled=true);
+if(selected===correct){
+btn.classList.add("correct");
+score+=10;
+}else{
+btn.classList.add("wrong");
+document.querySelectorAll(".option-btn").forEach(b=>{
+if(b.textContent===correct) b.classList.add("correct");
+});
+score-=5;
+}
+document.getElementById("score").textContent=score;
+document.getElementById("nextBtn").classList.remove("hidden");
+}
+
+function nextQuestion(){
+current++;
+if(current>=5){
+document.getElementById("endScreen").classList.remove("hidden");
+document.getElementById("finalScore").textContent=score;
+document.getElementById("event-section").classList.add("hidden");
+document.getElementById("nextBtn").classList.add("hidden");
+}else{
+loadQuestion();
+document.getElementById("nextBtn").classList.add("hidden");
+}
+}
+
+function restart(){
+document.getElementById("event-section").classList.remove("hidden");
+initGame();
+}
+
+initGame();
+</script>
+
+</body>
+</html>
