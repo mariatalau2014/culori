@@ -185,6 +185,12 @@ h1 { font-size: 2rem; }
 <div class="big-card-title">Litere Magice</div>
 <div class="big-card-desc">Desenează literele și numerele pe contur!</div>
 </div>
+<!-- Buton Joc Pian -->
+<div class="big-card" onclick="openPianoGame()" style="border-bottom: 6px solid #9C27B0;">
+<div class="big-card-icon">🎹</div>
+<div class="big-card-title">Pian Muzical</div>
+<div class="big-card-desc">Cântă melodii cu versuri care cad!</div>
+</div>
 </div>
 </div>
 
@@ -293,6 +299,18 @@ h1 { font-size: 2rem; }
 </div>
 </div>
 
+<!-- Interfață Joc PIAN -->
+<div id="pianoGameContainer" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#1a1a2e; z-index:300; overflow-y:auto;">
+    <div id="pianoRoot"></div>
+    <button class="btn btn-secondary" onclick="closePianoGame()" style="position:absolute; top:20px; right:20px; z-index:400; background:#ff4757;">Înapoi la Meniu</button>
+</div>
+
+<!-- Scripturi externe pentru Pian (încărcate doar când e nevoie) -->
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+
 <script>
 // ==========================================
 // LOGICA GENERALĂ & NAVIGARE
@@ -303,59 +321,76 @@ document.getElementById('mathContainer').style.display = 'none';
 document.getElementById('mathBackBtn').style.display = 'none';
 closeJumpGame();
 closeLetterGame();
+closePianoGame();
 }
-
 function openMathMenu() {
-try {
-    document.getElementById('mainContainer').style.display = 'none';
-    document.getElementById('mathContainer').style.display = 'block';
-    document.getElementById('mathBackBtn').style.display = 'flex';
-    document.getElementById('mathBackBtn').onclick = showMainMenu;
-    document.getElementById('mathMainMenu').style.display = 'block';
-    document.getElementById('mathSubMenu').style.display = 'none';
-    document.getElementById('mathGameArea').style.display = 'none';
-    document.getElementById('mathAwardScreen').style.display = 'none';
-    document.getElementById('mathLeaderboardScreen').style.display = 'none';
-    renderMathMainMenu();
-} catch (e) {
-    alert("Eroare la deschiderea jocului Matematic: " + e.message);
-    showMainMenu();
+document.getElementById('mainContainer').style.display = 'none';
+document.getElementById('mathContainer').style.display = 'block';
+document.getElementById('mathBackBtn').style.display = 'flex';
+document.getElementById('mathBackBtn').onclick = showMainMenu;
+document.getElementById('mathMainMenu').style.display = 'block';
+document.getElementById('mathSubMenu').style.display = 'none';
+document.getElementById('mathGameArea').style.display = 'none';
+document.getElementById('mathAwardScreen').style.display = 'none';
+document.getElementById('mathLeaderboardScreen').style.display = 'none';
+renderMathMainMenu();
 }
-}
-
 function openJumpGame() {
-try {
-    document.getElementById('mainContainer').style.display = 'none';
-    document.getElementById('mathContainer').style.display = 'none';
-    document.getElementById('jumpGameContainer').style.display = 'block';
-    initJumpGame();
-} catch (e) {
-    alert("Eroare la deschiderea jocului Sărituri: " + e.message);
-    showMainMenu();
+document.getElementById('mainContainer').style.display = 'none';
+document.getElementById('mathContainer').style.display = 'none';
+document.getElementById('jumpGameContainer').style.display = 'block';
+initJumpGame();
 }
-}
-
 function closeJumpGame() {
 jumpGameRunning = false;
 document.getElementById('jumpGameContainer').style.display = 'none';
 document.getElementById('jumpMenu').style.display = 'flex';
 document.getElementById('jumpWinScreen').style.display = 'none';
 }
-
 function openLetterGame() {
-try {
-    document.getElementById('mainContainer').style.display = 'none';
-    document.getElementById('mathContainer').style.display = 'none';
-    document.getElementById('letterGameContainer').style.display = 'block';
-    initLetterGame();
-} catch (e) {
-    alert("Eroare la deschiderea jocului Litere: " + e.message);
-    showMainMenu();
+document.getElementById('mainContainer').style.display = 'none';
+document.getElementById('mathContainer').style.display = 'none';
+document.getElementById('letterGameContainer').style.display = 'block';
+initLetterGame();
 }
-}
-
 function closeLetterGame() {
 document.getElementById('letterGameContainer').style.display = 'none';
+}
+
+// Funcții noi pentru Jocul Pian
+let pianoRoot = null;
+function openPianoGame() {
+    try {
+        document.getElementById('mainContainer').style.display = 'none';
+        document.getElementById('pianoGameContainer').style.display = 'block';
+        
+        // Verificăm dacă React este încărcat corect
+        if (typeof React === 'undefined' || typeof ReactDOM === 'undefined') {
+            alert("Se încarcă componentele muzicale... Te rugăm să aștepți o secundă și să încerci din nou.");
+            closePianoGame();
+            return;
+        }
+
+        if (!pianoRoot) {
+            pianoRoot = ReactDOM.createRoot(document.getElementById('pianoRoot'));
+        }
+        // Renderizăm componenta React definită mai jos
+        pianoRoot.render(<PianoWithFallingDots />);
+    } catch (e) {
+        console.error("Eroare la încărcarea pianului:", e);
+        alert("A apărut o eroare la încărcarea jocului Pian. Celelalte jocuri funcționează normal.");
+        closePianoGame();
+    }
+}
+
+function closePianoGame() {
+    document.getElementById('pianoGameContainer').style.display = 'none';
+    if (pianoRoot) {
+        try {
+            pianoRoot.unmount(); // Curățăm React când ieșim
+        } catch(e) {}
+        pianoRoot = null;
+    }
 }
 
 // ==========================================
@@ -405,7 +440,6 @@ const mathMenus = {
 { id: 'pro_div', icon: '➗', title: 'Criterii Divizibilitate', desc: 'Restul împărțirii' }
 ]}
 };
-
 function initMath() {
 createBackgroundShapes();
 renderMathMainMenu();
@@ -413,7 +447,6 @@ document.getElementById('mathAnswerInput').addEventListener("keypress", function
 if (event.key === "Enter") checkMathAnswer();
 });
 }
-
 function createBackgroundShapes() {
 const container = document.getElementById('bg-shapes');
 const colors = ['#FFCC80', '#FFAB91', '#FFE082', '#A5D6A7', '#90CAF9'];
@@ -432,7 +465,6 @@ shape.style.animationDelay = `-${Math.random() * 20}s`;
 container.appendChild(shape);
 }
 }
-
 function renderMathMainMenu() {
 const grid = document.getElementById('mathMenuGrid');
 grid.innerHTML = '';
@@ -451,7 +483,6 @@ card.onclick = () => openMathSubmenu(key);
 grid.appendChild(card);
 });
 }
-
 function openMathSubmenu(menuKey) {
 mathCurrentSubMenuKey = menuKey;
 const menuData = mathMenus[menuKey];
@@ -472,7 +503,6 @@ card.onclick = () => startMathGame(item.id);
 subGrid.appendChild(card);
 });
 }
-
 function startMathGame(mode) {
 mathCurrentMode = mode;
 mathScore = 100;
@@ -499,12 +529,10 @@ document.getElementById('mathInputContainer').style.display = 'flex';
 nextMathProblem();
 if(!isBoy) document.getElementById('mathAnswerInput').focus();
 }
-
 function updateMathStats() {
 document.getElementById('mathScoreDisplay').textContent = `Scor: ${mathScore}`;
 document.getElementById('mathProgressDisplay').textContent = `Exercițiul: ${mathQuestionCount + 1}/${MAX_QUESTIONS}`;
 }
-
 function startMathTimer(seconds) {
 clearInterval(mathTimerInterval);
 mathMaxTime = seconds;
@@ -516,7 +544,6 @@ updateMathTimerVisuals();
 if (mathTimeLeft <= 0) { clearInterval(mathTimerInterval); handleMathTimeout(); }
 }, 1000);
 }
-
 function updateMathTimerVisuals() {
 const percentage = (mathTimeLeft / mathMaxTime) * 100;
 document.getElementById('mathTimerBar').style.width = `${percentage}%`;
@@ -524,13 +551,10 @@ if (percentage > 50) document.getElementById('mathTimerBar').style.backgroundCol
 else if (percentage > 20) document.getElementById('mathTimerBar').style.backgroundColor = 'var(--timer-warning)';
 else document.getElementById('mathTimerBar').style.backgroundColor = 'var(--timer-danger)';
 }
-
 function handleMathTimeout() {
 showMathCorrectAnswer(true);
 }
-
 function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-
 function generateMathChoices(correctAnswer, minVal, maxVal) {
 let choices = new Set();
 choices.add(correctAnswer);
@@ -542,7 +566,6 @@ else { let r = getRandomInt(minVal, maxVal); if(r !== correctAnswer) choices.add
 }
 return Array.from(choices).sort(() => Math.random() - 0.5);
 }
-
 function renderMathChoices(choices) {
 const container = document.getElementById('mathChoicesContainer');
 container.innerHTML = '';
@@ -554,13 +577,11 @@ btn.onclick = () => handleMathChoiceClick(val);
 container.appendChild(btn);
 });
 }
-
 function handleMathChoiceClick(val) {
 if(isMathGameEnding) return;
 let isCorrect = (val === mathCurrentAnswer);
 processMathResult(isCorrect);
 }
-
 function checkMathAnswer() {
 const isBoy = mathCurrentMode.startsWith('kg');
 if(isBoy) return;
@@ -575,7 +596,6 @@ isCorrect = (Math.abs(userVal - mathCurrentAnswer) < 0.01);
 }
 processMathResult(isCorrect);
 }
-
 function processMathResult(isCorrect) {
 if(isCorrect) {
 document.getElementById('mathFeedbackText').textContent = "Bravo! Corect! 🎉";
@@ -597,7 +617,6 @@ setTimeout(endMathGame, 1500);
 setTimeout(nextMathProblem, 1500);
 }
 }
-
 function nextMathProblem() {
 if (mathQuestionCount >= MAX_QUESTIONS) { endMathGame(); return; }
 mathQuestionCount++;
@@ -610,8 +629,7 @@ document.getElementById('mathChoicesContainer').innerHTML = '';
 mathProblemHTML = '';
 if (mathCurrentMode.startsWith('kg')) { if (mathDifficultyLevel === 1) startMathTimer(30); else startMathTimer(40); }
 else { if (mathDifficultyLevel === 1) startMathTimer(20); else startMathTimer(30); }
-
-// Generare probleme
+// Generare probleme (codul original păstrat)
 if (mathCurrentMode === 'kg_count') {
 const maxCount = mathDifficultyLevel === 1 ? 5 : 10;
 const count = getRandomInt(1, maxCount);
@@ -775,7 +793,6 @@ mathProblemHTML = `<div style="font-size:1.5rem; color:#666;">Restul împărțir
 document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
 }
 }
-
 function endMathGame() {
 clearInterval(mathTimerInterval);
 document.getElementById('mathGameArea').style.display = 'none';
@@ -793,7 +810,6 @@ document.getElementById('mathAwardTitle').className = 'award-title ' + titleClas
 if(showInput) { document.getElementById('mathNameInputGroup').style.display = 'flex'; document.getElementById('mathCloseAwardBtn').style.display = 'none'; document.getElementById('mathPlayerName').value = ''; document.getElementById('mathPlayerName').focus(); }
 else { document.getElementById('mathNameInputGroup').style.display = 'none'; document.getElementById('mathCloseAwardBtn').style.display = 'inline-block'; }
 }
-
 function saveMathScore() {
 const name = document.getElementById('mathPlayerName').value.trim() || "Anonim";
 const leaderboardKey = `math_leaderboard_${mathCurrentMode}`;
@@ -810,7 +826,6 @@ console.error("Eroare la salvarea scorului:", e);
 alert("A apărut o eroare la salvarea scorului.");
 }
 }
-
 function showMathLeaderboard(categoryKey) {
 const key = categoryKey || mathCurrentSubMenuKey;
 const menuData = mathMenus[key];
@@ -845,7 +860,6 @@ tbody.innerHTML += row;
 });
 }
 }
-
 function showMathCorrectAnswer(isTimeout) {
 if(mathProblemHTML) {
 const correctedHTML = mathProblemHTML.replace(
@@ -871,7 +885,6 @@ setTimeout(endMathGame, 3000);
 setTimeout(nextMathProblem, 3000);
 }
 }
-
 // ==========================================
 // LOGICA JOC SĂRITURI
 // ==========================================
@@ -905,7 +918,6 @@ const jumpThemes = [
 {bg: ['#B5FFFC', '#D5FFEA'], ground: '#0be881'}, {bg: ['#FFDEE9', '#B5FFFC'], ground: '#4834d4'},
 {bg: ['#F6D365', '#FDA085'], ground: '#be2edd'}, {bg: ['#667eea', '#764ba2'], ground: '#ffffff'}
 ];
-
 function initJumpGame() {
 resizeJumpCanvas();
 window.addEventListener('resize', resizeJumpCanvas);
@@ -917,7 +929,6 @@ window.addEventListener('keydown', function(e) {
 if ((e.code === 'Space' || e.code === 'ArrowUp') && jumpGameRunning) jumpDoJump();
 });
 }
-
 function resizeJumpCanvas() {
 jumpCanvas.width = window.innerWidth;
 jumpCanvas.height = window.innerHeight;
@@ -929,7 +940,6 @@ drawJump();
 jumpPlayer.x = jumpCanvas.width * 0.15;
 }
 }
-
 window.setJumpChar = function(type) {
 jumpCharType = type;
 if(type === 'girl') {
@@ -940,7 +950,6 @@ jumpBtnBoy.classList.add('selected');
 jumpBtnGirl.classList.remove('selected');
 }
 };
-
 window.startJumpGame = function() {
 jumpMenu.style.display = 'none';
 jumpGameRunning = true;
@@ -954,7 +963,6 @@ jumpPlayer.dy = 0;
 updateJumpUI();
 jumpLoop();
 };
-
 function jumpDoJump() {
 if (!jumpGameRunning) return;
 if (jumpPlayer.grounded || jumpPlayer.y > jumpCanvas.height - jumpGroundH - jumpPlayer.size - 10) {
@@ -962,12 +970,10 @@ jumpPlayer.dy = jumpPower;
 jumpPlayer.grounded = false;
 }
 }
-
 function updateJumpUI() {
 jumpScoreEl.innerText = jumpScore;
 jumpStationEl.innerText = Math.min(jumpStation, maxStations);
 }
-
 function jumpLoop() {
 if (!jumpGameRunning) return;
 requestAnimationFrame(jumpLoop);
@@ -975,7 +981,6 @@ jumpFrame++;
 updateJump();
 drawJump();
 }
-
 function updateJump() {
 jumpPlayer.dy += jumpGravity;
 jumpPlayer.y += jumpPlayer.dy;
@@ -1015,7 +1020,6 @@ o.passed = true;
 }
 if (jumpObstacles.length > 0 && jumpObstacles[0].x < -50) jumpObstacles.shift();
 }
-
 function drawJump() {
 let t = jumpThemes[Math.min(jumpStation, jumpThemes.length - 1)];
 let grad = jumpCtx.createLinearGradient(0, 0, 0, jumpCanvas.height);
@@ -1044,19 +1048,16 @@ jumpCtx.textBaseline = "middle";
 jumpCtx.fillText(jumpCharType === 'girl' ? "🌟" : "🦕", 0, 0);
 jumpCtx.restore();
 }
-
 function jumpGameOver() {
 jumpGameRunning = false;
 jumpMenu.style.display = 'flex';
 document.querySelector('#jumpMenu h1').innerText = "Joc Terminat!\nScor: " + jumpScore;
 document.getElementById('jumpStartBtn').innerText = "Încearcă Din Nou";
 }
-
 function jumpGameWin() {
 jumpGameRunning = false;
 jumpWinScreen.style.display = 'flex';
 }
-
 // ==========================================
 // LOGICA JOC LITERE
 // ==========================================
@@ -1080,14 +1081,12 @@ const letterFeedbackIcon = document.getElementById('letterFeedbackIcon');
 const letterScoreEl = document.getElementById('letterScore');
 const letterConfettiCanvas = document.getElementById('letterConfetti');
 const letterConfettiCtx = letterConfettiCanvas.getContext('2d');
-
 function initLetterGame() {
 resizeLetterCanvases();
 window.addEventListener('resize', resizeLetterCanvases);
 setupLetterDrawing();
 nextLetterLevel();
 }
-
 function resizeLetterCanvases() {
 const container = letterDrawCanvas.parentElement;
 [letterDrawCanvas, letterGuideCanvas].forEach(c => {
@@ -1100,7 +1099,6 @@ letterDrawCtx.lineWidth = Math.max(10, container.clientWidth / 20);
 letterDrawCtx.strokeStyle = '#5E6472';
 if(letterCurrentChar) drawLetterGuide();
 }
-
 function drawLetterGuide() {
 letterGuideCtx.clearRect(0, 0, letterGuideCanvas.width, letterGuideCanvas.height);
 letterGuideCtx.fillStyle = '#E0E0E0';
@@ -1109,7 +1107,6 @@ letterGuideCtx.textAlign = 'center';
 letterGuideCtx.textBaseline = 'middle';
 letterGuideCtx.fillText(letterCurrentChar, letterGuideCanvas.width / 2, letterGuideCanvas.height / 2 + (letterGuideCanvas.height * 0.05));
 }
-
 function setupLetterDrawing() {
 let letterIsDrawing = false;
 function getPos(e) {
@@ -1146,7 +1143,6 @@ letterDrawCanvas.addEventListener('touchstart', startDraw, { passive: false });
 letterDrawCanvas.addEventListener('touchmove', draw, { passive: false });
 letterDrawCanvas.addEventListener('touchend', stopDraw);
 }
-
 function nextLetterLevel() {
 letterIsLevelComplete = false;
 letterHasDrawnSomething = false;
@@ -1160,7 +1156,6 @@ letterTargetCard.classList.add('bounce');
 updateLetterButton('check');
 hideLetterFeedback();
 }
-
 function clearLetterCanvas() {
 letterDrawCtx.clearRect(0, 0, letterDrawCanvas.width, letterDrawCanvas.height);
 letterHasDrawnSomething = false;
@@ -1170,7 +1165,6 @@ updateLetterButton('check');
 hideLetterFeedback();
 }
 }
-
 function updateLetterButton(state) {
 letterMainBtn.innerHTML = '';
 letterMainBtn.className = 'letter-action-btn';
@@ -1187,11 +1181,9 @@ letterMainBtn.classList.add('next');
 letterMainBtn.onclick = nextLetterLevel;
 }
 }
-
 function handleLetterAction() {
 if(letterIsLevelComplete) nextLetterLevel();
 }
-
 function handleLetterCheck() {
 if (!letterHasDrawnSomething) {
 showLetterFeedback("Desenează pe contur!", "fail", "✏️");
@@ -1207,7 +1199,6 @@ return;
 }
 winLetterLevel();
 }
-
 function analyzeLetterDrawing() {
 const drawData = letterDrawCtx.getImageData(0, 0, letterDrawCanvas.width, letterDrawCanvas.height).data;
 const guideData = letterGuideCtx.getImageData(0, 0, letterGuideCanvas.width, letterGuideCanvas.height).data;
@@ -1227,7 +1218,6 @@ const precision = matchPixels / (drawPixels || 1);
 const score = (coverage * 0.7) + (precision * 0.3);
 return { matchRatio: score };
 }
-
 function winLetterLevel() {
 letterIsLevelComplete = true;
 letterScore += 1;
@@ -1236,18 +1226,15 @@ showLetterFeedback("Bravo! E corect!", "success", "🌟");
 updateLetterButton('next');
 fireLetterConfetti();
 }
-
 function showLetterFeedback(text, type, icon) {
 letterFeedbackText.textContent = text;
 letterFeedbackIcon.textContent = icon;
 letterFeedbackEl.className = `letter-feedback-overlay show ${type}`;
 setTimeout(hideLetterFeedback, 2000);
 }
-
 function hideLetterFeedback() {
 letterFeedbackEl.classList.remove('show');
 }
-
 let letterParticles = [];
 function resizeLetterConfetti() {
 letterConfettiCanvas.width = window.innerWidth;
@@ -1255,7 +1242,6 @@ letterConfettiCanvas.height = window.innerHeight;
 }
 window.addEventListener('resize', resizeLetterConfetti);
 resizeLetterConfetti();
-
 function fireLetterConfetti() {
 const colors = ['#FF85A2', '#A2D2FF', '#FFC8DD', '#FFD93D'];
 const centerX = window.innerWidth / 2;
@@ -1272,7 +1258,6 @@ life: 100
 }
 animateLetterConfetti();
 }
-
 function animateLetterConfetti() {
 letterConfettiCtx.clearRect(0, 0, letterConfettiCanvas.width, letterConfettiCanvas.height);
 letterParticles.forEach((p, index) => {
@@ -1289,6 +1274,830 @@ if (letterParticles.length > 0) requestAnimationFrame(animateLetterConfetti);
 // Inițializare
 initMath();
 </script>
+
+<!-- COMPONENTA REACT PENTRU JOCUL PIAN -->
+<script type="text/babel">
+    const { useState, useRef, useEffect } = React;
+
+    const PianoWithFallingDots = () => {
+      const [activeKeys, setActiveKeys] = useState(new Set());
+      const [fallingDots, setFallingDots] = useState([]);
+      const [currentSong, setCurrentSong] = useState('twinkle');
+      const [isAutoMode, setIsAutoMode] = useState(true);
+      const [speedMultiplier, setSpeedMultiplier] = useState(1.0);
+      const [isSongFinished, setIsSongFinished] = useState(false);
+      const audioContextRef = useRef(null);
+      const currentSongIndexRef = useRef(0);
+      
+      // All piano keys needed (C4 to E5)
+      const whiteKeys = [
+        { id: 'C4', note: 'C', freq: 261.63, lyric: 'Do', x: 0 },
+        { id: 'D4', note: 'D', freq: 293.66, lyric: 'Re', x: 32 },
+        { id: 'E4', note: 'E', freq: 329.63, lyric: 'Mi', x: 64 },
+        { id: 'F4', note: 'F', freq: 349.23, lyric: 'Fa', x: 96 },
+        { id: 'G4', note: 'G', freq: 392.00, lyric: 'Sol', x: 128 },
+        { id: 'A4', note: 'A', freq: 440.00, lyric: 'La', x: 160 },
+        { id: 'B4', note: 'B', freq: 493.88, lyric: 'Si', x: 192 },
+        { id: 'C5', note: 'C', freq: 523.25, lyric: 'Do!', x: 224 },
+        { id: 'D5', note: 'D', freq: 587.33, lyric: 'Re!', x: 256 },
+        { id: 'E5', note: 'E', freq: 659.25, lyric: 'Mi!', x: 288 }
+      ];
+
+      // Black keys (Eb4, Bb4, D#5)
+      const blackKeys = [
+        { id: 'Eb4', note: 'Eb', freq: 311.13, lyric: 'Mi♭', x: 48 },   // between D4 & E4
+        { id: 'Bb4', note: 'Bb', freq: 466.16, lyric: 'Si♭', x: 176 },  // between A4 & B4
+        { id: 'D#5', note: 'D#', freq: 622.25, lyric: 'Re#', x: 272 }   // between D5 & E5
+      ];
+
+      const allKeys = [...whiteKeys, ...blackKeys];
+
+      const baseSongs = {
+        fur_elise: {
+          name: 'Fur Elise - Beethoven',
+          lyrics: [
+            'Fur', 'Elise', 'melodie', 'clasică',
+            'Piano', 'suav', 'și', 'plin', 'de', 'gratie',
+            'A', 'minor', 'tonalitate', 'dulce',
+            'Beethoven', 'a', 'scris', 'cu', 'dragoste',
+            'Note', 'care', 'zboară', 'ca', 'fluturi',
+            'În', 'fiecare', 'mâna', 'care', 'cântă',
+            'Emoție', 'pură', 'și', 'eternă',
+            'Fur', 'Elise', 'pentru', 'totdeauna'
+          ],
+          notes: [
+            // A section (main theme) — 16 notes
+            'E5', 'D#5', 'E5', 'D#5', 'E5', 'B4', 'D5', 'C5',
+            'A4', 'C5', 'E5', 'A5', 'B5',
+            'E5', 'D#5', 'E5', 'D#5', 'E5', 'B4', 'D5', 'C5',
+            'A4', 'C5', 'E5', 'A5', 'B5',
+            // B section (contrast) - 16 notes
+            'E5', 'C5', 'B4', 'A4', 'B4', 'C5',
+            'E5', 'D#5', 'E5', 'D#5', 'E5', 'B4', 'D5', 'C5',
+            'A4', 'C5', 'E5', 'A5', 'B5',
+            // A' section (return) - 16 notes
+            'E5', 'D#5', 'E5', 'D#5', 'E5', 'B4', 'D5', 'C5',
+            'A4', 'C5', 'E5', 'A5', 'B5',
+            'E5', 'D#5', 'E5', 'D#5', 'E5', 'B4', 'D5', 'C5',
+            'A4', 'C5', 'E5', 'A5', 'B5',
+            // C section (modulation) - 12 notes
+            'E5', 'C5', 'B4', 'A4', 'B4', 'C5',
+            'E5', 'C5', 'B4', 'A4', 'B4', 'C5',
+            // Final A'' — 8 notes
+            'E5', 'D#5', 'E5', 'D#5', 'E5', 'B4', 'D5', 'C5'
+          ].map(note => {
+            // Fix: A5 and B5 don't exist in our range, map to lower octave
+            if (note === 'A5') return 'A4';
+            if (note === 'B5') return 'B4';
+            return note;
+          }),
+          tempo: 320
+        },
+        twinkle: {
+          name: 'Steaua Cuceritoare',
+          lyrics: [
+            'Steaua', 'steaua', 'stea', 'strălucitoare',
+            'Mă', 'minunez', 'ce', 'frumoasă', 'ești',
+            'Sus', 'deasupra', 'lumi', 'de', 'sus',
+            'Ca', 'un', 'diamant', 'pe', 'cer'
+          ],
+          notes: [
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4'
+          ],
+          tempo: 500
+        },
+        happy: {
+          name: 'La Mulți Ani',
+          lyrics: [
+            'La', 'mulți', 'ani', 'cu', 'bucurie',
+            'La', 'mulți', 'ani', 'cu', 'sănătate',
+            'La', 'mulți', 'ani', 'bine', 'cuvinte',
+            'La', 'mulți', 'ani', 'cu', 'bine'
+          ],
+          notes: [
+            'C4', 'C4', 'D4', 'C4', 'F4', 'E4',
+            'C4', 'C4', 'D4', 'C4', 'G4', 'F4',
+            'C4', 'C4', 'C5', 'A4', 'F4', 'E4', 'D4',
+            'A4', 'A4', 'G4', 'F4', 'G4', 'F4'
+          ],
+          tempo: 600
+        },
+        row: {
+          name: 'Frunza Verde',
+          lyrics: [
+            'Frunză', 'verde', 'frunză', 'verde',
+            'Pe', 'codru', 'mare', 'mă-ntind',
+            'Veselă', 'veselă', 'veselă', 'veselă',
+            'Viața', 'mea', 'e', 'un', 'vis'
+          ],
+          notes: [
+            'C4', 'C4', 'C4', 'D4', 'E4',
+            'E4', 'D4', 'E4', 'F4', 'G4',
+            'G4', 'G4', 'G4', 'G4', 'G4', 'G4',
+            'E4', 'E4', 'E4', 'E4', 'E4', 'E4',
+            'G4', 'G4', 'G4', 'G4', 'G4', 'G4',
+            'C4', 'C4', 'C4', 'C4', 'C4', 'C4'
+          ],
+          tempo: 450
+        },
+        jingle: {
+          name: 'Clopoței de Crăciun',
+          lyrics: [
+            'Clopoței', 'clopoței', 'clopoței',
+            'Clopoței', 'de', 'Crăciun',
+            'Oh', 'ce', 'bucurie', 'mare',
+            'Când', 'sanie', 'zburătoare'
+          ],
+          notes: [
+            'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'G4', 'C4', 'D4', 'E4',
+            'F4', 'F4', 'F4', 'F4', 'F4', 'E4', 'E4', 'E4', 'E4', 'D4', 'D4', 'E4', 'D4', 'G4'
+          ],
+          tempo: 400
+        },
+        mary: {
+          name: "Mărioara și Mieluța",
+          lyrics: [
+            'Mărioara', 'avea', 'o', 'mieluță',
+            'Mieluța', 'albă', 'mieluța',
+            'Mărioara', 'avea', 'o', 'mieluță',
+            'Cu', 'lana', 'albă', 'ca', 'zăpada'
+          ],
+          notes: [
+            'E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4',
+            'D4', 'D4', 'D4', 'E4', 'G4', 'G4',
+            'E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4', 'E4', 'D4', 'D4', 'E4', 'D4', 'C4'
+          ],
+          tempo: 500
+        },
+        abc: {
+          name: 'Alfabetul Cantat',
+          lyrics: [
+            'A', 'B', 'C', 'D', 'E', 'F', 'G',
+            'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+            'Q', 'R', 'S', 'T', 'U', 'V',
+            'W', 'X', 'Y', 'și', 'Z'
+          ],
+          notes: [
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4'
+          ],
+          tempo: 480
+        },
+        old: {
+          name: 'Moș Ion și Fermă',
+          lyrics: [
+            'Moș', 'Ion', 'are', 'o', 'fermă',
+            'E-i-e-i-o',
+            'Și', 'pe', 'fermă', 'are', 'o', 'vacă',
+            'E-i-e-i-o'
+          ],
+          notes: [
+            'G4', 'G4', 'G4', 'D4', 'E4', 'E4', 'D4',
+            'G4', 'G4', 'G4', 'D4', 'E4', 'E4', 'D4',
+            'G4', 'B4', 'B4', 'A4', 'A4', 'G4',
+            'D4', 'D4', 'C4', 'C4', 'D4', 'E4', 'D4', 'G4',
+            'G4', 'G4', 'D4', 'E4', 'E4', 'D4'
+          ],
+          tempo: 550
+        },
+        barbi: {
+          name: 'Lumea Barbie',
+          lyrics: [
+            'În', 'o', 'lume', 'Barbie', 'strălucitoare',
+            'Unde', 'visurile', 'zboară', 'noaptea',
+            'Castelul', 'roz', 'strălucește',
+            'Magia', 'curge', 'așa', 'frumos'
+          ],
+          notes: [
+            'C4', 'E4', 'G4', 'C5', 'G4', 'E4', 'C4',
+            'D4', 'F4', 'A4', 'D5', 'A4', 'F4', 'D4',
+            'E4', 'G4', 'B4', 'E5', 'B4', 'G4', 'E4',
+            'C4', 'E4', 'G4', 'C5', 'G4', 'E4', 'C4'
+          ],
+          tempo: 520
+        },
+        rainbow: {
+          name: 'Cântecul Culorilor',
+          lyrics: [
+            'Roșu', 'și', 'galben', 'și', 'roz', 'și', 'verde',
+            'Mov', 'și', 'portocaliu', 'și', 'albastru',
+            'Pot', 'să', 'cânt', 'curcubeul',
+            'Cântă', 'și', 'tu', 'cu', 'mine'
+          ],
+          notes: [
+            'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4',
+            'C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4',
+            'C4', 'E4', 'G4', 'C5', 'G4', 'E4', 'C4',
+            'D4', 'F4', 'A4', 'D5', 'A4', 'F4', 'D4'
+          ],
+          tempo: 500
+        },
+        wheels: {
+          name: 'Rotile de la Autobuz',
+          lyrics: [
+            'Rotile', 'de', 'la', 'autobuz',
+            'Se', 'învârt', 'mereu',
+            'Și', 'trec', 'prin', 'tot', 'orașul'
+          ],
+          notes: [
+            'C4', 'C4', 'C4', 'G4', 'G4', 'G4',
+            'A4', 'A4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'C4', 'C4', 'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4', 'C4'
+          ],
+          tempo: 450
+        },
+        spider: {
+          name: 'Păianjenul Micuț',
+          lyrics: [
+            'Păianjenul', 'micuț', 'cățărător',
+            'Se', 'urcă', 'pe', 'jgheabul', 'de', 'apă',
+            'Ploaia', 'cade', 'de', 'sus',
+            'Și', 'spală', 'păianjenul', 'jos'
+          ],
+          notes: [
+            'C4', 'D4', 'E4', 'C4', 'E4', 'G4', 'E4', 'C4',
+            'D4', 'E4', 'F4', 'D4', 'F4', 'A4', 'F4', 'D4',
+            'E4', 'G4', 'E4', 'C4', 'E4', 'G4', 'E4', 'C4',
+            'C4', 'G4', 'G4', 'G4', 'E4', 'E4', 'E4', 'C4'
+          ],
+          tempo: 500
+        },
+        baa: {
+          name: 'Miau Miau Oaia',
+          lyrics: [
+            'Miau', 'miau', 'oaia', 'neagră',
+            'Ai', 'lână', 'de', 'vânzare',
+            'Da', 'doamne', 'da', 'doamne',
+            'Trei', 'săculeți', 'pline'
+          ],
+          notes: [
+            'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'G4',
+            'C4', 'D4', 'E4', 'F4', 'F4', 'E4', 'E4', 'D4', 'D4',
+            'E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4',
+            'D4', 'D4', 'E4', 'D4', 'C4'
+          ],
+          tempo: 550
+        },
+        star: {
+          name: 'Steaua Strălucitoare',
+          lyrics: [
+            'Steaua', 'strălucitoare',
+            'Prima', 'stea', 'seara',
+            'Doresc', 'ca', 'să', 'pot', 'să',
+            'Îmi', 'împlinesc', 'dorința'
+          ],
+          notes: [
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4'
+          ],
+          tempo: 600
+        },
+        buburuza: {
+          name: 'Buburuza',
+          lyrics: [
+            'Buburuza', 'micuță', 'zburătoare',
+            'Pe', 'grădina', 'noastră', 's-a', 'așezat',
+            'Cu', 'puncte', 'roșii', 'pe', 'spate',
+            'Și', 'zâmbește', 'luminii', 'de', 'soare'
+          ],
+          notes: [
+            'C4', 'D4', 'E4', 'G4', 'E4', 'D4', 'C4',
+            'D4', 'E4', 'F4', 'A4', 'F4', 'E4', 'D4',
+            'E4', 'G4', 'E4', 'C4', 'E4', 'G4', 'E4', 'C4',
+            'C4', 'G4', 'G4', 'G4', 'E4', 'E4', 'E4', 'C4'
+          ],
+          tempo: 500
+        },
+        florile: {
+          name: 'Florile Primăverii',
+          lyrics: [
+            'Crini', 'și', 'lalele', 'frumoase',
+            'În', 'grădină', 'înfloreau',
+            'Garoafe', 'roșii', 'și', 'albastre',
+            'Soarele', 'le', 'încălzea'
+          ],
+          notes: [
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4'
+          ],
+          tempo: 520
+        },
+        puii: {
+          name: 'Puii de Găină',
+          lyrics: [
+            'Pui', 'pui', 'pui', 'micuței',
+            'Sub', 'aripa', 'mamei', 'stau',
+            'Cioc', 'cioc', 'cioc', 'mereu',
+            'Până', 'cresc', 'și', 'zboară', 'spre', 'cer'
+          ],
+          notes: [
+            'E4', 'E4', 'E4', 'D4', 'D4', 'D4', 'E4', 'G4',
+            'C4', 'D4', 'E4', 'F4', 'F4', 'E4', 'E4', 'D4', 'D4',
+            'E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4',
+            'D4', 'D4', 'E4', 'D4', 'C4'
+          ],
+          tempo: 450
+        },
+        trenulet: {
+          name: 'Trenulețul Vesel',
+          lyrics: [
+            'Țu-țu', 'trenuleț', 'micuț',
+            'Pe', 'șine', 'merge', 'repede',
+            'Prin', 'pădure', 'și', 'pe', 'câmp',
+            'La', 'gara', 'din', 'oraș'
+          ],
+          notes: [
+            'C4', 'C4', 'D4', 'D4', 'E4', 'E4', 'D4', 'D4',
+            'C4', 'C4', 'D4', 'D4', 'E4', 'E4', 'D4', 'D4',
+            'C4', 'C4', 'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4', 'D4',
+            'C4', 'C4', 'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4', 'D4'
+          ],
+          tempo: 400
+        },
+        copacul: {
+          name: 'Copacul Bătrân',
+          lyrics: [
+            'Copac', 'bătrân', 'cu', 'ramuri', 'mari',
+            'În', 'grădină', 'stă', 'de', 'mult',
+            'Păsări', 'mici', 'în', 'el', 'cuibăresc',
+            'Și', 'frunzele', 'lui', 'sunt', 'frumoase'
+          ],
+          notes: [
+            'G4', 'G4', 'G4', 'D4', 'E4', 'E4', 'D4',
+            'G4', 'G4', 'G4', 'D4', 'E4', 'E4', 'D4',
+            'G4', 'B4', 'B4', 'A4', 'A4', 'G4',
+            'D4', 'D4', 'C4', 'C4', 'D4', 'E4', 'D4', 'G4',
+            'G4', 'G4', 'D4', 'E4', 'E4', 'D4'
+          ],
+          tempo: 550
+        },
+        baloane: {
+          name: 'Baloane Colorate',
+          lyrics: [
+            'Baloane', 'roz', 'și', 'albastre',
+            'Zboară', 'spre', 'cerul', 'albastru',
+            'Cu', 'mâna', 'le', 'legăm', 'bine',
+            'Să', 'nu', 'le', 'piardă', 'vântul'
+          ],
+          notes: [
+            'C4', 'E4', 'G4', 'C5', 'G4', 'E4', 'C4',
+            'D4', 'F4', 'A4', 'D5', 'A4', 'F4', 'D4',
+            'E4', 'G4', 'B4', 'E5', 'B4', 'G4', 'E4',
+            'C4', 'E4', 'G4', 'C5', 'G4', 'E4', 'C4'
+          ],
+          tempo: 500
+        },
+        ploaia: {
+          name: 'Ploaia de Primăvară',
+          lyrics: [
+            'Ploaie', 'mică', 'pic', 'pic', 'pic',
+            'Pe', 'ferestre', 'și', 'pe', 'pământ',
+            'Udă', 'florile', 'și', 'iarba',
+            'Și', 'face', 'totul', 'verde'
+          ],
+          notes: [
+            'E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4',
+            'D4', 'D4', 'D4', 'E4', 'G4', 'G4',
+            'E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4', 'E4', 'D4', 'D4', 'E4', 'D4', 'C4'
+          ],
+          tempo: 600
+        },
+        fluture: {
+          name: 'Fluturele Alb',
+          lyrics: [
+            'Fluture', 'alb', 'cu', 'aripi', 'mari',
+            'Zboară', 'printre', 'flori', 'de', 'toate',
+            'Se', 'oprește', 'pe', 'un', 'trandafir',
+            'Și', 'dansează', 'în', 'lumina', 'soarelui'
+          ],
+          notes: [
+            'C4', 'D4', 'E4', 'C4', 'E4', 'G4', 'E4', 'C4',
+            'D4', 'E4', 'F4', 'D4', 'F4', 'A4', 'F4', 'D4',
+            'E4', 'G4', 'E4', 'C4', 'E4', 'G4', 'E4', 'C4',
+            'C4', 'G4', 'G4', 'G4', 'E4', 'E4', 'E4', 'C4'
+          ],
+          tempo: 520
+        },
+        minge: {
+          name: 'Mingea Roșie',
+          lyrics: [
+            'Minge', 'roșie', 'săritătoare',
+            'Pe', 'iarbă', 'verde', 'se', 'rostogolește',
+            'O', 'prind', 'și', 'o', 'arunc', 'spre', 'cer',
+            'Și', 'cade', 'înapoi', 'în', 'mâinile', 'mele'
+          ],
+          notes: [
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'C4', 'C4', 'G4', 'G4', 'A4', 'A4', 'G4',
+            'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4'
+          ],
+          tempo: 480
+        },
+        stelele: {
+          name: 'Steaua de pe Cer',
+          lyrics: [
+            'Steaua', 'mea', 'strălucitoare',
+            'Pe', 'cer', 'de', 'noapte', 'strălucești',
+            'Mă', 'gândesc', 'la', 'tine', 'mereu',
+            'Când', 'închid', 'ochii', 'și', 'vis',
+            'Te', 'văd', 'zâmbind', 'din', 'înălțimi',
+            'Și', 'luminezi', 'calea', 'mea'
+          ],
+          notes: [
+            'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4',
+            'C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4',
+            'C4', 'E4', 'G4', 'C5', 'G4', 'E4', 'C4',
+            'D4', 'F4', 'A4', 'D5', 'A4', 'F4', 'D4',
+            'E4', 'G4', 'B4', 'E5', 'B4', 'G4', 'E4',
+            'C4', 'E4', 'G4', 'C5', 'G4', 'E4', 'C4'
+          ],
+          tempo: 550
+        },
+        pescarus: {
+          name: 'Pescărușul Albastru',
+          lyrics: [
+            'Pescăruș', 'albastru', 'zburător',
+            'Deasupra', 'mării', 'albastre',
+            'Caută', 'pești', 'și', 'se', 'joacă',
+            'Cu', 'valurile', 'mari'
+          ],
+          notes: [
+            'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'E4', 'G4',
+            'C4', 'D4', 'E4', 'F4', 'F4', 'E4', 'E4', 'D4', 'D4',
+            'E4', 'D4', 'C4', 'D4', 'E4', 'E4', 'E4',
+            'D4', 'D4', 'E4', 'D4', 'C4'
+          ],
+          tempo: 500
+        },
+        soarele: {
+          name: 'Soarele Răsare',
+          lyrics: [
+            'Soarele', 'răsare', 'dimineața',
+            'Încălzește', 'pământul', 'cu', 'lumina',
+            'Florile', 'deschid', 'petalele',
+            'Și', 'ziua', 'începe', 'frumoasă'
+          ],
+          notes: [
+            'C4', 'C4', 'C4', 'G4', 'G4', 'G4',
+            'A4', 'A4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4', 'D4', 'C4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4',
+            'C4', 'C4', 'G4', 'G4', 'F4', 'F4', 'E4', 'E4', 'D4', 'C4'
+          ],
+          tempo: 450
+        },
+        norisor: {
+          name: 'Norisorul Alb',
+          lyrics: [
+            'Norisor', 'alb', 'pe', 'cer',
+            'Plutește', 'liniștit', 'deasupra',
+            'Uneori', 'plânge', 'cu', 'ploaie',
+            'Și', 'apoi', 'zâmbește', 'cu', 'soare'
+          ],
+          notes: [
+            'G4', 'G4', 'G4', 'D4', 'E4', 'E4', 'D4',
+            'G4', 'G4', 'G4', 'D4', 'E4', 'E4', 'D4',
+            'G4', 'B4', 'B4', 'A4', 'A4', 'G4',
+            'D4', 'D4', 'C4', 'C4', 'D4', 'E4', 'D4', 'G4',
+            'G4', 'G4', 'D4', 'E4', 'E4', 'D4'
+          ],
+          tempo: 520
+        }
+      };
+
+      const songs = {};
+      Object.entries(baseSongs).forEach(([key, song]) => {
+        songs[key] = {
+          ...song,
+          tempo: Math.max(100, Math.round(song.tempo / speedMultiplier))
+        };
+      });
+
+      const initAudioContext = () => {
+        if (!audioContextRef.current) {
+          audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      };
+
+      const playNote = (freq, lyric) => {
+        initAudioContext();
+        const oscillator = audioContextRef.current.createOscillator();
+        const gainNode = audioContextRef.current.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContextRef.current.destination);
+        
+        oscillator.frequency.value = freq;
+        oscillator.type = 'sine';
+        
+        const now = audioContextRef.current.currentTime;
+        gainNode.gain.setValueAtTime(0, now);
+        gainNode.gain.linearRampToValueAtTime(0.4, now + 0.01);
+        gainNode.gain.linearRampToValueAtTime(0, now + 0.7);
+        
+        oscillator.start(now);
+        oscillator.stop(now + 0.7);
+      };
+
+      const createFallingDot = () => {
+        const song = songs[currentSong];
+        if (currentSongIndexRef.current >= song.notes.length) {
+          setIsSongFinished(true);
+          setIsAutoMode(false);
+          return;
+        }
+        
+        const noteId = song.notes[currentSongIndexRef.current];
+        const lyric = song.lyrics[currentSongIndexRef.current % song.lyrics.length];
+        currentSongIndexRef.current++;
+        
+        const key = allKeys.find(k => k.id === noteId);
+        if (key) {
+          const isBlack = key.id.includes('b') || key.id.includes('#');
+          const newDot = {
+            id: Date.now() + Math.random(),
+            x: key.x + (isBlack ? 8 : 16),
+            y: 0,
+            targetKey: key.id,
+            lyric: lyric,
+            freq: key.freq,
+            size: isBlack ? 16 : 20,
+            color: isBlack 
+              ? `hsl(${Math.random() * 360}, 70%, 45%)` 
+              : `hsl(${Math.random() * 360}, 80%, 65%)`
+          };
+          setFallingDots(prev => [...prev, newDot]);
+        }
+      };
+
+      useEffect(() => {
+        const song = songs[currentSong];
+        if (isSongFinished || !isAutoMode) return;
+        
+        const interval = setInterval(() => {
+          if (isAutoMode) {
+            createFallingDot();
+          }
+        }, song.tempo);
+
+        return () => clearInterval(interval);
+      }, [currentSong, isAutoMode, speedMultiplier, isSongFinished]);
+
+      useEffect(() => {
+        const fallInterval = setInterval(() => {
+          setFallingDots(prev => {
+            const updatedDots = prev.map(dot => ({
+              ...dot,
+              y: dot.y + (4.0 * speedMultiplier)
+            })).filter(dot => dot.y < 300);
+            return updatedDots;
+          });
+        }, 30);
+
+        return () => clearInterval(fallInterval);
+      }, [speedMultiplier]);
+
+      const handleDotReachedPiano = (dot) => {
+        const key = allKeys.find(k => k.id === dot.targetKey);
+        if (key) {
+          playNote(dot.freq, dot.lyric);
+          setActiveKeys(prev => new Set([...prev, key.id]));
+          setTimeout(() => {
+            setActiveKeys(prev => {
+              const newSet = new Set(prev);
+              newSet.delete(key.id);
+              return newSet;
+            });
+          }, 300);
+          
+          setFallingDots(prev => prev.filter(d => d.id !== dot.id));
+        }
+      };
+
+      const handleKeyPress = (key) => {
+        playNote(key.freq, key.lyric);
+        setActiveKeys(prev => new Set([...prev, key.id]));
+        setTimeout(() => {
+          setActiveKeys(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(key.id);
+            return newSet;
+          });
+        }, 300);
+        
+        setFallingDots(prev => {
+          const index = prev.findIndex(dot => dot.targetKey === key.id);
+          if (index !== -1) {
+            return [...prev.slice(0, index), ...prev.slice(index + 1)];
+          }
+          return prev;
+        });
+      };
+
+      const handleDotClick = (dot) => {
+        setFallingDots(prev => prev.filter(d => d.id !== dot.id));
+        handleDotReachedPiano(dot);
+      };
+
+      const changeSong = (songKey) => {
+        setCurrentSong(songKey);
+        currentSongIndexRef.current = 0;
+        setFallingDots([]);
+        setIsSongFinished(false);
+        setIsAutoMode(true);
+      };
+
+      const handleSpeedChange = (e) => {
+        const value = parseFloat(e.target.value);
+        setSpeedMultiplier(value);
+      };
+
+      const restartSong = () => {
+        currentSongIndexRef.current = 0;
+        setFallingDots([]);
+        setIsSongFinished(false);
+        setIsAutoMode(true);
+      };
+
+      return (
+        <div className="min-h-screen bg-gradient-to-b from-indigo-900 via-purple-900 to-pink-800 flex flex-col items-center justify-center p-4">
+          <div className="text-center mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 cursive-text" style={{fontFamily:'Caveat,cursive'}}>
+              Aventura Pianului Muzical
+            </h1>
+            <p className="text-purple-200 text-lg cursive-text" style={{fontFamily:'Caveat,cursive'}}>
+              Cântă împreună cu versurile care cad sau creează propria ta melodie! 🎵
+            </p>
+          </div>
+
+          <div className="mb-6 max-w-4xl w-full">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {Object.entries(baseSongs).map(([key, song]) => (
+                <button
+                  key={key}
+                  onClick={() => changeSong(key)}
+                  className={`px-2 py-2 rounded-lg font-medium transition-all duration-200 text-sm cursive-text ${
+                    currentSong === key
+                      ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg'
+                      : 'bg-white/20 text-purple-200 hover:bg-white/30'
+                  }`}
+                  style={{fontFamily:'Caveat,cursive'}}
+                >
+                  {song.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mb-6 flex flex-col items-center w-full max-w-md">
+            <div className="flex items-center gap-4 mb-2 w-full">
+              <span className="text-white cursive-text font-medium" style={{fontFamily:'Caveat,cursive'}}>Încet</span>
+              <input
+                type="range"
+                min="0.5"
+                max="2.0"
+                step="0.1"
+                value={speedMultiplier}
+                onChange={handleSpeedChange}
+                className="w-full h-2 bg-purple-300 rounded-lg appearance-none cursor-pointer"
+              />
+              <span className="text-white cursive-text font-medium" style={{fontFamily:'Caveat,cursive'}}>Repede</span>
+            </div>
+            <div className="text-purple-200 cursive-text text-sm" style={{fontFamily:'Caveat,cursive'}}>
+              Viteză: {speedMultiplier.toFixed(1)}x
+            </div>
+          </div>
+
+          <div className="mb-6 flex gap-3">
+            <button
+              onClick={() => setIsAutoMode(!isAutoMode)}
+              className={`px-4 py-2 rounded-full font-medium transition-all duration-200 cursive-text ${
+                isAutoMode
+                  ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg'
+                  : 'bg-gradient-to-r from-purple-400 to-pink-500 text-white shadow-lg'
+              }`}
+              style={{fontFamily:'Caveat,cursive'}}
+            >
+              {isAutoMode ? 'Mod Auto: ON' : 'Joacă Liber: ON'}
+            </button>
+            
+            {isSongFinished && (
+              <button
+                onClick={restartSong}
+                className="px-4 py-2 bg-gradient-to-r from-blue-400 to-cyan-500 text-white rounded-full font-medium cursive-text shadow-lg hover:shadow-xl transition-all duration-200"
+                style={{fontFamily:'Caveat,cursive'}}
+              >
+                Reia Cântecul
+              </button>
+            )}
+          </div>
+
+          <div className="relative" style={{ width: '320px', height: '340px' }}>
+            {fallingDots.map(dot => (
+              <div
+                key={dot.id}
+                className="absolute rounded-full shadow-lg transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-200 hover:scale-125"
+                style={{
+                  left: `${dot.x}px`,
+                  top: `${dot.y}px`,
+                  width: `${dot.size}px`,
+                  height: `${dot.size}px`,
+                  backgroundColor: dot.color,
+                  boxShadow: `0 0 15px ${dot.color}cc, 0 0 30px ${dot.color}80`
+                }}
+                onClick={() => handleDotClick(dot)}
+              >
+                <div className="w-full h-full flex items-center justify-center">
+                  <span className="text-white font-bold text-xs drop-shadow-md cursive-text" style={{fontFamily:'Caveat,cursive'}}>
+                    {dot.lyric}
+                  </span>
+                </div>
+              </div>
+            ))}
+
+            {/* Black keys */}
+            <div className="absolute bottom-0 left-0 flex" style={{ width: '320px', height: '36px', zIndex: 20 }}>
+              {blackKeys.map(key => (
+                <button
+                  key={key.id}
+                  className={`absolute w-4 h-24 bg-black rounded-b-none shadow-lg z-20
+                    ${activeKeys.has(key.id) 
+                      ? 'bg-gradient-to-b from-gray-700 to-gray-800 transform -translate-y-2 ring-4 ring-gray-400 shadow-2xl' 
+                      : 'hover:bg-gray-800 hover:shadow-xl'}
+                    transition-all duration-150 ease-in-out cursor-pointer flex flex-col items-center justify-end pb-1`}
+                  style={{ left: `${key.x}px` }}
+                  onClick={() => handleKeyPress(key)}
+                >
+                  <div className="text-gray-300 font-bold text-xs mb-1 cursive-text" style={{fontFamily:'Caveat,cursive'}}>
+                    {key.note}
+                  </div>
+                  <div className="text-gray-400 font-medium text-[8px] cursive-text" style={{fontFamily:'Caveat,cursive'}}>
+                    {key.lyric}
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* White keys */}
+            <div className="absolute bottom-0 left-0 flex" style={{ width: '320px' }}>
+              {whiteKeys.map(key => (
+                <button
+                  key={key.id}
+                  className={`w-8 h-36 bg-white border-r border-gray-300 last:border-r-0 rounded-t-none shadow-lg relative
+                    ${activeKeys.has(key.id) 
+                      ? 'bg-gradient-to-b from-cyan-300 to-cyan-200 transform -translate-y-2 ring-4 ring-cyan-400 shadow-2xl z-30' 
+                      : 'hover:bg-gray-100 hover:shadow-xl z-10'}
+                    transition-all duration-150 ease-in-out cursor-pointer flex flex-col items-center justify-end pb-2`}
+                  onClick={() => handleKeyPress(key)}
+                >
+                  <div className="text-gray-700 font-bold text-base mb-1 cursive-text" style={{fontFamily:'Caveat,cursive'}}>
+                    {key.note}
+                  </div>
+                  <div className="text-gray-600 font-medium text-xs cursive-text" style={{fontFamily:'Caveat,cursive'}}>
+                    {key.lyric}
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div className="absolute bottom-0 left-0 w-full h-36 bg-gradient-to-t from-amber-900 via-amber-800 to-amber-700 rounded-t-lg z-0 border-t-4 border-amber-950" />
+          </div>
+
+          <div className="mt-8 text-center max-w-md">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+              <p className="text-purple-200 text-sm leading-relaxed cursive-text" style={{fontFamily:'Caveat,cursive'}}>
+                Alege dintre <strong>24 de cântece</strong>, inclusiv <strong>Fur Elise</strong> autentic! 
+                Toate versurile apar mereu pe punctele căzătoare. ✨
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    };
+</script>
+
 </body>
 </html>
 
