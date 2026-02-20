@@ -3,1291 +3,999 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Super Jocuri Educaționale</title>
+<title>Super Jocuri Educaționale Complete</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&family=Comic+Sans+MS&display=swap" rel="stylesheet">
 <style>
-/* --- STILURI GENERALE & VARIABILE --- */
+/* --- VARIABILE TEME --- */
 :root {
---boy-bg: #E3F2FD; --boy-primary: #2196F3; --boy-secondary: #4FC3F7; --boy-accent: #4CAF50;
---girl-bg: #FCE4EC; --girl-primary: #EC407A; --girl-secondary: #F48FB1; --girl-accent: #AB47BC;
---pro-bg: #263238; --pro-card: #37474F; --pro-text: #ECEFF1; --pro-accent: #00E5FF;
---text-color: #455A64; --card-bg: #FFFFFF; --success: #66BB6A; --error: #EF5350;
---timer-warning: #FF9800; --timer-danger: #F44336; --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
---letter-primary: #FF85A2; --letter-secondary: #A2D2FF; --letter-accent: #FFC8DD;
+    --bg-color: #FCE4EC;
+    --bg-pattern: radial-gradient(#F8BBD0 15%, transparent 16%);
+    --primary-color: #EC407A;
+    --secondary-color: #F48FB1;
+    --accent-color: #AB47BC;
+    --text-color: #880E4F;
+    --card-bg: #FFFFFF;
+    --btn-shadow: #C2185B;
+    --font-main: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
-body { background-color: var(--girl-bg); background-image: radial-gradient(#F8BBD0 15%, transparent 16%), radial-gradient(#F8BBD0 15%, transparent 16%); background-size: 60px 60px; background-position: 0 0, 30px 30px; color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; transition: background 0.5s ease; }
-body.boy-theme { background-color: var(--boy-bg); background-image: radial-gradient(#BBDEFB 15%, transparent 16%), radial-gradient(#BBDEFB 15%, transparent 16%); }
-body.pro-theme { background-color: var(--pro-bg); background-image: radial-gradient(#455A64 15%, transparent 16%); color: var(--pro-text); }
-.background-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
-.shape { position: absolute; opacity: 0.4; animation: float 15s infinite linear; }
-@keyframes float { 0% { transform: translateY(100vh) rotate(0deg); } 100% { transform: translateY(-100px) rotate(360deg); } }
+
+/* Tema Băiat */
+body.boy-theme {
+    --bg-color: #E3F2FD;
+    --bg-pattern: radial-gradient(#BBDEFB 15%, transparent 16%);
+    --primary-color: #2196F3;
+    --secondary-color: #4FC3F7;
+    --accent-color: #4CAF50;
+    --text-color: #0D47A1;
+    --card-bg: #FFFFFF;
+    --btn-shadow: #1565C0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-main); user-select: none; -webkit-tap-highlight-color: transparent; }
+
+body {
+    background-color: var(--bg-color);
+    background-image: var(--bg-pattern), var(--bg-pattern);
+    background-size: 60px 60px;
+    background-position: 0 0, 30px 30px;
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    transition: all 0.5s ease;
+}
+
+/* --- ECRAN START --- */
+#startScreen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.start-title { font-size: 2.5rem; color: #555; margin-bottom: 3rem; font-family: 'Fredoka One', cursive; }
+.gender-cards { display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; }
+.gender-card {
+    background: white; padding: 2rem; border-radius: 30px;
+    cursor: pointer; transition: transform 0.3s;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    border: 5px solid #eee;
+    min-width: 200px;
+}
+.gender-card:hover { transform: scale(1.1); }
+.gender-icon { font-size: 5rem; display: block; margin-bottom: 1rem; }
+.gender-title { font-size: 1.5rem; font-weight: bold; color: #333; }
+.girl-card { border-color: #F48FB1; }
+.girl-card .gender-title { color: #EC407A; }
+.boy-card { border-color: #4FC3F7; }
+.boy-card .gender-title { color: #2196F3; }
+
 /* --- MENIU PRINCIPAL --- */
-.container { width: 90%; max-width: 900px; text-align: center; padding: 2rem; }
-h1 { font-size: 3rem; margin-bottom: 2rem; color: var(--girl-primary); text-shadow: 2px 2px 0px #FFF; transition: color 0.5s; font-family: 'Fredoka One', cursive; }
-body.boy-theme h1 { color: var(--boy-primary); text-shadow: none; }
-body.pro-theme h1 { color: var(--pro-accent); text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
-.menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; width: 100%; margin-bottom: 2rem; }
-.big-card { background: var(--card-bg); border-radius: 30px; padding: 2rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 10px 0 rgba(0,0,0,0.1); border: 5px solid #FFF; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 220px; position: relative; }
-body.pro-theme .big-card { background: var(--pro-card); color: var(--pro-text); border: 3px solid var(--pro-accent); }
-.big-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 20px 0 rgba(0,0,0,0.1); }
-.big-card-icon { font-size: 4.5rem; margin-bottom: 1rem; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2)); }
-.big-card-title { font-weight: 900; font-size: 1.6rem; margin-bottom: 0.5rem; font-family: 'Fredoka One', cursive; }
-body.pro-theme .big-card-title { color: var(--pro-text); }
-body:not(.pro-theme) .big-card-title { color: var(--text-color); }
-.big-card-desc { font-size: 1rem; line-height: 1.4; font-weight: 600; opacity: 0.8; }
-/* --- STILURI JOC MATEMATIC --- */
-.sub-menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; width: 100%; }
-.card { background: var(--card-bg); border-radius: 25px; padding: 1.5rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 8px 0 rgba(0,0,0,0.1); border: 4px solid #FFF; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 160px; }
-body.pro-theme .card { background: var(--pro-card); color: var(--pro-text); border: 2px solid var(--pro-accent); }
-.card:hover { transform: translateY(-8px); box-shadow: 0 15px 0 rgba(0,0,0,0.1); }
-.card.kg-card { border-bottom: 6px solid var(--boy-accent); }
-.card.easy-card { border-bottom: 6px solid var(--girl-secondary); }
-.card.pro-card { border-bottom: 6px solid var(--pro-accent); }
-.card-icon { font-size: 3rem; margin-bottom: 0.5rem; }
-.card-title { font-weight: 900; font-size: 1.3rem; margin-bottom: 0.5rem; }
-.card-desc { font-size: 0.9rem; line-height: 1.4; font-weight: 600; opacity: 0.8; }
-.game-area { display: none; background: var(--card-bg); border-radius: 30px; padding: 2.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 600px; animation: popIn 0.5s; border: 5px solid var(--girl-secondary); transition: border-color 0.5s, background 0.5s, color 0.5s; }
-body.boy-theme .game-area { border-color: var(--boy-secondary); }
-body.pro-theme .game-area { border-color: var(--pro-accent); background: var(--pro-card); color: var(--pro-text); }
+.container { width: 90%; max-width: 900px; text-align: center; padding: 1rem; z-index: 10; }
+h1 { font-size: 2.5rem; margin-bottom: 1.5rem; color: var(--primary-color); text-shadow: 2px 2px 0px #FFF; font-family: 'Fredoka One', cursive; }
+.menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; width: 100%; margin-bottom: 2rem; }
+
+.big-card {
+    background: var(--card-bg); border-radius: 25px; padding: 1.5rem;
+    cursor: pointer; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 8px 0 rgba(0,0,0,0.1); border: 4px solid #FFF;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 180px; position: relative;
+}
+.big-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 15px 0 rgba(0,0,0,0.1); }
+.big-card-icon { font-size: 4rem; margin-bottom: 0.5rem; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); }
+.big-card-title { font-weight: 900; font-size: 1.4rem; margin-bottom: 0.5rem; font-family: 'Fredoka One', cursive; color: var(--text-color); }
+.big-card-desc { font-size: 0.9rem; line-height: 1.4; font-weight: 600; opacity: 0.8; color: var(--text-color); }
+
+/* Buton Ieșire Global */
+.exit-btn {
+    position: absolute; top: 10px; right: 10px;
+    background: #FF5252; color: white; border: none;
+    padding: 8px 15px; border-radius: 20px;
+    font-weight: bold; cursor: pointer;
+    box-shadow: 0 4px 0 #D32F2F;
+    font-size: 0.9rem; z-index: 100;
+    display: flex; align-items: center; gap: 5px;
+}
+.exit-btn:active { transform: translateY(4px); box-shadow: none; }
+
+/* Stiluri Generale Jocuri */
+.sub-menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; width: 100%; }
+.card { background: var(--card-bg); border-radius: 20px; padding: 1.5rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 6px 0 rgba(0,0,0,0.1); border: 3px solid #FFF; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 140px; }
+.card:hover { transform: translateY(-6px); box-shadow: 0 12px 0 rgba(0,0,0,0.1); }
+.card-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+.card-title { font-weight: 900; font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-color); }
+.card-desc { font-size: 0.8rem; line-height: 1.4; font-weight: 600; opacity: 0.8; }
+
+.game-area { display: none; background: var(--card-bg); border-radius: 25px; padding: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 600px; animation: popIn 0.5s; border: 4px solid var(--secondary-color); }
 @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-.stats-bar { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 1.3rem; font-weight: 800; color: var(--girl-primary); background: #F8BBD0; padding: 10px 20px; border-radius: 50px; transition: all 0.5s; }
-body.boy-theme .stats-bar { color: var(--boy-primary); background: #BBDEFB; }
-body.pro-theme .stats-bar { color: var(--pro-bg); background: var(--pro-accent); }
-.timer-container { width: 100%; height: 15px; background-color: #eee; border-radius: 10px; margin-bottom: 1.5rem; overflow: hidden; border: 2px solid #ddd; }
-.timer-bar { height: 100%; width: 100%; background-color: var(--success); transition: width 1s linear, background-color 0.5s; }
-.visual-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin: 20px 0; min-height: 80px; align-items: center; }
-.ball { width: 45px; height: 45px; border-radius: 50%; box-shadow: inset -3px -3px 10px rgba(0,0,0,0.1), 3px 3px 5px rgba(0,0,0,0.15); animation: bounce 2s infinite ease-in-out; border: 2px solid rgba(255,255,255,0.3); }
-@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-.sequence-display { font-size: 3.5rem; font-weight: 900; letter-spacing: 5px; margin: 20px 0; }
-body:not(.pro-theme) .sequence-display { color: var(--text-color); }
-body.pro-theme .sequence-display { color: var(--pro-text); }
-.missing-number { color: var(--girl-primary); border-bottom: 4px dashed var(--girl-primary); padding: 0 10px; }
-body.boy-theme .missing-number { color: var(--boy-primary); border-bottom-color: var(--boy-primary); }
-body.pro-theme .missing-number { color: var(--pro-accent); border-bottom-color: var(--pro-accent); }
-.problem-display { font-size: 4rem; font-weight: 900; margin: 1rem 0; color: var(--girl-primary); transition: color 0.5s; }
-body.boy-theme .problem-display { color: var(--boy-primary); }
-body.pro-theme .problem-display { color: var(--pro-accent); }
+
+.stats-bar { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 1.2rem; font-weight: 800; color: var(--primary-color); background: var(--secondary-color); padding: 8px 15px; border-radius: 50px; color: white; }
+.timer-container { width: 100%; height: 12px; background-color: #eee; border-radius: 10px; margin-bottom: 1rem; overflow: hidden; border: 2px solid #ddd; }
+.timer-bar { height: 100%; width: 100%; background-color: #66BB6A; transition: width 1s linear; }
+
+.problem-display { font-size: 3.5rem; font-weight: 900; margin: 1rem 0; color: var(--primary-color); }
 .input-group { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1.5rem; }
-input[type="number"], input[type="text"] { width: 130px; padding: 0.8rem; font-size: 2.2rem; text-align: center; border: 3px solid var(--girl-secondary); border-radius: 20px; outline: none; transition: all 0.3s; font-family: inherit; background: #FFF; }
-body.pro-theme input[type="number"], body.pro-theme input[type="text"] { border-color: var(--pro-accent); background: #263238; color: white; }
-body:not(.pro-theme) input[type="number"] { color: var(--text-color); }
-input[type="number"]:focus, input[type="text"]:focus { border-color: var(--girl-primary); transform: scale(1.05); }
-body.boy-theme input[type="number"]:focus { border-color: var(--boy-primary); }
-body.pro-theme input[type="number"]:focus { border-color: var(--pro-accent); }
-input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-input[type=number] { -moz-appearance: textfield; }
-.choices-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
-.choice-btn { background: white; border: 4px solid var(--boy-secondary); border-radius: 20px; padding: 1.5rem; font-size: 2rem; font-weight: 900; color: var(--boy-primary); cursor: pointer; transition: all 0.2s; box-shadow: 0 6px 0 #0277BD; font-family: inherit; }
-.choice-btn:active { transform: translateY(6px); box-shadow: none; }
-.choice-btn:hover { background: #E1F5FE; }
-.btn { padding: 1rem 2rem; font-size: 1.3rem; border: none; border-radius: 50px; cursor: pointer; font-weight: 900; transition: all 0.2s; color: white; font-family: inherit; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 5px 0 rgba(0,0,0,0.1); }
+input[type="number"], input[type="text"] { width: 120px; padding: 0.8rem; font-size: 2rem; text-align: center; border: 3px solid var(--secondary-color); border-radius: 15px; outline: none; background: #FFF; color: var(--text-color); }
+input:focus { border-color: var(--primary-color); transform: scale(1.05); }
+
+.choices-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
+.choice-btn { background: white; border: 3px solid var(--secondary-color); border-radius: 15px; padding: 1rem; font-size: 1.8rem; font-weight: 900; color: var(--primary-color); cursor: pointer; box-shadow: 0 5px 0 #0277BD; }
+.choice-btn:active { transform: translateY(5px); box-shadow: none; }
+
+.btn { padding: 0.8rem 1.5rem; font-size: 1.2rem; border: none; border-radius: 50px; cursor: pointer; font-weight: 900; color: white; box-shadow: 0 4px 0 rgba(0,0,0,0.2); margin-top: 10px; }
 .btn:active { transform: translateY(4px); box-shadow: none; }
-.btn-primary { background-color: var(--girl-primary); box-shadow: 0 5px 0 #C2185B; transition: background 0.5s, box-shadow 0.5s; }
-body.boy-theme .btn-primary { background-color: var(--boy-primary); box-shadow: 0 5px 0 #1565C0; }
-body.pro-theme .btn-primary { background-color: var(--pro-accent); color: var(--pro-bg); box-shadow: 0 5px 0 #00B8D4; }
-.btn-secondary { background-color: #B0BEC5; box-shadow: 0 5px 0 #78909C; margin-top: 1rem; font-size: 1rem; padding: 0.8rem 1.5rem; }
-.feedback { height: 3rem; margin-top: 1rem; font-weight: 900; font-size: 1.3rem; line-height: 1.4; }
-.feedback.correct { color: var(--success); }
-.feedback.wrong { color: var(--error); }
-.back-btn { position: absolute; top: 20px; left: 20px; background: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: 900; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 8px; z-index: 10; font-family: inherit; color: var(--girl-primary); transition: all 0.5s; }
-body.boy-theme .back-btn { color: var(--boy-primary); }
-body.pro-theme .back-btn { color: var(--pro-bg); background: var(--pro-accent); }
-.back-btn:hover { transform: scale(1.1); }
-.award-container, .leaderboard-container { display: none; flex-direction: column; align-items: center; justify-content: center; animation: popIn 0.8s; background: white; padding: 2rem; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 500px; margin: 0 auto; }
-.award-icon { font-size: 8rem; margin: 1rem 0; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2)); animation: float 3s infinite ease-in-out; }
-.award-title { font-size: 3rem; font-weight: 900; margin-bottom: 1rem; text-transform: uppercase; }
-.award-gold { color: var(--gold); text-shadow: 2px 2px 0 #B8860B; }
-.award-silver { color: var(--silver); text-shadow: 2px 2px 0 #78909C; }
-.award-bronze { color: var(--bronze); text-shadow: 2px 2px 0 #8D6E63; }
-.award-mention { color: var(--boy-primary); text-shadow: 2px 2px 0 #1565C0; }
-.award-try { color: var(--error); text-shadow: 2px 2px 0 #C62828; }
-.final-score { font-size: 2rem; color: var(--text-color); margin-bottom: 1rem; font-weight: bold; }
-.name-input-group { margin: 1.5rem 0; display: flex; flex-direction: column; gap: 10px; align-items: center; }
-.name-input-group label { font-size: 1.2rem; font-weight: bold; color: var(--text-color); }
-.name-input-group input { width: 100%; font-size: 1.5rem; padding: 0.5rem; }
-.leaderboard-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 1.1rem; }
-.leaderboard-table th { background: var(--girl-primary); color: white; padding: 10px; border-radius: 10px 10px 0 0; }
-body.pro-theme .leaderboard-table th { background: var(--pro-accent); color: var(--pro-bg); }
-body.boy-theme .leaderboard-table th { background: var(--boy-primary); }
-.leaderboard-table td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
-.leaderboard-table tr:nth-child(even) { background-color: #f9f9f9; }
-.leaderboard-table tr:first-child td { font-weight: bold; color: var(--gold); }
-.leaderboard-table tr:nth-child(2) td { font-weight: bold; color: var(--silver); }
-.leaderboard-table tr:nth-child(3) td { font-weight: bold; color: var(--bronze); }
-/* --- STILURI JOC SĂRITURI --- */
+.btn-primary { background-color: var(--primary-color); box-shadow: 0 4px 0 var(--btn-shadow); }
+.btn-secondary { background-color: #B0BEC5; box-shadow: 0 4px 0 #78909C; font-size: 1rem; }
+
+.feedback { height: 2.5rem; margin-top: 1rem; font-weight: 900; font-size: 1.2rem; }
+.feedback.correct { color: #66BB6A; }
+.feedback.wrong { color: #EF5350; }
+
+.back-btn { position: absolute; top: 10px; left: 10px; background: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 900; box-shadow: 0 3px 5px rgba(0,0,0,0.1); z-index: 10; color: var(--primary-color); }
+
+/* Jump Game */
 #jumpGameContainer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #222; z-index: 200; touch-action: none; }
 #jumpCanvas { display: block; width: 100%; height: 100%; }
-#jumpUI { position: absolute; top: 20px; left: 20px; color: white; font-size: 22px; font-weight: bold; text-shadow: 2px 2px 4px #000; z-index: 10; pointer-events: none; display: flex; flex-direction: column; gap: 10px; }
+#jumpUI { position: absolute; top: 20px; left: 20px; color: white; font-size: 20px; font-weight: bold; text-shadow: 2px 2px 4px #000; z-index: 10; pointer-events: none; }
 #jumpMenu { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; z-index: 20; }
-#jumpWinScreen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(46, 213, 115, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; color: white; z-index: 30; text-align: center; }
-/* --- STILURI JOC LITERE --- */
-#letterGameContainer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #FFF0F5; background-image: url('https://image.qwenlm.ai/public_source/9d076338-2b12-4553-8888-4cf6f0866228/1206da42b-50bc-4579-b502-e76be98f8371.png'); background-size: cover; z-index: 200; touch-action: none; font-family: 'Nunito', sans-serif; }
-.letter-card-ui { background: rgba(255, 255, 255, 0.95); width: 95%; height: 95%; max-height: 800px; border-radius: 30px; box-shadow: 0 10px 25px rgba(255, 133, 162, 0.3); display: flex; flex-direction: column; align-items: center; padding: 15px; position: relative; backdrop-filter: blur(5px); margin: 2.5% auto; }
-.letter-header { text-align: center; width: 100%; margin-bottom: 5px; flex-shrink: 0; }
-.letter-header h1 { font-family: 'Fredoka One', cursive; color: var(--letter-primary); font-size: 1.8rem; margin: 0; text-shadow: 2px 2px 0px #FFE5EC; }
-.letter-score { background: var(--letter-secondary); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 1.1rem; display: inline-block; margin-top: 5px; box-shadow: 0 4px 0 #7AB8E8; }
-.letter-play-area { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; min-height: 0; }
-.letter-card-display { background: var(--letter-accent); width: 100px; height: 100px; border-radius: 25px; display: flex; justify-content: center; align-items: center; font-family: 'Fredoka One', cursive; font-size: 4rem; color: var(--letter-primary); box-shadow: 0 8px 0 #FFB3C6; transition: transform 0.2s; position: relative; flex-shrink: 0; border: 4px solid transparent; }
-.letter-card-display.bounce { animation: bounce 0.5s; }
-.letter-card-display.shake { animation: shake 0.5s; border-color: var(--error); }
-@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-.letter-canvas-container { position: relative; width: 100%; max-width: 350px; aspect-ratio: 1; background: white; border: 4px dashed var(--letter-secondary); border-radius: 25px; box-shadow: inset 0 0 20px rgba(0,0,0,0.05); flex-shrink: 0; }
-.letter-canvas-container canvas { border-radius: 20px; width: 100%; height: 100%; display: block; position: absolute; top: 0; left: 0; }
+#jumpWinScreen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(76, 175, 80, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; color: white; z-index: 30; text-align: center; }
+
+/* Letter Game */
+#letterGameContainer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #FFF0F5; z-index: 200; touch-action: none; }
+.letter-card-ui { background: rgba(255, 255, 255, 0.95); width: 95%; height: 95%; max-height: 800px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; padding: 15px; position: relative; margin: 2.5% auto; }
+.letter-header { text-align: center; width: 100%; margin-bottom: 5px; }
+.letter-header h1 { font-family: 'Fredoka One'; color: var(--primary-color); font-size: 1.6rem; margin: 0; }
+.letter-score { background: var(--secondary-color); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 1rem; display: inline-block; margin-top: 5px; }
+.letter-play-area { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; }
+.letter-card-display { background: var(--accent-color); width: 90px; height: 90px; border-radius: 20px; display: flex; justify-content: center; align-items: center; font-family: 'Fredoka One'; font-size: 3.5rem; color: white; box-shadow: 0 6px 0 rgba(0,0,0,0.2); }
+.letter-canvas-container { position: relative; width: 100%; max-width: 320px; aspect-ratio: 1; background: white; border: 3px dashed var(--secondary-color); border-radius: 20px; }
+.letter-canvas-container canvas { border-radius: 15px; width: 100%; height: 100%; display: block; position: absolute; top: 0; left: 0; }
 #guideCanvas { z-index: 1; pointer-events: none; }
 #drawCanvas { z-index: 2; }
-.letter-clear-btn { position: absolute; top: 5px; right: 5px; background: #FFD1DC; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 0 #FFB3C6; z-index: 10; }
-.letter-clear-btn:active { transform: translateY(4px); box-shadow: none; }
-.letter-clear-btn svg { width: 18px; height: 18px; fill: #D65A78; }
-.letter-action-btn { background: var(--letter-primary); color: white; border: none; padding: 15px 30px; font-family: 'Fredoka One', cursive; font-size: 1.4rem; border-radius: 50px; cursor: pointer; box-shadow: 0 6px 0 #D65A78; transition: all 0.1s; width: 90%; max-width: 300px; flex-shrink: 0; margin-top: auto; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; gap: 10px; }
-.letter-action-btn:active { transform: translateY(6px); box-shadow: none; }
-.letter-action-btn.next { background: var(--success); box-shadow: 0 6px 0 #8AC4E0; }
-.letter-action-btn.skip { background: var(--timer-warning); color: #5E6472; box-shadow: 0 6px 0 #E5C335; }
-.letter-feedback-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'Fredoka One', cursive; font-size: 3rem; pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 100; border-radius: 30px; text-align: center; padding: 20px; }
-.letter-feedback-overlay.show { opacity: 1; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-.letter-feedback-overlay.fail { color: var(--error); }
-.letter-feedback-overlay.success { color: var(--letter-primary); }
-#letterConfetti { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 200; border-radius: 30px; }
-.letter-mascot-img { position: absolute; top: -40px; right: -30px; width: 90px; height: auto; z-index: 5; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); }
+.letter-action-btn { background: var(--primary-color); color: white; border: none; padding: 12px 25px; font-family: 'Fredoka One'; font-size: 1.2rem; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 0 var(--btn-shadow); width: 90%; max-width: 250px; margin-top: auto; margin-bottom: 10px; }
+.letter-action-btn:active { transform: translateY(5px); box-shadow: none; }
+.letter-feedback-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'Fredoka One'; font-size: 2.5rem; pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 100; border-radius: 25px; }
+.letter-feedback-overlay.show { opacity: 1; }
+
+/* Translation Game Styles */
+#translationGameContainer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(74, 20, 140, 0.95); z-index: 200; touch-action: manipulation; backdrop-filter: blur(5px); }
+.trans-ui { 
+    background: rgba(255, 255, 255, 0.15); 
+    padding: 25px; 
+    border-radius: 25px; 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3); 
+    width: 90%; 
+    max-width: 450px; 
+    border: 4px solid rgba(255, 255, 255, 0.4); 
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex; flex-direction: column; align-items: center;
+}
+.trans-title { font-family: 'Fredoka One'; font-size: 1.8rem; margin-bottom: 15px; color: #ffeaa7; text-shadow: 2px 2px 0px #d63031; }
+.lang-buttons { display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; }
+.trans-btn { 
+    font-family: 'Fredoka One'; border: none; padding: 12px 20px; border-radius: 50px; color: white; 
+    font-size: 1.1rem; cursor: pointer; transition: all 0.2s; outline: none; box-shadow: 0 5px 0 rgba(0,0,0,0.3); 
+}
+.trans-btn:active { top: 5px; box-shadow: none; transform: scale(0.95); }
+.btn-en { background-color: #0984e3; }
+.btn-fr { background-color: #e84393; }
+.trans-btn.selected { filter: brightness(1.2); box-shadow: 0 0 15px #fff; transform: scale(1.05); }
+.trans-area { display: none; flex-direction: column; gap: 15px; width: 100%; animation: fadeIn 0.5s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.word-card { 
+    background-color: #fff; color: #6c5ce7; font-family: 'Fredoka One'; font-size: 2.2rem; 
+    padding: 20px; border-radius: 20px; margin: 10px 0; box-shadow: 0 6px 0 #dfe6e9; 
+    border: 3px dashed #a29bfe; position: relative; width: 100%; text-align: center;
+}
+.word-card::after { content: '✨'; position: absolute; top: -15px; right: -10px; font-size: 1.5rem; }
+.trans-input { 
+    padding: 15px; border-radius: 15px; border: 4px solid #fff; background-color: #fff; 
+    font-family: 'Nunito', sans-serif; font-size: 1.3rem; text-align: center; width: 100%; 
+    outline: none; color: #2d3436; transition: all 0.3s; box-sizing: border-box; 
+}
+.trans-input:focus { border-color: #fd79a8; transform: scale(1.02); }
+.btn-check { background-color: #00b894; width: 100%; font-size: 1.4rem; margin-top: 15px; color: white; border:none; padding:12px; border-radius:50px; font-weight:bold; cursor:pointer; box-shadow: 0 5px 0 rgba(0,0,0,0.2); }
+.btn-check:active { transform: translateY(5px); box-shadow: none; }
+.btn-next-trans { background-color: #fdcb6e; color: #d63031; display: none; width: 100%; font-size: 1.4rem; margin-top: 15px; border:none; padding:12px; border-radius:50px; font-weight:bold; cursor:pointer; box-shadow: 0 5px 0 rgba(0,0,0,0.2); }
+.btn-next-trans:active { transform: translateY(5px); box-shadow: none; }
+.feedback-trans { min-height: 100px; display: flex; align-items: center; justify-content: center; flex-direction: column; width: 100%; }
+.magic-square { width: 80px; height: 80px; background: linear-gradient(45deg, #fd79a8, #feca57); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; box-shadow: 0 0 20px #fd79a8; animation: popAndSpin 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 4px solid #fff; }
+@keyframes popAndSpin { 0% { transform: scale(0) rotate(-180deg); opacity: 0; } 60% { transform: scale(1.2) rotate(10deg); opacity: 1; } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
+.shake { animation: shakeAnim 0.4s ease-in-out; border-color: #ff7675 !important; background-color: #ffeaa7 !important; }
+@keyframes shakeAnim { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+
+/* Time Game Styles */
+#timeGameContainer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(74, 20, 140, 0.98); z-index: 200; touch-action: manipulation; backdrop-filter: blur(5px); overflow-y: auto; }
+.time-ui { 
+    background: rgba(255, 255, 255, 0.98); 
+    color: #4B0082;
+    padding: 15px; 
+    border-radius: 20px; 
+    box-shadow: 0 8px 20px rgba(75, 0, 130, 0.25); 
+    width: 95%; 
+    max-width: 380px; 
+    border: 3px solid #FFF; 
+    position: relative;
+    margin: 20px auto 100px auto; 
+    text-align: center;
+}
+.time-h1 { font-size: 1.3rem; color: #FF1493; margin: 5px 0; text-shadow: 1px 1px 0px #FFD700; font-family: 'Fredoka One'; }
+.time-sub { font-size: 0.75rem; color: #8A2BE2; margin-bottom: 10px; }
+.time-progress-container { width: 100%; background-color: #E6E6FA; border-radius: 10px; margin: 8px 0; height: 12px; overflow: hidden; border: 1px solid #9370DB; }
+.time-progress-bar { height: 100%; background: linear-gradient(to right, #FF69B4, #FFD700); width: 0%; transition: width 0.4s ease; }
+.time-year-display { font-size: 2.5rem; font-weight: 600; color: #FF1493; margin: 10px 0; background: #FFF0F5; border: 2px dashed #FF1493; border-radius: 15px; padding: 10px; display: inline-block; min-width: 100px; }
+.time-input-group { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; text-align: left; }
+.time-input-field { display: flex; flex-direction: column; }
+.time-label { font-size: 0.75rem; color: #9370DB; margin-bottom: 3px; font-weight: 600; text-align: left; padding-left: 5px; }
+.time-input { background-color: #F0F8FF; border: 2px solid #87CEEB; border-radius: 8px; padding: 10px; font-size: 1.1rem; color: #4B0082; text-align: center; cursor: pointer; caret-color: transparent; height: 45px; width: 100%; font-family: 'Fredoka', sans-serif; }
+.time-input:focus { outline: none; border-color: #FF1493; background-color: #FFF; box-shadow: 0 0 8px rgba(255, 20, 147, 0.3); transform: scale(1.01); }
+.time-input.error-input { border-color: #FF0000; background-color: #FFE4E1; animation: shake 0.3s; }
+.time-input-name { background-color: #FFF; border-color: #FFD700; cursor: text; }
+.time-btn { background: linear-gradient(to bottom, #FF69B4, #FF1493); color: white; border: none; padding: 12px; font-size: 1rem; border-radius: 25px; cursor: pointer; width: 100%; margin-top: 10px; font-family: 'Fredoka', sans-serif; font-weight: 600; box-shadow: 0 4px 0 #C71585; }
+.time-btn:active { transform: translateY(4px); box-shadow: none; }
+.time-hint { background-color: #E6E6FA; border: 2px dotted #9370DB; padding: 10px; border-radius: 10px; margin: 10px 0; font-size: 0.9rem; color: #4B0082; }
+.time-options-grid { display: flex; flex-direction: column; gap: 8px; }
+.time-opt-btn { background: linear-gradient(to bottom, #87CEEB, #00BFFF); box-shadow: 0 3px 0 #008B8B; color: white; border: none; padding: 12px; font-size: 0.95rem; border-radius: 12px; cursor: pointer; font-family: 'Fredoka', sans-serif; font-weight: 600; }
+.time-opt-btn:nth-child(2) { background: linear-gradient(to bottom, #FFD700, #FFA500); box-shadow: 0 3px 0 #DAA520; color: #5D3FD3; }
+.time-opt-btn:nth-child(3) { background: linear-gradient(to bottom, #98FB98, #32CD32); box-shadow: 0 3px 0 #228B22; }
+.time-correct { background: #32CD32 !important; box-shadow: 0 3px 0 #228B22 !important; }
+.time-wrong { background: #FF69B4 !important; box-shadow: 0 3px 0 #C71585 !important; opacity: 0.7; }
+.time-score-board { margin-top: 10px; font-size: 1rem; color: #FF1493; background: #FFF; padding: 5px 15px; border-radius: 20px; display: inline-block; border: 2px solid #FFD700; font-weight: bold; }
+.time-feedback { font-size: 0.85rem; margin: 8px 0; min-height: 30px; font-weight: bold; padding: 5px; border-radius: 8px; }
+.time-final-score { font-size: 2.5rem; color: #FF1493; font-weight: bold; margin: 10px 0; }
+.time-btn-sec { background: linear-gradient(to bottom, #DDA0DD, #9370DB); box-shadow: 0 4px 0 #6A5ACD; margin-top: 8px; color: white; border: none; padding: 10px; border-radius: 20px; font-family: 'Fredoka', sans-serif; font-weight: bold; width: 100%; font-size: 0.95rem; }
+.time-lb-list { list-style: none; padding: 0; text-align: left; max-height: 150px; overflow-y: auto; border: 2px solid #E6E6FA; border-radius: 10px; margin: 10px 0; font-size: 0.85rem; }
+.time-lb-item { background: #FFF0F5; margin: 4px; padding: 6px 10px; border-radius: 8px; display: flex; justify-content: space-between; font-weight: bold; color: #8A2BE2; }
+.time-lb-item:nth-child(1) { background: #FFD700; color: #fff; text-shadow: 1px 1px 0 #DAA520; }
+.time-lb-item:nth-child(2) { background: #C0C0C0; color: #fff; text-shadow: 1px 1px 0 #808080; }
+.time-lb-item:nth-child(3) { background: #CD7F32; color: #fff; text-shadow: 1px 1px 0 #8B4513; }
+
+/* Custom Keyboards */
+.custom-keyboard {
+    background: #f0f0f5;
+    border-top: 3px solid #DDA0DD;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+    z-index: 3000;
+    display: none;
+}
+.kb-row { display: flex; justify-content: center; gap: 4px; margin-bottom: 5px; flex-wrap: wrap; }
+.kb-key {
+    background: white; border: 1px solid #ccc; border-radius: 6px; padding: 8px 0;
+    width: 11%; height: 40px; font-size: 1.1rem; font-weight: bold; color: #5D3FD3;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    user-select: none; box-shadow: 0 3px 0 #bbb; transition: transform 0.1s;
+}
+.kb-key:active { transform: translateY(3px); box-shadow: none; background: #eee; }
+.kb-key.wide { width: 14%; }
+.kb-key.space { width: 40%; font-size: 0.8rem; }
+.kb-key.action { background: #FFD700; border-color: #DAA520; color: #5D3FD3; }
+.kb-key.delete { background: #FF69B4; border-color: #C71585; color: white; width: 14%; }
+.kb-key.done { background: #32CD32; border-color: #228B22; color: white; width: 20%; font-size: 0.9rem; }
 
 @media (max-width: 600px) {
-h1 { font-size: 2rem; }
-.problem-display { font-size: 3rem; }
-.menu-grid, .sub-menu-grid { grid-template-columns: 1fr; }
-.card, .big-card { min-height: 160px; }
-.choices-grid { grid-template-columns: 1fr; }
-.award-icon { font-size: 6rem; }
-.award-title { font-size: 2rem; }
+    h1 { font-size: 1.8rem; }
+    .menu-grid { grid-template-columns: 1fr; }
+    .choices-grid { grid-template-columns: 1fr; }
+    .problem-display { font-size: 2.5rem; }
 }
 </style>
 </head>
 <body>
-<div class="background-shapes" id="bg-shapes"></div>
-<!-- Meniu Principal -->
-<div class="container" id="mainContainer">
-<h1>Super Jocuri</h1>
-<div class="menu-grid">
-<!-- Buton Joc Matematic -->
-<div class="big-card" onclick="openMathMenu()">
-<div class="big-card-icon">🧮</div>
-<div class="big-card-title">Joc Matematic</div>
-<div class="big-card-desc">Exerciții de adunare, scădere, înmulțire!</div>
-</div>
-<!-- Buton Joc Sărituri -->
-<div class="big-card" onclick="openJumpGame()">
-<div class="big-card-icon">🦕</div>
-<div class="big-card-title">Aventura Eroului</div>
-<div class="big-card-desc">Sari peste obstacole și câștigă trofee!</div>
-</div>
-<!-- Buton Joc Litere -->
-<div class="big-card" onclick="openLetterGame()">
-<div class="big-card-icon">✏️</div>
-<div class="big-card-title">Litere Magice</div>
-<div class="big-card-desc">Desenează literele și numerele pe contur!</div>
-</div>
-</div>
+
+<!-- ECRAN START: ALEGE GENUL -->
+<div id="startScreen">
+    <h1 class="start-title">Cine ești? 🤔</h1>
+    <div class="gender-cards">
+        <div class="gender-card girl-card" onclick="selectGender('girl')">
+            <span class="gender-icon">👧🏼</span>
+            <span class="gender-title">Fată</span>
+        </div>
+        <div class="gender-card boy-card" onclick="selectGender('boy')">
+            <span class="gender-icon">👦🏻</span>
+            <span class="gender-title">Băiat</span>
+        </div>
+    </div>
 </div>
 
-<!-- Interfață Joc Matematic -->
+<!-- BUTON IEȘIRE GLOBAL -->
+<button id="globalExitBtn" class="exit-btn" style="display:none;" onclick="exitToStart()">🚪 IEȘIRE</button>
+
+<!-- MENIU PRINCIPAL -->
+<div class="container" id="mainContainer" style="display:none;">
+    <h1 id="mainTitle">Super Jocuri ✨</h1>
+    <div class="menu-grid">
+        <!-- Joc Matematic -->
+        <div class="big-card" onclick="openMathMenu()">
+            <div class="big-card-icon" id="icon-math">🧮</div>
+            <div class="big-card-title">Joc Matematic</div>
+            <div class="big-card-desc">Calcule amuzante!</div>
+        </div>
+        <!-- Joc Sărituri -->
+        <div class="big-card" onclick="openJumpGame()">
+            <div class="big-card-icon" id="icon-jump">🦕</div>
+            <div class="big-card-title">Aventura Eroului</div>
+            <div class="big-card-desc">Sari peste obstacole!</div>
+        </div>
+        <!-- Joc Litere -->
+        <div class="big-card" onclick="openLetterGame()">
+            <div class="big-card-icon" id="icon-letter">✏️</div>
+            <div class="big-card-title">Litere Magice</div>
+            <div class="big-card-desc">Desenează litere!</div>
+        </div>
+        <!-- Joc Traduceri -->
+        <div class="big-card" onclick="openTranslationGame()">
+            <div class="big-card-icon" id="icon-trans">🦄</div>
+            <div class="big-card-title">Traduceri Magice</div>
+            <div class="big-card-desc">Învață limbi străine!</div>
+        </div>
+        <!-- Joc Timp -->
+        <div class="big-card" onclick="openTimeGame()">
+            <div class="big-card-icon" id="icon-time">⏳</div>
+            <div class="big-card-title">Jocul Timpului</div>
+            <div class="big-card-desc">5 Momente de Istorie!</div>
+        </div>
+    </div>
+</div>
+
+<!-- INTERFAȚA JOC MATEMATIC -->
 <button class="back-btn" id="mathBackBtn" style="display: none;" onclick="showMainMenu()">← Înapoi</button>
 <div class="container" id="mathContainer" style="display: none;">
-<div id="mathMainMenu">
-<h1>Alege Nivelul</h1>
-<div class="sub-menu-grid" id="mathMenuGrid"></div>
-<button class="btn btn-secondary" onclick="showMainMenu()" style="margin-top: 2rem;">Înapoi la Meniu</button>
-</div>
-<div id="mathSubMenu" style="display: none;">
-<h2 id="mathSubMenuTitle">Activități:</h2>
-<div class="sub-menu-grid" id="mathSubMenuGrid"></div>
-<button class="btn btn-secondary" onclick="openMathMenu()" style="margin-top: 2rem;">Înapoi</button>
-</div>
-<div id="mathGameArea" class="game-area">
-<div class="stats-bar">
-<span id="mathScoreDisplay">Scor: 100</span>
-<span id="mathProgressDisplay">Exercițiul: 1/20</span>
-</div>
-<div class="timer-container"><div class="timer-bar" id="mathTimerBar"></div></div>
-<div id="mathGameContent"></div>
-<div id="mathChoicesContainer" class="choices-grid" style="display: none;"></div>
-<div id="mathInputContainer" class="input-group" style="display: none;">
-<input type="number" id="mathAnswerInput" placeholder="?" autocomplete="off" step="0.1">
-<button class="btn btn-primary" onclick="checkMathAnswer()">Verifică</button>
-</div>
-<div class="feedback" id="mathFeedbackText"></div>
-<button class="btn btn-secondary" onclick="openMathMenu()">Ieșire</button>
-</div>
-<div id="mathAwardScreen" class="award-container">
-<div class="award-icon" id="mathAwardIcon">🏆</div>
-<div class="award-title" id="mathAwardTitle">Premiul 1</div>
-<div class="final-score" id="mathFinalScoreText">Scor Final: 100</div>
-<div class="name-input-group" id="mathNameInputGroup" style="display: none;">
-<label for="mathPlayerName">Introdu numele tău:</label>
-<input type="text" id="mathPlayerName" placeholder="Nume..." maxlength="15">
-<button class="btn btn-primary" onclick="saveMathScore()">Salvează Scorul</button>
-</div>
-<button class="btn btn-secondary" id="mathCloseAwardBtn" onclick="openMathMenu()" style="display: none;">Înapoi</button>
-</div>
-<div id="mathLeaderboardScreen" class="leaderboard-container">
-<h2 id="mathLeaderboardTitle">Clasament</h2>
-<table class="leaderboard-table">
-<thead><tr><th>#</th><th>Nume</th><th>Scor</th></tr></thead>
-<tbody id="mathLeaderboardBody"></tbody>
-</table>
-<button class="btn btn-secondary" onclick="openMathMenu()">Înapoi</button>
-</div>
+    <div id="mathMainMenu"><h1>Alege Nivelul</h1><div class="sub-menu-grid" id="mathMenuGrid"></div><button class="btn btn-secondary" onclick="showMainMenu()" style="margin-top: 2rem;">Înapoi</button></div>
+    <div id="mathSubMenu" style="display: none;"><h2 id="mathSubMenuTitle">Activități:</h2><div class="sub-menu-grid" id="mathSubMenuGrid"></div><button class="btn btn-secondary" onclick="openMathMenu()" style="margin-top: 2rem;">Înapoi</button></div>
+    <div id="mathGameArea" class="game-area">
+        <div class="stats-bar"><span id="mathScoreDisplay">Scor: 100</span><span id="mathProgressDisplay">Ex: 1/10</span></div>
+        <div class="timer-container"><div class="timer-bar" id="mathTimerBar"></div></div>
+        <div id="mathGameContent"></div>
+        <div id="mathChoicesContainer" class="choices-grid" style="display: none;"></div>
+        <div id="mathInputContainer" class="input-group" style="display: none;"><input type="number" id="mathAnswerInput" placeholder="?"><button class="btn btn-primary" onclick="checkMathAnswer()">Verifică</button></div>
+        <div class="feedback" id="mathFeedbackText"></div>
+        <button class="btn btn-secondary" onclick="openMathMenu()">Ieșire</button>
+    </div>
+    <div id="mathAwardScreen" class="game-area" style="display:none; flex-direction:column; align-items:center;"><div style="font-size:4rem;" id="mathAwardIcon">🏆</div><h2 id="mathAwardTitle">Bravo!</h2><div class="final-score" id="mathFinalScoreText" style="font-size:1.5rem; margin:10px 0; font-weight:bold;">Scor: 100</div><button class="btn btn-secondary" onclick="openMathMenu()">Înapoi</button></div>
 </div>
 
-<!-- Interfață Joc Sărituri -->
-<div id="jumpGameContainer">
-<canvas id="jumpCanvas"></canvas>
-<div id="jumpUI">
-<div class="badge">⭐ Scor: <span id="jumpScoreVal">0</span></div>
-<div class="badge">🚩 Stația: <span id="jumpStationVal">0</span>/15</div>
-</div>
-<div id="jumpMenu">
-<h1>Alege Eroul</h1>
-<div style="margin-bottom: 20px;">
-<button class="btn selected" id="jumpBtnGirl" onclick="setJumpChar('girl')">🌟 Fata</button>
-<button class="btn" id="jumpBtnBoy" onclick="setJumpChar('boy')">🦕 Băiat</button>
-</div>
-<button class="btn" id="jumpStartBtn" onclick="startJumpGame()" style="background:#2ed573; margin-top:30px;">START JOC</button>
-<p style="margin-top: 20px;">Apasă oriunde pentru a sări SUS!</p>
-<button class="btn btn-secondary" onclick="closeJumpGame()" style="margin-top: 20px;">Înapoi la Meniu</button>
-</div>
-<div id="jumpWinScreen">
-<h1 style="font-size: 50px;">VICTORIE! 🏆</h1>
-<p style="font-size: 24px; color: #fff;">Ai trecut prin toate cele 15 stații!</p>
-<button class="btn" onclick="closeJumpGame()" style="background:#fff; color:#2ed573; margin-top:30px;">Înapoi la Meniu</button>
-</div>
+<!-- INTERFAȚA JOC SĂRITURI -->
+<div id="jumpGameContainer"><canvas id="jumpCanvas"></canvas><div id="jumpUI"><div>⭐ Scor: <span id="jumpScoreVal">0</span></div><div>🚩 Stația: <span id="jumpStationVal">0</span>/15</div></div><div id="jumpMenu"><h1>Alege Eroul</h1><div style="margin-bottom: 20px;"><button class="btn selected" id="jumpBtnGirl" onclick="setJumpChar('girl')" style="background:#EC407A;">🌟 Fata</button><button class="btn" id="jumpBtnBoy" onclick="setJumpChar('boy')" style="background:#2196F3;">🦕 Băiat</button></div><button class="btn" id="jumpStartBtn" onclick="startJumpGame()" style="background:#66BB6A; margin-top:30px;">START</button><button class="btn btn-secondary" onclick="closeJumpGame()" style="margin-top: 20px;">Înapoi</button></div><div id="jumpWinScreen"><h1 style="font-size: 40px;">VICTORIE! 🏆</h1><button class="btn" onclick="closeJumpGame()" style="background:#fff; color:#2e7d32; margin-top:30px;">Înapoi</button></div></div>
+
+<!-- INTERFAȚA JOC LITERE -->
+<div id="letterGameContainer"><div class="letter-card-ui"><header class="letter-header"><h1>Jocul Literelor</h1><div class="letter-score">Steluțe: <span id="letterScore">0</span> ⭐</div></header><div class="letter-play-area"><div class="letter-card-display" id="letterTargetCard"><span id="letterTargetChar">A</span></div><div class="letter-canvas-container"><canvas id="guideCanvas"></canvas><canvas id="drawCanvas"></canvas></div><button id="letterMainBtn" class="letter-action-btn" onclick="handleLetterAction()">Verifică!</button></div><div class="letter-feedback-overlay" id="letterFeedback"><div id="letterFeedbackText">Bravo!</div></div><button class="btn btn-secondary" onclick="closeLetterGame()" style="position:absolute; bottom:10px; left:10px;">Ieșire</button></div></div>
+
+<!-- INTERFAȚA JOC TRADUCERI -->
+<div id="translationGameContainer"><div class="trans-ui"><div class="trans-title">🦄 Jocul Cuvintelor 🦄</div><p style="color:#fff; margin-bottom:10px;">Pasul 1: Alege limba magică!</p><div class="lang-buttons" id="lang-selection"><button class="trans-btn btn-en" onclick="selectTransLang('en')">Engleză 🇺🇸</button><button class="trans-btn btn-fr" onclick="selectTransLang('fr')">Franceză 🇫🇷</button></div><div class="trans-area" id="trans-game-area"><div style="font-size: 1rem; color: #ffeaa7;">Cum se spune în limba aleasă?</div><div class="word-card" id="rom-word">...</div><input type="text" class="trans-input" id="trans-user-input" placeholder="Scrie traducerea aici..." autocomplete="off"><button class="btn-check" id="trans-check-btn" onclick="verificaRaspunsTrans()">VERIFICĂ ✨</button><div class="feedback-trans" id="trans-feedback-area"></div><button class="btn-next-trans" id="trans-next-btn" onclick="nextTransWord()">Alt Cuvânt 🌟</button></div><button class="btn btn-secondary" onclick="closeTranslationGame()" style="margin-top:20px; background:#d63031;">Ieșire</button></div></div>
+
+<!-- INTERFAȚA JOC TIMP -->
+<div id="timeGameContainer">
+    <div class="time-ui">
+        <!-- Buton Ieșire specific jocului Timp -->
+        <button class="btn btn-secondary" onclick="closeTimeGame()" style="position:absolute; top:-50px; right:0; width:auto; padding:8px 15px; font-size:0.9rem;">🚪 IEȘIRE</button>
+        
+        <div id="time-game-screen">
+            <h1 class="time-h1">✨ Jocul Timpului ✨</h1>
+            <div class="time-sub">5 Momente Istorie</div>
+            <div style="font-size:0.8rem; color:#8A2BE2; font-weight:600;">Întrebarea <span id="time-q-current">1</span>/5</div>
+            <div class="time-progress-container"><div class="time-progress-bar" id="time-progress-bar"></div></div>
+            <div style="font-size:0.85rem; color:#8A2BE2; font-weight:600; margin-top:10px;">Anul:</div>
+            <div class="time-year-display" id="time-year-display">----</div>
+
+            <div id="time-date-input-section">
+                <p style="font-size: 0.8rem; color: #8A2BE2; margin: 8px 0;">📝 Completează datele:</p>
+                <div class="time-input-group">
+                    <div class="time-input-field"><label class="time-label">🏰 Mileniu</label><input type="text" class="time-input" id="time-millennium" readonly placeholder="?"><span style="font-size:0.65rem; color:#8A2BE2; display:block;" id="help-mill"></span></div>
+                    <div class="time-input-field"><label class="time-label">📅 Secol</label><input type="text" class="time-input" id="time-century" readonly placeholder="?"><span style="font-size:0.65rem; color:#8A2BE2; display:block;" id="help-cent"></span></div>
+                    <div class="time-input-field"><label class="time-label">🔢 Deceniu</label><input type="text" class="time-input" id="time-decade" readonly placeholder="?"><span style="font-size:0.65rem; color:#8A2BE2; display:block;" id="help-dec"></span></div>
+                    <div class="time-input-field"><label class="time-label">⏳ Eră</label><input type="text" class="time-input" id="time-era" readonly placeholder="?"><span style="font-size:0.65rem; color:#8A2BE2; display:block;" id="help-era"></span></div>
+                </div>
+                <div class="time-feedback" id="time-date-feedback"></div>
+                <button class="time-btn" onclick="validateTimeDate()">Verifică 🌟</button>
+            </div>
+
+            <div id="time-event-section" style="display:none;">
+                <div class="time-hint" id="time-hint-text">💡 Indiciu...</div>
+                <div style="margin-bottom: 10px; font-weight: bold; color: #FF1493; font-size: 1rem;">Evenimentul? 🤔</div>
+                <div class="time-options-grid" id="time-options-container"></div>
+                <button id="time-next-btn" class="time-btn" onclick="nextTimeQuestion()" style="background: linear-gradient(to bottom, #9370DB, #6A5ACD); margin-top: 15px; display:none;">Următoarea ➡️</button>
+            </div>
+            <div class="time-score-board">⭐ Puncte: <span id="time-score">0</span></div>
+        </div>
+
+        <!-- Ecran Final Timp -->
+        <div id="time-end-screen" style="display:none;">
+            <h1 class="time-h1">🎉 Joc Terminat! 🎉</h1>
+            <div>Punctaj tău:</div>
+            <div class="time-final-score" id="time-final-score-display">0</div>
+            <div id="time-save-score-section">
+                <p style="font-size:0.9rem; margin:10px 0; color:#666;">Scrie numele pentru clasament:</p>
+                <input type="text" class="time-input time-input-name" id="time-player-name" placeholder="Numele tău..." onclick="openTimeNameKeyboard()">
+                <button class="time-btn" onclick="saveTimeScore()">Salvează 💾</button>
+            </div>
+            <button class="time-btn-sec" onclick="showTimeLeaderboard()">🏆 Clasament</button>
+            <button class="time-btn-sec" onclick="restartTimeGame()" style="background: linear-gradient(to bottom, #98FB98, #32CD32); box-shadow: 0 4px 0 #228B22;">Joacă Din Nou 🔄</button>
+            <div id="time-leaderboard-view" style="display:none; margin-top: 15px;">
+                <h3 style="font-size:1.1rem; margin:5px 0;">Top Câștigători 🥇</h3>
+                <ul class="time-lb-list" id="time-leaderboard-list"></ul>
+                <button class="time-btn-sec" onclick="hideTimeLeaderboard()">Închide Clasament</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Interfață Joc Litere -->
-<div id="letterGameContainer">
-<div class="letter-card-ui">
-<canvas id="letterConfetti"></canvas>
-<header class="letter-header">
-<h1>Jocul Literelor</h1>
-<div class="letter-score">Steluțe: <span id="letterScore">0</span> ⭐</div>
-</header>
-<div class="letter-play-area">
-<div class="letter-card-display" id="letterTargetCard">
-<span id="letterTargetChar">A</span>
-<img src="https://image.qwenlm.ai/public_source/9d076338-2b12-4553-8888-4cf6f0866228/173d93ddf-8170-4865-8cf4-97af1e0962e2.png" alt="Mascot" class="letter-mascot-img">
+<!-- TASTATURA DATE (Romane + î, d, h, r) -->
+<div class="custom-keyboard" id="timeDateKeyboard">
+    <div class="kb-row">
+        <div class="kb-key" onclick="typeTimeChar('I')">I</div>
+        <div class="kb-key" onclick="typeTimeChar('V')">V</div>
+        <div class="kb-key" onclick="typeTimeChar('X')">X</div>
+        <div class="kb-key" onclick="typeTimeChar('L')">L</div>
+        <div class="kb-key" onclick="typeTimeChar('C')">C</div>
+        <div class="kb-key" onclick="typeTimeChar('D')">D</div>
+        <div class="kb-key" onclick="typeTimeChar('M')">M</div>
+    </div>
+    <div class="kb-row">
+        <div class="kb-key" onclick="typeTimeChar('î')">î</div>
+        <div class="kb-key" onclick="typeTimeChar('d')">d</div>
+        <div class="kb-key" onclick="typeTimeChar('h')">h</div>
+        <div class="kb-key" onclick="typeTimeChar('r')">r</div>
+        <div class="kb-key" onclick="typeTimeChar('.')">.</div>
+        <div class="kb-key" onclick="typeTimeChar('-')">-</div>
+        <div class="kb-key delete" onclick="deleteTimeChar()">⌫</div>
+    </div>
+    <div class="kb-row"><div class="kb-key done" onclick="closeTimeKeyboard()">Gata ✓</div></div>
 </div>
-<div class="letter-canvas-container">
-<canvas id="guideCanvas"></canvas>
-<canvas id="drawCanvas"></canvas>
-<button class="letter-clear-btn" onclick="clearLetterCanvas()" title="Șterge">
-<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-</button>
-</div>
-<button id="letterMainBtn" class="letter-action-btn" onclick="handleLetterAction()">
-<span>Verifică!</span>
-</button>
-</div>
-<div class="letter-feedback-overlay" id="letterFeedback">
-<div id="letterFeedbackIcon" style="font-size: 4rem; margin-bottom: 10px;">🎉</div>
-<div id="letterFeedbackText">Bravo!</div>
-</div>
-<button class="btn btn-secondary" onclick="closeLetterGame()" style="position:absolute; bottom:10px; left:10px; z-index:50;">Ieșire</button>
-</div>
+
+<!-- TASTATURA NUME (Alfabet complet) -->
+<div class="custom-keyboard" id="timeNameKeyboard" style="display:none;">
+    <div class="kb-row">
+        <div class="kb-key" onclick="typeNameChar('A')">A</div><div class="kb-key" onclick="typeNameChar('Ă')">Ă</div><div class="kb-key" onclick="typeNameChar('Â')">Â</div><div class="kb-key" onclick="typeNameChar('B')">B</div><div class="kb-key" onclick="typeNameChar('C')">C</div><div class="kb-key" onclick="typeNameChar('D')">D</div><div class="kb-key" onclick="typeNameChar('E')">E</div>
+    </div>
+    <div class="kb-row">
+        <div class="kb-key" onclick="typeNameChar('F')">F</div><div class="kb-key" onclick="typeNameChar('G')">G</div><div class="kb-key" onclick="typeNameChar('H')">H</div><div class="kb-key" onclick="typeNameChar('I')">I</div><div class="kb-key" onclick="typeNameChar('Î')">Î</div><div class="kb-key" onclick="typeNameChar('J')">J</div><div class="kb-key" onclick="typeNameChar('K')">K</div>
+    </div>
+    <div class="kb-row">
+        <div class="kb-key" onclick="typeNameChar('L')">L</div><div class="kb-key" onclick="typeNameChar('M')">M</div><div class="kb-key" onclick="typeNameChar('N')">N</div><div class="kb-key" onclick="typeNameChar('O')">O</div><div class="kb-key" onclick="typeNameChar('P')">P</div><div class="kb-key" onclick="typeNameChar('Q')">Q</div><div class="kb-key" onclick="typeNameChar('R')">R</div>
+    </div>
+    <div class="kb-row">
+        <div class="kb-key" onclick="typeNameChar('S')">S</div><div class="kb-key" onclick="typeNameChar('Ș')">Ș</div><div class="kb-key" onclick="typeNameChar('T')">T</div><div class="kb-key" onclick="typeNameChar('Ț')">Ț</div><div class="kb-key" onclick="typeNameChar('U')">U</div><div class="kb-key" onclick="typeNameChar('V')">V</div><div class="kb-key" onclick="typeNameChar('W')">W</div>
+    </div>
+    <div class="kb-row">
+        <div class="kb-key" onclick="typeNameChar('X')">X</div><div class="kb-key" onclick="typeNameChar('Y')">Y</div><div class="kb-key" onclick="typeNameChar('Z')">Z</div><div class="kb-key space" onclick="typeNameChar(' ')">Spațiu</div><div class="kb-key delete" onclick="deleteNameChar()">⌫</div>
+    </div>
+    <div class="kb-row"><div class="kb-key done" onclick="closeNameKeyboard()">Gata ✓</div></div>
 </div>
 
 <script>
 // ==========================================
-// LOGICA GENERALĂ & NAVIGARE
+// LOGICA DE START & TEME
 // ==========================================
-function showMainMenu() {
-document.getElementById('mainContainer').style.display = 'block';
-document.getElementById('mathContainer').style.display = 'none';
-document.getElementById('mathBackBtn').style.display = 'none';
-closeJumpGame();
-closeLetterGame();
+let currentGender = '';
+
+function selectGender(gender) {
+    currentGender = gender;
+    document.getElementById('startScreen').style.display = 'none';
+    document.getElementById('mainContainer').style.display = 'block';
+    document.getElementById('globalExitBtn').style.display = 'flex';
+
+    if (gender === 'girl') {
+        document.body.classList.remove('boy-theme');
+        document.documentElement.style.setProperty('--primary-color', '#EC407A');
+        document.documentElement.style.setProperty('--secondary-color', '#F48FB1');
+        document.documentElement.style.setProperty('--accent-color', '#AB47BC');
+        document.documentElement.style.setProperty('--text-color', '#880E4F');
+        document.getElementById('mainTitle').innerHTML = "Super Jocuri 🦄✨";
+        document.getElementById('icon-math').innerText = "🧚‍♀️";
+        document.getElementById('icon-jump').innerText = "🦄";
+        document.getElementById('icon-letter').innerText = "🎨";
+        document.getElementById('icon-trans').innerText = "🦋";
+        document.getElementById('icon-time').innerText = "👑";
+    } else {
+        document.body.classList.add('boy-theme');
+        document.documentElement.style.setProperty('--primary-color', '#2196F3');
+        document.documentElement.style.setProperty('--secondary-color', '#4FC3F7');
+        document.documentElement.style.setProperty('--accent-color', '#4CAF50');
+        document.documentElement.style.setProperty('--text-color', '#0D47A1');
+        document.getElementById('mainTitle').innerHTML = "Super Jocuri 🚗⚽";
+        document.getElementById('icon-math').innerText = "🚂";
+        document.getElementById('icon-jump').innerText = "🦖";
+        document.getElementById('icon-letter').innerText = "🚒";
+        document.getElementById('icon-trans').innerText = "🚀";
+        document.getElementById('icon-time').innerText = "🚁";
+    }
+    initMath();
 }
 
+// Funcția care repară problema: duce utilizatorul înapoi la start
+function exitToStart() {
+    if(confirm("Vrei să ieși din joc și să alegi din nou Fată/Băiat?")) {
+        location.reload(); // Reîncarcă pagina pentru a reveni la ecranul de start
+    }
+}
+
+function showMainMenu() {
+    document.getElementById('mainContainer').style.display = 'block';
+    document.getElementById('mathContainer').style.display = 'none';
+    document.getElementById('mathBackBtn').style.display = 'none';
+    closeJumpGame(); closeLetterGame(); closeTranslationGame(); closeTimeGame();
+}
+
+// ==========================================
+// LOGICA JOC MATEMATIC (Scurtată)
+// ==========================================
+let mathCurrentMode = '', mathScore = 100, mathCurrentAnswer = 0, mathQuestionCount = 0, isMathGameEnding = false;
+const MAX_QUESTIONS = 10;
+const mathMenus = {
+    'kg': { title: 'Micuții', items: [{ id: 'kg_add', icon: '⚽', title: 'Adunări', desc: 'Simple' }] },
+    'easy': { title: 'Școlari', items: [{ id: 'easy_math', icon: '🦄', title: 'Calcule', desc: 'Adunări/Scăderi' }] },
+    'hard': { title: 'Genii', items: [{ id: 'hard_pow', icon: '⚡', title: 'Puteri', desc: 'Avansat' }] }
+};
+
+function initMath() { renderMathMainMenu(); document.getElementById('mathAnswerInput').addEventListener("keypress", function(event) { if (event.key === "Enter") checkMathAnswer(); }); }
+
 function openMathMenu() {
-try {
     document.getElementById('mainContainer').style.display = 'none';
     document.getElementById('mathContainer').style.display = 'block';
     document.getElementById('mathBackBtn').style.display = 'flex';
-    document.getElementById('mathBackBtn').onclick = showMainMenu;
     document.getElementById('mathMainMenu').style.display = 'block';
     document.getElementById('mathSubMenu').style.display = 'none';
     document.getElementById('mathGameArea').style.display = 'none';
     document.getElementById('mathAwardScreen').style.display = 'none';
-    document.getElementById('mathLeaderboardScreen').style.display = 'none';
     renderMathMainMenu();
-} catch (e) {
-    alert("Eroare la deschiderea jocului Matematic: " + e.message);
-    showMainMenu();
-}
-}
-
-function openJumpGame() {
-try {
-    document.getElementById('mainContainer').style.display = 'none';
-    document.getElementById('mathContainer').style.display = 'none';
-    document.getElementById('jumpGameContainer').style.display = 'block';
-    initJumpGame();
-} catch (e) {
-    alert("Eroare la deschiderea jocului Sărituri: " + e.message);
-    showMainMenu();
-}
-}
-
-function closeJumpGame() {
-jumpGameRunning = false;
-document.getElementById('jumpGameContainer').style.display = 'none';
-document.getElementById('jumpMenu').style.display = 'flex';
-document.getElementById('jumpWinScreen').style.display = 'none';
-}
-
-function openLetterGame() {
-try {
-    document.getElementById('mainContainer').style.display = 'none';
-    document.getElementById('mathContainer').style.display = 'none';
-    document.getElementById('letterGameContainer').style.display = 'block';
-    initLetterGame();
-} catch (e) {
-    alert("Eroare la deschiderea jocului Litere: " + e.message);
-    showMainMenu();
-}
-}
-
-function closeLetterGame() {
-document.getElementById('letterGameContainer').style.display = 'none';
-}
-
-// ==========================================
-// LOGICA JOC MATEMATIC
-// ==========================================
-let mathCurrentMode = '';
-let mathScore = 100;
-let mathCurrentAnswer = 0;
-let mathTimeLeft = 0;
-let mathMaxTime = 0;
-let mathTimerInterval;
-let mathDifficultyLevel = 1;
-let mathProblemHTML = '';
-let mathQuestionCount = 0;
-const MAX_QUESTIONS = 20;
-let mathCurrentSubMenuKey = '';
-let isMathGameEnding = false;
-const mathMenus = {
-'kg': { title: 'Grădiniță', theme: 'boy', items: [
-{ id: 'kg_count', icon: '🚗', title: 'Numără Obiecte', desc: 'Câte mașinuțe sunt?' },
-{ id: 'kg_sequence', icon: '🤖', title: 'Șir Numeric', desc: 'Continuă șirul (1-10)' },
-{ id: 'kg_add', icon: '⚽', title: 'Adunări Vizuale', desc: 'Adună bilele' }
-]},
-'easy_menu': { title: 'Clasa 1 - 2 (Fără Trecere)', theme: 'girl', items: [
-{ id: 'easy_math', icon: '🦄', title: 'Calcule', desc: 'Adunări și scăderi simple' },
-{ id: 'easy_seq', icon: '🔢', title: 'Șiruri Numerice', desc: 'Găsește următorul număr' },
-{ id: 'easy_comp', icon: '⚖️', title: 'Comparații', desc: 'Care e mai mare?' }
-]},
-'max_menu': { title: 'Clasa 1 - 2 (Cu Trecere)', theme: 'girl', items: [
-{ id: 'max_math', icon: '👑', title: 'Calcule Avansate', desc: 'Cu trecere peste ordin' },
-{ id: 'max_seq', icon: '🧩', title: 'Șiruri Complexe', desc: 'Salturi de 2, 5, 10' },
-{ id: 'max_eq', icon: '❓', title: 'Ecuații Simple', desc: 'Găsește numărul lipsă' }
-]},
-'med_menu': { title: 'Clasa 3 - 4', theme: 'girl', items: [
-{ id: 'med_math', icon: '🌸', title: 'Înmulțiri & Împărțiri', desc: 'Tabelele înmulțirii' },
-{ id: 'med_round', icon: '🎯', title: 'Rotunjiri', desc: 'La zece sau sută' },
-{ id: 'med_order', icon: '📝', title: 'Ordinea Operațiilor', desc: 'Calcul cu paranteze' }
-]},
-'hard_menu': { title: 'Clasa 5+', theme: 'girl', items: [
-{ id: 'hard_frac', icon: '🍰', title: 'Fracții', desc: 'Adunări cu fracții' },
-{ id: 'hard_dec', icon: '💧', title: 'Zecimale', desc: 'Calcule cu virgulă' },
-{ id: 'hard_pow', icon: '⚡', title: 'Puteri & Radicali', desc: 'Calcul avansat' }
-]},
-'pro_menu': { title: '5 Pro (Avansat)', theme: 'pro', items: [
-{ id: 'pro_cong', icon: '⚛️', title: 'Congruențe', desc: 'Aritmetică modulară (mod n)' },
-{ id: 'pro_last', icon: '🔢', title: 'Ultima Cifră', desc: 'Determină ultima cifră' },
-{ id: 'pro_div', icon: '➗', title: 'Criterii Divizibilitate', desc: 'Restul împărțirii' }
-]}
-};
-
-function initMath() {
-createBackgroundShapes();
-renderMathMainMenu();
-document.getElementById('mathAnswerInput').addEventListener("keypress", function(event) {
-if (event.key === "Enter") checkMathAnswer();
-});
-}
-
-function createBackgroundShapes() {
-const container = document.getElementById('bg-shapes');
-const colors = ['#FFCC80', '#FFAB91', '#FFE082', '#A5D6A7', '#90CAF9'];
-for(let i=0; i<12; i++) {
-const shape = document.createElement('div');
-shape.classList.add('shape');
-const size = Math.random() * 60 + 30;
-const color = colors[Math.floor(Math.random() * colors.length)];
-shape.style.width = `${size}px`;
-shape.style.height = `${size}px`;
-shape.style.left = `${Math.random() * 100}%`;
-shape.style.backgroundColor = color;
-shape.style.borderRadius = Math.random() > 0.5 ? '50%' : '15%';
-shape.style.animationDuration = `${Math.random() * 10 + 15}s`;
-shape.style.animationDelay = `-${Math.random() * 20}s`;
-container.appendChild(shape);
-}
 }
 
 function renderMathMainMenu() {
-const grid = document.getElementById('mathMenuGrid');
-grid.innerHTML = '';
-Object.keys(mathMenus).forEach(key => {
-const menuData = mathMenus[key];
-const card = document.createElement('div');
-card.className = `card ${menuData.theme === 'boy' ? 'kg-card' : (menuData.theme === 'pro' ? 'pro-card' : 'easy-card')}`;
-const lbBtn = document.createElement('button');
-lbBtn.className = 'card-lb-btn';
-lbBtn.innerHTML = '🏆';
-lbBtn.title = 'Vezi Clasament';
-lbBtn.onclick = (e) => { e.stopPropagation(); showMathLeaderboard(key); };
-card.innerHTML = `<div class="card-icon">${menuData.items[0].icon}</div><div class="card-title">${menuData.title}</div><div class="card-desc">${menuData.items[0].desc}</div>`;
-card.appendChild(lbBtn);
-card.onclick = () => openMathSubmenu(key);
-grid.appendChild(card);
-});
-}
-
-function openMathSubmenu(menuKey) {
-mathCurrentSubMenuKey = menuKey;
-const menuData = mathMenus[menuKey];
-if(!menuData) return;
-document.getElementById('mathMainMenu').style.display = 'none';
-document.getElementById('mathSubMenu').style.display = 'block';
-document.getElementById('mathSubMenuTitle').textContent = menuData.title;
-const subGrid = document.getElementById('mathSubMenuGrid');
-subGrid.innerHTML = '';
-document.body.classList.remove('boy-theme', 'pro-theme');
-if(menuData.theme === 'boy') document.body.classList.add('boy-theme');
-if(menuData.theme === 'pro') document.body.classList.add('pro-theme');
-menuData.items.forEach(item => {
-const card = document.createElement('div');
-card.className = `card ${menuData.theme === 'boy' ? 'kg-card' : (menuData.theme === 'pro' ? 'pro-card' : 'easy-card')}`;
-card.innerHTML = `<div class="card-icon">${item.icon}</div><div class="card-title">${item.title}</div><div class="card-desc">${item.desc}</div>`;
-card.onclick = () => startMathGame(item.id);
-subGrid.appendChild(card);
-});
+    const grid = document.getElementById('mathMenuGrid'); grid.innerHTML = '';
+    Object.keys(mathMenus).forEach(key => {
+        const menuData = mathMenus[key];
+        const card = document.createElement('div'); card.className = 'card';
+        let icon = menuData.items[0].icon;
+        if(currentGender === 'boy' && key === 'kg') icon = '🚗';
+        if(currentGender === 'girl' && key === 'kg') icon = '🍭';
+        card.innerHTML = `<div class="card-icon">${icon}</div><div class="card-title">${menuData.title}</div><div class="card-desc">${menuData.items[0].desc}</div>`;
+        card.onclick = () => startMathGame(menuData.items[0].id);
+        grid.appendChild(card);
+    });
 }
 
 function startMathGame(mode) {
-mathCurrentMode = mode;
-mathScore = 100;
-mathQuestionCount = 0;
-mathDifficultyLevel = 1;
-isMathGameEnding = false;
-updateMathStats();
-document.getElementById('mathSubMenu').style.display = 'none';
-document.getElementById('mathGameArea').style.display = 'block';
-document.getElementById('mathAwardScreen').style.display = 'none';
-document.getElementById('mathLeaderboardScreen').style.display = 'none';
-const isBoy = mode.startsWith('kg');
-const isPro = mode.startsWith('pro');
-if(isBoy) {
-document.body.classList.add('boy-theme');
-document.getElementById('mathChoicesContainer').style.display = 'grid';
-document.getElementById('mathInputContainer').style.display = 'none';
-} else {
-if(isPro) document.body.classList.add('pro-theme');
-else document.body.classList.remove('boy-theme', 'pro-theme');
-document.getElementById('mathChoicesContainer').style.display = 'none';
-document.getElementById('mathInputContainer').style.display = 'flex';
-}
-nextMathProblem();
-if(!isBoy) document.getElementById('mathAnswerInput').focus();
-}
-
-function updateMathStats() {
-document.getElementById('mathScoreDisplay').textContent = `Scor: ${mathScore}`;
-document.getElementById('mathProgressDisplay').textContent = `Exercițiul: ${mathQuestionCount + 1}/${MAX_QUESTIONS}`;
-}
-
-function startMathTimer(seconds) {
-clearInterval(mathTimerInterval);
-mathMaxTime = seconds;
-mathTimeLeft = seconds;
-updateMathTimerVisuals();
-mathTimerInterval = setInterval(() => {
-mathTimeLeft--;
-updateMathTimerVisuals();
-if (mathTimeLeft <= 0) { clearInterval(mathTimerInterval); handleMathTimeout(); }
-}, 1000);
-}
-
-function updateMathTimerVisuals() {
-const percentage = (mathTimeLeft / mathMaxTime) * 100;
-document.getElementById('mathTimerBar').style.width = `${percentage}%`;
-if (percentage > 50) document.getElementById('mathTimerBar').style.backgroundColor = 'var(--success)';
-else if (percentage > 20) document.getElementById('mathTimerBar').style.backgroundColor = 'var(--timer-warning)';
-else document.getElementById('mathTimerBar').style.backgroundColor = 'var(--timer-danger)';
-}
-
-function handleMathTimeout() {
-showMathCorrectAnswer(true);
-}
-
-function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-
-function generateMathChoices(correctAnswer, minVal, maxVal) {
-let choices = new Set();
-choices.add(correctAnswer);
-while(choices.size < 3) {
-let offset = getRandomInt(-5, 5);
-let wrong = correctAnswer + offset;
-if(wrong >= minVal && wrong <= maxVal && wrong !== correctAnswer) choices.add(wrong);
-else { let r = getRandomInt(minVal, maxVal); if(r !== correctAnswer) choices.add(r); }
-}
-return Array.from(choices).sort(() => Math.random() - 0.5);
-}
-
-function renderMathChoices(choices) {
-const container = document.getElementById('mathChoicesContainer');
-container.innerHTML = '';
-choices.forEach(val => {
-const btn = document.createElement('button');
-btn.className = 'choice-btn';
-btn.textContent = val;
-btn.onclick = () => handleMathChoiceClick(val);
-container.appendChild(btn);
-});
-}
-
-function handleMathChoiceClick(val) {
-if(isMathGameEnding) return;
-let isCorrect = (val === mathCurrentAnswer);
-processMathResult(isCorrect);
-}
-
-function checkMathAnswer() {
-const isBoy = mathCurrentMode.startsWith('kg');
-if(isBoy) return;
-if(isMathGameEnding) return;
-const userVal = parseFloat(document.getElementById('mathAnswerInput').value);
-if (isNaN(userVal)) return;
-let isCorrect = false;
-if(mathCurrentMode === 'easy_comp') {
-isCorrect = (userVal === mathCurrentAnswer);
-} else {
-isCorrect = (Math.abs(userVal - mathCurrentAnswer) < 0.01);
-}
-processMathResult(isCorrect);
-}
-
-function processMathResult(isCorrect) {
-if(isCorrect) {
-document.getElementById('mathFeedbackText').textContent = "Bravo! Corect! 🎉";
-document.getElementById('mathFeedbackText').className = "feedback correct";
-mathDifficultyLevel = 1;
-} else {
-mathScore -= 5;
-updateMathStats();
-document.getElementById('mathFeedbackText').textContent = "Greșit! Vezi răspunsul corect mai sus. 😢";
-document.getElementById('mathFeedbackText').className = "feedback wrong";
-mathDifficultyLevel++;
-showMathCorrectAnswer(false);
-return;
-}
-if (mathQuestionCount >= MAX_QUESTIONS) {
-isMathGameEnding = true;
-setTimeout(endMathGame, 1500);
-} else {
-setTimeout(nextMathProblem, 1500);
-}
+    mathCurrentMode = mode; mathScore = 100; mathQuestionCount = 0; isMathGameEnding = false;
+    document.getElementById('mathMainMenu').style.display = 'none';
+    document.getElementById('mathSubMenu').style.display = 'none';
+    document.getElementById('mathGameArea').style.display = 'block';
+    nextMathProblem();
 }
 
 function nextMathProblem() {
-if (mathQuestionCount >= MAX_QUESTIONS) { endMathGame(); return; }
-mathQuestionCount++;
-updateMathStats();
-document.getElementById('mathAnswerInput').value = '';
-document.getElementById('mathFeedbackText').textContent = '';
-document.getElementById('mathFeedbackText').className = 'feedback';
-document.getElementById('mathGameContent').innerHTML = '';
-document.getElementById('mathChoicesContainer').innerHTML = '';
-mathProblemHTML = '';
-if (mathCurrentMode.startsWith('kg')) { if (mathDifficultyLevel === 1) startMathTimer(30); else startMathTimer(40); }
-else { if (mathDifficultyLevel === 1) startMathTimer(20); else startMathTimer(30); }
+    if (mathQuestionCount >= MAX_QUESTIONS) { endMathGame(); return; }
+    mathQuestionCount++;
+    document.getElementById('mathScoreDisplay').textContent = `Scor: ${mathScore}`;
+    document.getElementById('mathProgressDisplay').textContent = `Ex: ${mathQuestionCount}/${MAX_QUESTIONS}`;
+    document.getElementById('mathAnswerInput').value = '';
+    document.getElementById('mathFeedbackText').textContent = '';
+    document.getElementById('mathGameContent').innerHTML = '';
+    const n1 = Math.floor(Math.random() * 10) + 1, n2 = Math.floor(Math.random() * 10) + 1;
+    mathCurrentAnswer = n1 + n2;
+    let icon = currentGender === 'boy' ? '🚗' : '🍬';
+    document.getElementById('mathGameContent').innerHTML = `<div style="font-size:3rem; margin:10px;">${icon} ${n1} + ${icon} ${n2} = ?</div><div class="problem-display">${n1} + ${n2} = ?</div>`;
+    document.getElementById('mathInputContainer').style.display = 'flex';
+    document.getElementById('mathAnswerInput').focus();
+}
 
-// Generare probleme
-if (mathCurrentMode === 'kg_count') {
-const maxCount = mathDifficultyLevel === 1 ? 5 : 10;
-const count = getRandomInt(1, maxCount);
-mathCurrentAnswer = count;
-let html = '<div class="visual-container">';
-const icons = ['🚗', '⚽', '🚀', '🤖', '🚲'];
-const icon = icons[Math.floor(Math.random() * icons.length)];
-for(let i=0; i<count; i++) html += `<div style="font-size: 3rem; animation: bounce 2s infinite; animation-delay: ${i*0.1}s">${icon}</div>`;
-html += '</div><p style="font-size: 1.3rem; color: #546E7A; font-weight:bold;">Câte sunt?</p>';
-document.getElementById('mathGameContent').innerHTML = html;
-renderMathChoices(generateMathChoices(mathCurrentAnswer, 1, maxCount + 2));
-}
-else if (mathCurrentMode === 'kg_sequence') {
-const start = getRandomInt(0, mathDifficultyLevel === 1 ? 3 : 6);
-let sequence = [];
-for(let i=0; i<3; i++) sequence.push(start + i);
-mathCurrentAnswer = start + 3;
-document.getElementById('mathGameContent').innerHTML = `<p style="font-size: 1.3rem; color: #546E7A; font-weight:bold;">Completează codul:</p><div class="sequence-display">${sequence.join(' , ')} , <span class="missing-number">?</span></div>`;
-renderMathChoices(generateMathChoices(mathCurrentAnswer, 0, 10));
-}
-else if (mathCurrentMode === 'kg_add') {
-const maxNum = mathDifficultyLevel === 1 ? 4 : 9;
-const n1 = getRandomInt(1, maxNum);
-const n2 = getRandomInt(1, maxNum);
-mathCurrentAnswer = n1 + n2;
-let html = '<div class="visual-container">';
-for(let i=0; i<n1; i++) html += `<div style="font-size: 2.5rem;">⚽</div>`;
-html += '<div style="width:20px; font-weight:900; color:#2196F3; font-size:1.5rem;">+</div>';
-for(let i=0; i<n2; i++) html += `<div style="font-size: 2.5rem;">⚽</div>`;
-html += '</div>';
-document.getElementById('mathGameContent').innerHTML = html + `<div class="problem-display">${n1} + ${n2} = ?</div>`;
-renderMathChoices(generateMathChoices(mathCurrentAnswer, 2, maxNum * 2 + 2));
-}
-else if (mathCurrentMode === 'easy_math') {
-const rangeMax = mathDifficultyLevel === 1 ? 50 : 90;
-const op = Math.random() > 0.5 ? '+' : '-';
-let n1 = getRandomInt(10, rangeMax);
-let n2;
-if(op === '+') {
-let d1_10 = Math.floor(n1 / 10); let d1_1 = n1 % 10;
-let d2_10 = getRandomInt(0, 9 - d1_10); let d2_1 = getRandomInt(0, 9 - d1_1);
-n2 = (d2_10 * 10) + d2_1; if(n2===0) n2=1;
-mathCurrentAnswer = n1 + n2;
-} else {
-let d1_10 = Math.floor(n1 / 10); let d1_1 = n1 % 10;
-let d2_10 = getRandomInt(0, d1_10); let d2_1 = getRandomInt(0, d1_1);
-n2 = (d2_10 * 10) + d2_1; if(n2===0) n2=1; if(n2 >= n1) n2 = getRandomInt(1, n1-1);
-mathCurrentAnswer = n1 - n2;
-}
-mathProblemHTML = `<div class="problem-display">${n1} ${op} ${n2} = ?</div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'easy_seq') {
-const start = getRandomInt(1, 20);
-const step = 1;
-let seq = [start, start+step, start+step*2];
-mathCurrentAnswer = start + step*3;
-mathProblemHTML = `<div class="sequence-display">${seq.join(', ')}, <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'easy_comp') {
-const n1 = getRandomInt(10, 50);
-const n2 = getRandomInt(10, 50);
-mathCurrentAnswer = n1 > n2 ? 1 : 2;
-mathProblemHTML = `<div style="font-size:1.5rem; color:#666;">Compară numerele:</div><div class="problem-display">${n1} <span class="missing-number">?</span> ${n2}</div><div style="font-size:1.2rem; color:#666;">(1 stânga, 2 dreapta)</div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'max_math') {
-const op = Math.random() > 0.5 ? '+' : '-';
-let n1, n2;
-if(op === '+') {
-let u1 = getRandomInt(1, 9); let u2 = getRandomInt(10-u1, 9);
-let t1 = getRandomInt(1, 8); let t2 = getRandomInt(0, 9-t1);
-n1 = t1*10+u1; n2 = t2*10+u2; mathCurrentAnswer = n1+n2;
-} else {
-let u1 = getRandomInt(0, 8); let u2 = getRandomInt(u1+1, 9);
-let t1 = getRandomInt(2, 9); let t2 = getRandomInt(0, t1-1);
-n1 = t1*10+u1; n2 = t2*10+u2; mathCurrentAnswer = n1-n2;
-}
-mathProblemHTML = `<div class="problem-display">${n1} ${op} ${n2} = ?</div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'max_seq') {
-const step = mathDifficultyLevel === 1 ? 2 : 5;
-const start = getRandomInt(1, 10);
-let seq = [start, start+step, start+step*2];
-mathCurrentAnswer = start + step*3;
-mathProblemHTML = `<div class="sequence-display">${seq.join(', ')}, <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'max_eq') {
-const res = getRandomInt(10, 50);
-const add = getRandomInt(1, 9);
-mathCurrentAnswer = res - add;
-mathProblemHTML = `<div class="problem-display"><span class="missing-number">?</span> + ${add} = ${res}</div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'med_math') {
-const n1 = getRandomInt(2, 9);
-const n2 = getRandomInt(2, 9);
-mathCurrentAnswer = n1 * n2;
-mathProblemHTML = `<div class="problem-display">${n1} × ${n2} = ?</div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'med_round') {
-const num = getRandomInt(15, 985);
-const roundTo = mathDifficultyLevel === 1 ? 10 : 100;
-mathCurrentAnswer = Math.round(num / roundTo) * roundTo;
-mathProblemHTML = `<div style="font-size:1.5rem; color:#666;">Rotunjire la ${roundTo}:</div><div class="problem-display">${num} ≈ <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'med_order') {
-const a = getRandomInt(2, 5);
-const b = getRandomInt(2, 5);
-const c = getRandomInt(1, 10);
-mathCurrentAnswer = (a + b) * c;
-mathProblemHTML = `<div class="problem-display">(${a} + ${b}) × ${c} = ?</div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'hard_frac') {
-const den = getRandomInt(2, 9);
-const n1 = getRandomInt(1, den-1);
-const n2 = getRandomInt(1, den-n1);
-mathCurrentAnswer = (n1 + n2) / den;
-mathProblemHTML = `<div style="font-size:1.5rem; color:#666;">Calcul (zecimal):</div><div class="problem-display">${n1}/${den} + ${n2}/${den} = <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'hard_dec') {
-const n1 = getRandomInt(10, 50) / 10;
-const n2 = getRandomInt(10, 50) / 10;
-mathCurrentAnswer = n1 + n2;
-mathProblemHTML = `<div class="problem-display">${n1} + ${n2} = <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'hard_pow') {
-const base = getRandomInt(2, 5);
-const exp = getRandomInt(2, 3);
-mathCurrentAnswer = Math.pow(base, exp);
-mathProblemHTML = `<div class="problem-display">${base}<sup>${exp}</sup> = <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'pro_cong') {
-const n = mathDifficultyLevel === 1 ? getRandomInt(2, 5) : getRandomInt(6, 12);
-const a = getRandomInt(10, 100);
-mathCurrentAnswer = a % n;
-mathProblemHTML = `<div style="font-size:1.5rem; color:#666;">Congruență:</div><div class="problem-display">${a} ≡ <span class="missing-number">?</span> (mod ${n})</div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'pro_last') {
-const base = getRandomInt(11, 99);
-const exp = getRandomInt(2, 5);
-mathCurrentAnswer = Math.pow(base, exp) % 10;
-mathProblemHTML = `<div style="font-size:1.5rem; color:#666;">Ultima cifră:</div><div class="problem-display">${base}<sup>${exp}</sup> → <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
-else if (mathCurrentMode === 'pro_div') {
-const div = mathDifficultyLevel === 1 ? 3 : 7;
-const a = getRandomInt(20, 100);
-mathCurrentAnswer = a % div;
-mathProblemHTML = `<div style="font-size:1.5rem; color:#666;">Restul împărțirii:</div><div class="problem-display">${a} : ${div} rest <span class="missing-number">?</span></div>`;
-document.getElementById('mathGameContent').innerHTML = mathProblemHTML;
-}
+function checkMathAnswer() {
+    const userVal = parseFloat(document.getElementById('mathAnswerInput').value);
+    if (isNaN(userVal)) return;
+    if (userVal === mathCurrentAnswer) {
+        document.getElementById('mathFeedbackText').textContent = "Bravo! Corect! 🎉";
+        document.getElementById('mathFeedbackText').className = "feedback correct";
+        setTimeout(nextMathProblem, 1000);
+    } else {
+        mathScore -= 5;
+        document.getElementById('mathScoreDisplay').textContent = `Scor: ${mathScore}`;
+        document.getElementById('mathFeedbackText').textContent = "Greșit! Mai încearcă.";
+        document.getElementById('mathFeedbackText').className = "feedback wrong";
+        setTimeout(nextMathProblem, 1500);
+    }
 }
 
 function endMathGame() {
-clearInterval(mathTimerInterval);
-document.getElementById('mathGameArea').style.display = 'none';
-document.getElementById('mathAwardScreen').style.display = 'flex';
-document.getElementById('mathFinalScoreText').textContent = `Scor Final: ${mathScore}`;
-let icon = '', title = '', titleClass = '', showInput = false;
-if (mathScore === 100) { icon = '🏆'; title = 'PREMIUL 1'; titleClass = 'award-gold'; showInput = true; }
-else if (mathScore === 95) { icon = '🥈'; title = 'PREMIUL 2'; titleClass = 'award-silver'; showInput = true; }
-else if (mathScore === 90) { icon = '🥉'; title = 'PREMIUL 3'; titleClass = 'award-bronze'; showInput = true; }
-else if (mathScore >= 70 && mathScore <= 85) { icon = '🎖️'; title = 'MENȚIUNE'; titleClass = 'award-mention'; showInput = true; }
-else { icon = '💪'; title = 'ÎNCEARCĂ DIN NOU'; titleClass = 'award-try'; showInput = false; }
-document.getElementById('mathAwardIcon').textContent = icon;
-document.getElementById('mathAwardTitle').textContent = title;
-document.getElementById('mathAwardTitle').className = 'award-title ' + titleClass;
-if(showInput) { document.getElementById('mathNameInputGroup').style.display = 'flex'; document.getElementById('mathCloseAwardBtn').style.display = 'none'; document.getElementById('mathPlayerName').value = ''; document.getElementById('mathPlayerName').focus(); }
-else { document.getElementById('mathNameInputGroup').style.display = 'none'; document.getElementById('mathCloseAwardBtn').style.display = 'inline-block'; }
-}
-
-function saveMathScore() {
-const name = document.getElementById('mathPlayerName').value.trim() || "Anonim";
-const leaderboardKey = `math_leaderboard_${mathCurrentMode}`;
-try {
-let scores = JSON.parse(localStorage.getItem(leaderboardKey) || "[]");
-scores.push({ name: name, score: mathScore, date: new Date().toLocaleDateString() });
-scores.sort((a, b) => b.score - a.score);
-scores = scores.slice(0, 10);
-localStorage.setItem(leaderboardKey, JSON.stringify(scores));
-document.getElementById('mathNameInputGroup').style.display = 'none';
-document.getElementById('mathCloseAwardBtn').style.display = 'inline-block';
-} catch (e) {
-console.error("Eroare la salvarea scorului:", e);
-alert("A apărut o eroare la salvarea scorului.");
-}
-}
-
-function showMathLeaderboard(categoryKey) {
-const key = categoryKey || mathCurrentSubMenuKey;
-const menuData = mathMenus[key];
-if (!menuData) return;
-document.getElementById('mathGameArea').style.display = 'none';
-document.getElementById('mathAwardScreen').style.display = 'none';
-document.getElementById('mathSubMenu').style.display = 'none';
-document.getElementById('mathMainMenu').style.display = 'none';
-document.getElementById('mathLeaderboardScreen').style.display = 'flex';
-document.getElementById('mathBackBtn').style.display = 'flex';
-document.getElementById('mathBackBtn').onclick = () => { document.getElementById('mathLeaderboardScreen').style.display = 'none'; if(categoryKey) document.getElementById('mathMainMenu').style.display = 'block'; else document.getElementById('mathSubMenu').style.display = 'block'; };
-document.getElementById('mathLeaderboardTitle').textContent = `Clasament: ${menuData.title}`;
-let allScores = [];
-if (menuData.items && Array.isArray(menuData.items)) {
-menuData.items.forEach(item => {
-try {
-const itemKey = `math_leaderboard_${item.id}`;
-const itemScores = JSON.parse(localStorage.getItem(itemKey) || "[]");
-allScores = allScores.concat(itemScores);
-} catch (e) { console.warn(`Eroare la citirea scorurilor pentru ${item.id}:`, e); }
-});
-}
-allScores.sort((a, b) => b.score - a.score);
-allScores = allScores.slice(0, 10);
-const tbody = document.getElementById('mathLeaderboardBody');
-tbody.innerHTML = '';
-if(allScores.length === 0) { tbody.innerHTML = '<tr><td colspan="3">Nu există încă scoruri.</td></tr>'; }
-else {
-allScores.forEach((entry, index) => {
-const row = `<tr><td>${index + 1}</td><td>${entry.name}</td><td>${entry.score}</td></tr>`;
-tbody.innerHTML += row;
-});
-}
-}
-
-function showMathCorrectAnswer(isTimeout) {
-if(mathProblemHTML) {
-const correctedHTML = mathProblemHTML.replace(
-/<span class="missing-number">\?<\/span>/g,
-`<span style="color:var(--success); font-weight:900; border-bottom: 4px solid var(--success);">${mathCurrentAnswer}</span>`
-);
-document.getElementById('mathGameContent').innerHTML = correctedHTML;
-}
-if(isTimeout) {
-document.getElementById('mathFeedbackText').innerHTML = `Timp expirat! <br>Răspunsul corect este <strong>${mathCurrentAnswer}</strong>. (-5 puncte)`;
-} else {
-document.getElementById('mathFeedbackText').innerHTML = `Greșit! <br>Răspunsul corect este <strong>${mathCurrentAnswer}</strong>. (-5 puncte)`;
-}
-document.getElementById('mathFeedbackText').className = "feedback wrong";
-mathScore -= 5;
-updateMathStats();
-mathDifficultyLevel++;
-document.getElementById('mathAnswerInput').value = '';
-if (mathQuestionCount >= MAX_QUESTIONS) {
-isMathGameEnding = true;
-setTimeout(endMathGame, 3000);
-} else {
-setTimeout(nextMathProblem, 3000);
-}
+    document.getElementById('mathGameArea').style.display = 'none';
+    document.getElementById('mathAwardScreen').style.display = 'flex';
+    document.getElementById('mathFinalScoreText').textContent = `Scor Final: ${mathScore}`;
 }
 
 // ==========================================
-// LOGICA JOC SĂRITURI
+// LOGICA JOC SĂRITURI (Scurtată)
 // ==========================================
-const jumpCanvas = document.getElementById('jumpCanvas');
-const jumpCtx = jumpCanvas.getContext('2d');
-const jumpScoreEl = document.getElementById('jumpScoreVal');
-const jumpStationEl = document.getElementById('jumpStationVal');
-const jumpMenu = document.getElementById('jumpMenu');
-const jumpWinScreen = document.getElementById('jumpWinScreen');
-const jumpBtnGirl = document.getElementById('jumpBtnGirl');
-const jumpBtnBoy = document.getElementById('jumpBtnBoy');
-let jumpGameRunning = false;
-let jumpScore = 0;
-let jumpStation = 0;
-const maxStations = 15;
-let jumpFrame = 0;
-let jumpSpeed = 6;
-let jumpCharType = 'girl';
-const jumpGravity = 0.5;
-const jumpPower = -20;
-const jumpGroundH = 100;
-const jumpPlayer = { x: 100, y: 0, size: 80, dy: 0, angle: 0, grounded: false };
+const jumpCanvas = document.getElementById('jumpCanvas'), jumpCtx = jumpCanvas.getContext('2d');
+let jumpGameRunning = false, jumpScore = 0, jumpStation = 0, jumpFrame = 0, jumpSpeed = 6, jumpCharType = 'girl';
+const jumpGravity = 0.5, jumpPower = -20, jumpGroundH = 100;
+const jumpPlayer = { x: 100, y: 0, size: 80, dy: 0, grounded: false };
 let jumpObstacles = [];
-const jumpThemes = [
-{bg: ['#ff9a9e', '#fecfef'], ground: '#6ab04c'}, {bg: ['#4facfe', '#00f2fe'], ground: '#0097e6'},
-{bg: ['#fddb92', '#d1fdff'], ground: '#eccc68'}, {bg: ['#96fbc4', '#f9f586'], ground: '#2ed573'},
-{bg: ['#c2e9fb', '#a1c4fd'], ground: '#3742fa'}, {bg: ['#ffecd2', '#fcb69f'], ground: '#ff7f50'},
-{bg: ['#e0c3fc', '#8ec5fc'], ground: '#a55eea'}, {bg: ['#ffecd2', '#ffd1ff'], ground: '#ff4757'},
-{bg: ['#d299c2', '#fef9d7'], ground: '#8c7ae6'}, {bg: ['#85FFBD', '#FFFB7D'], ground: '#26de81'},
-{bg: ['#C9FFBF', '#FFAFBD'], ground: '#fc5c65'}, {bg: ['#FAD961', '#F76B1C'], ground: '#e58e26'},
-{bg: ['#B5FFFC', '#D5FFEA'], ground: '#0be881'}, {bg: ['#FFDEE9', '#B5FFFC'], ground: '#4834d4'},
-{bg: ['#F6D365', '#FDA085'], ground: '#be2edd'}, {bg: ['#667eea', '#764ba2'], ground: '#ffffff'}
+function openJumpGame() {
+    document.getElementById('mainContainer').style.display = 'none';
+    document.getElementById('jumpGameContainer').style.display = 'block';
+    resizeJumpCanvas();
+    document.getElementById('jumpMenu').style.display = 'flex';
+    document.getElementById('jumpWinScreen').style.display = 'none';
+    setJumpChar(currentGender);
+}
+function closeJumpGame() { jumpGameRunning = false; document.getElementById('jumpGameContainer').style.display = 'none'; showMainMenu(); }
+function resizeJumpCanvas() {
+    jumpCanvas.width = window.innerWidth; jumpCanvas.height = window.innerHeight;
+    if(!jumpGameRunning) { jumpPlayer.y = jumpCanvas.height - jumpGroundH - jumpPlayer.size; jumpPlayer.x = jumpCanvas.width * 0.15; drawJump(); }
+}
+window.setJumpChar = function(type) {
+    jumpCharType = type;
+    document.getElementById('jumpBtnGirl').classList.toggle('selected', type === 'girl');
+    document.getElementById('jumpBtnBoy').classList.toggle('selected', type === 'boy');
+};
+window.startJumpGame = function() {
+    document.getElementById('jumpMenu').style.display = 'none';
+    jumpGameRunning = true; jumpScore = 0; jumpStation = 0; jumpSpeed = 6; jumpFrame = 0; jumpObstacles = [];
+    jumpPlayer.y = jumpCanvas.height - jumpGroundH - jumpPlayer.size; jumpPlayer.dy = 0;
+    updateJumpUI(); jumpLoop();
+};
+function jumpDoJump() { if (!jumpGameRunning) return; if (jumpPlayer.grounded || jumpPlayer.y > jumpCanvas.height - jumpGroundH - jumpPlayer.size - 10) { jumpPlayer.dy = jumpPower; jumpPlayer.grounded = false; } }
+function updateJumpUI() { document.getElementById('jumpScoreVal').innerText = jumpScore; document.getElementById('jumpStationVal').innerText = Math.min(jumpStation, 15); }
+function jumpLoop() { if (!jumpGameRunning) return; requestAnimationFrame(jumpLoop); jumpFrame++; updateJump(); drawJump(); }
+function updateJump() {
+    jumpPlayer.dy += jumpGravity; jumpPlayer.y += jumpPlayer.dy;
+    if (jumpPlayer.y + jumpPlayer.size > jumpCanvas.height - jumpGroundH) { jumpPlayer.y = jumpCanvas.height - jumpGroundH - jumpPlayer.size; jumpPlayer.dy = 0; jumpPlayer.grounded = true; }
+    if (jumpFrame % Math.floor(1000 / jumpSpeed) === 0) { let oh = 40 + Math.random() * 40; jumpObstacles.push({ x: jumpCanvas.width, y: jumpCanvas.height - jumpGroundH - oh, w: 40, h: oh, passed: false }); }
+    for (let i = 0; i < jumpObstacles.length; i++) {
+        let o = jumpObstacles[i]; o.x -= jumpSpeed;
+        if (jumpPlayer.x < o.x + o.w && jumpPlayer.x + jumpPlayer.size > o.x && jumpPlayer.y < o.y + o.h && jumpPlayer.y + jumpPlayer.size > o.y) { jumpGameRunning = false; document.getElementById('jumpMenu').style.display = 'flex'; document.querySelector('#jumpMenu h1').innerText = "Joc Terminat! Scor: " + jumpScore; return; }
+        if (o.x + o.w < jumpPlayer.x && !o.passed) { jumpScore++; if (jumpScore % 5 === 0) { jumpStation++; jumpSpeed += 0.5; if (jumpStation >= 15) { jumpGameRunning = false; document.getElementById('jumpWinScreen').style.display = 'flex'; } } updateJumpUI(); o.passed = true; }
+    }
+    if (jumpObstacles.length > 0 && jumpObstacles[0].x < -50) jumpObstacles.shift();
+}
+function drawJump() {
+    let bgColor = currentGender === 'boy' ? ['#4facfe', '#00f2fe'] : ['#ff9a9e', '#fecfef'];
+    let groundColor = currentGender === 'boy' ? '#4CAF50' : '#EC407A';
+    let grad = jumpCtx.createLinearGradient(0, 0, 0, jumpCanvas.height);
+    grad.addColorStop(0, bgColor[0]); grad.addColorStop(1, bgColor[1]);
+    jumpCtx.fillStyle = grad; jumpCtx.fillRect(0, 0, jumpCanvas.width, jumpCanvas.height);
+    jumpCtx.fillStyle = groundColor; jumpCtx.fillRect(0, jumpCanvas.height - jumpGroundH, jumpCanvas.width, jumpGroundH);
+    jumpCtx.fillStyle = "#fff";
+    jumpObstacles.forEach(o => {
+        let shape = currentGender === 'boy' ? '🌵' : '🍄';
+        jumpCtx.font = "40px Arial"; jumpCtx.fillText(shape, o.x, o.y + o.h);
+    });
+    jumpCtx.save(); jumpCtx.translate(jumpPlayer.x + jumpPlayer.size/2, jumpPlayer.y + jumpPlayer.size/2);
+    jumpCtx.font = jumpPlayer.size + "px Arial"; jumpCtx.textAlign = "center"; jumpCtx.textBaseline = "middle";
+    let char = jumpCharType === 'girl' ? '🧚‍♀️' : '🦖';
+    jumpCtx.fillText(char, 0, 0); jumpCtx.restore();
+}
+window.addEventListener('pointerdown', function(e) { if(e.target.tagName !== 'BUTTON') jumpDoJump(); });
+window.addEventListener('keydown', function(e) { if ((e.code === 'Space' || e.code === 'ArrowUp') && jumpGameRunning) jumpDoJump(); });
+
+// ==========================================
+// LOGICA JOC LITERE (Scurtată)
+// ==========================================
+const letterAllChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+let letterCurrentChar = '', letterScore = 0, letterIsLevelComplete = false, letterHasDrawnSomething = false;
+const letterDrawCanvas = document.getElementById('drawCanvas'), letterDrawCtx = letterDrawCanvas.getContext('2d');
+const letterGuideCanvas = document.getElementById('guideCanvas'), letterGuideCtx = letterGuideCanvas.getContext('2d');
+function openLetterGame() {
+    document.getElementById('mainContainer').style.display = 'none';
+    document.getElementById('letterGameContainer').style.display = 'block';
+    initLetterGame();
+}
+function closeLetterGame() { document.getElementById('letterGameContainer').style.display = 'none'; showMainMenu(); }
+function initLetterGame() { resizeLetterCanvases(); setupLetterDrawing(); nextLetterLevel(); }
+function resizeLetterCanvases() {
+    const container = letterDrawCanvas.parentElement;
+    [letterDrawCanvas, letterGuideCanvas].forEach(c => { c.width = container.clientWidth; c.height = container.clientHeight; });
+    letterDrawCtx.lineCap = 'round'; letterDrawCtx.lineJoin = 'round';
+    letterDrawCtx.lineWidth = Math.max(10, container.clientWidth / 20);
+    letterDrawCtx.strokeStyle = currentGender === 'boy' ? '#2196F3' : '#EC407A';
+    if(letterCurrentChar) drawLetterGuide();
+}
+function drawLetterGuide() {
+    letterGuideCtx.clearRect(0, 0, letterGuideCanvas.width, letterGuideCanvas.height);
+    letterGuideCtx.fillStyle = '#E0E0E0';
+    letterGuideCtx.font = `bold ${letterGuideCanvas.height * 0.8}px 'Fredoka One'`;
+    letterGuideCtx.textAlign = 'center'; letterGuideCtx.textBaseline = 'middle';
+    letterGuideCtx.fillText(letterCurrentChar, letterGuideCanvas.width / 2, letterGuideCanvas.height / 2);
+}
+function setupLetterDrawing() {
+    let letterIsDrawing = false;
+    function getPos(e) { const rect = letterDrawCanvas.getBoundingClientRect(); const clientX = e.touches ? e.touches[0].clientX : e.clientX; const clientY = e.touches ? e.touches[0].clientY : e.clientY; return { x: clientX - rect.left, y: clientY - rect.top }; }
+    function startDraw(e) { if (letterIsLevelComplete) return; letterIsDrawing = true; letterHasDrawnSomething = true; const pos = getPos(e); letterDrawCtx.beginPath(); letterDrawCtx.moveTo(pos.x, pos.y); if(e.cancelable) e.preventDefault(); }
+    function draw(e) { if (!letterIsDrawing || letterIsLevelComplete) return; const pos = getPos(e); letterDrawCtx.lineTo(pos.x, pos.y); letterDrawCtx.stroke(); if(e.cancelable) e.preventDefault(); }
+    function stopDraw() { letterIsDrawing = false; letterDrawCtx.closePath(); }
+    letterDrawCanvas.addEventListener('mousedown', startDraw); letterDrawCanvas.addEventListener('mousemove', draw); letterDrawCanvas.addEventListener('mouseup', stopDraw);
+    letterDrawCanvas.addEventListener('touchstart', startDraw, { passive: false }); letterDrawCanvas.addEventListener('touchmove', draw, { passive: false }); letterDrawCanvas.addEventListener('touchend', stopDraw);
+}
+function nextLetterLevel() {
+    letterIsLevelComplete = false; letterHasDrawnSomething = false;
+    letterCurrentChar = letterAllChars.charAt(Math.floor(Math.random() * letterAllChars.length));
+    document.getElementById('letterTargetChar').textContent = letterCurrentChar;
+    letterDrawCtx.clearRect(0, 0, letterDrawCanvas.width, letterDrawCanvas.height);
+    drawLetterGuide();
+    document.getElementById('letterMainBtn').textContent = "Verifică!";
+    document.getElementById('letterMainBtn').onclick = handleLetterCheck;
+    document.getElementById('letterFeedback').classList.remove('show');
+}
+function handleLetterAction() { if(letterIsLevelComplete) nextLetterLevel(); }
+function handleLetterCheck() {
+    if (!letterHasDrawnSomething) { showLetterFeedback("Desenează ceva!", "fail"); return; }
+    winLetterLevel();
+}
+function winLetterLevel() {
+    letterIsLevelComplete = true; letterScore += 1;
+    document.getElementById('letterScore').textContent = letterScore;
+    showLetterFeedback("Bravo!", "success");
+    document.getElementById('letterMainBtn').textContent = "Următoarea ➡️";
+    document.getElementById('letterMainBtn').onclick = nextLetterLevel;
+}
+function showLetterFeedback(text, type) {
+    document.getElementById('letterFeedbackText').textContent = text;
+    document.getElementById('letterFeedback').classList.add('show');
+    setTimeout(() => document.getElementById('letterFeedback').classList.remove('show'), 1500);
+}
+window.addEventListener('resize', () => { if(document.getElementById('letterGameContainer').style.display === 'block') resizeLetterCanvases(); });
+
+// ==========================================
+// LOGICA JOC TRADUCERI
+// ==========================================
+const transDictionary = [{ ro: "Pisică", en: "Cat", fr: "Chat" }, { ro: "Câine", en: "Dog", fr: "Chien" }, { ro: "Floare", en: "Flower", fr: "Fleur" }, { ro: "Soare", en: "Sun", fr: "Soleil" }, { ro: "Lună", en: "Moon", fr: "Lune" }, { ro: "Colindă", en: "Carol", fr: "Noël" }, { ro: "Steaua", en: "Star", fr: "Étoile" }];
+let currentTransLang = '', currentTransWordObj = null;
+function openTranslationGame() {
+    document.getElementById('mainContainer').style.display = 'none';
+    document.getElementById('translationGameContainer').style.display = 'block';
+    document.getElementById('lang-selection').style.display = 'flex';
+    document.getElementById('trans-game-area').style.display = 'none';
+    currentTransLang = '';
+}
+function closeTranslationGame() { document.getElementById('translationGameContainer').style.display = 'none'; showMainMenu(); }
+function selectTransLang(lang) {
+    currentTransLang = lang;
+    document.querySelector('.btn-en').classList.toggle('selected', lang==='en');
+    document.querySelector('.btn-fr').classList.toggle('selected', lang==='fr');
+    document.getElementById('lang-selection').style.display = 'none';
+    document.getElementById('trans-game-area').style.display = 'flex';
+    nextTransWord();
+}
+function nextTransWord() {
+    const input = document.getElementById('trans-user-input');
+    input.value = ''; input.disabled = false; input.classList.remove('shake');
+    document.getElementById('trans-feedback-area').innerHTML = '';
+    document.getElementById('trans-next-btn').style.display = 'none';
+    document.getElementById('trans-check-btn').style.display = 'block';
+    currentTransWordObj = transDictionary[Math.floor(Math.random() * transDictionary.length)];
+    document.getElementById('rom-word').innerText = currentTransWordObj.ro;
+}
+function verificaRaspunsTrans() {
+    const input = document.getElementById('trans-user-input');
+    const val = input.value.trim().toLowerCase();
+    if(!val) return;
+    const correct = currentTransLang === 'en' ? currentTransWordObj.en : currentTransWordObj.fr;
+    const normalize = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    if(normalize(val) === normalize(correct.toLowerCase())) {
+        input.disabled = true;
+        document.getElementById('trans-check-btn').style.display = 'none';
+        document.getElementById('trans-next-btn').style.display = 'block';
+        document.getElementById('trans-feedback-area').innerHTML = `<div class="magic-square">★</div><div style="color:#ffeaa7; margin-top:10px;">Bravo!</div>`;
+    } else {
+        input.classList.add('shake');
+        setTimeout(()=>input.classList.remove('shake'), 500);
+    }
+}
+document.getElementById('trans-user-input').addEventListener("keypress", (e) => { if(e.key==="Enter") verificaRaspunsTrans(); });
+document.getElementById('trans-next-btn').addEventListener("click", nextTransWord);
+
+// ==========================================
+// LOGICA JOC TIMP
+// ==========================================
+const timeBaseData = [
+    { year: 1918, mill: ["II", "2"], cent: ["XX", "20"], dec: ["al 2-lea", "2", "al 2lea", "II"], era: ["d.Hr", "dh"], hint: "🇷🇴 România devine mare!", correct: "Marea Unire", options: ["Marea Unire", "Independența", "Republica"] },
+    { year: 1453, mill: ["II", "2"], cent: ["XV", "15"], dec: ["al 6-lea", "6", "VI"], era: ["d.Hr", "dh"], hint: "🏰 Căderea unui oraș legendar.", correct: "Constantinopol", options: ["Roma", "Constantinopol", "Athens"] },
+    { year: 1492, mill: ["II", "2"], cent: ["XV", "15"], dec: ["al 9-lea", "9", "IX"], era: ["d.Hr", "dh"], hint: "⛵ Cristofor Columb ajunge în America.", correct: "America", options: ["Asia", "America", "Africa"] },
+    { year: 1789, mill: ["II", "2"], cent: ["XVIII", "18"], dec: ["al 9-lea", "9", "IX"], era: ["d.Hr", "dh"], hint: "🇫🇷 Libertate, Egalitate, Fraternitate.", correct: "Revoluția Franceză", options: ["Revoluția Industrială", "Revoluția Franceză", "Războiul"] },
+    { year: 1969, mill: ["II", "2"], cent: ["XX", "20"], dec: ["al 7-lea", "7", "VII"], era: ["d.Hr", "dh"], hint: "🚀 Omul pe Lună.", correct: "Aselenizarea", options: ["Satelitul", "Aselenizarea", "Racheta"] }
 ];
 
-function initJumpGame() {
-resizeJumpCanvas();
-window.addEventListener('resize', resizeJumpCanvas);
-window.addEventListener('pointerdown', function(e) {
-if(e.target.tagName === 'BUTTON') return;
-jumpDoJump();
+let timeQuestions = [], timeCurrentIndex = 0, timeScore = 0, timeActiveInput = null;
+
+function openTimeGame() {
+    document.getElementById('mainContainer').style.display = 'none';
+    document.getElementById('timeGameContainer').style.display = 'block';
+    initTimeGame();
+}
+
+function closeTimeGame() {
+    document.getElementById('timeGameContainer').style.display = 'none';
+    closeTimeKeyboard(); closeNameKeyboard();
+    showMainMenu();
+}
+
+function initTimeGame() {
+    timeQuestions = [...timeBaseData].sort(() => Math.random() - 0.5).slice(0, 5);
+    timeCurrentIndex = 0; timeScore = 0;
+    document.getElementById('time-game-screen').style.display = 'block';
+    document.getElementById('time-end-screen').style.display = 'none';
+    loadTimeQuestion();
+}
+
+function loadTimeQuestion() {
+    document.getElementById('time-event-section').style.display = 'none';
+    document.getElementById('time-date-input-section').style.display = 'block';
+    document.getElementById('time-next-btn').style.display = 'none';
+    resetTimeInputs();
+    const data = timeQuestions[timeCurrentIndex];
+    document.getElementById('time-year-display').textContent = data.year;
+    document.getElementById('time-q-current').textContent = timeCurrentIndex + 1;
+    document.getElementById('help-mill').textContent = "ex: " + data.mill[0];
+    document.getElementById('help-cent').textContent = "ex: " + data.cent[0];
+    document.getElementById('help-dec').textContent = "ex: " + data.dec[0];
+    document.getElementById('help-era').textContent = "ex: " + data.era[0];
+    document.getElementById('time-progress-bar').style.width = ((timeCurrentIndex) / 5) * 100 + "%";
+}
+
+function resetTimeInputs() {
+    ['time-millennium', 'time-century', 'time-decade', 'time-era'].forEach(id => {
+        const el = document.getElementById(id);
+        el.value = ""; el.classList.remove('error-input'); el.disabled = false;
+        el.onclick = function() { openTimeKeyboard(this); };
+    });
+    const fb = document.getElementById('time-date-feedback');
+    fb.textContent = ""; fb.style.color = "#5D3FD3"; fb.style.backgroundColor = "transparent";
+}
+
+// Tastaturi Timp
+function openTimeKeyboard(inputElement) {
+    timeActiveInput = inputElement;
+    document.getElementById('timeDateKeyboard').style.display = 'block';
+    document.getElementById('timeNameKeyboard').style.display = 'none';
+    inputElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function closeTimeKeyboard() { document.getElementById('timeDateKeyboard').style.display = 'none'; timeActiveInput = null; }
+function typeTimeChar(char) { if (timeActiveInput) timeActiveInput.value += char; }
+function deleteTimeChar() { if (timeActiveInput) timeActiveInput.value = timeActiveInput.value.slice(0, -1); }
+
+function openTimeNameKeyboard() {
+    document.getElementById('timeNameKeyboard').style.display = 'block';
+    document.getElementById('timeDateKeyboard').style.display = 'none';
+    document.getElementById('time-player-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function closeNameKeyboard() { document.getElementById('timeNameKeyboard').style.display = 'none'; }
+function typeNameChar(char) { document.getElementById('time-player-name').value += char; }
+function deleteNameChar() { document.getElementById('time-player-name').value = document.getElementById('time-player-name').value.slice(0, -1); }
+
+// Logica Joc Timp
+function normalizeText(text) { if (!text) return ""; return text.toString().trim().toLowerCase().replace(/[\s-]/g, ''); }
+function isMatch(userInput, validOptions) {
+    const normalizedUser = normalizeText(userInput);
+    return validOptions.some(option => normalizeText(option) === normalizedUser);
+}
+
+function validateTimeDate() {
+    const data = timeQuestions[timeCurrentIndex];
+    const feedback = document.getElementById('time-date-feedback');
+    const inputs = ['time-millennium', 'time-century', 'time-decade', 'time-era'];
+    const keys = ['mill', 'cent', 'dec', 'era'];
+    let hasError = false, errors = [];
+
+    inputs.forEach((id, idx) => {
+        const el = document.getElementById(id);
+        if (!isMatch(el.value, data[keys[idx]])) {
+            el.classList.add('error-input'); hasError = true; errors.push(el.previousElementSibling.innerText.split(' ')[1]);
+        } else { el.classList.remove('error-input'); }
+    });
+
+    if (hasError) {
+        feedback.style.color = "#DC143C"; feedback.style.backgroundColor = "#FFE4E1";
+        feedback.innerHTML = "❌ Verifică: <b>" + errors.join(", ") + "</b>";
+        return;
+    }
+
+    feedback.style.color = "#32CD13"; feedback.style.backgroundColor = "#E0FFE0";
+    feedback.textContent = "✅ Corect! Treci la eveniment...";
+    timeScore += 20; updateTimeScore();
+    closeTimeKeyboard();
+    inputs.forEach(id => document.getElementById(id).disabled = true);
+
+    setTimeout(() => {
+        document.getElementById('time-date-input-section').style.display = 'none';
+        showTimeEvent();
+    }, 1000);
+}
+
+function showTimeEvent() {
+    const data = timeQuestions[timeCurrentIndex];
+    document.getElementById('time-hint-text').textContent = data.hint;
+    const container = document.getElementById('time-options-container');
+    container.innerHTML = '';
+    let shuffled = [...data.options].sort(() => Math.random() - 0.5);
+    shuffled.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.textContent = opt; btn.classList.add('time-opt-btn');
+        btn.onclick = function() { checkTimeAnswer(this, opt, data.correct); };
+        container.appendChild(btn);
+    });
+    document.getElementById('time-event-section').style.display = 'block';
+}
+
+function checkTimeAnswer(btn, selected, correct) {
+    document.querySelectorAll('#time-options-container button').forEach(b => b.disabled = true);
+    if (selected === correct) {
+        btn.classList.add('time-correct');
+        timeScore += 20;
+        document.getElementById('time-year-display').textContent = "🎉 BRAVO!";
+    } else {
+        btn.classList.add('time-wrong');
+        timeScore -= 5;
+        document.querySelectorAll('#time-options-container button').forEach(b => { if(b.textContent === correct) b.classList.add('time-correct'); });
+        document.getElementById('time-year-display').textContent = "😞 Greșit!";
+    }
+    updateTimeScore();
+    document.getElementById('time-next-btn').style.display = 'block';
+}
+
+function updateTimeScore() { document.getElementById('time-score').textContent = timeScore; }
+function nextTimeQuestion() {
+    timeCurrentIndex++;
+    if (timeCurrentIndex >= 5) endTimeGame();
+    else loadTimeQuestion();
+}
+
+function endTimeGame() {
+    document.getElementById('time-game-screen').style.display = 'none';
+    document.getElementById('time-end-screen').style.display = 'block';
+    document.getElementById('time-final-score-display').textContent = timeScore;
+    document.getElementById('time-save-score-section').style.display = 'block';
+    document.getElementById('time-leaderboard-view').style.display = 'none';
+    closeTimeKeyboard(); closeNameKeyboard();
+}
+
+function saveTimeScore() {
+    const name = document.getElementById('time-player-name').value.trim();
+    if (!name) { alert("Te rog scrie un nume!"); return; }
+    let lb = JSON.parse(localStorage.getItem('timeGameLeaderboard')) || [];
+    lb.push({ name: name, score: timeScore });
+    lb.sort((a, b) => b.score - a.score);
+    lb = lb.slice(0, 10);
+    localStorage.setItem('timeGameLeaderboard', JSON.stringify(lb));
+    document.getElementById('time-save-score-section').style.display = 'none';
+    showTimeLeaderboard();
+}
+
+function showTimeLeaderboard() {
+    const list = document.getElementById('time-leaderboard-list');
+    list.innerHTML = '';
+    const lb = JSON.parse(localStorage.getItem('timeGameLeaderboard')) || [];
+    if (lb.length === 0) list.innerHTML = '<li style="text-align:center; padding:10px;">Nu există scoruri.</li>';
+    else lb.forEach((e, i) => {
+        const li = document.createElement('li'); li.className = 'time-lb-item';
+        li.innerHTML = `<span>#${i+1} ${e.name}</span> <span>${e.score} pts</span>`;
+        list.appendChild(li);
+    });
+    document.getElementById('time-leaderboard-view').style.display = 'block';
+}
+function hideTimeLeaderboard() { document.getElementById('time-leaderboard-view').style.display = 'none'; }
+function restartTimeGame() { initTimeGame(); }
+
+// Click outside closes keyboards
+document.addEventListener('click', function(e) {
+    const kb1 = document.getElementById('timeDateKeyboard'), kb2 = document.getElementById('timeNameKeyboard');
+    if (!kb1.contains(e.target) && !kb2.contains(e.target) && !e.target.closest('.time-input')) {
+        closeTimeKeyboard(); closeNameKeyboard();
+    }
 });
-window.addEventListener('keydown', function(e) {
-if ((e.code === 'Space' || e.code === 'ArrowUp') && jumpGameRunning) jumpDoJump();
-});
-}
 
-function resizeJumpCanvas() {
-jumpCanvas.width = window.innerWidth;
-jumpCanvas.height = window.innerHeight;
-if(!jumpGameRunning) {
-jumpPlayer.y = jumpCanvas.height - jumpGroundH - jumpPlayer.size;
-jumpPlayer.x = jumpCanvas.width * 0.15;
-drawJump();
-} else {
-jumpPlayer.x = jumpCanvas.width * 0.15;
-}
-}
-
-window.setJumpChar = function(type) {
-jumpCharType = type;
-if(type === 'girl') {
-jumpBtnGirl.classList.add('selected');
-jumpBtnBoy.classList.remove('selected');
-} else {
-jumpBtnBoy.classList.add('selected');
-jumpBtnGirl.classList.remove('selected');
-}
-};
-
-window.startJumpGame = function() {
-jumpMenu.style.display = 'none';
-jumpGameRunning = true;
-jumpScore = 0;
-jumpStation = 0;
-jumpSpeed = 6;
-jumpFrame = 0;
-jumpObstacles = [];
-jumpPlayer.y = jumpCanvas.height - jumpGroundH - jumpPlayer.size;
-jumpPlayer.dy = 0;
-updateJumpUI();
-jumpLoop();
-};
-
-function jumpDoJump() {
-if (!jumpGameRunning) return;
-if (jumpPlayer.grounded || jumpPlayer.y > jumpCanvas.height - jumpGroundH - jumpPlayer.size - 10) {
-jumpPlayer.dy = jumpPower;
-jumpPlayer.grounded = false;
-}
-}
-
-function updateJumpUI() {
-jumpScoreEl.innerText = jumpScore;
-jumpStationEl.innerText = Math.min(jumpStation, maxStations);
-}
-
-function jumpLoop() {
-if (!jumpGameRunning) return;
-requestAnimationFrame(jumpLoop);
-jumpFrame++;
-updateJump();
-drawJump();
-}
-
-function updateJump() {
-jumpPlayer.dy += jumpGravity;
-jumpPlayer.y += jumpPlayer.dy;
-if (jumpPlayer.y + jumpPlayer.size > jumpCanvas.height - jumpGroundH) {
-jumpPlayer.y = jumpCanvas.height - jumpGroundH - jumpPlayer.size;
-jumpPlayer.dy = 0;
-jumpPlayer.grounded = true;
-jumpPlayer.angle = 0;
-} else {
-jumpPlayer.grounded = false;
-jumpPlayer.angle += 0.1;
-}
-if (jumpFrame % Math.floor(1000 / jumpSpeed) === 0) {
-let oh = 40 + Math.random() * 40;
-jumpObstacles.push({ x: jumpCanvas.width, y: jumpCanvas.height - jumpGroundH - oh, w: 40, h: oh, passed: false });
-}
-for (let i = 0; i < jumpObstacles.length; i++) {
-let o = jumpObstacles[i];
-o.x -= jumpSpeed;
-if (jumpPlayer.x < o.x + o.w && jumpPlayer.x + jumpPlayer.size > o.x &&
-jumpPlayer.y < o.y + o.h && jumpPlayer.y + jumpPlayer.size > o.y) {
-jumpGameOver();
-}
-if (o.x + o.w < jumpPlayer.x && !o.passed) {
-jumpScore++;
-if (jumpScore % 5 === 0) {
-jumpStation++;
-jumpSpeed += 0.5;
-if (jumpStation >= maxStations) {
-jumpGameWin();
-return;
-}
-}
-updateJumpUI();
-o.passed = true;
-}
-}
-if (jumpObstacles.length > 0 && jumpObstacles[0].x < -50) jumpObstacles.shift();
-}
-
-function drawJump() {
-let t = jumpThemes[Math.min(jumpStation, jumpThemes.length - 1)];
-let grad = jumpCtx.createLinearGradient(0, 0, 0, jumpCanvas.height);
-grad.addColorStop(0, t.bg[0]);
-grad.addColorStop(1, t.bg[1]);
-jumpCtx.fillStyle = grad;
-jumpCtx.fillRect(0, 0, jumpCanvas.width, jumpCanvas.height);
-jumpCtx.fillStyle = t.ground;
-jumpCtx.fillRect(0, jumpCanvas.height - jumpGroundH, jumpCanvas.width, jumpGroundH);
-jumpCtx.fillStyle = "rgba(255,255,255,0.3)";
-jumpCtx.fillRect(0, jumpCanvas.height - jumpGroundH, jumpCanvas.width, 10);
-jumpCtx.fillStyle = "#ff4757";
-jumpObstacles.forEach(o => {
-jumpCtx.beginPath();
-jumpCtx.moveTo(o.x, o.y + o.h);
-jumpCtx.lineTo(o.x + o.w/2, o.y);
-jumpCtx.lineTo(o.x + o.w, o.y + o.h);
-jumpCtx.fill();
-});
-jumpCtx.save();
-jumpCtx.translate(jumpPlayer.x + jumpPlayer.size/2, jumpPlayer.y + jumpPlayer.size/2);
-jumpCtx.rotate(jumpPlayer.angle);
-jumpCtx.font = jumpPlayer.size + "px Arial";
-jumpCtx.textAlign = "center";
-jumpCtx.textBaseline = "middle";
-jumpCtx.fillText(jumpCharType === 'girl' ? "🌟" : "🦕", 0, 0);
-jumpCtx.restore();
-}
-
-function jumpGameOver() {
-jumpGameRunning = false;
-jumpMenu.style.display = 'flex';
-document.querySelector('#jumpMenu h1').innerText = "Joc Terminat!\nScor: " + jumpScore;
-document.getElementById('jumpStartBtn').innerText = "Încearcă Din Nou";
-}
-
-function jumpGameWin() {
-jumpGameRunning = false;
-jumpWinScreen.style.display = 'flex';
-}
-
-// ==========================================
-// LOGICA JOC LITERE
-// ==========================================
-const letterLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const letterNumbers = "0123456789";
-const letterAllChars = letterLetters + letterNumbers;
-let letterCurrentChar = '';
-let letterScore = 0;
-let letterIsLevelComplete = false;
-let letterHasDrawnSomething = false;
-const letterDrawCanvas = document.getElementById('drawCanvas');
-const letterDrawCtx = letterDrawCanvas.getContext('2d');
-const letterGuideCanvas = document.getElementById('guideCanvas');
-const letterGuideCtx = letterGuideCanvas.getContext('2d');
-const letterTargetCharEl = document.getElementById('letterTargetChar');
-const letterTargetCard = document.getElementById('letterTargetCard');
-const letterMainBtn = document.getElementById('letterMainBtn');
-const letterFeedbackEl = document.getElementById('letterFeedback');
-const letterFeedbackText = document.getElementById('letterFeedbackText');
-const letterFeedbackIcon = document.getElementById('letterFeedbackIcon');
-const letterScoreEl = document.getElementById('letterScore');
-const letterConfettiCanvas = document.getElementById('letterConfetti');
-const letterConfettiCtx = letterConfettiCanvas.getContext('2d');
-
-function initLetterGame() {
-resizeLetterCanvases();
-window.addEventListener('resize', resizeLetterCanvases);
-setupLetterDrawing();
-nextLetterLevel();
-}
-
-function resizeLetterCanvases() {
-const container = letterDrawCanvas.parentElement;
-[letterDrawCanvas, letterGuideCanvas].forEach(c => {
-c.width = container.clientWidth;
-c.height = container.clientHeight;
-});
-letterDrawCtx.lineCap = 'round';
-letterDrawCtx.lineJoin = 'round';
-letterDrawCtx.lineWidth = Math.max(10, container.clientWidth / 20);
-letterDrawCtx.strokeStyle = '#5E6472';
-if(letterCurrentChar) drawLetterGuide();
-}
-
-function drawLetterGuide() {
-letterGuideCtx.clearRect(0, 0, letterGuideCanvas.width, letterGuideCanvas.height);
-letterGuideCtx.fillStyle = '#E0E0E0';
-letterGuideCtx.font = `bold ${letterGuideCanvas.height * 0.8}px 'Fredoka One'`;
-letterGuideCtx.textAlign = 'center';
-letterGuideCtx.textBaseline = 'middle';
-letterGuideCtx.fillText(letterCurrentChar, letterGuideCanvas.width / 2, letterGuideCanvas.height / 2 + (letterGuideCanvas.height * 0.05));
-}
-
-function setupLetterDrawing() {
-let letterIsDrawing = false;
-function getPos(e) {
-const rect = letterDrawCanvas.getBoundingClientRect();
-const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-return { x: clientX - rect.left, y: clientY - rect.top };
-}
-function startDraw(e) {
-if (letterIsLevelComplete) return;
-letterIsDrawing = true;
-letterHasDrawnSomething = true;
-const pos = getPos(e);
-letterDrawCtx.beginPath();
-letterDrawCtx.moveTo(pos.x, pos.y);
-if(e.cancelable) e.preventDefault();
-}
-function draw(e) {
-if (!letterIsDrawing || letterIsLevelComplete) return;
-const pos = getPos(e);
-letterDrawCtx.lineTo(pos.x, pos.y);
-letterDrawCtx.stroke();
-if(e.cancelable) e.preventDefault();
-}
-function stopDraw() {
-letterIsDrawing = false;
-letterDrawCtx.closePath();
-}
-letterDrawCanvas.addEventListener('mousedown', startDraw);
-letterDrawCanvas.addEventListener('mousemove', draw);
-letterDrawCanvas.addEventListener('mouseup', stopDraw);
-letterDrawCanvas.addEventListener('mouseout', stopDraw);
-letterDrawCanvas.addEventListener('touchstart', startDraw, { passive: false });
-letterDrawCanvas.addEventListener('touchmove', draw, { passive: false });
-letterDrawCanvas.addEventListener('touchend', stopDraw);
-}
-
-function nextLetterLevel() {
-letterIsLevelComplete = false;
-letterHasDrawnSomething = false;
-letterCurrentChar = letterAllChars.charAt(Math.floor(Math.random() * letterAllChars.length));
-letterTargetCharEl.textContent = letterCurrentChar;
-clearLetterCanvas();
-drawLetterGuide();
-letterTargetCard.classList.remove('bounce', 'shake');
-void letterTargetCard.offsetWidth;
-letterTargetCard.classList.add('bounce');
-updateLetterButton('check');
-hideLetterFeedback();
-}
-
-function clearLetterCanvas() {
-letterDrawCtx.clearRect(0, 0, letterDrawCanvas.width, letterDrawCanvas.height);
-letterHasDrawnSomething = false;
-if (letterIsLevelComplete) {
-letterIsLevelComplete = false;
-updateLetterButton('check');
-hideLetterFeedback();
-}
-}
-
-function updateLetterButton(state) {
-letterMainBtn.innerHTML = '';
-letterMainBtn.className = 'letter-action-btn';
-if (state === 'check') {
-letterMainBtn.textContent = "Verifică!";
-letterMainBtn.onclick = handleLetterCheck;
-} else if (state === 'skip') {
-letterMainBtn.innerHTML = "<span>🔄 Altă Literă</span>";
-letterMainBtn.classList.add('skip');
-letterMainBtn.onclick = nextLetterLevel;
-} else if (state === 'next') {
-letterMainBtn.textContent = "Următoarea ➡️";
-letterMainBtn.classList.add('next');
-letterMainBtn.onclick = nextLetterLevel;
-}
-}
-
-function handleLetterAction() {
-if(letterIsLevelComplete) nextLetterLevel();
-}
-
-function handleLetterCheck() {
-if (!letterHasDrawnSomething) {
-showLetterFeedback("Desenează pe contur!", "fail", "✏️");
-return;
-}
-const analysis = analyzeLetterDrawing();
-if (analysis.matchRatio < 0.35) {
-showLetterFeedback("Nu ai respectat conturul!", "fail", "🤔");
-letterTargetCard.classList.add('shake');
-setTimeout(() => letterTargetCard.classList.remove('shake'), 500);
-updateLetterButton('skip');
-return;
-}
-winLetterLevel();
-}
-
-function analyzeLetterDrawing() {
-const drawData = letterDrawCtx.getImageData(0, 0, letterDrawCanvas.width, letterDrawCanvas.height).data;
-const guideData = letterGuideCtx.getImageData(0, 0, letterGuideCanvas.width, letterGuideCanvas.height).data;
-let drawPixels = 0;
-let guidePixels = 0;
-let matchPixels = 0;
-for (let i = 0; i < drawData.length; i += 4) {
-const isDraw = drawData[i + 3] > 0;
-const isGuide = guideData[i + 3] > 0;
-if (isDraw) drawPixels++;
-if (isGuide) guidePixels++;
-if (isDraw && isGuide) matchPixels++;
-}
-if (guidePixels === 0) return { matchRatio: 0 };
-const coverage = matchPixels / guidePixels;
-const precision = matchPixels / (drawPixels || 1);
-const score = (coverage * 0.7) + (precision * 0.3);
-return { matchRatio: score };
-}
-
-function winLetterLevel() {
-letterIsLevelComplete = true;
-letterScore += 1;
-letterScoreEl.textContent = letterScore;
-showLetterFeedback("Bravo! E corect!", "success", "🌟");
-updateLetterButton('next');
-fireLetterConfetti();
-}
-
-function showLetterFeedback(text, type, icon) {
-letterFeedbackText.textContent = text;
-letterFeedbackIcon.textContent = icon;
-letterFeedbackEl.className = `letter-feedback-overlay show ${type}`;
-setTimeout(hideLetterFeedback, 2000);
-}
-
-function hideLetterFeedback() {
-letterFeedbackEl.classList.remove('show');
-}
-
-let letterParticles = [];
-function resizeLetterConfetti() {
-letterConfettiCanvas.width = window.innerWidth;
-letterConfettiCanvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeLetterConfetti);
-resizeLetterConfetti();
-
-function fireLetterConfetti() {
-const colors = ['#FF85A2', '#A2D2FF', '#FFC8DD', '#FFD93D'];
-const centerX = window.innerWidth / 2;
-const centerY = window.innerHeight / 2;
-for (let i = 0; i < 80; i++) {
-letterParticles.push({
-x: centerX, y: centerY,
-vx: (Math.random() - 0.5) * 15,
-vy: (Math.random() - 0.5) * 15 - 5,
-size: Math.random() * 8 + 4,
-color: colors[Math.floor(Math.random() * colors.length)],
-life: 100
-});
-}
-animateLetterConfetti();
-}
-
-function animateLetterConfetti() {
-letterConfettiCtx.clearRect(0, 0, letterConfettiCanvas.width, letterConfettiCanvas.height);
-letterParticles.forEach((p, index) => {
-p.x += p.vx; p.y += p.vy; p.vy += 0.5; p.life--;
-letterConfettiCtx.fillStyle = p.color;
-letterConfettiCtx.beginPath();
-letterConfettiCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-letterConfettiCtx.fill();
-if (p.life <= 0) letterParticles.splice(index, 1);
-});
-if (letterParticles.length > 0) requestAnimationFrame(animateLetterConfetti);
-}
-
-// Inițializare
-initMath();
 </script>
 </body>
 </html>
