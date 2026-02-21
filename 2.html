@@ -13,6 +13,7 @@
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         body {
@@ -25,6 +26,7 @@
             padding: 10px;
             color: #5a4a6a;
             background-attachment: fixed;
+            overscroll-behavior: none;
         }
 
         .game-container {
@@ -129,6 +131,7 @@
             font-family: 'Fredoka', sans-serif;
             position: relative;
             overflow: hidden;
+            touch-action: manipulation;
         }
 
         .btn-primary {
@@ -276,32 +279,31 @@
 
         .board {
             display: flex;
-            gap: 3px;
+            gap: 4px;
             justify-content: flex-start;
             min-width: fit-content;
             margin: 0 auto;
         }
 
         .cell {
-            width: 35px;
-            height: 50px;
-            border-radius: 10px;
+            width: 40px;
+            height: 55px;
+            border-radius: 12px;
             background: white;
             border: 3px solid #dfe6e9;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.05s ease, border-color 0.05s ease, background 0.05s ease;
             position: relative;
             flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
-            font-weight: 700;
-            color: #b2bec3;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .cell:active {
-            transform: scale(0.9);
+            transform: scale(0.92);
         }
 
         .cell.occupied {
@@ -312,65 +314,54 @@
         .cell.selected {
             background: linear-gradient(135deg, #fdcb6e, #f39c12);
             border-color: #f39c12;
-            color: white;
-            animation: selectedPulse 0.5s ease;
             box-shadow: 0 0 20px rgba(253, 203, 110, 0.6);
-        }
-
-        @keyframes selectedPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
         }
 
         .cell.player-1 {
             background: linear-gradient(135deg, #ff6b9d, #ff85a2);
             border-color: #ff6b9d;
-            color: white;
             box-shadow: 0 0 15px rgba(255, 107, 157, 0.5);
-            animation: placePiece 0.4s ease;
+            animation: placePiece 0.3s ease;
         }
 
         .cell.player-2 {
             background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
             border-color: #a1c4fd;
-            color: white;
             box-shadow: 0 0 15px rgba(161, 196, 253, 0.5);
-            animation: placePiece 0.4s ease;
+            animation: placePiece 0.3s ease;
         }
 
         @keyframes placePiece {
             0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.2); }
+            50% { transform: scale(1.15); }
             100% { transform: scale(1); opacity: 1; }
         }
 
-        .cell.highlight {
-            animation: highlightPulse 0.8s infinite;
-        }
-
-        @keyframes highlightPulse {
-            0%, 100% {
-                box-shadow: 0 0 10px rgba(253, 203, 110, 0.5);
-            }
-            50% {
-                box-shadow: 0 0 25px rgba(253, 203, 110, 0.8);
-            }
-        }
-
         .cell-number {
-            position: absolute;
-            bottom: 4px;
-            font-size: 0.6rem;
-            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #636e72;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .cell.selected .cell-number {
+            color: white;
+        }
+
+        .cell.player-1 .cell-number,
+        .cell.player-2 .cell-number {
+            color: white;
         }
 
         .cell .emoji {
-            font-size: 1.2rem;
+            font-size: 1rem;
             position: absolute;
-            top: 50%;
+            top: 3px;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
+            z-index: 1;
+            pointer-events: none;
         }
 
         .stats {
@@ -559,7 +550,6 @@
             height: 100%;
             background: linear-gradient(90deg, #fdcb6e, #f39c12);
             border-radius: 3px;
-            transition: width 0.1s linear;
             width: 100%;
         }
 
@@ -574,17 +564,16 @@
             }
 
             .cell {
-                width: 30px;
-                height: 45px;
-                font-size: 0.9rem;
-            }
-
-            .cell .emoji {
-                font-size: 1rem;
+                width: 35px;
+                height: 50px;
             }
 
             .cell-number {
-                font-size: 0.5rem;
+                font-size: 1rem;
+            }
+
+            .cell .emoji {
+                font-size: 0.9rem;
             }
 
             .btn {
@@ -615,12 +604,11 @@
 
         @media (max-width: 360px) {
             .cell {
-                width: 26px;
-                height: 40px;
-                font-size: 0.8rem;
+                width: 30px;
+                height: 45px;
             }
 
-            .cell .emoji {
+            .cell-number {
                 font-size: 0.9rem;
             }
 
@@ -635,8 +623,8 @@
             }
 
             .cell {
-                width: 28px;
-                height: 42px;
+                width: 32px;
+                height: 46px;
             }
         }
     </style>
@@ -754,10 +742,10 @@
         let difficulty = 'medium';
         let gameActive = false;
         
-        // Selection system
         let selectedCells = [];
         let selectionTimer = null;
-        const SELECTION_TIMEOUT = 3000; // 3 seconds
+        let timerInterval = null;
+        const SELECTION_TIMEOUT = 3000;
 
         const grundyCache = {};
 
@@ -880,7 +868,7 @@
                 if (position !== null) {
                     placePiece(position[0], position[1]);
                 }
-            }, 800);
+            }, 600);
         }
 
         function startGame() {
@@ -924,26 +912,30 @@
                 const cell = document.createElement('div');
                 cell.className = 'cell';
                 cell.dataset.index = i;
+                cell.style.touchAction = 'manipulation';
                 
-                if (board[i] !== 0) {
-                    cell.classList.add('occupied');
-                    cell.classList.add(board[i] === 1 ? 'player-1' : 'player-2');
-                    const emoji = document.createElement('span');
-                    emoji.className = 'emoji';
-                    emoji.textContent = emojis[i % emojis.length];
-                    cell.appendChild(emoji);
-                } else {
-                    cell.addEventListener('click', () => handleCellClick(i));
-                    cell.addEventListener('touchstart', (e) => {
-                        e.preventDefault();
-                        handleCellClick(i);
-                    }, { passive: true });
-                }
+                const emoji = document.createElement('span');
+                emoji.className = 'emoji';
+                emoji.textContent = emojis[i % emojis.length];
+                emoji.style.pointerEvents = 'none';
+                cell.appendChild(emoji);
                 
                 const number = document.createElement('span');
                 number.className = 'cell-number';
                 number.textContent = i + 1;
+                number.style.pointerEvents = 'none';
                 cell.appendChild(number);
+                
+                if (board[i] !== 0) {
+                    cell.classList.add('occupied');
+                    cell.classList.add(board[i] === 1 ? 'player-1' : 'player-2');
+                } else {
+                    // Use pointerdown for instant response
+                    cell.addEventListener('pointerdown', (e) => {
+                        e.preventDefault();
+                        handleCellClick(i);
+                    }, { passive: false });
+                }
                 
                 boardEl.appendChild(cell);
             }
@@ -954,10 +946,8 @@
             if (gameMode === 'pvc' && currentPlayer === 2) return;
             if (board[index] !== 0) return;
             
-            // Check if cell is already selected
             const existingIndex = selectedCells.indexOf(index);
             if (existingIndex !== -1) {
-                // Deselect this cell
                 selectedCells.splice(existingIndex, 1);
                 updateCellVisuals();
                 
@@ -969,24 +959,19 @@
                 return;
             }
             
-            // Add to selection
             selectedCells.push(index);
             updateCellVisuals();
             
             if (selectedCells.length === 1) {
-                // First cell selected - start timer
                 startSelectionTimer();
             } else if (selectedCells.length === 2) {
-                // Second cell selected - check if valid
                 clearSelectionTimer();
                 
                 const [cell1, cell2] = selectedCells.sort((a, b) => a - b);
                 
                 if (cell2 === cell1 + 1) {
-                    // Valid adjacent cells!
                     placePiece(cell1, cell2);
                 } else {
-                    // Not adjacent - show error and clear
                     showSelectionError();
                 }
             }
@@ -1000,33 +985,36 @@
             
             const timerFill = document.getElementById('timerFill');
             timerFill.style.width = '100%';
+            timerFill.style.transition = 'none';
             
-            let timeLeft = SELECTION_TIMEOUT;
-            const interval = 100;
+            // Force reflow
+            timerFill.offsetHeight;
             
-            selectionTimer = setInterval(() => {
-                timeLeft -= interval;
-                const percentage = (timeLeft / SELECTION_TIMEOUT) * 100;
-                timerFill.style.width = percentage + '%';
-                
-                if (timeLeft <= 0) {
-                    clearSelectionTimer();
-                    clearSelection();
-                }
-            }, interval);
+            timerFill.style.transition = `width ${SELECTION_TIMEOUT}ms linear`;
+            timerFill.style.width = '0%';
+            
+            selectionTimer = setTimeout(() => {
+                clearSelectionTimer();
+                clearSelection();
+            }, SELECTION_TIMEOUT);
         }
 
         function clearSelectionTimer() {
             if (selectionTimer) {
-                clearInterval(selectionTimer);
+                clearTimeout(selectionTimer);
                 selectionTimer = null;
+            }
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
             }
             document.getElementById('timerBar').style.display = 'none';
         }
 
         function updateCellVisuals() {
             const cells = document.querySelectorAll('.cell');
-            cells.forEach((cell, index) => {
+            cells.forEach((cell) => {
+                const index = parseInt(cell.dataset.index);
                 cell.classList.remove('selected');
                 if (selectedCells.includes(index)) {
                     cell.classList.add('selected');
@@ -1058,7 +1046,7 @@
             
             setTimeout(() => {
                 updateSelectionInfo();
-            }, 1000);
+            }, 800);
             
             clearSelection();
         }
@@ -1192,24 +1180,6 @@
             document.getElementById('setupPanel').classList.remove('hidden');
             gameActive = false;
             clearSelection();
-        }
-
-        function undoMove() {
-            if (moveHistory.length === 0 || !gameActive) return;
-            
-            const movesToUndo = gameMode === 'pvc' && moveHistory.length >= 2 ? 2 : 1;
-            
-            for (let i = 0; i < movesToUndo && moveHistory.length > 0; i++) {
-                const lastMove = moveHistory.pop();
-                board = lastMove.board;
-                moves[lastMove.player]--;
-                currentPlayer = lastMove.player;
-            }
-            
-            clearSelection();
-            renderBoard();
-            updateUI();
-            updateSelectionInfo();
         }
 
         // Initialize Grundy cache
