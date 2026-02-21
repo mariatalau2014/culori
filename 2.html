@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jocul Dawson - Strategie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            color: #fff;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            max-width: 100%;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8892b0;
+            margin-bottom: 15px;
+            font-size: 0.75rem;
+        }
+
+        .setup-panel {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .setup-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .setup-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .setup-group label {
+            font-size: 0.7rem;
+            color: #8892b0;
+            font-weight: 500;
+        }
+
+        .setup-group input,
+        .setup-group select {
+            padding: 8px 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .setup-group input:focus,
+        .setup-group select:focus {
+            outline: none;
+            border-color: #00d9ff;
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.3);
+        }
+
+        .setup-group select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d9ff, #00ff88);
+            color: #1a1a2e;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 217, 255, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            font-size: 0.75rem;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+        }
+
+        .player-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .player-indicator.active {
+            box-shadow: 0 0 10px currentColor;
+            transform: scale(1.2);
+        }
+
+        .player-1 .player-indicator {
+            background: #00d9ff;
+            color: #00d9ff;
+        }
+
+        .player-2 .player-indicator {
+            background: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .turn-indicator {
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .turn-indicator.player-1-turn {
+            background: rgba(0, 217, 255, 0.2);
+            color: #00d9ff;
+            border: 2px solid #00d9ff;
+        }
+
+        .turn-indicator.player-2-turn {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            border: 2px solid #ff6b6b;
+        }
+
+        .board-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 10px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .board {
+            display: flex;
+            gap: 2px;
+            justify-content: flex-start;
+            min-width: fit-content;
+            margin: 0 auto;
+        }
+
+        .cell {
+            width: 28px;
+            height: 45px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .cell:active {
+            transform: scale(0.95);
+        }
+
+        .cell.occupied {
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .cell.player-1 {
+            background: linear-gradient(135deg, #00d9ff, #0099cc);
+            border-color: #00d9ff;
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        }
+
+        .cell.player-2 {
+            background: linear-gradient(135deg, #ff6b6b, #cc4444);
+            border-color: #ff6b6b;
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+        }
+
+        .cell.highlight {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 8px rgba(0, 217, 255, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 15px rgba(0, 217, 255, 0.8);
+            }
+        }
+
+        .cell-number {
+            position: absolute;
+            bottom: 3px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.55rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .stat-label {
+            font-size: 0.6rem;
+            color: #8892b0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-box.player-1-stat .stat-value {
+            color: #00d9ff;
+        }
+
+        .stat-box.player-2-stat .stat-value {
+            color: #ff6b6b;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            max-width: 320px;
+            width: 85%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-message {
+            color: #8892b0;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .rules-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .rules-panel h3 {
+            color: #00d9ff;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .rules-panel ul {
+            list-style: none;
+            color: #8892b0;
+        }
+
+        .rules-panel li {
+            padding: 5px 0;
+            padding-left: 18px;
+            position: relative;
+            font-size: 0.75rem;
+        }
+
+        .rules-panel li::before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #00ff88;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 480px) {
+            .game-container {
+                padding: 10px;
+                border-radius: 12px;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+
+            .subtitle {
+                font-size: 0.7rem;
+            }
+
+            .setup-panel {
+                padding: 12px;
+            }
+
+            .setup-group {
+                min-width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 12px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .controls .btn {
+                width: 100%;
+            }
+
+            .cell {
+                width: 24px;
+                height: 40px;
+            }
+
+            .cell-number {
+                font-size: 0.5rem;
+            }
+
+            .game-info {
+                padding: 8px 10px;
+            }
+
+            .player-info {
+                font-size: 0.7rem;
+            }
+
+            .turn-indicator {
+                font-size: 0.75rem;
+                padding: 5px 10px;
+            }
+
+            .stats {
+                gap: 10px;
+            }
+
+            .stat-box {
+                padding: 6px 12px;
+            }
+
+            .stat-value {
+                font-size: 1.1rem;
+            }
+
+            .stat-label {
+                font-size: 0.55rem;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+
+            .modal-icon {
+                font-size: 2.5rem;
+            }
+
+            .modal-title {
+                font-size: 1.3rem;
+            }
+
+            .modal-message {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Very small screens */
+        @media (max-width: 360px) {
+            .cell {
+                width: 20px;
+                height: 35px;
+            }
+
+            .cell-number {
+                font-size: 0.45rem;
+                bottom: 2px;
+            }
+
+            h1 {
+                font-size: 1.1rem;
+            }
+
+            .setup-group input,
+            .setup-group select {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Landscape mode on mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .game-container {
+                padding: 8px;
+            }
+
+            .rules-panel {
+                display: none;
+            }
+
+            .cell {
+                width: 22px;
+                height: 38px;
+            }
+
+            .stats {
+                gap: 8px;
+            }
+
+            .stat-box {
+                padding: 5px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🎯 Jocul Dawson</h1>
+        <p class="subtitle">Strategie • Lungime 2 • Ultimul mutător câștigă</p>
+
+        <div class="setup-panel" id="setupPanel">
+            <div class="setup-row">
+                <div class="setup-group">
+                    <label for="boardLength">Lungimea tablei (n)</label>
+                    <input type="number" id="boardLength" value="15" min="2" max="50">
+                </div>
+                <div class="setup-group">
+                    <label for="gameMode">Mod de joc</label>
+                    <select id="gameMode">
+                        <option value="pvp">Jucător vs Jucător</option>
+                        <option value="pvc">Jucător vs Calculator</option>
+                    </select>
+                </div>
+            </div>
+            <div class="setup-row">
+                <div class="setup-group">
+                    <label for="difficulty">Dificultate (vs CPU)</label>
+                    <select id="difficulty">
+                        <option value="easy">Ușor</option>
+                        <option value="medium" selected>Mediu</option>
+                        <option value="hard">Greu (Optimal)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="setup-row">
+                <button class="btn btn-primary" onclick="startGame()">🎮 Start Joc</button>
+            </div>
+        </div>
+
+        <div id="gameArea" class="hidden">
+            <div class="game-info">
+                <div class="player-info player-1">
+                    <div class="player-indicator" id="p1Indicator"></div>
+                    <span>P1</span>
+                </div>
+                <div class="turn-indicator player-1-turn" id="turnIndicator">
+                    Rândul P1
+                </div>
+                <div class="player-info player-2">
+                    <div class="player-indicator" id="p2Indicator"></div>
+                    <span id="player2Name">P2</span>
+                </div>
+            </div>
+
+            <div class="board-container">
+                <div class="board" id="board"></div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-box player-1-stat">
+                    <div class="stat-value" id="p1Moves">0</div>
+                    <div class="stat-label">Mutări P1</div>
+                </div>
+                <div class="stat-box player-2-stat">
+                    <div class="stat-value" id="p2Moves">0</div>
+                    <div class="stat-label">Mutări P2</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="totalMoves">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="resetGame()">🔄 Reset</button>
+                <button class="btn btn-secondary" onclick="showSetup()">⚙️ Setări</button>
+                <button class="btn btn-secondary" onclick="undoMove()">↩️ Anulează</button>
+            </div>
+        </div>
+
+        <div class="rules-panel">
+            <h3>📜 Regulile Jocului</h3>
+            <ul>
+                <li>Tabla are lungimea <strong>n</strong> și lățimea 1</li>
+                <li>Fiecare jucător plasează un dreptunghi de lungime 2</li>
+                <li>Dreptunghiul ocupă 2 celule adiacente libere</li>
+                <li>Jucătorul care face <strong>ultima mutare validă</strong> câștigă</li>
+                <li>Când nu mai sunt 2 celule adiacente libere, jocul se termină</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="modal" id="winnerModal">
+        <div class="modal-content">
+            <div class="modal-icon" id="winnerIcon">🏆</div>
+            <h2 class="modal-title" id="winnerTitle">Câștigător!</h2>
+            <p class="modal-message" id="winnerMessage">Jucătorul 1 a câștigat!</p>
+            <button class="btn btn-primary" onclick="resetGame()">🎮 Joc Nou</button>
+        </div>
+    </div>
+
+    <script>
+        let board = [];
+        let currentPlayer = 1;
+        let moves = { 1: 0, 2: 0 };
+        let moveHistory = [];
+        let boardLength = 15;
+        let gameMode = 'pvp';
+        let difficulty = 'medium';
+        let gameActive = false;
+
+        // Grundy numbers pre-calculated for Dawson's Kayles
+        const grundyCache = {};
+
+        function calculateGrundy(n) {
+            if (n < 2) return 0;
+            if (grundyCache[n] !== undefined) return grundyCache[n];
+
+            const reachableStates = new Set();
+            
+            for (let i = 0; i <= n - 2; i++) {
+                const left = i;
+                const right = n - i - 2;
+                const xor = calculateGrundy(left) ^ calculateGrundy(right);
+                reachableStates.add(xor);
+            }
+
+            let mex = 0;
+            while (reachableStates.has(mex)) mex++;
+            
+            grundyCache[n] = mex;
+            return mex;
+        }
+
+        function getSegments() {
+            const segments = [];
+            let start = -1;
+            
+            for (let i = 0; i < board.length; i++) {
+                if (board[i] === 0) {
+                    if (start === -1) start = i;
+                } else {
+                    if (start !== -1) {
+                        segments.push({ start, end: i - 1 });
+                        start = -1;
+                    }
+                }
+            }
+            
+            if (start !== -1) {
+                segments.push({ start, end: board.length - 1 });
+            }
+            
+            return segments;
+        }
+
+        function calculateCurrentGrundy() {
+            const segments = getSegments();
+            let totalXor = 0;
+            
+            for (const seg of segments) {
+                const length = seg.end - seg.start + 1;
+                totalXor ^= calculateGrundy(length);
+            }
+            
+            return totalXor;
+        }
+
+        function findBestMove() {
+            const segments = getSegments();
+            
+            for (const seg of segments) {
+                const length = seg.end - seg.start + 1;
+                
+                for (let i = seg.start; i <= seg.end - 1; i++) {
+                    if (board[i] === 0 && board[i + 1] === 0) {
+                        board[i] = currentPlayer;
+                        board[i + 1] = currentPlayer;
+                        
+                        const newGrundy = calculateCurrentGrundy();
+                        
+                        board[i] = 0;
+                        board[i + 1] = 0;
+                        
+                        if (newGrundy === 0) {
+                            return i;
+                        }
+                    }
+                }
+            }
+            
+            return null;
+        }
+
+        function findRandomMove() {
+            const validMoves = [];
+            
+            for (let i = 0; i < board.length - 1; i++) {
+                if (board[i] === 0 && board[i + 1] === 0) {
+                    validMoves.push(i);
+                }
+            }
+            
+            if (validMoves.length === 0) return null;
+            
+            return validMoves[Math.floor(Math.random() * validMoves.length)];
+        }
+
+        function computerMove() {
+            if (!gameActive) return;
+            
+            setTimeout(() => {
+                let position;
+                
+                if (difficulty === 'hard') {
+                    position = findBestMove();
+                    if (position === null) {
+                        position = findRandomMove();
+                    }
+                } else if (difficulty === 'medium') {
+                    if (Math.random() > 0.3) {
+                        position = findBestMove();
+                    }
+                    if (position === null) {
+                        position = findRandomMove();
+                    }
+                } else {
+                    position = findRandomMove();
+                }
+                
+                if (position !== null) {
+                    makeMove(position);
+                }
+            }, 600);
+        }
+
+        function startGame() {
+            boardLength = parseInt(document.getElementById('boardLength').value);
+            gameMode = document.getElementById('gameMode').value;
+            difficulty = document.getElementById('difficulty').value;
+            
+            if (boardLength < 2) {
+                alert('Lungimea trebuie să fie cel puțin 2!');
+                return;
+            }
+            
+            if (boardLength > 50) {
+                alert('Lungimea maximă este 50!');
+                return;
+            }
+            
+            board = new Array(boardLength).fill(0);
+            currentPlayer = 1;
+            moves = { 1: 0, 2: 0 };
+            moveHistory = [];
+            gameActive = true;
+            
+            document.getElementById('setupPanel').classList.add('hidden');
+            document.getElementById('gameArea').classList.remove('hidden');
+            document.getElementById('player2Name').textContent = gameMode === 'pvc' ? 'CPU' : 'P2';
+            
+            renderBoard();
+            updateUI();
+        }
+
+        function renderBoard() {
+            const boardEl = document.getElementById('board');
+            boardEl.innerHTML = '';
+            
+            for (let i = 0; i < board.length; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.dataset.index = i;
+                
+                if (board[i] !== 0) {
+                    cell.classList.add('occupied');
+                    cell.classList.add(board[i] === 1 ? 'player-1' : 'player-2');
+                } else {
+                    cell.addEventListener('click', () => handleCellClick(i));
+                    cell.addEventListener('touchstart', () => handleCellClick(i), { passive: true });
+                }
+                
+                const number = document.createElement('span');
+                number.className = 'cell-number';
+                number.textContent = i + 1;
+                cell.appendChild(number);
+                
+                boardEl.appendChild(cell);
+            }
+        }
+
+        function handleCellClick(index) {
+            if (!gameActive) return;
+            if (gameMode === 'pvc' && currentPlayer === 2) return;
+            
+            if (index < board.length - 1 && board[index] === 0 && board[index + 1] === 0) {
+                makeMove(index);
+            }
+        }
+
+        function makeMove(index) {
+            moveHistory.push({
+                index: index,
+                player: currentPlayer,
+                board: [...board]
+            });
+            
+            board[index] = currentPlayer;
+            board[index + 1] = currentPlayer;
+            moves[currentPlayer]++;
+            
+            renderBoard();
+            updateUI();
+            
+            if (checkWin()) {
+                gameActive = false;
+                showWinner(currentPlayer);
+                return;
+            }
+            
+            if (!hasValidMoves()) {
+                gameActive = false;
+                const winner = currentPlayer === 1 ? 2 : 1;
+                showWinner(winner);
+                return;
+            }
+            
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            updateUI();
+            
+            if (gameMode === 'pvc' && currentPlayer === 2 && gameActive) {
+                computerMove();
+            }
+        }
+
+        function hasValidMoves() {
+            for (let i = 0; i < board.length - 1; i++) {
+                if (board[i] === 0 && board[i + 1] === 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function checkWin() {
+            return !hasValidMoves();
+        }
+
+        function updateUI() {
+            const turnIndicator = document.getElementById('turnIndicator');
+            const p1Indicator = document.getElementById('p1Indicator');
+            const p2Indicator = document.getElementById('p2Indicator');
+            
+            turnIndicator.textContent = gameMode === 'pvc' && currentPlayer === 2 
+                ? 'CPU gândește...' 
+                : `Rândul P${currentPlayer}`;
+            
+            turnIndicator.className = 'turn-indicator';
+            turnIndicator.classList.add(currentPlayer === 1 ? 'player-1-turn' : 'player-2-turn');
+            
+            p1Indicator.classList.toggle('active', currentPlayer === 1);
+            p2Indicator.classList.toggle('active', currentPlayer === 2);
+            
+            document.getElementById('p1Moves').textContent = moves[1];
+            document.getElementById('p2Moves').textContent = moves[2];
+            document.getElementById('totalMoves').textContent = moves[1] + moves[2];
+        }
+
+        function showWinner(winner) {
+            const modal = document.getElementById('winnerModal');
+            const title = document.getElementById('winnerTitle');
+            const message = document.getElementById('winnerMessage');
+            const icon = document.getElementById('winnerIcon');
+            
+            icon.textContent = '🏆';
+            title.textContent = 'Câștigător!';
+            
+            if (gameMode === 'pvc') {
+                message.textContent = winner === 1 ? 'Ai câștigat! Felicitări!' : 'Calculatorul a câștigat! Mai încearcă!';
+            } else {
+                message.textContent = `Jucătorul ${winner} a câștigat!`;
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function resetGame() {
+            document.getElementById('winnerModal').classList.remove('active');
+            startGame();
+        }
+
+        function showSetup() {
+            document.getElementById('gameArea').classList.add('hidden');
+            document.getElementById('setupPanel').classList.remove('hidden');
+            gameActive = false;
+        }
+
+        function undoMove() {
+            if (moveHistory.length === 0 || !gameActive) return;
+            
+            const movesToUndo = gameMode === 'pvc' && moveHistory.length >= 2 ? 2 : 1;
+            
+            for (let i = 0; i < movesToUndo && moveHistory.length > 0; i++) {
+                const lastMove = moveHistory.pop();
+                board = lastMove.board;
+                moves[lastMove.player]--;
+                currentPlayer = lastMove.player;
+            }
+            
+            renderBoard();
+            updateUI();
+        }
+
+        // Initialize Grundy cache
+        for (let i = 0; i <= 50; i++) {
+            calculateGrundy(i);
+        }
+    </script>
+</body>
+</html>
+
