@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>🚗 Mașinuța Distractivă</title>
+  <title>🏎️ Curse de Mașinuțe</title>
   <style>
     * {
       margin: 0;
@@ -12,27 +12,27 @@
       touch-action: none;
     }
     body {
-      background: linear-gradient(180deg, #87CEEB 0%, #98FB98 50%, #90EE90 100%);
+      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      font-family: 'Comic Sans MS', 'Chalkboard', cursive, sans-serif;
+      font-family: 'Arial Black', 'Impact', sans-serif;
       overflow: hidden;
       user-select: none;
     }
     #gameContainer {
       position: relative;
-      width: 360px;
-      max-width: 95vw;
+      width: 420px;
+      max-width: 98vw;
     }
     canvas {
-      background: linear-gradient(180deg, #87CEEB 0%, #87CEEB 40%, #228B22 40%, #32CD32 100%);
-      border: 6px solid #FF6B6B;
-      border-radius: 20px 20px 0 0;
+      background: linear-gradient(180deg, #1a1a2e 0%, #1a1a2e 35%, #2d2d2d 35%, #3d3d3d 100%);
+      border: 5px solid #e94560;
+      border-radius: 15px 15px 0 0;
       display: block;
       margin: 0 auto;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      box-shadow: 0 0 40px rgba(233, 69, 96, 0.5);
     }
     
     /* === ZONE DE CONTROL === */
@@ -41,7 +41,7 @@
       top: 0;
       left: 0;
       right: 0;
-      bottom: 200px;
+      bottom: 140px;
       display: flex;
       z-index: 5;
     }
@@ -53,84 +53,83 @@
       transition: background 0.1s;
     }
     .touchZone:active, .touchZone.active {
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(233, 69, 96, 0.3);
     }
     .touchZone.left {
-      border-right: 3px dashed rgba(255,255,255,0.4);
+      border-right: 3px dashed rgba(233, 69, 96, 0.4);
     }
     .touchHint {
-      font-size: 60px;
-      opacity: 0.4;
+      font-size: 50px;
+      opacity: 0.3;
     }
     
-    /* === VOLAN COLORAT === */
+    /* === VOLAN COMPACT === */
     #steeringWheel {
       position: absolute;
-      bottom: 25px;
+      bottom: 15px;
       left: 50%;
       transform: translateX(-50%);
-      width: 160px;
-      height: 160px;
+      width: 100px;
+      height: 100px;
       z-index: 20;
     }
     #wheelBase {
       position: absolute;
       width: 100%;
       height: 100%;
-      background: linear-gradient(145deg, #FFD93D, #FFB347);
+      background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
       border-radius: 50%;
-      border: 6px solid #FF6B6B;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.3), inset 0 3px 10px rgba(255,255,255,0.5);
+      border: 4px solid #e94560;
+      box-shadow: 0 4px 15px rgba(233, 69, 96, 0.6), inset 0 2px 8px rgba(255,255,255,0.1);
     }
     #wheelRim {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 140px;
-      height: 140px;
+      width: 85px;
+      height: 85px;
       border-radius: 50%;
-      border: 12px solid #FF6B6B;
+      border: 8px solid #e94560;
       background: transparent;
-      box-shadow: inset 0 3px 8px rgba(0,0,0,0.2);
     }
     #wheelCenter {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(145deg, #4ECDC4, #45B7AF);
+      width: 35px;
+      height: 35px;
+      background: linear-gradient(145deg, #e94560, #c73e54);
       border-radius: 50%;
-      border: 5px solid #FF6B6B;
+      border: 3px solid #ff6b6b;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 30px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      font-size: 18px;
+      box-shadow: 0 2px 10px rgba(233, 69, 96, 0.5);
     }
     #wheelSpoke1, #wheelSpoke2, #wheelSpoke3 {
       position: absolute;
       top: 50%;
       left: 50%;
-      background: linear-gradient(90deg, #FF6B6B, #FF8E8E);
+      background: linear-gradient(90deg, #e94560, #ff6b6b);
       transform-origin: left center;
-      border-radius: 10px;
+      border-radius: 5px;
     }
     #wheelSpoke1 {
-      width: 70px;
-      height: 16px;
+      width: 45px;
+      height: 8px;
       transform: translate(-50%, -50%) rotate(90deg);
     }
     #wheelSpoke2 {
-      width: 70px;
-      height: 16px;
+      width: 45px;
+      height: 8px;
       transform: translate(-50%, -50%) rotate(-30deg);
     }
     #wheelSpoke3 {
-      width: 70px;
-      height: 16px;
+      width: 45px;
+      height: 8px;
       transform: translate(-50%, -50%) rotate(210deg);
     }
     #wheelRotation {
@@ -139,58 +138,61 @@
       left: 0;
       width: 100%;
       height: 100%;
-      transition: transform 0.1s ease-out;
+      transition: transform 0.08s ease-out;
     }
     #wheelIndicator {
       position: absolute;
-      top: 10px;
+      top: 6px;
       left: 50%;
       transform: translateX(-50%);
-      width: 12px;
-      height: 20px;
-      background: #FF6B6B;
-      border-radius: 6px;
-      box-shadow: 0 0 15px #FF6B6B;
-      border: 2px solid white;
+      width: 6px;
+      height: 12px;
+      background: #ff6b6b;
+      border-radius: 3px;
+      box-shadow: 0 0 10px #ff6b6b;
     }
     #scoreDisplay {
       position: absolute;
-      bottom: -45px;
+      bottom: -35px;
       left: 50%;
       transform: translateX(-50%);
-      color: #FF6B6B;
-      font-size: 22px;
+      color: #e94560;
+      font-size: 18px;
       font-weight: bold;
       white-space: nowrap;
-      text-shadow: 2px 2px 0 #fff, 3px 3px 0 #FFD93D;
+      text-shadow: 0 0 10px #e94560;
     }
-    #starsDisplay {
+    #levelDisplay {
       position: absolute;
-      bottom: -70px;
+      bottom: -55px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 28px;
+      color: #00d9ff;
+      font-size: 16px;
+      font-weight: bold;
+      white-space: nowrap;
+      text-shadow: 0 0 10px #00d9ff;
     }
     
     /* === BUTON PAUZĂ === */
     #pauseBtn {
       position: absolute;
-      bottom: 190px;
-      right: 15px;
-      width: 50px;
-      height: 50px;
+      bottom: 145px;
+      right: 10px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      font-size: 24px;
+      font-size: 20px;
       z-index: 25;
-      border: 4px solid #FF6B6B;
-      background: linear-gradient(145deg, #4ECDC4, #45B7AF);
-      color: white;
+      border: 3px solid #e94560;
+      background: linear-gradient(145deg, #0f3460, #0a2540);
+      color: #00d9ff;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       transition: all 0.2s;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      box-shadow: 0 3px 12px rgba(0, 217, 255, 0.4);
     }
     #pauseBtn:active {
       transform: scale(0.9);
@@ -202,45 +204,41 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: calc(100% - 180px);
-      background: rgba(135, 206, 235, 0.95);
+      height: calc(100% - 120px);
+      background: rgba(26, 26, 46, 0.97);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      color: #FF6B6B;
-      border-radius: 20px 20px 0 0;
+      color: #e94560;
+      border-radius: 15px 15px 0 0;
       text-align: center;
       padding: 20px;
       z-index: 30;
     }
     #startScreen h1 {
-      font-size: 32px;
+      font-size: 36px;
       margin-bottom: 15px;
-      color: #FF6B6B;
-      text-shadow: 3px 3px 0 #FFD93D;
-      animation: bounce 1s infinite;
-    }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+      color: #e94560;
+      text-shadow: 0 0 20px #e94560;
+      letter-spacing: 2px;
     }
     #gameOver h2, #levelUp h2 {
-      font-size: 28px;
+      font-size: 32px;
       margin-bottom: 15px;
-      color: #FF6B6B;
-      text-shadow: 2px 2px 0 #FFD93D;
+      color: #e94560;
+      text-shadow: 0 0 15px #e94560;
     }
     .info-text {
       margin: 10px 0;
-      font-size: 16px;
-      max-width: 280px;
-      color: #4ECDC4;
+      font-size: 15px;
+      max-width: 300px;
+      color: #00d9ff;
       font-weight: bold;
       line-height: 1.4;
     }
     .emoji-row {
-      font-size: 35px;
+      font-size: 32px;
       margin: 8px 0;
     }
     .stat-row {
@@ -248,37 +246,34 @@
       justify-content: center;
       align-items: center;
       gap: 10px;
-      margin: 10px 0;
+      margin: 8px 0;
       padding: 10px 15px;
-      background: rgba(255, 255, 255, 0.5);
-      border-radius: 15px;
-      font-size: 16px;
+      background: rgba(233, 69, 96, 0.2);
+      border-radius: 10px;
+      font-size: 15px;
       font-weight: bold;
-      color: #FF6B6B;
+      color: #e94560;
+      border: 2px solid #e94560;
     }
     .actionBtn {
       margin-top: 20px;
-      background: linear-gradient(145deg, #FF6B6B, #FF8E8E);
+      background: linear-gradient(145deg, #e94560, #c73e54);
       color: white;
       border: none;
-      padding: 18px 45px;
-      border-radius: 35px;
-      font-size: 22px;
+      padding: 16px 40px;
+      border-radius: 30px;
+      font-size: 20px;
       font-weight: bold;
-      font-family: 'Comic Sans MS', cursive;
+      font-family: 'Arial Black', sans-serif;
       cursor: pointer;
-      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+      box-shadow: 0 5px 20px rgba(233, 69, 96, 0.6);
       transition: all 0.2s;
-      border: 4px solid #FFD93D;
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      border: 3px solid #ff6b6b;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
     .actionBtn:active {
       transform: scale(0.95);
-      animation: none;
     }
     .hidden {
       display: none !important;
@@ -287,73 +282,79 @@
     /* === POWER-UP INDICATOR === */
     #powerUpIndicator {
       position: absolute;
-      top: 15px;
+      top: 10px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
-      gap: 10px;
+      gap: 8px;
       z-index: 10;
     }
     .power-icon {
-      width: 45px;
-      height: 45px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
-      animation: bounce 0.8s infinite;
+      font-size: 20px;
       border: 3px solid white;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
-    .shield { background: linear-gradient(145deg, #4ECDC4, #45B7AF); }
-    .star { background: linear-gradient(145deg, #FFD93D, #FFB347); }
-    .double { background: linear-gradient(145deg, #FF6B6B, #FF8E8E); }
+    .shield { background: linear-gradient(145deg, #00d9ff, #0099cc); }
+    .speed { background: linear-gradient(145deg, #ff6b6b, #e94560); }
+    .double { background: linear-gradient(145deg, #ffd700, #ffaa00); }
     
-    /* === CLOUDS === */
-    .cloud {
+    /* === SPEED LINES === */
+    .speed-line {
       position: absolute;
-      background: white;
-      border-radius: 50px;
-      opacity: 0.8;
-      animation: float 8s linear infinite;
+      width: 3px;
+      height: 60px;
+      background: linear-gradient(180deg, transparent, #00d9ff, transparent);
+      animation: speedFall 0.4s linear infinite;
     }
-    @keyframes float {
-      0% { transform: translateX(-100px); }
-      100% { transform: translateX(400px); }
+    @keyframes speedFall {
+      0% { transform: translateY(-100px); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(500px); opacity: 0; }
     }
     
     /* === VIBRAȚIE === */
     @keyframes vibrate {
       0%, 100% { transform: translateX(-50%) rotate(0deg); }
-      25% { transform: translateX(-50%) rotate(-4deg); }
-      75% { transform: translateX(-50%) rotate(4deg); }
+      25% { transform: translateX(-50%) rotate(-5deg); }
+      75% { transform: translateX(-50%) rotate(5deg); }
     }
     .vibrating {
       animation: vibrate 0.1s infinite;
     }
     
-    /* === CONFETTI === */
-    .confetti {
+    /* === EXPLOSION EFFECT === */
+    .explosion {
       position: absolute;
-      width: 10px;
-      height: 10px;
-      animation: fall 2s linear forwards;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, #ff6b6b 0%, #e94560 50%, transparent 70%);
+      border-radius: 50%;
+      animation: explode 0.5s ease-out forwards;
     }
-    @keyframes fall {
-      0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
+    @keyframes explode {
+      0% { transform: scale(0.5); opacity: 1; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+    
+    /* === FLASH EFFECT === */
+    @keyframes flash {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .flashing {
+      animation: flash 0.2s infinite;
     }
   </style>
 </head>
 <body>
   <div id="gameContainer">
-    <canvas id="game" width="360" height="450"></canvas>
-    
-    <!-- NORI -->
-    <div class="cloud" style="top: 30px; left: 20px; width: 80px; height: 40px; animation-delay: 0s;"></div>
-    <div class="cloud" style="top: 60px; left: 200px; width: 100px; height: 50px; animation-delay: 3s;"></div>
-    <div class="cloud" style="top: 20px; left: 280px; width: 60px; height: 35px; animation-delay: 6s;"></div>
+    <canvas id="game" width="420" height="520"></canvas>
     
     <!-- ZONE DE CONTROL -->
     <div id="touchControls">
@@ -379,52 +380,56 @@
         <div id="wheelSpoke1"></div>
         <div id="wheelSpoke2"></div>
         <div id="wheelSpoke3"></div>
-        <div id="wheelCenter">🚗</div>
+        <div id="wheelCenter">🏎️</div>
         <div id="wheelIndicator"></div>
       </div>
-      <div id="scoreDisplay">⭐ <span id="scoreVal">0</span> / 20</div>
-      <div id="starsDisplay">🌟🌟🌟</div>
+      <div id="scoreDisplay">⭐ PUNCTE: <span id="scoreVal">0</span> / 30</div>
+      <div id="levelDisplay">🏁 NIVEL: <span id="levelVal">1</span></div>
     </div>
     
     <!-- ECRANE -->
     <div id="startScreen">
-      <h1>🚗 Mașinuța Mea! 🚗</h1>
-      <p class="info-text">👶 Salut, micuțule pilot!</p>
-      <div class="emoji-row">🖐️ Atinge stânga ➡️ ⬅️ sau dreapta!</div>
-      <div class="emoji-row">🎮 Sau învârte volanul!</div>
-      <div class="stat-row">🟧 Evită obstacolele!</div>
-      <div class="stat-row">⭐ Adună steluțe!</div>
-      <div class="stat-row">🛡️ Prinde scutul albastru!</div>
-      <div class="stat-row">🎯 Scop: 20 de steluțe!</div>
-      <button class="actionBtn" id="startBtn">🚀 HAI SĂ NE JUCĂM!</button>
+      <h1>🏎️ CURSE EXTREME 🏎️</h1>
+      <p class="info-text">👦 Salut, campionule!</p>
+      <div class="emoji-row">🖐️ Atinge STÂNGA ➡️ ⬅️ sau DREAPTA!</div>
+      <div class="emoji-row">🎮 Sau învârte VOLANUL!</div>
+      <div class="stat-row">🟧 EVITĂ OBSTACOLELE!</div>
+      <div class="stat-row">💥 DACĂ TE LOVEȘTI - PIERZI!</div>
+      <div class="stat-row">⭐ ADUNĂ 30 DE PUNCTE!</div>
+      <div class="stat-row">🏆 DEVINO CEL MAI BUN!</div>
+      <button class="actionBtn" id="startBtn">🚀 START!</button>
     </div>
     
     <div id="gameOver" class="hidden">
-      <h2 id="endTitle">🌟 Bravo!</h2>
+      <h2>💥 CRASH!</h2>
       <div class="stat-row">
-        <span>⭐ Steluțe:</span>
+        <span>⭐ Puncte:</span>
         <span id="finalScore">0</span>
+      </div>
+      <div class="stat-row">
+        <span>🏁 Nivel:</span>
+        <span id="finalLevel">1</span>
       </div>
       <div class="stat-row">
         <span>🏆 Record:</span>
         <span id="personalBest">0</span>
       </div>
-      <p id="message" class="info-text">Ești super!</p>
-      <button class="actionBtn" id="restartBtn">🔄 MAI JUCĂM!</button>
+      <p id="message" class="info-text">Mai încearcă, campionule!</p>
+      <button class="actionBtn" id="restartBtn">🔄 DIN NOU!</button>
     </div>
     
     <div id="levelUp" class="hidden">
-      <h2>🎉 SUPER!</h2>
-      <p id="levelUpText" class="info-text">Ai făcut un nivel nou!</p>
-      <div class="emoji-row">🌟🌟🌟</div>
-      <button class="actionBtn" id="continueBtn">▶ CONTINUĂM!</button>
+      <h2>🎉 NIVEL NOU!</h2>
+      <p id="levelUpText" class="info-text">Ai trecut la nivelul următor!</p>
+      <div class="emoji-row">🏎️💨🏁</div>
+      <button class="actionBtn" id="continueBtn">▶ CONTINUĂ!</button>
     </div>
     
     <div id="pauseScreen" class="hidden">
-      <h2>⏸️ Pauză</h2>
+      <h2>⏸️ PAUZĂ</h2>
       <p class="info-text">Apasă pe buton pentru a continua!</p>
-      <div class="emoji-row">😊</div>
-      <button class="actionBtn" id="resumeBtn">▶ CONTINUĂM!</button>
+      <div class="emoji-row">🏎️</div>
+      <button class="actionBtn" id="resumeBtn">▶ CONTINUĂ!</button>
     </div>
   </div>
 
@@ -433,11 +438,11 @@
     const canvas = document.getElementById('game');
     const ctx = canvas.getContext('2d');
     const scoreVal = document.getElementById('scoreVal');
-    const starsDisplay = document.getElementById('starsDisplay');
+    const levelVal = document.getElementById('levelVal');
     const finalScoreEl = document.getElementById('finalScore');
+    const finalLevelEl = document.getElementById('finalLevel');
     const personalBestEl = document.getElementById('personalBest');
     const messageEl = document.getElementById('message');
-    const endTitle = document.getElementById('endTitle');
     const levelUpText = document.getElementById('levelUpText');
     const startScreen = document.getElementById('startScreen');
     const gameOverScreen = document.getElementById('gameOver');
@@ -470,41 +475,33 @@
         
         switch(type) {
           case 'score':
-            osc.frequency.setValueAtTime(523, now);
-            osc.frequency.setValueAtTime(659, now + 0.1);
-            osc.frequency.setValueAtTime(784, now + 0.2);
+            osc.frequency.setValueAtTime(440, now);
+            osc.frequency.setValueAtTime(554, now + 0.08);
+            osc.frequency.setValueAtTime(659, now + 0.16);
             gain.gain.setValueAtTime(0.15, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.24);
             osc.start(now);
-            osc.stop(now + 0.3);
-            break;
-          case 'star':
-            osc.frequency.setValueAtTime(880, now);
-            osc.frequency.setValueAtTime(1175, now + 0.1);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-            osc.start(now);
-            osc.stop(now + 0.2);
+            osc.stop(now + 0.24);
             break;
           case 'powerup':
             osc.frequency.setValueAtTime(523, now);
-            osc.frequency.exponentialRampToValueAtTime(1047, now + 0.3);
+            osc.frequency.exponentialRampToValueAtTime(1047, now + 0.25);
             gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+            osc.start(now);
+            osc.stop(now + 0.25);
+            break;
+          case 'collision':
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(150, now);
+            osc.frequency.exponentialRampToValueAtTime(50, now + 0.3);
+            gain.gain.setValueAtTime(0.3, now);
             gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
             osc.start(now);
             osc.stop(now + 0.3);
             break;
-          case 'collision':
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(200, now);
-            osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-            osc.start(now);
-            osc.stop(now + 0.2);
-            break;
           case 'win':
-            const notes = [523, 659, 784, 1047];
+            const notes = [523, 659, 784, 1047, 1319];
             notes.forEach((freq, i) => {
               setTimeout(() => {
                 const o = audioCtx.createOscillator();
@@ -512,11 +509,12 @@
                 o.connect(g);
                 g.connect(audioCtx.destination);
                 o.frequency.value = freq;
-                g.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                o.type = 'square';
+                g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
                 o.start();
-                o.stop(audioCtx.currentTime + 0.2);
-              }, i * 150);
+                o.stop(audioCtx.currentTime + 0.15);
+              }, i * 120);
             });
             break;
         }
@@ -527,58 +525,56 @@
     let gameRunning = false;
     let gamePaused = false;
     let score = 0;
-    let baseSpeed = 2;
-    let currentSpeed = 2;
+    let baseSpeed = 3;
+    let currentSpeed = 3;
     let level = 1;
     let animationId;
     let highScore = localStorage.getItem('carGameHighScore') || 0;
     
     // === MAȘINA ===
     const car = {
-      x: canvas.width / 2 - 25,
-      y: canvas.height - 100,
-      width: 55,
-      height: 75,
-      speed: 6,
-      color: '#FF6B6B',
+      x: canvas.width / 2 - 30,
+      y: canvas.height - 110,
+      width: 60,
+      height: 80,
+      speed: 7,
+      color: '#e94560',
       shield: false,
       shieldTime: 0,
-      angle: 0,
-      happy: true
+      angle: 0
     };
     
-    // === OBSTACOLE (MAI RARE) ===
+    // === OBSTACOLE ===
     let obstacles = [];
-    let stars = [];
     let powerUps = [];
-    const obstacleColors = ['#FFB347', '#DDA0DD', '#98FB98'];
+    const obstacleColors = ['#ff6b6b', '#ffd700', '#ff8c00'];
     const powerUpTypes = [
-      { color: '#4ECDC4', effect: 'shield', icon: '🛡️', duration: 5000 },
-      { color: '#FFD93D', effect: 'star', icon: '⭐', duration: 0 }
+      { color: '#00d9ff', effect: 'shield', icon: '🛡️', duration: 4000 },
+      { color: '#00ff88', effect: 'speed', icon: '⚡', duration: 3000 },
+      { color: '#ffd700', effect: 'double', icon: '💎', duration: 3500 }
     ];
     
-    // === NIVELURI (UȘOARE) ===
+    // === NIVELURI ===
     const levels = [
-      { score: 0, speed: 2, obstacleRate: 2500, name: 'Super' },
-      { score: 7, speed: 2.5, obstacleRate: 2200, name: 'Extra' },
-      { score: 14, speed: 3, obstacleRate: 2000, name: 'Mega' }
+      { score: 0, speed: 3, obstacleRate: 2000, name: 'ROOKIE' },
+      { score: 10, speed: 4, obstacleRate: 1700, name: 'RACER' },
+      { score: 20, speed: 5, obstacleRate: 1400, name: 'PRO' }
     ];
     
     // === CONTROALE ===
     let steeringAngle = 0;
     let lastObstacleTime = 0;
-    let lastStarTime = 0;
     let lastPowerUpTime = 0;
     
     // === VOLAN ===
     let isDragging = false;
-    const maxSteerAngle = 50;
+    const maxSteerAngle = 45;
     
     function updateSteering(clientX) {
       const rect = document.getElementById('steeringWheel').getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const deltaX = clientX - centerX;
-      const maxDelta = 80;
+      const maxDelta = 60;
       steeringAngle = Math.max(-1, Math.min(1, deltaX / maxDelta));
       
       const rotation = steeringAngle * maxSteerAngle;
@@ -683,10 +679,9 @@
     });
     
     function resetCar() {
-      car.x = canvas.width / 2 - 27;
+      car.x = canvas.width / 2 - 30;
       car.shield = false;
       car.angle = 0;
-      car.happy = true;
       updatePowerUpIndicator();
       steeringAngle = 0;
       wheelRotation.style.transform = 'rotate(0deg)';
@@ -704,14 +699,12 @@
       baseSpeed = levels[0].speed;
       currentSpeed = baseSpeed;
       scoreVal.textContent = score;
-      updateStars();
+      levelVal.textContent = level;
       
       resetCar();
       obstacles = [];
-      stars = [];
       powerUps = [];
       lastObstacleTime = Date.now();
-      lastStarTime = Date.now();
       lastPowerUpTime = Date.now();
       
       gameRunning = true;
@@ -744,27 +737,19 @@
       }
     }
     
-    // === SPAWN (MAI RAR) ===
+    // === SPAWN ===
     function spawnLoop() {
       if (!gameRunning || gamePaused) return;
       
       const currentLevel = levels[Math.min(level - 1, levels.length - 1)];
       const now = Date.now();
       
-      // Obstacole - foarte rare
       if (now - lastObstacleTime > currentLevel.obstacleRate) {
         spawnObstacle();
         lastObstacleTime = now;
       }
       
-      // Steluțe - des
-      if (now - lastStarTime > 1500) {
-        if (Math.random() < 0.7) spawnStar();
-        lastStarTime = now;
-      }
-      
-      // Power-ups - uneori
-      if (now - lastPowerUpTime > 6000) {
+      if (now - lastPowerUpTime > 5000) {
         if (Math.random() < 0.5) spawnPowerUp();
         lastPowerUpTime = now;
       }
@@ -775,26 +760,15 @@
     function spawnObstacle() {
       if (!gameRunning || gamePaused) return;
       const color = obstacleColors[Math.floor(Math.random() * obstacleColors.length)];
-      const width = 45 + Math.random() * 25;
+      const width = 50 + Math.random() * 30;
       obstacles.push({
         x: Math.random() * (canvas.width - width),
         y: -60,
         width: width,
-        height: 45,
+        height: 50,
         color: color,
         passed: false,
-        emoji: ['🟧', '📦', '🪨'][Math.floor(Math.random() * 3)]
-      });
-    }
-    
-    function spawnStar() {
-      if (!gameRunning || gamePaused) return;
-      stars.push({
-        x: Math.random() * (canvas.width - 35),
-        y: -40,
-        width: 35,
-        height: 35,
-        collected: false
+        emoji: ['🟧', '🚧', '🪨'][Math.floor(Math.random() * 3)]
       });
     }
     
@@ -833,13 +807,17 @@
       switch(type) {
         case 'shield':
           car.shield = true;
-          car.shieldTime = Date.now() + 5000;
+          car.shieldTime = Date.now() + 4000;
           break;
-        case 'star':
-          score = Math.min(20, score + 1);
+        case 'speed':
+          currentSpeed = Math.min(8, currentSpeed + 2);
+          setTimeout(() => {
+            currentSpeed = baseSpeed;
+          }, 3000);
+          break;
+        case 'double':
+          score = Math.min(30, score + 2);
           scoreVal.textContent = score;
-          playSound('star');
-          createConfetti();
           break;
       }
       updatePowerUpIndicator();
@@ -859,48 +837,34 @@
         level++;
         baseSpeed = levels[level - 1].speed;
         currentSpeed = baseSpeed;
+        levelVal.textContent = level;
         playSound('win');
         gameRunning = false;
         cancelAnimationFrame(animationId);
         levelUpText.textContent = `Nivel ${level}: ${levels[level-1].name}!`;
         levelUpScreen.classList.remove('hidden');
-        createConfetti();
       }
     }
     
     function checkWin() {
-      if (score >= 20) {
+      if (score >= 30) {
         gameRunning = false;
         cancelAnimationFrame(animationId);
-        endTitle.textContent = '🏆 AI CÂȘTIGAT!';
-        messageEl.textContent = 'Ești un pilot super tare!';
+        messageEl.textContent = 'EȘTI UN ADEVĂRAT CAMPION! 🏆';
         playSound('win');
-        createConfetti();
+        createExplosion(canvas.width/2, canvas.height/2);
         endGame();
       }
     }
     
-    // === CONFETTI ===
-    function createConfetti() {
-      const colors = ['#FF6B6B', '#FFD93D', '#4ECDC4', '#98FB98', '#DDA0DD'];
-      for (let i = 0; i < 30; i++) {
-        setTimeout(() => {
-          const confetti = document.createElement('div');
-          confetti.className = 'confetti';
-          confetti.style.left = Math.random() * 360 + 'px';
-          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-          confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-          document.getElementById('gameContainer').appendChild(confetti);
-          setTimeout(() => confetti.remove(), 2000);
-        }, i * 50);
-      }
-    }
-    
-    // === STELE DISPLAY ===
-    function updateStars() {
-      const filled = Math.floor(score / 5);
-      const empty = 4 - filled;
-      starsDisplay.textContent = '🌟'.repeat(filled) + '⭐'.repeat(empty);
+    // === EXPLOSION EFFECT ===
+    function createExplosion(x, y) {
+      const explosion = document.createElement('div');
+      explosion.className = 'explosion';
+      explosion.style.left = (x - 40) + 'px';
+      explosion.style.top = (y - 40) + 'px';
+      document.getElementById('gameContainer').appendChild(explosion);
+      setTimeout(() => explosion.remove(), 500);
     }
     
     // === DESENARE ===
@@ -911,128 +875,140 @@
       ctx.translate(-car.width/2, -car.height/2);
       
       // Umbră
-      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
       ctx.fillRect(5, 5, car.width, car.height);
       
-      // Corp mașină
-      const gradient = ctx.createLinearGradient(0, 0, car.width, 0);
-      gradient.addColorStop(0, car.color);
-      gradient.addColorStop(0.5, '#FF8E8E');
-      gradient.addColorStop(1, car.color);
-      ctx.fillStyle = gradient;
-      
-      // Formă rotunjită
+      // Corp mașină - formă de cursă
+      ctx.fillStyle = car.color;
       ctx.beginPath();
-      ctx.roundRect(0, 0, car.width, car.height, 10);
+      ctx.moveTo(10, 0);
+      ctx.lineTo(car.width - 10, 0);
+      ctx.lineTo(car.width, 20);
+      ctx.lineTo(car.width, car.height - 10);
+      ctx.lineTo(car.width - 10, car.height);
+      ctx.lineTo(10, car.height);
+      ctx.lineTo(0, car.height - 10);
+      ctx.lineTo(0, 20);
+      ctx.closePath();
       ctx.fill();
       
-      // Dungi
-      ctx.fillStyle = 'rgba(255,255,255,0.4)';
-      ctx.fillRect(car.width/2 - 7, 0, 14, car.height);
+      // Dungi de curse
+      ctx.fillStyle = '#1a1a2e';
+      ctx.fillRect(car.width/2 - 8, 0, 16, car.height);
+      
+      // Bordură dungi
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(car.width/2 - 8, 0, 16, car.height);
       
       // Geam
-      ctx.fillStyle = '#87CEEB';
+      ctx.fillStyle = '#00d9ff';
       ctx.beginPath();
-      ctx.roundRect(10, 18, car.width - 20, 20, 8);
+      ctx.moveTo(15, 25);
+      ctx.lineTo(car.width - 15, 25);
+      ctx.lineTo(car.width - 12, 45);
+      ctx.lineTo(12, 45);
+      ctx.closePath();
       ctx.fill();
       
-      // Față zâmbitoare
-      ctx.fillStyle = '#333';
-      // Ochii
-      ctx.beginPath();
-      ctx.arc(18, 30, 5, 0, Math.PI * 2);
-      ctx.arc(car.width - 18, 30, 5, 0, Math.PI * 2);
-      ctx.fill();
-      // Zâmbet
-      ctx.beginPath();
-      ctx.arc(car.width/2, 35, 12, 0.1 * Math.PI, 0.9 * Math.PI);
-      ctx.strokeStyle = '#333';
-      ctx.lineWidth = 3;
-      ctx.stroke();
+      // Aripioară spate
+      ctx.fillStyle = '#1a1a2e';
+      ctx.fillRect(5, car.height - 15, car.width - 10, 12);
       
       // Roți
-      ctx.fillStyle = '#333';
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(-8, 18, 12, 22);
+      ctx.fillRect(car.width - 4, 18, 12, 22);
+      ctx.fillRect(-8, car.height - 25, 12, 22);
+      ctx.fillRect(car.width - 4, car.height - 25, 12, 22);
+      
+      // Detalii roți
+      ctx.fillStyle = '#e94560';
       ctx.beginPath();
-      ctx.roundRect(-5, 15, 10, 18, 5);
-      ctx.roundRect(car.width - 5, 15, 10, 18, 5);
-      ctx.roundRect(-5, car.height - 20, 10, 18, 5);
-      ctx.roundRect(car.width - 5, car.height - 20, 10, 18, 5);
+      ctx.arc(0, 29, 5, 0, Math.PI * 2);
+      ctx.arc(car.width, 29, 5, 0, Math.PI * 2);
+      ctx.arc(0, car.height - 14, 5, 0, Math.PI * 2);
+      ctx.arc(car.width, car.height - 14, 5, 0, Math.PI * 2);
       ctx.fill();
       
       // Faruri
-      ctx.fillStyle = '#FFD93D';
+      ctx.fillStyle = '#ffd700';
       ctx.beginPath();
-      ctx.arc(12, 2, 6, 0, Math.PI * 2);
-      ctx.arc(car.width - 12, 2, 6, 0, Math.PI * 2);
+      ctx.ellipse(15, 3, 8, 5, 0, 0, Math.PI * 2);
+      ctx.ellipse(car.width - 15, 3, 8, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Lumină faruri
+      ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
+      ctx.beginPath();
+      ctx.moveTo(10, 0);
+      ctx.lineTo(5, -30);
+      ctx.lineTo(20, -30);
+      ctx.lineTo(20, 0);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(car.width - 20, 0);
+      ctx.lineTo(car.width - 20, -30);
+      ctx.lineTo(car.width - 5, -30);
+      ctx.lineTo(car.width - 10, 0);
       ctx.fill();
       
       // Scut
       if (car.shield) {
-        ctx.strokeStyle = 'rgba(78, 205, 196, 0.9)';
-        ctx.lineWidth = 5;
+        ctx.strokeStyle = 'rgba(0, 217, 255, 0.9)';
+        ctx.lineWidth = 4;
         ctx.beginPath();
-        ctx.arc(car.width/2, car.height/2, car.width * 0.9, 0, Math.PI * 2);
+        ctx.ellipse(car.width/2, car.height/2, car.width * 0.8, car.height * 0.7, 0, 0, Math.PI * 2);
         ctx.stroke();
-        ctx.fillStyle = 'rgba(78, 205, 196, 0.2)';
+        ctx.fillStyle = 'rgba(0, 217, 255, 0.15)';
         ctx.fill();
+        
+        // Particule scut
+        for (let i = 0; i < 6; i++) {
+          const angle = Date.now() / 200 + i * (Math.PI * 2 / 6);
+          const px = car.width/2 + Math.cos(angle) * car.width * 0.7;
+          const py = car.height/2 + Math.sin(angle) * car.height * 0.6;
+          ctx.fillStyle = 'rgba(0, 217, 255, 0.8)';
+          ctx.beginPath();
+          ctx.arc(px, py, 4, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
       
       ctx.restore();
     }
     
     function drawObstacle(obs) {
-      ctx.fillStyle = 'rgba(0,0,0,0.2)';
-      ctx.fillRect(obs.x + 3, obs.y + 3, obs.width, obs.height);
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.fillRect(obs.x + 4, obs.y + 4, obs.width, obs.height);
       
       const gradient = ctx.createLinearGradient(obs.x, obs.y, obs.x, obs.y + obs.height);
       gradient.addColorStop(0, obs.color);
-      gradient.addColorStop(1, 'rgba(0,0,0,0.3)');
+      gradient.addColorStop(1, 'rgba(0,0,0,0.4)');
       ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.roundRect(obs.x, obs.y, obs.width, obs.height, 8);
-      ctx.fill();
+      ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
       
-      ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.6)';
       ctx.lineWidth = 3;
-      ctx.stroke();
+      ctx.strokeRect(obs.x, obs.y, obs.width, obs.height);
+      
+      // Dungi pericol
+      ctx.fillStyle = 'rgba(0,0,0,0.3)';
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.moveTo(obs.x + i * 20, obs.y);
+        ctx.lineTo(obs.x + i * 20 + 15, obs.y + obs.height);
+        ctx.lineTo(obs.x + i * 20 + 10, obs.y + obs.height);
+        ctx.lineTo(obs.x + i * 20 - 5, obs.y);
+        ctx.closePath();
+        ctx.fill();
+      }
       
       ctx.fillStyle = 'white';
-      ctx.font = 'bold 24px Arial';
+      ctx.font = 'bold 28px Arial';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(obs.emoji, obs.x + obs.width/2, obs.y + obs.height/2);
-    }
-    
-    function drawStar(star) {
-      // Strălucire
-      const glow = ctx.createRadialGradient(
-        star.x + star.width/2, star.y + star.height/2, 0,
-        star.x + star.width/2, star.y + star.height/2, star.width
-      );
-      glow.addColorStop(0, '#FFD93DAA');
-      glow.addColorStop(1, 'transparent');
-      ctx.fillStyle = glow;
-      ctx.fillRect(star.x - 10, star.y - 10, star.width + 20, star.height + 20);
-      
-      // Stea
-      ctx.fillStyle = '#FFD93D';
-      ctx.beginPath();
-      const cx = star.x + star.width/2;
-      const cy = star.y + star.height/2;
-      const r = star.width/2;
-      for (let i = 0; i < 5; i++) {
-        const angle = (i * 4 * Math.PI / 5) - Math.PI/2;
-        const x = cx + Math.cos(angle) * r;
-        const y = cy + Math.sin(angle) * r;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.closePath();
-      ctx.fill();
-      
-      ctx.strokeStyle = '#FF6B6B';
-      ctx.lineWidth = 2;
-      ctx.stroke();
     }
     
     function drawPowerUp(pu) {
@@ -1054,69 +1030,68 @@
       ctx.lineWidth = 4;
       ctx.stroke();
       
+      // Puls effect
+      const pulse = 1 + Math.sin(Date.now() / 100) * 0.1;
+      ctx.save();
+      ctx.translate(pu.x + pu.width/2, pu.y + pu.height/2);
+      ctx.scale(pulse, pulse);
       ctx.fillStyle = 'white';
-      ctx.font = 'bold 26px Arial';
+      ctx.font = 'bold 28px Arial';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(pu.icon, pu.x + pu.width/2, pu.y + pu.height/2);
+      ctx.fillText(pu.icon, 0, 0);
+      ctx.restore();
     }
     
     function drawRoad() {
-      // Iarbă
-      ctx.fillStyle = '#32CD32';
-      ctx.fillRect(0, canvas.height * 0.4, canvas.width, canvas.height * 0.6);
-      
-      // Drum
-      ctx.fillStyle = '#696969';
-      ctx.fillRect(30, 0, canvas.width - 60, canvas.height);
+      // Asfalt
+      ctx.fillStyle = '#2d2d2d';
+      ctx.fillRect(25, 0, canvas.width - 50, canvas.height);
       
       // Linii laterale
-      ctx.fillStyle = '#FFF';
-      ctx.fillRect(35, 0, 8, canvas.height);
-      ctx.fillRect(canvas.width - 43, 0, 8, canvas.height);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(30, 0, 10, canvas.height);
+      ctx.fillRect(canvas.width - 40, 0, 10, canvas.height);
+      
+      // Linii roșii pe margini
+      ctx.fillStyle = '#e94560';
+      const stripeHeight = 30;
+      const stripeGap = 30;
+      const offset = (Date.now() / 50 * currentSpeed) % (stripeHeight + stripeGap);
+      for (let y = -offset; y < canvas.height; y += stripeHeight + stripeGap) {
+        ctx.fillRect(25, y, 5, stripeHeight);
+        ctx.fillRect(canvas.width - 30, y, 5, stripeHeight);
+      }
       
       // Linii centrale animate
-      ctx.setLineDash([30, 35]);
+      ctx.setLineDash([40, 35]);
       ctx.lineDashOffset = -Date.now() / 40 * currentSpeed;
-      ctx.strokeStyle = '#FFF';
-      ctx.lineWidth = 5;
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 6;
       ctx.beginPath();
       ctx.moveTo(canvas.width / 2, 0);
       ctx.lineTo(canvas.width / 2, canvas.height);
       ctx.stroke();
       ctx.setLineDash([]);
       
-      // Flori pe iarbă
-      ctx.font = '20px Arial';
-      ctx.textAlign = 'center';
-      const flowers = ['🌸', '🌼', '🌻', '🌷'];
-      for (let i = 0; i < 5; i++) {
-        const x = 10 + i * 70;
-        const y = canvas.height * 0.5 + (i % 2) * 30;
-        ctx.fillText(flowers[i % 4], x, y);
-        ctx.fillText(flowers[(i+2) % 4], canvas.width - 10 - i * 70, y + 20);
+      // Speed lines
+      ctx.fillStyle = 'rgba(0, 217, 255, 0.1)';
+      for (let i = 0; i < 10; i++) {
+        const x = 40 + i * 35;
+        const y = ((Date.now() / 60 * currentSpeed) + i * 60) % canvas.height;
+        ctx.fillRect(x, y, 4, 50);
       }
     }
     
-    function drawSky() {
-      // Soare
-      ctx.fillStyle = '#FFD93D';
-      ctx.beginPath();
-      ctx.arc(320, 50, 40, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Raze soare
-      ctx.strokeStyle = '#FFD93D';
-      ctx.lineWidth = 4;
-      for (let i = 0; i < 8; i++) {
-        const angle = (i / 8) * Math.PI * 2;
-        const x1 = 320 + Math.cos(angle) * 45;
-        const y1 = 50 + Math.sin(angle) * 45;
-        const x2 = 320 + Math.cos(angle) * 55;
-        const y2 = 50 + Math.sin(angle) * 55;
+    function drawGrid() {
+      // Grid effect pentru senzația de viteză
+      ctx.strokeStyle = 'rgba(0, 217, 255, 0.15)';
+      ctx.lineWidth = 1;
+      const gridOffset = (Date.now() / 30 * currentSpeed) % 40;
+      for (let y = gridOffset; y < canvas.height; y += 40) {
         ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
+        ctx.moveTo(25, y);
+        ctx.lineTo(canvas.width - 25, y);
         ctx.stroke();
       }
     }
@@ -1128,10 +1103,10 @@
       // Mișcare mașină
       if (steeringAngle !== 0) {
         car.x += steeringAngle * car.speed;
-        car.angle = steeringAngle * 15;
+        car.angle = steeringAngle * 18;
         
-        if (car.x < 35) car.x = 35;
-        if (car.x > canvas.width - car.width - 35) car.x = canvas.width - car.width - 35;
+        if (car.x < 30) car.x = 30;
+        if (car.x > canvas.width - car.width - 30) car.x = canvas.width - car.width - 30;
       } else {
         car.angle *= 0.85;
       }
@@ -1143,6 +1118,11 @@
         
         if (!obs.passed && obs.y > car.y + car.height) {
           obs.passed = true;
+          score++;
+          scoreVal.textContent = score;
+          playSound('score');
+          checkLevelUp();
+          checkWin();
         }
         
         if (checkCollision(car, obs)) {
@@ -1151,41 +1131,21 @@
             obstacles.splice(i, 1);
             updatePowerUpIndicator();
             playSound('powerup');
+            createExplosion(obs.x + obs.width/2, obs.y + obs.height/2);
             document.getElementById('steeringWheel').classList.add('vibrating');
             setTimeout(() => {
               document.getElementById('steeringWheel').classList.remove('vibrating');
             }, 300);
           } else {
-            score = Math.max(0, score - 1);
-            scoreVal.textContent = score;
-            updateStars();
+            // GAME OVER - fără scut
+            createExplosion(car.x + car.width/2, car.y + car.height/2);
             playSound('collision');
-            car.happy = false;
-            setTimeout(() => car.happy = true, 500);
+            endGame();
+            return;
           }
         }
         
         if (obs.y > canvas.height) obstacles.splice(i, 1);
-      }
-      
-      // Steluțe
-      for (let i = stars.length - 1; i >= 0; i--) {
-        const star = stars[i];
-        star.y += currentSpeed;
-        
-        if (checkCollision(car, star)) {
-          score = Math.min(20, score + 1);
-          scoreVal.textContent = score;
-          updateStars();
-          playSound('star');
-          stars.splice(i, 1);
-          createConfetti();
-          checkLevelUp();
-          checkWin();
-          continue;
-        }
-        
-        if (star.y > canvas.height) stars.splice(i, 1);
       }
       
       // Power-ups
@@ -1209,13 +1169,24 @@
       cancelAnimationFrame(animationId);
       
       finalScoreEl.textContent = score;
+      finalLevelEl.textContent = level;
       
       if (score > highScore) {
         highScore = score;
         localStorage.setItem('carGameHighScore', highScore);
-        personalBestEl.textContent = highScore + ' 🎉';
+        personalBestEl.textContent = highScore + ' 🔥';
       } else {
         personalBestEl.textContent = highScore;
+      }
+      
+      if (score >= 30) {
+        messageEl.textContent = 'EȘTI UN ADEVĂRAT CAMPION! 🏆';
+      } else if (score >= 20) {
+        messageEl.textContent = 'FOARTE BINE, CAMPIONULE! 💪';
+      } else if (score >= 10) {
+        messageEl.textContent = 'BINE! MAI POȚI MAI MULT! 🚀';
+      } else {
+        messageEl.textContent = 'ÎNCEARCĂ DIN NOU, EROULE! 🏎️';
       }
       
       gameOverScreen.classList.remove('hidden');
@@ -1227,9 +1198,8 @@
       
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      drawSky();
+      drawGrid();
       drawRoad();
-      stars.forEach(drawStar);
       powerUps.forEach(drawPowerUp);
       obstacles.forEach(drawObstacle);
       drawCar();
@@ -1251,6 +1221,7 @@
   </script>
 </body>
 </html>
+
 
 
 
