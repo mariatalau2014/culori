@@ -1,11 +1,10 @@
 
-
 <!DOCTYPE html>
 <html lang="ro">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>🏎️ Viteză 150 km/h</title>
+  <title>🏎️ Controle Complete</title>
   <style>
     * {
       margin: 0;
@@ -43,7 +42,7 @@
       top: 0;
       left: 0;
       right: 0;
-      bottom: 140px;
+      bottom: 200px;
       display: flex;
       z-index: 5;
     }
@@ -63,6 +62,50 @@
     .touchHint {
       font-size: 50px;
       opacity: 0.3;
+    }
+    
+    /* === PEDALE === */
+    #pedals {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 30px;
+      z-index: 15;
+    }
+    .pedal {
+      width: 55px;
+      height: 90px;
+      border-radius: 10px;
+      border: 4px solid;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: all 0.1s;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    }
+    .pedal:active, .pedal.pressed {
+      transform: scale(0.95) translateY(5px);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+    #brakePedal {
+      background: linear-gradient(180deg, #ff4444, #cc0000);
+      border-color: #ff6666;
+    }
+    #gasPedal {
+      background: linear-gradient(180deg, #44ff44, #00cc00);
+      border-color: #66ff66;
+    }
+    .pedal-label {
+      font-size: 11px;
+      margin-top: 5px;
+      text-transform: uppercase;
     }
     
     /* === VOLAN === */
@@ -153,36 +196,82 @@
       border-radius: 3px;
       box-shadow: 0 0 15px #ff6666;
     }
-    #speedDisplay {
+    
+    /* === SPEED METER === */
+    #speedMeter {
       position: absolute;
-      bottom: -35px;
+      top: 60px;
+      right: 15px;
+      width: 85px;
+      height: 85px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 4px solid #00ff88;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      box-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
+    }
+    #speedValue {
+      font-size: 28px;
+      color: #00ff88;
+      font-weight: bold;
+      text-shadow: 0 0 15px #00ff88;
+    }
+    #speedLabel {
+      font-size: 11px;
+      color: #00ff88;
+    }
+    #speedBar {
+      position: absolute;
+      bottom: 8px;
       left: 50%;
       transform: translateX(-50%);
-      color: #ff0040;
-      font-size: 20px;
-      font-weight: bold;
-      white-space: nowrap;
-      text-shadow: 0 0 15px #ff0040;
+      width: 60px;
+      height: 6px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 3px;
+      overflow: hidden;
     }
+    #speedBarFill {
+      height: 100%;
+      background: linear-gradient(90deg, #00ff88, #ffd700, #ff0040);
+      width: 50%;
+      transition: width 0.1s;
+    }
+    
+    /* === SCORE === */
     #scoreDisplay {
       position: absolute;
-      bottom: -58px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: #00ff88;
-      font-size: 18px;
+      top: 60px;
+      left: 15px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 3px solid #ffd700;
+      border-radius: 15px;
+      padding: 10px 15px;
+      z-index: 10;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    }
+    #scoreValue {
+      font-size: 22px;
+      color: #ffd700;
       font-weight: bold;
-      white-space: nowrap;
-      text-shadow: 0 0 15px #00ff88;
+      text-shadow: 0 0 10px #ffd700;
+    }
+    #scoreLabel {
+      font-size: 11px;
+      color: #ffd700;
     }
     
     /* === BUTON PAUZĂ === */
     #pauseBtn {
       position: absolute;
-      bottom: 145px;
+      top: 10px;
       right: 10px;
-      width: 40px;
-      height: 40px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
       font-size: 20px;
       z-index: 25;
@@ -206,7 +295,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: calc(100% - 120px);
+      height: calc(100% - 180px);
       background: rgba(10, 10, 10, 0.97);
       display: flex;
       flex-direction: column;
@@ -219,7 +308,7 @@
       z-index: 30;
     }
     #startScreen h1 {
-      font-size: 38px;
+      font-size: 36px;
       margin-bottom: 12px;
       color: #ff0040;
       text-shadow: 0 0 25px #ff0040;
@@ -231,21 +320,21 @@
       50% { text-shadow: 0 0 40px #ff0040, 0 0 60px #ff0040; }
     }
     #gameOver h2, #levelUp h2 {
-      font-size: 34px;
+      font-size: 32px;
       margin-bottom: 15px;
       color: #ff0040;
       text-shadow: 0 0 20px #ff0040;
     }
     .info-text {
       margin: 10px 0;
-      font-size: 16px;
+      font-size: 15px;
       max-width: 300px;
       color: #00ff88;
       font-weight: bold;
       line-height: 1.4;
     }
     .emoji-row {
-      font-size: 35px;
+      font-size: 32px;
       margin: 8px 0;
     }
     .stat-row {
@@ -257,7 +346,7 @@
       padding: 12px 18px;
       background: rgba(255, 0, 64, 0.2);
       border-radius: 10px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: bold;
       color: #ff0040;
       border: 2px solid #ff0040;
@@ -267,6 +356,18 @@
       color: #00ff88;
       border-color: #00ff88;
     }
+    .control-info {
+      display: flex;
+      gap: 15px;
+      margin: 10px 0;
+    }
+    .control-box {
+      background: rgba(255,255,255,0.1);
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-size: 13px;
+      color: #fff;
+    }
     .actionBtn {
       margin-top: 20px;
       background: linear-gradient(145deg, #ff0040, #cc0033);
@@ -274,7 +375,7 @@
       border: none;
       padding: 18px 45px;
       border-radius: 30px;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: bold;
       font-family: 'Arial Black', sans-serif;
       cursor: pointer;
@@ -354,32 +455,13 @@
       100% { transform: scale(2.5); opacity: 0; }
     }
     
-    /* === SPEED METER === */
-    #speedMeter {
-      position: absolute;
-      top: 60px;
-      right: 15px;
-      width: 70px;
-      height: 70px;
-      background: rgba(0, 0, 0, 0.8);
-      border: 3px solid #00ff88;
-      border-radius: 50%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+    /* === PEDAL PRESS EFFECT === */
+    @keyframes pedalGlow {
+      0%, 100% { box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+      50% { box-shadow: 0 5px 30px currentColor; }
     }
-    #speedValue {
-      font-size: 24px;
-      color: #00ff88;
-      font-weight: bold;
-      text-shadow: 0 0 10px #00ff88;
-    }
-    #speedLabel {
-      font-size: 10px;
-      color: #00ff88;
+    .pedal.pressed {
+      animation: pedalGlow 0.3s infinite;
     }
   </style>
 </head>
@@ -402,12 +484,31 @@
     
     <!-- SPEED METER -->
     <div id="speedMeter">
-      <div id="speedValue">0</div>
+      <div id="speedValue">50</div>
       <div id="speedLabel">km/h</div>
+      <div id="speedBar"><div id="speedBarFill"></div></div>
+    </div>
+    
+    <!-- SCORE -->
+    <div id="scoreDisplay">
+      <div id="scoreValue">0 / 50</div>
+      <div id="scoreLabel">⭐ PUNCTE</div>
     </div>
     
     <!-- POWER-UP INDICATOR -->
     <div id="powerUpIndicator"></div>
+    
+    <!-- PEDALE -->
+    <div id="pedals">
+      <div class="pedal" id="brakePedal">
+        <span>🛑</span>
+        <span class="pedal-label">ÎNCET</span>
+      </div>
+      <div class="pedal" id="gasPedal">
+        <span>⚡</span>
+        <span class="pedal-label">REPEDE</span>
+      </div>
+    </div>
     
     <!-- VOLAN -->
     <div id="steeringWheel">
@@ -420,17 +521,19 @@
         <div id="wheelCenter">🏎️</div>
         <div id="wheelIndicator"></div>
       </div>
-      <div id="speedDisplay">⚡ VITEZA: <span id="speedVal">150</span> km/h</div>
-      <div id="scoreDisplay">⭐ PUNCTE: <span id="scoreVal">0</span> / 50</div>
     </div>
     
     <!-- ECRANE -->
     <div id="startScreen">
-      <h1>🏎️ 150 KM/H 🏎️</h1>
-      <p class="info-text">👦 Salut, pilot de curse!</p>
-      <div class="emoji-row">🖐️ Atinge STÂNGA sau DREAPTA!</div>
+      <h1>🏎️ CONTROLE COMPLETE 🏎️</h1>
+      <p class="info-text">👦 Salut, pilotule!</p>
+      <div class="emoji-row">🖐️ Atinge STÂNGA sau DREAPTA pentru viraj!</div>
       <div class="emoji-row">🎮 Sau învârte VOLANUL!</div>
-      <div class="stat-row speed-stat">🚀 VITEZA MAXIMĂ: 150 km/h</div>
+      <div class="control-info">
+        <div class="control-box" style="color: #ff6666;">🛑 FRÂNĂ<br/>Viteză mică</div>
+        <div class="control-box" style="color: #66ff66;">⚡ ACCELERAȚIE<br/>Viteză mare</div>
+      </div>
+      <div class="stat-row speed-stat">🚀 VITEZA: 50 - 250 km/h</div>
       <div class="stat-row">🟧 EVITĂ OBSTACOLELE!</div>
       <div class="stat-row">💥 DACĂ TE LOVEȘTI - PIERZI!</div>
       <div class="stat-row">⭐ ADUNĂ 50 DE PUNCTE!</div>
@@ -457,7 +560,7 @@
     
     <div id="levelUp" class="hidden">
       <h2>🎉 NIVEL NOU!</h2>
-      <p id="levelUpText" class="info-text">Viteza crește!</p>
+      <p id="levelUpText" class="info-text">Ai progresat!</p>
       <div class="emoji-row">🏎️💨🔥</div>
       <button class="actionBtn" id="continueBtn">▶ CONTINUĂ!</button>
     </div>
@@ -474,9 +577,9 @@
     // === CONFIG ===
     const canvas = document.getElementById('game');
     const ctx = canvas.getContext('2d');
-    const scoreVal = document.getElementById('scoreVal');
-    const speedVal = document.getElementById('speedVal');
+    const scoreValue = document.getElementById('scoreValue');
     const speedValue = document.getElementById('speedValue');
+    const speedBarFill = document.getElementById('speedBarFill');
     const finalScoreEl = document.getElementById('finalScore');
     const finalSpeedEl = document.getElementById('finalSpeed');
     const personalBestEl = document.getElementById('personalBest');
@@ -490,6 +593,8 @@
     const wheelRotation = document.getElementById('wheelRotation');
     const touchLeft = document.getElementById('touchLeft');
     const touchRight = document.getElementById('touchRight');
+    const brakePedal = document.getElementById('brakePedal');
+    const gasPedal = document.getElementById('gasPedal');
     
     const startBtn = document.getElementById('startBtn');
     const restartBtn = document.getElementById('restartBtn');
@@ -555,6 +660,14 @@
               }, i * 100);
             });
             break;
+          case 'engine':
+            // Sunet motor care variază cu viteza
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(80 + (currentSpeedKmh / 250) * 200, now);
+            gain.gain.setValueAtTime(0.05, now);
+            osc.start(now);
+            osc.stop(now + 0.1);
+            break;
         }
       } catch(e) {}
     }
@@ -563,14 +676,14 @@
     let gameRunning = false;
     let gamePaused = false;
     let score = 0;
-    let baseSpeed = 8;
-    let currentSpeed = 8;
+    let currentSpeedKmh = 50;
+    let targetSpeedKmh = 50;
+    const MIN_SPEED = 50;
+    const MAX_SPEED = 250;
     let level = 1;
     let animationId;
     let highScore = localStorage.getItem('carGameHighScore') || 0;
-    
-    // Viteza în km/h pentru afișaj
-    const SPEED_DISPLAY = 150;
+    let engineSoundInterval;
     
     // === MAȘINA ===
     const car = {
@@ -578,7 +691,7 @@
       y: canvas.height - 110,
       width: 60,
       height: 80,
-      speed: 10,
+      speed: 6,
       color: '#ff0040',
       shield: false,
       shieldTime: 0,
@@ -595,16 +708,10 @@
       { color: '#ffd700', effect: 'double', icon: '💎', duration: 3000 }
     ];
     
-    // === NIVELURI (VITEZE MARI) ===
-    const levels = [
-      { score: 0, speed: 8, obstacleRate: 1200, name: 'ROOKIE', kmh: 150 },
-      { score: 15, speed: 10, obstacleRate: 1000, name: 'RACER', kmh: 180 },
-      { score: 30, speed: 12, obstacleRate: 800, name: 'PRO', kmh: 220 },
-      { score: 45, speed: 14, obstacleRate: 600, name: 'LEGEND', kmh: 250 }
-    ];
-    
     // === CONTROALE ===
     let steeringAngle = 0;
+    let isBraking = false;
+    let isAccelerating = false;
     let lastObstacleTime = 0;
     let lastPowerUpTime = 0;
     
@@ -658,6 +765,47 @@
       wheelRotation.style.transform = 'rotate(0deg)';
     });
     
+    // === PEDALE ===
+    function startBraking(e) {
+      e.preventDefault();
+      if (!gameRunning || gamePaused) return;
+      isBraking = true;
+      isAccelerating = false;
+      targetSpeedKmh = MIN_SPEED;
+      brakePedal.classList.add('pressed');
+      gasPedal.classList.remove('pressed');
+    }
+    
+    function startAccelerating(e) {
+      e.preventDefault();
+      if (!gameRunning || gamePaused) return;
+      isAccelerating = true;
+      isBraking = false;
+      targetSpeedKmh = MAX_SPEED;
+      gasPedal.classList.add('pressed');
+      brakePedal.classList.remove('pressed');
+    }
+    
+    function releasePedals() {
+      isBraking = false;
+      isAccelerating = false;
+      targetSpeedKmh = 150; // Viteză normală
+      brakePedal.classList.remove('pressed');
+      gasPedal.classList.remove('pressed');
+    }
+    
+    brakePedal.addEventListener('touchstart', startBraking, { passive: false });
+    brakePedal.addEventListener('touchend', releasePedals);
+    brakePedal.addEventListener('mousedown', startBraking);
+    brakePedal.addEventListener('mouseup', releasePedals);
+    brakePedal.addEventListener('mouseleave', releasePedals);
+    
+    gasPedal.addEventListener('touchstart', startAccelerating, { passive: false });
+    gasPedal.addEventListener('touchend', releasePedals);
+    gasPedal.addEventListener('mousedown', startAccelerating);
+    gasPedal.addEventListener('mouseup', releasePedals);
+    gasPedal.addEventListener('mouseleave', releasePedals);
+    
     // === ZONE TOUCH ===
     function handleTouchLeft(e) {
       e.preventDefault();
@@ -704,6 +852,16 @@
         steeringAngle = 1;
         wheelRotation.style.transform = `rotate(${maxSteerAngle}deg)`;
       }
+      if (e.key === 'ArrowDown' || e.key === 's') {
+        isBraking = true;
+        targetSpeedKmh = MIN_SPEED;
+        brakePedal.classList.add('pressed');
+      }
+      if (e.key === 'ArrowUp' || e.key === 'w') {
+        isAccelerating = true;
+        targetSpeedKmh = MAX_SPEED;
+        gasPedal.classList.add('pressed');
+      }
       if (e.key === 'Escape' && gameRunning) togglePause();
       if (e.key === ' ' && gameRunning) togglePause();
     });
@@ -712,6 +870,9 @@
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         steeringAngle = 0;
         wheelRotation.style.transform = 'rotate(0deg)';
+      }
+      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'ArrowUp' || e.key === 'w') {
+        releasePedals();
       }
     });
     
@@ -727,6 +888,39 @@
       updatePowerUpIndicator();
       steeringAngle = 0;
       wheelRotation.style.transform = 'rotate(0deg)';
+      currentSpeedKmh = 50;
+      targetSpeedKmh = 50;
+      isBraking = false;
+      isAccelerating = false;
+      brakePedal.classList.remove('pressed');
+      gasPedal.classList.remove('pressed');
+      updateSpeedDisplay();
+    }
+    
+    // === UPDATE SPEED ===
+    function updateSpeed() {
+      // Accelerare/frânare graduală
+      if (currentSpeedKmh < targetSpeedKmh) {
+        currentSpeedKmh += 0.8;
+      } else if (currentSpeedKmh > targetSpeedKmh) {
+        currentSpeedKmh -= 1.2;
+      }
+      
+      // Limitare
+      currentSpeedKmh = Math.max(MIN_SPEED, Math.min(MAX_SPEED, currentSpeedKmh));
+      
+      updateSpeedDisplay();
+    }
+    
+    function updateSpeedDisplay() {
+      speedValue.textContent = Math.round(currentSpeedKmh);
+      const percentage = ((currentSpeedKmh - MIN_SPEED) / (MAX_SPEED - MIN_SPEED)) * 100;
+      speedBarFill.style.width = percentage + '%';
+    }
+    
+    function getGameSpeed() {
+      // Convert km/h to game speed
+      return 3 + (currentSpeedKmh / 250) * 12;
     }
     
     // === START JOC ===
@@ -738,11 +932,10 @@
       
       score = 0;
       level = 1;
-      baseSpeed = levels[0].speed;
-      currentSpeed = baseSpeed;
-      scoreVal.textContent = score;
-      speedVal.textContent = levels[0].kmh;
-      speedValue.textContent = levels[0].kmh;
+      currentSpeedKmh = 50;
+      targetSpeedKmh = 50;
+      scoreValue.textContent = '0 / 50';
+      updateSpeedDisplay();
       
       resetCar();
       obstacles = [];
@@ -754,6 +947,15 @@
       gamePaused = false;
       gameLoop();
       spawnLoop();
+      
+      // Engine sound loop
+      if (soundEnabled) {
+        engineSoundInterval = setInterval(() => {
+          if (gameRunning && !gamePaused) {
+            playSound('engine');
+          }
+        }, 100);
+      }
     }
     
     startBtn.addEventListener('click', startGame);
@@ -772,11 +974,19 @@
       gamePaused = !gamePaused;
       if (gamePaused) {
         cancelAnimationFrame(animationId);
+        clearInterval(engineSoundInterval);
         pauseScreen.classList.remove('hidden');
       } else {
         pauseScreen.classList.add('hidden');
         gameLoop();
         spawnLoop();
+        if (soundEnabled) {
+          engineSoundInterval = setInterval(() => {
+            if (gameRunning && !gamePaused) {
+              playSound('engine');
+            }
+          }, 100);
+        }
       }
     }
     
@@ -784,10 +994,12 @@
     function spawnLoop() {
       if (!gameRunning || gamePaused) return;
       
-      const currentLevel = levels[Math.min(level - 1, levels.length - 1)];
       const now = Date.now();
+      const gameSpeed = getGameSpeed();
       
-      if (now - lastObstacleTime > currentLevel.obstacleRate) {
+      // Obstacole - mai rare la viteză mică
+      const obstacleRate = 1500 - (currentSpeedKmh / 250) * 800;
+      if (now - lastObstacleTime > obstacleRate) {
         spawnObstacle();
         lastObstacleTime = now;
       }
@@ -853,19 +1065,14 @@
           car.shieldTime = Date.now() + 3500;
           break;
         case 'speed':
-          currentSpeed = Math.min(16, currentSpeed + 3);
-          const currentLevel = levels[Math.min(level - 1, levels.length - 1)];
-          speedVal.textContent = currentLevel.kmh + 50;
-          speedValue.textContent = currentLevel.kmh + 50;
+          targetSpeedKmh = MAX_SPEED;
           setTimeout(() => {
-            currentSpeed = baseSpeed;
-            speedVal.textContent = currentLevel.kmh;
-            speedValue.textContent = currentLevel.kmh;
+            targetSpeedKmh = 150;
           }, 2500);
           break;
         case 'double':
           score = Math.min(50, score + 3);
-          scoreVal.textContent = score;
+          scoreValue.textContent = score + ' / 50';
           break;
       }
       updatePowerUpIndicator();
@@ -879,27 +1086,12 @@
       }
     }
     
-    function checkLevelUp() {
-      const nextLevel = levels[Math.min(level, levels.length - 1)];
-      if (score >= nextLevel.score && level < levels.length) {
-        level++;
-        baseSpeed = levels[level - 1].speed;
-        currentSpeed = baseSpeed;
-        speedVal.textContent = levels[level - 1].kmh;
-        speedValue.textContent = levels[level - 1].kmh;
-        playSound('win');
-        gameRunning = false;
-        cancelAnimationFrame(animationId);
-        levelUpText.textContent = `Nivel ${level}: ${levels[level-1].name} - ${levels[level-1].kmh} km/h!`;
-        levelUpScreen.classList.remove('hidden');
-      }
-    }
-    
     function checkWin() {
       if (score >= 50) {
         gameRunning = false;
         cancelAnimationFrame(animationId);
-        messageEl.textContent = 'EȘTI UN LEGENDĂ A CURSELOR! 🏆🔥';
+        clearInterval(engineSoundInterval);
+        messageEl.textContent = 'EȘTI O LEGENDĂ A CURSELOR! 🏆🔥';
         playSound('win');
         createExplosion(canvas.width/2, canvas.height/2);
         endGame();
@@ -927,7 +1119,7 @@
       ctx.fillStyle = 'rgba(0,0,0,0.5)';
       ctx.fillRect(5, 5, car.width, car.height);
       
-      // Corp mașină - formă de curse
+      // Corp mașină
       ctx.fillStyle = car.color;
       ctx.beginPath();
       ctx.moveTo(12, 0);
@@ -941,11 +1133,10 @@
       ctx.closePath();
       ctx.fill();
       
-      // Dungi de curse
+      // Dungi
       ctx.fillStyle = '#0a0a0a';
       ctx.fillRect(car.width/2 - 10, 0, 20, car.height);
       
-      // Bordură dungi
       ctx.strokeStyle = '#ff6666';
       ctx.lineWidth = 3;
       ctx.strokeRect(car.width/2 - 10, 0, 20, car.height);
@@ -960,7 +1151,7 @@
       ctx.closePath();
       ctx.fill();
       
-      // Aripioară spate
+      // Aripioară
       ctx.fillStyle = '#0a0a0a';
       ctx.fillRect(8, car.height - 18, car.width - 16, 15);
       
@@ -987,33 +1178,20 @@
       ctx.ellipse(car.width - 18, 4, 10, 6, 0, 0, Math.PI * 2);
       ctx.fill();
       
-      // Lumină faruri
-      ctx.fillStyle = 'rgba(255, 215, 0, 0.4)';
-      ctx.beginPath();
-      ctx.moveTo(12, 0);
-      ctx.lineTo(5, -40);
-      ctx.lineTo(25, -40);
-      ctx.lineTo(25, 0);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(car.width - 25, 0);
-      ctx.lineTo(car.width - 25, -40);
-      ctx.lineTo(car.width - 5, -40);
-      ctx.lineTo(car.width - 12, 0);
-      ctx.fill();
-      
-      // Flame la spate (viteză mare)
-      const flameIntensity = currentSpeed / 14;
-      ctx.fillStyle = `rgba(255, ${100 - flameIntensity * 50}, 0, 0.9)`;
-      for (let i = 0; i < 3; i++) {
-        const fx = car.width/2 - 15 + i * 15;
-        const fy = car.height + 5 + Math.random() * 20 * flameIntensity;
-        ctx.beginPath();
-        ctx.moveTo(fx - 5, car.height);
-        ctx.lineTo(fx, fy);
-        ctx.lineTo(fx + 5, car.height);
-        ctx.closePath();
-        ctx.fill();
+      // Flame la viteză mare
+      if (currentSpeedKmh > 150) {
+        const flameIntensity = (currentSpeedKmh - 150) / 100;
+        ctx.fillStyle = `rgba(255, ${100 - flameIntensity * 50}, 0, 0.9)`;
+        for (let i = 0; i < 4; i++) {
+          const fx = car.width/2 - 20 + i * 13;
+          const fy = car.height + 5 + Math.random() * 30 * flameIntensity;
+          ctx.beginPath();
+          ctx.moveTo(fx - 4, car.height);
+          ctx.lineTo(fx, fy);
+          ctx.lineTo(fx + 4, car.height);
+          ctx.closePath();
+          ctx.fill();
+        }
       }
       
       // Scut
@@ -1026,7 +1204,6 @@
         ctx.fillStyle = 'rgba(0, 217, 255, 0.15)';
         ctx.fill();
         
-        // Particule scut
         for (let i = 0; i < 8; i++) {
           const angle = Date.now() / 150 + i * (Math.PI * 2 / 8);
           const px = car.width/2 + Math.cos(angle) * car.width * 0.7;
@@ -1055,7 +1232,6 @@
       ctx.lineWidth = 3;
       ctx.strokeRect(obs.x, obs.y, obs.width, obs.height);
       
-      // Dungi pericol
       ctx.fillStyle = 'rgba(0,0,0,0.4)';
       for (let i = 0; i < 4; i++) {
         ctx.beginPath();
@@ -1093,7 +1269,6 @@
       ctx.lineWidth = 4;
       ctx.stroke();
       
-      // Puls effect
       const pulse = 1 + Math.sin(Date.now() / 80) * 0.15;
       ctx.save();
       ctx.translate(pu.x + pu.width/2, pu.y + pu.height/2);
@@ -1107,28 +1282,24 @@
     }
     
     function drawRoad() {
-      // Asfalt
       ctx.fillStyle = '#1a1a1a';
       ctx.fillRect(25, 0, canvas.width - 50, canvas.height);
       
-      // Linii laterale
       ctx.fillStyle = '#fff';
       ctx.fillRect(30, 0, 10, canvas.height);
       ctx.fillRect(canvas.width - 40, 0, 10, canvas.height);
       
-      // Linii roșii pe margini (animate)
       ctx.fillStyle = '#ff0040';
       const stripeHeight = 40;
       const stripeGap = 30;
-      const offset = (Date.now() / 30 * currentSpeed) % (stripeHeight + stripeGap);
+      const offset = (Date.now() / 30 * getGameSpeed()) % (stripeHeight + stripeGap);
       for (let y = -offset; y < canvas.height; y += stripeHeight + stripeGap) {
         ctx.fillRect(25, y, 5, stripeHeight);
         ctx.fillRect(canvas.width - 30, y, 5, stripeHeight);
       }
       
-      // Linii centrale animate
       ctx.setLineDash([50, 40]);
-      ctx.lineDashOffset = -Date.now() / 25 * currentSpeed;
+      ctx.lineDashOffset = -Date.now() / 25 * getGameSpeed();
       ctx.strokeStyle = '#ffd700';
       ctx.lineWidth = 8;
       ctx.beginPath();
@@ -1137,20 +1308,19 @@
       ctx.stroke();
       ctx.setLineDash([]);
       
-      // Speed lines (multe pentru viteză mare)
       ctx.fillStyle = 'rgba(255, 0, 64, 0.15)';
-      for (let i = 0; i < 15; i++) {
+      const lineCount = Math.floor(10 + (currentSpeedKmh / 250) * 10);
+      for (let i = 0; i < lineCount; i++) {
         const x = 35 + i * 25;
-        const y = ((Date.now() / 40 * currentSpeed) + i * 50) % canvas.height;
+        const y = ((Date.now() / 40 * getGameSpeed()) + i * 50) % canvas.height;
         ctx.fillRect(x, y, 5, 70);
       }
     }
     
     function drawGrid() {
-      // Grid effect pentru senzația de viteză extremă
       ctx.strokeStyle = 'rgba(255, 0, 64, 0.2)';
       ctx.lineWidth = 1;
-      const gridOffset = (Date.now() / 20 * currentSpeed) % 50;
+      const gridOffset = (Date.now() / 20 * getGameSpeed()) % 50;
       for (let y = gridOffset; y < canvas.height; y += 50) {
         ctx.beginPath();
         ctx.moveTo(25, y);
@@ -1158,7 +1328,6 @@
         ctx.stroke();
       }
       
-      // Linii verticale
       for (let x = 50; x < canvas.width - 25; x += 60) {
         ctx.beginPath();
         ctx.moveTo(x, 0);
@@ -1170,8 +1339,10 @@
     // === UPDATE ===
     function update() {
       checkPowerUpExpiry();
+      updateSpeed();
       
-      // Mișcare mașină
+      const gameSpeed = getGameSpeed();
+      
       if (steeringAngle !== 0) {
         car.x += steeringAngle * car.speed;
         car.angle = steeringAngle * 20;
@@ -1182,17 +1353,15 @@
         car.angle *= 0.8;
       }
       
-      // Obstacole
       for (let i = obstacles.length - 1; i >= 0; i--) {
         const obs = obstacles[i];
-        obs.y += currentSpeed;
+        obs.y += gameSpeed;
         
         if (!obs.passed && obs.y > car.y + car.height) {
           obs.passed = true;
           score++;
-          scoreVal.textContent = score;
+          scoreValue.textContent = score + ' / 50';
           playSound('score');
-          checkLevelUp();
           checkWin();
         }
         
@@ -1208,7 +1377,6 @@
               document.getElementById('steeringWheel').classList.remove('vibrating');
             }, 250);
           } else {
-            // GAME OVER - fără scut
             createExplosion(car.x + car.width/2, car.y + car.height/2);
             playSound('collision');
             endGame();
@@ -1219,10 +1387,9 @@
         if (obs.y > canvas.height) obstacles.splice(i, 1);
       }
       
-      // Power-ups
       for (let i = powerUps.length - 1; i >= 0; i--) {
         const pu = powerUps[i];
-        pu.y += currentSpeed;
+        pu.y += gameSpeed;
         
         if (checkCollision(car, pu)) {
           activatePowerUp(pu.effect);
@@ -1238,9 +1405,10 @@
     function endGame() {
       gameRunning = false;
       cancelAnimationFrame(animationId);
+      clearInterval(engineSoundInterval);
       
       finalScoreEl.textContent = score;
-      finalSpeedEl.textContent = levels[Math.min(level - 1, levels.length - 1)].kmh;
+      finalSpeedEl.textContent = Math.round(currentSpeedKmh);
       
       if (score > highScore) {
         highScore = score;
@@ -1292,6 +1460,7 @@
   </script>
 </body>
 </html>
+
 
 
 
