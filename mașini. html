@@ -1,537 +1,420 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joc Mașinuță - Evită Obstacolele</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            overflow: hidden;
-        }
-
-        .game-container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        h1 {
-            color: #fff;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 2rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            color: #fff;
-            font-size: 1.2rem;
-        }
-
-        .score, .lives {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        canvas {
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-            display: block;
-            background: #2d3436;
-        }
-
-        .controls {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .instructions {
-            color: #fff;
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .mobile-controls {
-            display: none;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .mobile-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .mobile-btn:active {
-            background: rgba(255, 255, 255, 0.4);
-            transform: scale(0.95);
-        }
-
-        @media (max-width: 768px) {
-            .mobile-controls {
-                display: flex;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            .game-container {
-                padding: 20px;
-            }
-        }
-
-        .game-over {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.95);
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            color: white;
-            display: none;
-            z-index: 100;
-            border: 2px solid #e74c3c;
-        }
-
-        .game-over h2 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            color: #e74c3c;
-        }
-
-        .game-over p {
-            font-size: 1.3rem;
-            margin-bottom: 30px;
-        }
-
-        .start-message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            color: white;
-            font-size: 1.2rem;
-            display: block;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>🚗 Mașinuța Mea</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      touch-action: manipulation;
+    }
+    body {
+      background: #6a1b9a; /* violet */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+      user-select: none;
+    }
+    #gameContainer {
+      position: relative;
+      width: 320px;
+      max-width: 95vw;
+    }
+    canvas {
+      background: #2e1a47;
+      border: 3px solid #9c27b0;
+      border-radius: 12px;
+      display: block;
+      margin: 0 auto;
+    }
+    #ui {
+      position: absolute;
+      top: 10px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 15px;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      z-index: 10;
+    }
+    #controls {
+      position: absolute;
+      bottom: 15px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      z-index: 10;
+    }
+    .btn {
+      background: #9c27b0;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .btn:active {
+      transform: scale(0.95);
+    }
+    #exitBtn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #e91e63;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 20px;
+      z-index: 20;
+    }
+    #gameOver, #startScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(46, 26, 71, 0.95);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      border-radius: 12px;
+      text-align: center;
+      padding: 20px;
+      z-index: 30;
+    }
+    #startScreen h1, #gameOver h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #ce93d8;
+    }
+    #startScreen p, #gameOver p {
+      margin: 8px 0;
+      font-size: 14px;
+      max-width: 280px;
+    }
+    .actionBtn {
+      margin-top: 20px;
+      background: #7e57c2;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .actionBtn:hover {
+      background: #9575cd;
+    }
+    .hidden {
+      display: none !important;
+    }
+    @media (max-height: 500px) {
+      .btn { width: 45px; height: 45px; font-size: 20px; }
+      #ui { font-size: 14px; }
+    }
+  </style>
 </head>
 <body>
-    <div class="game-container" style="position: relative;">
-        <h1>🚗 Joc Mașinuță</h1>
-        <div class="game-info">
-            <div class="score">Scor: <span id="scoreValue">0</span></div>
-            <div class="lives">Vieți: <span id="livesValue">3</span> ❤️</div>
-        </div>
-        <div style="position: relative;">
-            <canvas id="gameCanvas" width="400" height="600"></canvas>
-            <div class="start-message" id="startMessage">
-                <p>Apasă <strong>START JOC</strong> pentru a începe!</p>
-                <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">Folosește ← → sau butoanele</p>
-            </div>
-        </div>
-        <div class="controls">
-            <button class="btn" id="startBtn">🎮 Start Joc</button>
-            <div class="mobile-controls">
-                <button class="mobile-btn" id="leftBtn">◀</button>
-                <button class="mobile-btn" id="rightBtn">▶</button>
-            </div>
-            <div class="instructions">
-                Folosește săgețile ← → sau butoanele pentru a conduce
-            </div>
-        </div>
+  <div id="gameContainer">
+    <canvas id="game" width="320" height="480"></canvas>
+    
+    <div id="ui">
+      <span>Scor: <span id="score">0</span>/100</span>
+      <span>Viteza: <span id="speed">1</span>x</span>
     </div>
-
-    <div class="game-over" id="gameOver">
-        <h2>💥 Game Over!</h2>
-        <p>Scor Final: <span id="finalScore">0</span></p>
-        <button class="btn" id="restartBtn">🔄 Joacă Din Nou</button>
+    
+    <button id="exitBtn" class="btn" title="Ieșire">✕</button>
+    
+    <div id="controls">
+      <button class="btn" id="leftBtn">◀</button>
+      <button class="btn" id="rightBtn">▶</button>
     </div>
+    
+    <div id="startScreen">
+      <h1>🚗 Mașinuța Mea</h1>
+      <p>Folosește săgețile ← → sau butoanele de jos</p>
+      <p>Ocolește obstacolele! +1 punct la fiecare obstacol evitat</p>
+      <p>-5 puncte dacă lovești un obstacol</p>
+      <button class="actionBtn" id="startBtn">▶ JOACĂ</button>
+    </div>
+    
+    <div id="gameOver" class="hidden">
+      <h2>💥 Joc Terminat!</h2>
+      <p>Scorul tău: <span id="finalScore">0</span>/100</p>
+      <p id="message">Încearcă din nou!</p>
+      <button class="actionBtn" id="restartBtn">🔄 REIA</button>
+    </div>
+  </div>
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreElement = document.getElementById('scoreValue');
-        const livesElement = document.getElementById('livesValue');
-        const startBtn = document.getElementById('startBtn');
-        const restartBtn = document.getElementById('restartBtn');
-        const gameOverDiv = document.getElementById('gameOver');
-        const finalScoreElement = document.getElementById('finalScore');
-        const leftBtn = document.getElementById('leftBtn');
-        const rightBtn = document.getElementById('rightBtn');
-        const startMessage = document.getElementById('startMessage');
+  <script>
+    // === Config ===
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const scoreEl = document.getElementById('score');
+    const speedEl = document.getElementById('speed');
+    const finalScoreEl = document.getElementById('finalScore');
+    const messageEl = document.getElementById('message');
+    const startScreen = document.getElementById('startScreen');
+    const gameOverScreen = document.getElementById('gameOver');
+    const startBtn = document.getElementById('startBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const exitBtn = document.getElementById('exitBtn');
+    const leftBtn = document.getElementById('leftBtn');
+    const rightBtn = document.getElementById('rightBtn');
 
-        let gameRunning = false;
-        let score = 0;
-        let lives = 3;
-        let animationId;
-        let speed = 3;
-        let roadOffset = 0;
-
-        const car = {
-            x: canvas.width / 2 - 25,
-            y: canvas.height - 120,
-            width: 50,
-            height: 90,
-            speed: 6,
-            color: '#e74c3c'
-        };
-
-        let obstacles = [];
-        let keys = {
-            left: false,
-            right: false
-        };
-
-        function drawCar() {
-            // Corpul mașinii - roșu strălucitor
-            ctx.fillStyle = '#e74c3c';
-            ctx.fillRect(car.x, car.y, car.width, car.height);
-            
-            // Bordură neagră pentru contrast
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(car.x, car.y, car.width, car.height);
-            
-            // Parbriz - albastru deschis
-            ctx.fillStyle = '#3498db';
-            ctx.fillRect(car.x + 8, car.y + 15, car.width - 16, 25);
-            
-            // Geam spate
-            ctx.fillStyle = '#2980b9';
-            ctx.fillRect(car.x + 8, car.y + 55, car.width - 16, 15);
-            
-            // Roți - negre
-            ctx.fillStyle = '#2c3e50';
-            ctx.fillRect(car.x - 8, car.y + 15, 8, 20);
-            ctx.fillRect(car.x + car.width, car.y + 15, 8, 20);
-            ctx.fillRect(car.x - 8, car.y + 55, 8, 20);
-            ctx.fillRect(car.x + car.width, car.y + 55, 8, 20);
-            
-            // Faruri - galbene strălucitoare
-            ctx.fillStyle = '#f1c40f';
-            ctx.beginPath();
-            ctx.arc(car.x + 12, car.y + 5, 6, 0, Math.PI * 2);
-            ctx.arc(car.x + car.width - 12, car.y + 5, 6, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Stopuri - roșii
-            ctx.fillStyle = '#c0392b';
-            ctx.fillRect(car.x + 8, car.y + car.height - 8, 12, 6);
-            ctx.fillRect(car.x + car.width - 20, car.y + car.height - 8, 12, 6);
-            
-            // Detalii capotă
-            ctx.fillStyle = '#c0392b';
-            ctx.fillRect(car.x + 20, car.y + 30, 10, 20);
+    // === Stare joc ===
+    let gameRunning = false;
+    let score = 0;
+    let speed = 2;
+    let animationId;
+    
+    // === Mașina jucătorului ===
+    const car = {
+      x: canvas.width / 2 - 20,
+      y: canvas.height - 70,
+      width: 40,
+      height: 60,
+      speed: 5,
+      color: '#4fc3f7'
+    };
+    
+    // === Obstacole ===
+    let obstacles = [];
+    const obstacleColors = ['#ff7043', '#66bb6a', '#ffa726', '#ab47bc'];
+    
+    // === Controale ===
+    const keys = { left: false, right: false };
+    
+    // === Evenimente tastatură ===
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') keys.left = true;
+      if (e.key === 'ArrowRight') keys.right = true;
+    });
+    
+    window.addEventListener('keyup', (e) => {
+      if (e.key === 'ArrowLeft') keys.left = false;
+      if (e.key === 'ArrowRight') keys.right = false;
+    });
+    
+    // === Controale touch/mouse pe butoane ===
+    function addTouch(btn, key) {
+      const start = (e) => { e.preventDefault(); keys[key] = true; };
+      const end = (e) => { e.preventDefault(); keys[key] = false; };
+      btn.addEventListener('touchstart', start, {passive: false});
+      btn.addEventListener('touchend', end);
+      btn.addEventListener('mousedown', start);
+      btn.addEventListener('mouseup', end);
+      btn.addEventListener('mouseleave', end);
+    }
+    addTouch(leftBtn, 'left');
+    addTouch(rightBtn, 'right');
+    
+    // === Buton ieșire ===
+    exitBtn.addEventListener('click', () => {
+      if (gameRunning) {
+        cancelAnimationFrame(animationId);
+        gameRunning = false;
+      }
+      startScreen.classList.remove('hidden');
+      gameOverScreen.classList.add('hidden');
+      score = 0;
+      scoreEl.textContent = score;
+      obstacles = [];
+    });
+    
+    // === Pornire joc ===
+    function startGame() {
+      startScreen.classList.add('hidden');
+      gameOverScreen.classList.add('hidden');
+      score = 0;
+      speed = 2;
+      scoreEl.textContent = score;
+      speedEl.textContent = speed;
+      car.x = canvas.width / 2 - 20;
+      obstacles = [];
+      gameRunning = true;
+      gameLoop();
+    }
+    
+    startBtn.addEventListener('click', startGame);
+    restartBtn.addEventListener('click', startGame);
+    
+    // === Generare obstacole ===
+    function spawnObstacle() {
+      if (!gameRunning) return;
+      const width = 35 + Math.random() * 25;
+      const obstacle = {
+        x: Math.random() * (canvas.width - width),
+        y: -60,
+        width: width,
+        height: 40,
+        color: obstacleColors[Math.floor(Math.random() * obstacleColors.length)],
+        passed: false
+      };
+      obstacles.push(obstacle);
+      
+      // Următorul obstacol între 800-1500ms
+      const nextSpawn = Math.max(400, 1500 - speed * 200);
+      setTimeout(spawnObstacle, nextSpawn + Math.random() * 700);
+    }
+    
+    // === Coliziune ===
+    function checkCollision(a, b) {
+      return a.x < b.x + b.width &&
+             a.x + a.width > b.x &&
+             a.y < b.y + b.height &&
+             a.y + a.height > b.y;
+    }
+    
+    // === Desenare ===
+    function drawCar() {
+      // Corp mașină
+      ctx.fillStyle = car.color;
+      ctx.fillRect(car.x, car.y, car.width, car.height);
+      
+      // Geamuri
+      ctx.fillStyle = '#1a237e';
+      ctx.fillRect(car.x + 5, car.y + 10, car.width - 10, 15);
+      
+      // Roți
+      ctx.fillStyle = '#212121';
+      ctx.fillRect(car.x - 3, car.y + 10, 6, 12);
+      ctx.fillRect(car.x + car.width - 3, car.y + 10, 6, 12);
+      ctx.fillRect(car.x - 3, car.y + 38, 6, 12);
+      ctx.fillRect(car.x + car.width - 3, car.y + 38, 6, 12);
+      
+      // Faruri
+      ctx.fillStyle = '#ffeb3b';
+      ctx.fillRect(car.x + 5, car.y, 8, 5);
+      ctx.fillRect(car.x + car.width - 13, car.y, 8, 5);
+    }
+    
+    function drawObstacle(obs) {
+      ctx.fillStyle = obs.color;
+      ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+      
+      // Detalii obstacol
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.fillRect(obs.x + 5, obs.y + 5, obs.width - 10, obs.height - 10);
+    }
+    
+    function drawRoad() {
+      // Linii drum
+      ctx.setLineDash([20, 15]);
+      ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(canvas.width / 2, 0);
+      ctx.lineTo(canvas.width / 2, canvas.height);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    
+    // === Actualizare logică ===
+    function update() {
+      // Mișcare mașină
+      if (keys.left && car.x > 10) car.x -= car.speed;
+      if (keys.right && car.x < canvas.width - car.width - 10) car.x += car.speed;
+      
+      // Actualizare obstacole
+      for (let i = obstacles.length - 1; i >= 0; i--) {
+        const obs = obstacles[i];
+        obs.y += speed;
+        
+        // Scor când obstacolul este evitat
+        if (!obs.passed && obs.y > car.y + car.height) {
+          obs.passed = true;
+          score = Math.min(100, score + 1);
+          scoreEl.textContent = score;
+          
+          // Creștere viteză la fiecare 10 puncte
+          if (score % 10 === 0 && speed < 6) {
+            speed += 0.5;
+            speedEl.textContent = speed.toFixed(1);
+          }
         }
-
-        function createObstacle() {
-            const width = Math.random() * 60 + 50;
-            const x = Math.random() * (canvas.width - width - 50) + 25;
-            const colors = ['#3498db', '#9b59b6', '#27ae60', '#f39c12', '#16a085', '#e67e22'];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            
-            obstacles.push({
-                x: x,
-                y: -60,
-                width: width,
-                height: 50,
-                color: color,
-                speed: speed
-            });
+        
+        // Coliziune
+        if (checkCollision(car, obs)) {
+          score = Math.max(0, score - 5);
+          scoreEl.textContent = score;
+          endGame();
+          return;
         }
-
-        function drawObstacles() {
-            obstacles.forEach(obstacle => {
-                // Corp obstacol
-                ctx.fillStyle = obstacle.color;
-                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-                
-                // Bordură
-                ctx.strokeStyle = '#000';
-                ctx.lineWidth = 3;
-                ctx.strokeRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-                
-                // Detalii
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-                ctx.fillRect(obstacle.x + 8, obstacle.y + 8, obstacle.width - 16, obstacle.height - 16);
-                
-                // X pe obstacol
-                ctx.strokeStyle = '#000';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(obstacle.x + 15, obstacle.y + 15);
-                ctx.lineTo(obstacle.x + obstacle.width - 15, obstacle.y + obstacle.height - 15);
-                ctx.moveTo(obstacle.x + obstacle.width - 15, obstacle.y + 15);
-                ctx.lineTo(obstacle.x + 15, obstacle.y + obstacle.height - 15);
-                ctx.stroke();
-            });
+        
+        // Eliminarea obstacolelor ieșite din ecran
+        if (obs.y > canvas.height) {
+          obstacles.splice(i, 1);
         }
-
-        function drawRoad() {
-            // Asfalt
-            ctx.fillStyle = '#34495e';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Linii laterale - galbene
-            ctx.fillStyle = '#f1c40f';
-            ctx.fillRect(10, 0, 15, canvas.height);
-            ctx.fillRect(canvas.width - 25, 0, 15, canvas.height);
-            
-            // Borduri laterale - roșu și alb
-            const stripeHeight = 30;
-            for (let i = -stripeHeight; i < canvas.height + stripeHeight; i += stripeHeight * 2) {
-                ctx.fillStyle = '#e74c3c';
-                ctx.fillRect(0, i + roadOffset % (stripeHeight * 2), 10, stripeHeight);
-                ctx.fillRect(canvas.width - 10, i + roadOffset % (stripeHeight * 2), 10, stripeHeight);
-                
-                ctx.fillStyle = '#fff';
-                ctx.fillRect(0, i + stripeHeight + roadOffset % (stripeHeight * 2), 10, stripeHeight);
-                ctx.fillRect(canvas.width - 10, i + stripeHeight + roadOffset % (stripeHeight * 2), 10, stripeHeight);
-            }
-            
-            // Linie mediană - albă punctată
-            ctx.fillStyle = '#fff';
-            const dashHeight = 40;
-            const gapHeight = 30;
-            for (let i = -dashHeight; i < canvas.height + dashHeight; i += dashHeight + gapHeight) {
-                ctx.fillRect(canvas.width / 2 - 4, i + roadOffset % (dashHeight + gapHeight), 8, dashHeight);
-            }
-            
-            roadOffset += speed;
-        }
-
-        function checkCollision() {
-            for (let obstacle of obstacles) {
-                if (
-                    car.x < obstacle.x + obstacle.width &&
-                    car.x + car.width > obstacle.x &&
-                    car.y < obstacle.y + obstacle.height &&
-                    car.y + car.height > obstacle.y
-                ) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        function update() {
-            if (!gameRunning) return;
-
-            // Mișcare mașină
-            if (keys.left && car.x > 30) {
-                car.x -= car.speed;
-            }
-            if (keys.right && car.x < canvas.width - car.width - 30) {
-                car.x += car.speed;
-            }
-
-            // Creare obstacole
-            if (Math.random() < 0.025) {
-                createObstacle();
-            }
-
-            // Actualizare obstacole
-            obstacles.forEach((obstacle, index) => {
-                obstacle.y += obstacle.speed;
-                
-                if (obstacle.y > canvas.height) {
-                    obstacles.splice(index, 1);
-                    score += 10;
-                    scoreElement.textContent = score;
-                    
-                    if (score % 100 === 0) {
-                        speed += 0.5;
-                    }
-                }
-            });
-
-            // Verificare coliziune
-            if (checkCollision()) {
-                lives--;
-                livesElement.textContent = lives + ' ❤️';
-                obstacles = [];
-                
-                // Efect vizual coliziune
-                canvas.style.opacity = '0.5';
-                setTimeout(() => {
-                    canvas.style.opacity = '1';
-                }, 200);
-                
-                if (lives <= 0) {
-                    endGame();
-                }
-            }
-
-            // Desenare
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawRoad();
-            drawObstacles();
-            drawCar();
-
-            animationId = requestAnimationFrame(update);
-        }
-
-        function initGame() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawRoad();
-            drawCar();
-        }
-
-        function startGame() {
-            gameRunning = true;
-            score = 0;
-            lives = 3;
-            speed = 3;
-            obstacles = [];
-            car.x = canvas.width / 2 - 25;
-            roadOffset = 0;
-            
-            scoreElement.textContent = score;
-            livesElement.textContent = lives + ' ❤️';
-            gameOverDiv.style.display = 'none';
-            startMessage.style.display = 'none';
-            startBtn.textContent = '🎮 Joc în Desfășurare';
-            startBtn.disabled = true;
-            
-            update();
-        }
-
-        function endGame() {
-            gameRunning = false;
-            cancelAnimationFrame(animationId);
-            finalScoreElement.textContent = score;
-            gameOverDiv.style.display = 'block';
-            startBtn.textContent = '🎮 Start Joc';
-            startBtn.disabled = false;
-        }
-
-        // Tastatură
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-                keys.left = true;
-            }
-            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-                keys.right = true;
-            }
-            if (e.key === ' ' && !gameRunning) {
-                startGame();
-            }
-        });
-
-        document.addEventListener('keyup', (e) => {
-            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-                keys.left = false;
-            }
-            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-                keys.right = false;
-            }
-        });
-
-        // Butoane
-        startBtn.addEventListener('click', startGame);
-        restartBtn.addEventListener('click', startGame);
-
-        // Butoane mobile
-        function setupMobileBtn(btn, key) {
-            btn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                keys[key] = true;
-            });
-
-            btn.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                keys[key] = false;
-            });
-
-            btn.addEventListener('mousedown', () => {
-                keys[key] = true;
-            });
-
-            btn.addEventListener('mouseup', () => {
-                keys[key] = false;
-            });
-
-            btn.addEventListener('mouseleave', () => {
-                keys[key] = false;
-            });
-        }
-
-        setupMobileBtn(leftBtn, 'left');
-        setupMobileBtn(rightBtn, 'right');
-
-        // Inițializare
-        initGame();
-    </script>
+      }
+    }
+    
+    // === Sfârșit joc ===
+    function endGame() {
+      gameRunning = false;
+      cancelAnimationFrame(animationId);
+      finalScoreEl.textContent = score;
+      
+      if (score >= 80) {
+        messageEl.textContent = '🌟 Excelent! Ești un pilot grozav!';
+      } else if (score >= 50) {
+        messageEl.textContent = '👍 Bun! Mai exersează pentru scor mai mare!';
+      } else {
+        messageEl.textContent = '💪 Încearcă din nou! Poți mai mult!';
+      }
+      
+      gameOverScreen.classList.remove('hidden');
+    }
+    
+    // === Buclă principală ===
+    function gameLoop() {
+      if (!gameRunning) return;
+      
+      // Curățare canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Desenare elemente
+      drawRoad();
+      obstacles.forEach(drawObstacle);
+      drawCar();
+      
+      // Actualizare logică
+      update();
+      
+      // Continuare buclă
+      animationId = requestAnimationFrame(gameLoop);
+    }
+    
+    // === Inițializare ===
+    spawnObstacle();
+    
+    // === Prevenire scroll la touch ===
+    document.addEventListener('touchmove', (e) => {
+      if (gameRunning) e.preventDefault();
+    }, { passive: false });
+  </script>
 </body>
 </html>
-
