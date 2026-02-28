@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -41,7 +42,7 @@
       top: 0;
       left: 0;
       right: 0;
-      bottom: 240px;
+      bottom: 180px;
       display: flex;
       z-index: 5;
     }
@@ -63,119 +64,43 @@
       opacity: 0.3;
     }
     
-    /* === SPEED BUTTONS === */
-    #speedButtons {
+    /* === TURBO BUTTON === */
+    #turboButton {
       position: absolute;
-      bottom: 150px;
+      bottom: 100px;
       left: 50%;
       transform: translateX(-50%);
-      display: flex;
-      gap: 8px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 5px solid #ff0040;
+      background: linear-gradient(145deg, #ff0040, #cc0033);
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
       z-index: 15;
-      flex-wrap: wrap;
-      justify-content: center;
-      max-width: 380px;
-    }
-    .speedBtn {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      border: 3px solid;
+      box-shadow: 0 5px 25px rgba(255, 0, 64, 0.6);
+      transition: all 0.1s;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
-      font-weight: bold;
-      color: white;
-      cursor: pointer;
-      transition: all 0.1s;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-      position: relative;
-      overflow: hidden;
-    }
-    .speedBtn:active, .speedBtn.active {
-      transform: scale(0.92);
-    }
-    .speedBtn.holding {
-      animation: holdingPulse 0.3s infinite;
-    }
-    @keyframes holdingPulse {
-      0%, 100% { transform: scale(0.92); box-shadow: 0 0 20px currentColor, 0 0 40px currentColor; }
-      50% { transform: scale(0.95); box-shadow: 0 0 30px currentColor, 0 0 60px currentColor; }
-    }
-    .speedBtn span:first-child {
-      font-size: 14px;
-      margin-bottom: 1px;
-    }
-    .speedBtn span:last-child {
-      font-size: 9px;
-      opacity: 0.9;
-    }
-    /* Turbo fill effect */
-    .speedBtn::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 0%;
-      background: rgba(255,255,255,0.4);
-      transition: height 0.1s;
-    }
-    .speedBtn.turbo::after {
-      height: var(--turbo-fill, 0%);
-    }
-    #speed50 { background: linear-gradient(180deg, #4488ff, #0044aa); border-color: #66aaff; }
-    #speed80 { background: linear-gradient(180deg, #44ff88, #00aa44); border-color: #66ffaa; }
-    #speed120 { background: linear-gradient(180deg, #88ff44, #44aa00); border-color: #aaff66; }
-    #speed150 { background: linear-gradient(180deg, #ffdd44, #aa8800); border-color: #ffee66; }
-    #speed180 { background: linear-gradient(180deg, #ffaa44, #aa5500); border-color: #ffcc66; }
-    #speed220 { background: linear-gradient(180deg, #ff6644, #aa3300); border-color: #ff8866; }
-    #speed250 { background: linear-gradient(180deg, #ff4444, #aa0000); border-color: #ff6666; }
-    
-    /* === TURBO INDICATOR === */
-    #turboIndicator {
-      position: absolute;
-      bottom: 115px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.8);
-      border: 3px solid #ff0040;
-      border-radius: 20px;
-      padding: 8px 20px;
-      z-index: 15;
-      display: none;
-    }
-    #turboIndicator.active {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      animation: turboGlow 0.2s infinite;
-    }
-    @keyframes turboGlow {
-      0%, 100% { box-shadow: 0 0 20px #ff0040; }
-      50% { box-shadow: 0 0 40px #ff0040, 0 0 60px #ff0040; }
-    }
-    #turboText {
-      color: #ff0040;
-      font-size: 16px;
-      font-weight: bold;
       text-transform: uppercase;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
     }
-    #turboBar {
-      width: 100px;
-      height: 12px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 6px;
-      overflow: hidden;
+    #turboButton:active, #turboButton.active {
+      transform: translateX(-50%) scale(0.95);
+      box-shadow: 0 0 30px #ff0040, 0 0 60px #ff0040;
+      animation: turboPulse 0.2s infinite;
     }
-    #turboBarFill {
-      height: 100%;
-      background: linear-gradient(90deg, #ff0040, #ff6666, #ffaaaa);
-      width: 0%;
-      transition: width 0.05s;
+    @keyframes turboPulse {
+      0%, 100% { box-shadow: 0 0 30px #ff0040, 0 0 60px #ff0040; }
+      50% { box-shadow: 0 0 50px #ff0040, 0 0 80px #ff0040; }
+    }
+    #turboButton span:first-child {
+      font-size: 35px;
+      margin-bottom: 5px;
     }
     
     /* === VOLAN === */
@@ -379,7 +304,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: calc(100% - 220px);
+      height: calc(100% - 160px);
       background: rgba(10, 10, 10, 0.97);
       display: flex;
       flex-direction: column;
@@ -411,14 +336,14 @@
     }
     .info-text {
       margin: 8px 0;
-      font-size: 13px;
+      font-size: 14px;
       max-width: 300px;
       color: #00ff88;
       font-weight: bold;
       line-height: 1.4;
     }
     .emoji-row {
-      font-size: 28px;
+      font-size: 30px;
       margin: 6px 0;
     }
     .stat-row {
@@ -430,7 +355,7 @@
       padding: 10px 15px;
       background: rgba(255, 0, 64, 0.2);
       border-radius: 10px;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: bold;
       color: #ff0040;
       border: 2px solid #ff0040;
@@ -443,7 +368,7 @@
     .turbo-info {
       background: rgba(255, 0, 64, 0.3);
       border: 2px solid #ff0040;
-      padding: 10px 15px;
+      padding: 12px 18px;
       border-radius: 10px;
       margin: 10px 0;
     }
@@ -566,43 +491,11 @@
     <!-- POWER-UP INDICATOR -->
     <div id="powerUpIndicator"></div>
     
-    <!-- TURBO INDICATOR -->
-    <div id="turboIndicator">
-      <span id="turboText">🚀 TURBO</span>
-      <div id="turboBar"><div id="turboBarFill"></div></div>
-    </div>
-    
-    <!-- SPEED BUTTONS -->
-    <div id="speedButtons">
-      <button class="speedBtn" id="speed50" data-speed="50">
-        <span>🐢</span>
-        <span>50</span>
-      </button>
-      <button class="speedBtn" id="speed80" data-speed="80">
-        <span>🚶</span>
-        <span>80</span>
-      </button>
-      <button class="speedBtn" id="speed120" data-speed="120">
-        <span>🚗</span>
-        <span>120</span>
-      </button>
-      <button class="speedBtn" id="speed150" data-speed="150">
-        <span>🏎️</span>
-        <span>150</span>
-      </button>
-      <button class="speedBtn" id="speed180" data-speed="180">
-        <span>⚡</span>
-        <span>180</span>
-      </button>
-      <button class="speedBtn" id="speed220" data-speed="220">
-        <span>🔥</span>
-        <span>220</span>
-      </button>
-      <button class="speedBtn" id="speed250" data-speed="250">
-        <span>🚀</span>
-        <span>250</span>
-      </button>
-    </div>
+    <!-- TURBO BUTTON -->
+    <button id="turboButton">
+      <span>🚀</span>
+      <span>TURBO</span>
+    </button>
     
     <!-- VOLAN -->
     <div id="steeringWheel">
@@ -620,11 +513,11 @@
     <!-- ECRANE -->
     <div id="startScreen">
       <h1>🏎️ TURBO HOLD 🏎️</h1>
-      <p class="info-text">👦 Ține apăsat pentru TURBO!</p>
+      <p class="info-text">👦 Ține apăsat pentru viteză!</p>
       <div class="emoji-row">🖐️ Atinge STÂNGA sau DREAPTA!</div>
       <div class="emoji-row">🎮 Sau învârte VOLANUL!</div>
       <div class="turbo-info">
-        <p class="info-text" style="color: #ff6666;">⚡ ȚINE APĂSAT PE BUTON ⚡</p>
+        <p class="info-text" style="color: #ff6666;">⚡ ȚINE APĂSAT BUTONUL TURBO ⚡</p>
         <p class="info-text">Viteza crește cât ții apăsat!</p>
         <p class="info-text">Max: <span style="color: #ff0040;">350 km/h</span></p>
       </div>
@@ -675,8 +568,7 @@
     const speedValue = document.getElementById('speedValue');
     const speedBarFill = document.getElementById('speedBarFill');
     const turboMode = document.getElementById('turboMode');
-    const turboIndicator = document.getElementById('turboIndicator');
-    const turboBarFill = document.getElementById('turboBarFill');
+    const turboButton = document.getElementById('turboButton');
     const finalScoreEl = document.getElementById('finalScore');
     const finalSpeedEl = document.getElementById('finalSpeed');
     const personalBestEl = document.getElementById('personalBest');
@@ -690,7 +582,6 @@
     const wheelRotation = document.getElementById('wheelRotation');
     const touchLeft = document.getElementById('touchLeft');
     const touchRight = document.getElementById('touchRight');
-    const speedButtons = document.querySelectorAll('.speedBtn');
     
     const startBtn = document.getElementById('startBtn');
     const restartBtn = document.getElementById('restartBtn');
@@ -811,20 +702,15 @@
     let score = 0;
     let currentSpeedKmh = 50;
     let targetSpeedKmh = 50;
-    let baseSpeedKmh = 50;
     const MIN_SPEED = 50;
-    const MAX_SPEED = 250;
     const TURBO_MAX_SPEED = 350;
-    const SPEED_OPTIONS = [50, 80, 120, 150, 180, 220, 250];
     let level = 1;
     let animationId;
     let highScore = localStorage.getItem('carGameHighScore') || 0;
     
     // === TURBO ===
     let isTurbo = false;
-    let turboLevel = 0;
     let turboInterval = null;
-    let activeButton = null;
     
     // === MAȘINA ===
     const car = {
@@ -904,62 +790,22 @@
       wheelRotation.style.transform = 'rotate(0deg)';
     });
     
-    // === SPEED BUTTONS WITH HOLD ===
-    speedButtons.forEach(btn => {
-      const startHold = (e) => {
-        e.preventDefault();
-        if (!gameRunning || gamePaused) return;
-        
-        const speed = parseInt(btn.getAttribute('data-speed'));
-        baseSpeedKmh = speed;
-        targetSpeedKmh = speed;
-        
-        // Set active button
-        speedButtons.forEach(b => {
-          b.classList.remove('active', 'holding');
-          b.style.setProperty('--turbo-fill', '0%');
-        });
-        btn.classList.add('active', 'holding');
-        activeButton = btn;
-        
-        // Start turbo build-up
-        startTurboBuild(btn);
-      };
+    // === TURBO BUTTON ===
+    function startTurbo(e) {
+      e.preventDefault();
+      if (!gameRunning || gamePaused || isTurbo) return;
       
-      const endHold = (e) => {
-        e.preventDefault();
-        stopTurboBuild();
-      };
-      
-      btn.addEventListener('mousedown', startHold);
-      btn.addEventListener('mouseup', endHold);
-      btn.addEventListener('mouseleave', endHold);
-      
-      btn.addEventListener('touchstart', startHold, { passive: false });
-      btn.addEventListener('touchend', endHold);
-    });
-    
-    function startTurboBuild(btn) {
       isTurbo = true;
-      turboLevel = 0;
-      turboIndicator.classList.add('active');
+      turboButton.classList.add('active');
       turboMode.classList.add('active');
       document.getElementById('gameContainer').classList.add('shaking');
       playSound('turboStart');
       
-      // Increase speed while holding
       turboInterval = setInterval(() => {
         if (targetSpeedKmh < TURBO_MAX_SPEED) {
           targetSpeedKmh += 5;
-          turboLevel = Math.min(100, turboLevel + 5);
-          
-          // Update visual feedback
-          btn.style.setProperty('--turbo-fill', turboLevel + '%');
-          turboBarFill.style.width = turboLevel + '%';
-          
           updateEngineSound();
           
-          // Max turbo sound
           if (targetSpeedKmh >= TURBO_MAX_SPEED) {
             playSound('turboMax');
           }
@@ -967,26 +813,25 @@
       }, 50);
     }
     
-    function stopTurboBuild() {
+    function stopTurbo(e) {
+      e.preventDefault();
       if (turboInterval) {
         clearInterval(turboInterval);
         turboInterval = null;
       }
       
-      if (activeButton) {
-        activeButton.classList.remove('holding');
-        activeButton.style.setProperty('--turbo-fill', '0%');
-      }
-      
-      // Gradually return to base speed
       isTurbo = false;
-      turboIndicator.classList.remove('active');
+      turboButton.classList.remove('active');
       turboMode.classList.remove('active');
       document.getElementById('gameContainer').classList.remove('shaking');
-      targetSpeedKmh = baseSpeedKmh;
-      turboLevel = 0;
-      turboBarFill.style.width = '0%';
+      targetSpeedKmh = MIN_SPEED;
     }
+    
+    turboButton.addEventListener('mousedown', startTurbo);
+    turboButton.addEventListener('mouseup', stopTurbo);
+    turboButton.addEventListener('mouseleave', stopTurbo);
+    turboButton.addEventListener('touchstart', startTurbo, { passive: false });
+    turboButton.addEventListener('touchend', stopTurbo);
     
     // === ZONE TOUCH ===
     function handleTouchLeft(e) {
@@ -1035,21 +880,10 @@
         steeringAngle = 1;
         wheelRotation.style.transform = `rotate(${maxSteerAngle}deg)`;
       }
-      // Speed buttons with number keys
-      if (e.key === '1') setBaseSpeed(50);
-      if (e.key === '2') setBaseSpeed(80);
-      if (e.key === '3') setBaseSpeed(120);
-      if (e.key === '4') setBaseSpeed(150);
-      if (e.key === '5') setBaseSpeed(180);
-      if (e.key === '6') setBaseSpeed(220);
-      if (e.key === '7') setBaseSpeed(250);
-      
-      // Hold SPACE for turbo
       if (e.key === ' ' && gameRunning && !gamePaused && !keyboardTurbo) {
         keyboardTurbo = true;
-        startTurboBuild(document.getElementById('speed250'));
+        startTurbo(e);
       }
-      
       if (e.key === 'Escape' && gameRunning) togglePause();
     });
     
@@ -1060,22 +894,9 @@
       }
       if (e.key === ' ' && keyboardTurbo) {
         keyboardTurbo = false;
-        stopTurboBuild();
+        stopTurbo(e);
       }
     });
-    
-    function setBaseSpeed(speed) {
-      baseSpeedKmh = speed;
-      targetSpeedKmh = speed;
-      
-      speedButtons.forEach(b => {
-        b.classList.remove('active', 'holding');
-        b.style.setProperty('--turbo-fill', '0%');
-        if (parseInt(b.getAttribute('data-speed')) === speed) {
-          b.classList.add('active');
-        }
-      });
-    }
     
     // === BUTOANE ===
     pauseBtn.addEventListener('click', () => {
@@ -1089,34 +910,24 @@
       updatePowerUpIndicator();
       steeringAngle = 0;
       wheelRotation.style.transform = 'rotate(0deg)';
-      currentSpeedKmh = 50;
-      targetSpeedKmh = 50;
-      baseSpeedKmh = 50;
+      currentSpeedKmh = MIN_SPEED;
+      targetSpeedKmh = MIN_SPEED;
       isTurbo = false;
-      turboLevel = 0;
       updateSpeedDisplay();
       
-      speedButtons.forEach(b => {
-        b.classList.remove('active', 'holding');
-        b.style.setProperty('--turbo-fill', '0%');
-      });
-      document.getElementById('speed50').classList.add('active');
-      
-      turboIndicator.classList.remove('active');
+      turboButton.classList.remove('active');
       turboMode.classList.remove('active');
       document.getElementById('gameContainer').classList.remove('shaking');
     }
     
     // === UPDATE SPEED ===
     function updateSpeed() {
-      // Smooth transition between speeds
       if (currentSpeedKmh < targetSpeedKmh) {
         currentSpeedKmh += isTurbo ? 3 : 2;
       } else if (currentSpeedKmh > targetSpeedKmh) {
         currentSpeedKmh -= 3;
       }
       
-      // Limit
       currentSpeedKmh = Math.max(MIN_SPEED, Math.min(TURBO_MAX_SPEED, currentSpeedKmh));
       
       updateSpeedDisplay();
@@ -1128,7 +939,6 @@
       const percentage = ((currentSpeedKmh - MIN_SPEED) / (TURBO_MAX_SPEED - MIN_SPEED)) * 100;
       speedBarFill.style.width = percentage + '%';
       
-      // Color based on speed
       if (currentSpeedKmh >= 300) {
         speedValue.style.color = '#ff0040';
         speedValue.style.textShadow = '0 0 20px #ff0040';
@@ -1156,9 +966,8 @@
       
       score = 0;
       level = 1;
-      currentSpeedKmh = 50;
-      targetSpeedKmh = 50;
-      baseSpeedKmh = 50;
+      currentSpeedKmh = MIN_SPEED;
+      targetSpeedKmh = MIN_SPEED;
       scoreValue.textContent = '0 / 50';
       updateSpeedDisplay();
       
@@ -1190,7 +999,7 @@
       gamePaused = !gamePaused;
       if (gamePaused) {
         cancelAnimationFrame(animationId);
-        stopTurboBuild();
+        stopTurbo({ preventDefault: () => {} });
         stopEngineSound();
         pauseScreen.classList.remove('hidden');
       } else {
@@ -1207,7 +1016,6 @@
       const now = Date.now();
       const gameSpeed = getGameSpeed();
       
-      // Obstacle rate based on speed
       const obstacleRate = 2000 - (currentSpeedKmh / TURBO_MAX_SPEED) * 1200;
       if (now - lastObstacleTime > obstacleRate) {
         spawnObstacle();
@@ -1277,7 +1085,7 @@
         case 'speed':
           targetSpeedKmh = TURBO_MAX_SPEED;
           setTimeout(() => {
-            targetSpeedKmh = baseSpeedKmh;
+            targetSpeedKmh = MIN_SPEED;
           }, 2500);
           break;
         case 'double':
@@ -1325,11 +1133,9 @@
       ctx.rotate(car.angle * Math.PI / 180);
       ctx.translate(-car.width/2, -car.height/2);
       
-      // Umbră
       ctx.fillStyle = 'rgba(0,0,0,0.5)';
       ctx.fillRect(5, 5, car.width, car.height);
       
-      // Corp mașină
       ctx.fillStyle = car.color;
       ctx.beginPath();
       ctx.moveTo(12, 0);
@@ -1343,7 +1149,6 @@
       ctx.closePath();
       ctx.fill();
       
-      // Dungi
       ctx.fillStyle = '#0a0a0a';
       ctx.fillRect(car.width/2 - 10, 0, 20, car.height);
       
@@ -1351,7 +1156,6 @@
       ctx.lineWidth = 3;
       ctx.strokeRect(car.width/2 - 10, 0, 20, car.height);
       
-      // Geam
       ctx.fillStyle = '#00ff88';
       ctx.beginPath();
       ctx.moveTo(18, 28);
@@ -1361,18 +1165,15 @@
       ctx.closePath();
       ctx.fill();
       
-      // Aripioară
       ctx.fillStyle = '#0a0a0a';
       ctx.fillRect(8, car.height - 18, car.width - 16, 15);
       
-      // Roți
       ctx.fillStyle = '#0a0a0a';
       ctx.fillRect(-10, 20, 14, 25);
       ctx.fillRect(car.width - 4, 20, 14, 25);
       ctx.fillRect(-10, car.height - 28, 14, 25);
       ctx.fillRect(car.width - 4, car.height - 28, 14, 25);
       
-      // Detalii roți
       ctx.fillStyle = '#ff0040';
       ctx.beginPath();
       ctx.arc(-2, 32, 6, 0, Math.PI * 2);
@@ -1381,14 +1182,12 @@
       ctx.arc(car.width + 2, car.height - 15, 6, 0, Math.PI * 2);
       ctx.fill();
       
-      // Faruri
       ctx.fillStyle = '#ffd700';
       ctx.beginPath();
       ctx.ellipse(18, 4, 10, 6, 0, 0, Math.PI * 2);
       ctx.ellipse(car.width - 18, 4, 10, 6, 0, 0, Math.PI * 2);
       ctx.fill();
       
-      // Flame la viteză mare
       if (currentSpeedKmh > 150) {
         const flameIntensity = (currentSpeedKmh - 150) / 200;
         const flameCount = 5 + Math.floor(flameIntensity * 5);
@@ -1405,7 +1204,6 @@
         }
       }
       
-      // Turbo effect
       if (isTurbo) {
         ctx.strokeStyle = `rgba(255, 0, 64, ${0.5 + Math.random() * 0.5})`;
         ctx.lineWidth = 3;
@@ -1413,7 +1211,6 @@
         ctx.arc(car.width/2, car.height/2, car.width * 0.9, 0, Math.PI * 2);
         ctx.stroke();
         
-        // Spark particles
         for (let i = 0; i < 5; i++) {
           const angle = Math.random() * Math.PI * 2;
           const px = car.x + car.width/2 + Math.cos(angle) * car.width * 0.8;
@@ -1425,7 +1222,6 @@
         }
       }
       
-      // Scut
       if (car.shield) {
         ctx.strokeStyle = 'rgba(0, 217, 255, 0.9)';
         ctx.lineWidth = 4;
@@ -1637,7 +1433,7 @@
       gameRunning = false;
       cancelAnimationFrame(animationId);
       stopEngineSound();
-      stopTurboBuild();
+      stopTurbo({ preventDefault: () => {} });
       
       finalScoreEl.textContent = score;
       finalSpeedEl.textContent = Math.round(currentSpeedKmh);
@@ -1692,6 +1488,7 @@
   </script>
 </body>
 </html>
+
 
 
 
