@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ro">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>🏎️ Controle Complete</title>
+  <title>🏎️ Viteze Multiple</title>
   <style>
     * {
       margin: 0;
@@ -42,7 +41,7 @@
       top: 0;
       left: 0;
       right: 0;
-      bottom: 200px;
+      bottom: 220px;
       display: flex;
       z-index: 5;
     }
@@ -64,49 +63,54 @@
       opacity: 0.3;
     }
     
-    /* === PEDALE === */
-    #pedals {
+    /* === SPEED BUTTONS === */
+    #speedButtons {
       position: absolute;
-      bottom: 80px;
+      bottom: 140px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
-      gap: 30px;
+      gap: 8px;
       z-index: 15;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 380px;
     }
-    .pedal {
+    .speedBtn {
       width: 55px;
-      height: 90px;
-      border-radius: 10px;
-      border: 4px solid;
+      height: 55px;
+      border-radius: 12px;
+      border: 3px solid;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
+      font-size: 14px;
       font-weight: bold;
       color: white;
       cursor: pointer;
-      transition: all 0.1s;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+      transition: all 0.15s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
-    .pedal:active, .pedal.pressed {
-      transform: scale(0.95) translateY(5px);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    .speedBtn:active, .speedBtn.active {
+      transform: scale(0.9);
+      box-shadow: 0 0 20px currentColor;
     }
-    #brakePedal {
-      background: linear-gradient(180deg, #ff4444, #cc0000);
-      border-color: #ff6666;
+    .speedBtn span:first-child {
+      font-size: 16px;
+      margin-bottom: 2px;
     }
-    #gasPedal {
-      background: linear-gradient(180deg, #44ff44, #00cc00);
-      border-color: #66ff66;
+    .speedBtn span:last-child {
+      font-size: 10px;
+      opacity: 0.9;
     }
-    .pedal-label {
-      font-size: 11px;
-      margin-top: 5px;
-      text-transform: uppercase;
-    }
+    #speed50 { background: linear-gradient(180deg, #4488ff, #0044aa); border-color: #66aaff; }
+    #speed80 { background: linear-gradient(180deg, #44ff88, #00aa44); border-color: #66ffaa; }
+    #speed120 { background: linear-gradient(180deg, #88ff44, #44aa00); border-color: #aaff66; }
+    #speed150 { background: linear-gradient(180deg, #ffdd44, #aa8800); border-color: #ffee66; }
+    #speed180 { background: linear-gradient(180deg, #ffaa44, #aa5500); border-color: #ffcc66; }
+    #speed220 { background: linear-gradient(180deg, #ff6644, #aa3300); border-color: #ff8866; }
+    #speed250 { background: linear-gradient(180deg, #ff4444, #aa0000); border-color: #ff6666; }
     
     /* === VOLAN === */
     #steeringWheel {
@@ -202,8 +206,8 @@
       position: absolute;
       top: 60px;
       right: 15px;
-      width: 85px;
-      height: 85px;
+      width: 90px;
+      height: 90px;
       background: rgba(0, 0, 0, 0.85);
       border: 4px solid #00ff88;
       border-radius: 50%;
@@ -215,7 +219,7 @@
       box-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
     }
     #speedValue {
-      font-size: 28px;
+      font-size: 30px;
       color: #00ff88;
       font-weight: bold;
       text-shadow: 0 0 15px #00ff88;
@@ -226,20 +230,20 @@
     }
     #speedBar {
       position: absolute;
-      bottom: 8px;
+      bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
-      width: 60px;
-      height: 6px;
+      width: 65px;
+      height: 7px;
       background: rgba(255,255,255,0.2);
-      border-radius: 3px;
+      border-radius: 4px;
       overflow: hidden;
     }
     #speedBarFill {
       height: 100%;
-      background: linear-gradient(90deg, #00ff88, #ffd700, #ff0040);
-      width: 50%;
-      transition: width 0.1s;
+      background: linear-gradient(90deg, #00ff88, #88ff44, #ffdd44, #ffaa44, #ff4444);
+      width: 20%;
+      transition: width 0.2s;
     }
     
     /* === SCORE === */
@@ -295,7 +299,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: calc(100% - 180px);
+      height: calc(100% - 200px);
       background: rgba(10, 10, 10, 0.97);
       display: flex;
       flex-direction: column;
@@ -308,8 +312,8 @@
       z-index: 30;
     }
     #startScreen h1 {
-      font-size: 36px;
-      margin-bottom: 12px;
+      font-size: 34px;
+      margin-bottom: 10px;
       color: #ff0040;
       text-shadow: 0 0 25px #ff0040;
       letter-spacing: 3px;
@@ -320,33 +324,33 @@
       50% { text-shadow: 0 0 40px #ff0040, 0 0 60px #ff0040; }
     }
     #gameOver h2, #levelUp h2 {
-      font-size: 32px;
-      margin-bottom: 15px;
+      font-size: 30px;
+      margin-bottom: 12px;
       color: #ff0040;
       text-shadow: 0 0 20px #ff0040;
     }
     .info-text {
-      margin: 10px 0;
-      font-size: 15px;
+      margin: 8px 0;
+      font-size: 14px;
       max-width: 300px;
       color: #00ff88;
       font-weight: bold;
       line-height: 1.4;
     }
     .emoji-row {
-      font-size: 32px;
-      margin: 8px 0;
+      font-size: 30px;
+      margin: 6px 0;
     }
     .stat-row {
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 10px;
-      margin: 8px 0;
-      padding: 12px 18px;
+      margin: 6px 0;
+      padding: 10px 15px;
       background: rgba(255, 0, 64, 0.2);
       border-radius: 10px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: bold;
       color: #ff0040;
       border: 2px solid #ff0040;
@@ -356,26 +360,29 @@
       color: #00ff88;
       border-color: #00ff88;
     }
-    .control-info {
+    .speed-options {
       display: flex;
-      gap: 15px;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
       margin: 10px 0;
     }
-    .control-box {
+    .speed-option {
       background: rgba(255,255,255,0.1);
-      padding: 10px 15px;
-      border-radius: 10px;
-      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
       color: #fff;
+      border: 2px solid transparent;
     }
     .actionBtn {
-      margin-top: 20px;
+      margin-top: 15px;
       background: linear-gradient(145deg, #ff0040, #cc0033);
       color: white;
       border: none;
-      padding: 18px 45px;
+      padding: 16px 40px;
       border-radius: 30px;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: bold;
       font-family: 'Arial Black', sans-serif;
       cursor: pointer;
@@ -417,20 +424,6 @@
     .speed { background: linear-gradient(145deg, #ff6666, #ff0040); }
     .double { background: linear-gradient(145deg, #ffd700, #ffaa00); }
     
-    /* === SPEED LINES === */
-    .speed-line {
-      position: absolute;
-      width: 4px;
-      height: 80px;
-      background: linear-gradient(180deg, transparent, #ff0040, transparent);
-      animation: speedFall 0.25s linear infinite;
-    }
-    @keyframes speedFall {
-      0% { transform: translateY(-100px); opacity: 0; }
-      50% { opacity: 1; }
-      100% { transform: translateY(550px); opacity: 0; }
-    }
-    
     /* === VIBRAȚIE === */
     @keyframes vibrate {
       0%, 100% { transform: translateX(-50%) rotate(0deg); }
@@ -455,13 +448,13 @@
       100% { transform: scale(2.5); opacity: 0; }
     }
     
-    /* === PEDAL PRESS EFFECT === */
-    @keyframes pedalGlow {
-      0%, 100% { box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
-      50% { box-shadow: 0 5px 30px currentColor; }
+    /* === SPEED BUTTON GLOW === */
+    @keyframes btnPulse {
+      0%, 100% { box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+      50% { box-shadow: 0 4px 25px currentColor; }
     }
-    .pedal.pressed {
-      animation: pedalGlow 0.3s infinite;
+    .speedBtn.active {
+      animation: btnPulse 0.5s infinite;
     }
   </style>
 </head>
@@ -498,16 +491,36 @@
     <!-- POWER-UP INDICATOR -->
     <div id="powerUpIndicator"></div>
     
-    <!-- PEDALE -->
-    <div id="pedals">
-      <div class="pedal" id="brakePedal">
-        <span>🛑</span>
-        <span class="pedal-label">ÎNCET</span>
-      </div>
-      <div class="pedal" id="gasPedal">
+    <!-- SPEED BUTTONS -->
+    <div id="speedButtons">
+      <button class="speedBtn" id="speed50" data-speed="50">
+        <span>🐢</span>
+        <span>50</span>
+      </button>
+      <button class="speedBtn" id="speed80" data-speed="80">
+        <span>🚶</span>
+        <span>80</span>
+      </button>
+      <button class="speedBtn" id="speed120" data-speed="120">
+        <span>🚗</span>
+        <span>120</span>
+      </button>
+      <button class="speedBtn" id="speed150" data-speed="150">
+        <span>🏎️</span>
+        <span>150</span>
+      </button>
+      <button class="speedBtn" id="speed180" data-speed="180">
         <span>⚡</span>
-        <span class="pedal-label">REPEDE</span>
-      </div>
+        <span>180</span>
+      </button>
+      <button class="speedBtn" id="speed220" data-speed="220">
+        <span>🔥</span>
+        <span>220</span>
+      </button>
+      <button class="speedBtn" id="speed250" data-speed="250">
+        <span>🚀</span>
+        <span>250</span>
+      </button>
     </div>
     
     <!-- VOLAN -->
@@ -525,15 +538,19 @@
     
     <!-- ECRANE -->
     <div id="startScreen">
-      <h1>🏎️ CONTROLE COMPLETE 🏎️</h1>
-      <p class="info-text">👦 Salut, pilotule!</p>
-      <div class="emoji-row">🖐️ Atinge STÂNGA sau DREAPTA pentru viraj!</div>
+      <h1>🏎️ VITEZE MULTIPLE 🏎️</h1>
+      <p class="info-text">👦 Alege viteza ta!</p>
+      <div class="emoji-row">🖐️ Atinge STÂNGA sau DREAPTA!</div>
       <div class="emoji-row">🎮 Sau învârte VOLANUL!</div>
-      <div class="control-info">
-        <div class="control-box" style="color: #ff6666;">🛑 FRÂNĂ<br/>Viteză mică</div>
-        <div class="control-box" style="color: #66ff66;">⚡ ACCELERAȚIE<br/>Viteză mare</div>
+      <div class="speed-options">
+        <div class="speed-option">🐢 50 km/h</div>
+        <div class="speed-option">🚶 80 km/h</div>
+        <div class="speed-option">🚗 120 km/h</div>
+        <div class="speed-option">🏎️ 150 km/h</div>
+        <div class="speed-option">⚡ 180 km/h</div>
+        <div class="speed-option">🔥 220 km/h</div>
+        <div class="speed-option">🚀 250 km/h</div>
       </div>
-      <div class="stat-row speed-stat">🚀 VITEZA: 50 - 250 km/h</div>
       <div class="stat-row">🟧 EVITĂ OBSTACOLELE!</div>
       <div class="stat-row">💥 DACĂ TE LOVEȘTI - PIERZI!</div>
       <div class="stat-row">⭐ ADUNĂ 50 DE PUNCTE!</div>
@@ -593,8 +610,7 @@
     const wheelRotation = document.getElementById('wheelRotation');
     const touchLeft = document.getElementById('touchLeft');
     const touchRight = document.getElementById('touchRight');
-    const brakePedal = document.getElementById('brakePedal');
-    const gasPedal = document.getElementById('gasPedal');
+    const speedButtons = document.querySelectorAll('.speedBtn');
     
     const startBtn = document.getElementById('startBtn');
     const restartBtn = document.getElementById('restartBtn');
@@ -660,13 +676,12 @@
               }, i * 100);
             });
             break;
-          case 'engine':
-            // Sunet motor care variază cu viteza
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(80 + (currentSpeedKmh / 250) * 200, now);
-            gain.gain.setValueAtTime(0.05, now);
+          case 'speedChange':
+            osc.frequency.setValueAtTime(300 + (currentSpeedKmh / 250) * 400, now);
+            gain.gain.setValueAtTime(0.1, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
             osc.start(now);
-            osc.stop(now + 0.1);
+            osc.stop(now + 0.15);
             break;
         }
       } catch(e) {}
@@ -680,10 +695,10 @@
     let targetSpeedKmh = 50;
     const MIN_SPEED = 50;
     const MAX_SPEED = 250;
+    const SPEED_OPTIONS = [50, 80, 120, 150, 180, 220, 250];
     let level = 1;
     let animationId;
     let highScore = localStorage.getItem('carGameHighScore') || 0;
-    let engineSoundInterval;
     
     // === MAȘINA ===
     const car = {
@@ -710,8 +725,6 @@
     
     // === CONTROALE ===
     let steeringAngle = 0;
-    let isBraking = false;
-    let isAccelerating = false;
     let lastObstacleTime = 0;
     let lastPowerUpTime = 0;
     
@@ -765,46 +778,35 @@
       wheelRotation.style.transform = 'rotate(0deg)';
     });
     
-    // === PEDALE ===
-    function startBraking(e) {
-      e.preventDefault();
-      if (!gameRunning || gamePaused) return;
-      isBraking = true;
-      isAccelerating = false;
-      targetSpeedKmh = MIN_SPEED;
-      brakePedal.classList.add('pressed');
-      gasPedal.classList.remove('pressed');
+    // === SPEED BUTTONS ===
+    speedButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!gameRunning || gamePaused) return;
+        const speed = parseInt(btn.getAttribute('data-speed'));
+        setSpeed(speed);
+      });
+      
+      btn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (!gameRunning || gamePaused) return;
+        const speed = parseInt(btn.getAttribute('data-speed'));
+        setSpeed(speed);
+      });
+    });
+    
+    function setSpeed(speed) {
+      targetSpeedKmh = speed;
+      
+      // Update active button
+      speedButtons.forEach(b => {
+        b.classList.remove('active');
+        if (parseInt(b.getAttribute('data-speed')) === speed) {
+          b.classList.add('active');
+        }
+      });
+      
+      playSound('speedChange');
     }
-    
-    function startAccelerating(e) {
-      e.preventDefault();
-      if (!gameRunning || gamePaused) return;
-      isAccelerating = true;
-      isBraking = false;
-      targetSpeedKmh = MAX_SPEED;
-      gasPedal.classList.add('pressed');
-      brakePedal.classList.remove('pressed');
-    }
-    
-    function releasePedals() {
-      isBraking = false;
-      isAccelerating = false;
-      targetSpeedKmh = 150; // Viteză normală
-      brakePedal.classList.remove('pressed');
-      gasPedal.classList.remove('pressed');
-    }
-    
-    brakePedal.addEventListener('touchstart', startBraking, { passive: false });
-    brakePedal.addEventListener('touchend', releasePedals);
-    brakePedal.addEventListener('mousedown', startBraking);
-    brakePedal.addEventListener('mouseup', releasePedals);
-    brakePedal.addEventListener('mouseleave', releasePedals);
-    
-    gasPedal.addEventListener('touchstart', startAccelerating, { passive: false });
-    gasPedal.addEventListener('touchend', releasePedals);
-    gasPedal.addEventListener('mousedown', startAccelerating);
-    gasPedal.addEventListener('mouseup', releasePedals);
-    gasPedal.addEventListener('mouseleave', releasePedals);
     
     // === ZONE TOUCH ===
     function handleTouchLeft(e) {
@@ -852,16 +854,15 @@
         steeringAngle = 1;
         wheelRotation.style.transform = `rotate(${maxSteerAngle}deg)`;
       }
-      if (e.key === 'ArrowDown' || e.key === 's') {
-        isBraking = true;
-        targetSpeedKmh = MIN_SPEED;
-        brakePedal.classList.add('pressed');
-      }
-      if (e.key === 'ArrowUp' || e.key === 'w') {
-        isAccelerating = true;
-        targetSpeedKmh = MAX_SPEED;
-        gasPedal.classList.add('pressed');
-      }
+      // Speed buttons with number keys
+      if (e.key === '1') setSpeed(50);
+      if (e.key === '2') setSpeed(80);
+      if (e.key === '3') setSpeed(120);
+      if (e.key === '4') setSpeed(150);
+      if (e.key === '5') setSpeed(180);
+      if (e.key === '6') setSpeed(220);
+      if (e.key === '7') setSpeed(250);
+      
       if (e.key === 'Escape' && gameRunning) togglePause();
       if (e.key === ' ' && gameRunning) togglePause();
     });
@@ -870,9 +871,6 @@
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         steeringAngle = 0;
         wheelRotation.style.transform = 'rotate(0deg)';
-      }
-      if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'ArrowUp' || e.key === 'w') {
-        releasePedals();
       }
     });
     
@@ -890,23 +888,23 @@
       wheelRotation.style.transform = 'rotate(0deg)';
       currentSpeedKmh = 50;
       targetSpeedKmh = 50;
-      isBraking = false;
-      isAccelerating = false;
-      brakePedal.classList.remove('pressed');
-      gasPedal.classList.remove('pressed');
       updateSpeedDisplay();
+      
+      // Reset speed buttons
+      speedButtons.forEach(b => b.classList.remove('active'));
+      document.getElementById('speed50').classList.add('active');
     }
     
     // === UPDATE SPEED ===
     function updateSpeed() {
-      // Accelerare/frânare graduală
+      // Smooth transition between speeds
       if (currentSpeedKmh < targetSpeedKmh) {
-        currentSpeedKmh += 0.8;
+        currentSpeedKmh += 1.5;
       } else if (currentSpeedKmh > targetSpeedKmh) {
-        currentSpeedKmh -= 1.2;
+        currentSpeedKmh -= 2;
       }
       
-      // Limitare
+      // Limit
       currentSpeedKmh = Math.max(MIN_SPEED, Math.min(MAX_SPEED, currentSpeedKmh));
       
       updateSpeedDisplay();
@@ -919,8 +917,7 @@
     }
     
     function getGameSpeed() {
-      // Convert km/h to game speed
-      return 3 + (currentSpeedKmh / 250) * 12;
+      return 2 + (currentSpeedKmh / 250) * 10;
     }
     
     // === START JOC ===
@@ -947,15 +944,6 @@
       gamePaused = false;
       gameLoop();
       spawnLoop();
-      
-      // Engine sound loop
-      if (soundEnabled) {
-        engineSoundInterval = setInterval(() => {
-          if (gameRunning && !gamePaused) {
-            playSound('engine');
-          }
-        }, 100);
-      }
     }
     
     startBtn.addEventListener('click', startGame);
@@ -974,19 +962,11 @@
       gamePaused = !gamePaused;
       if (gamePaused) {
         cancelAnimationFrame(animationId);
-        clearInterval(engineSoundInterval);
         pauseScreen.classList.remove('hidden');
       } else {
         pauseScreen.classList.add('hidden');
         gameLoop();
         spawnLoop();
-        if (soundEnabled) {
-          engineSoundInterval = setInterval(() => {
-            if (gameRunning && !gamePaused) {
-              playSound('engine');
-            }
-          }, 100);
-        }
       }
     }
     
@@ -997,8 +977,8 @@
       const now = Date.now();
       const gameSpeed = getGameSpeed();
       
-      // Obstacole - mai rare la viteză mică
-      const obstacleRate = 1500 - (currentSpeedKmh / 250) * 800;
+      // Obstacle rate based on speed
+      const obstacleRate = 1800 - (currentSpeedKmh / 250) * 1000;
       if (now - lastObstacleTime > obstacleRate) {
         spawnObstacle();
         lastObstacleTime = now;
@@ -1090,7 +1070,6 @@
       if (score >= 50) {
         gameRunning = false;
         cancelAnimationFrame(animationId);
-        clearInterval(engineSoundInterval);
         messageEl.textContent = 'EȘTI O LEGENDĂ A CURSELOR! 🏆🔥';
         playSound('win');
         createExplosion(canvas.width/2, canvas.height/2);
@@ -1182,9 +1161,9 @@
       if (currentSpeedKmh > 150) {
         const flameIntensity = (currentSpeedKmh - 150) / 100;
         ctx.fillStyle = `rgba(255, ${100 - flameIntensity * 50}, 0, 0.9)`;
-        for (let i = 0; i < 4; i++) {
-          const fx = car.width/2 - 20 + i * 13;
-          const fy = car.height + 5 + Math.random() * 30 * flameIntensity;
+        for (let i = 0; i < 5; i++) {
+          const fx = car.width/2 - 20 + i * 10;
+          const fy = car.height + 5 + Math.random() * 35 * flameIntensity;
           ctx.beginPath();
           ctx.moveTo(fx - 4, car.height);
           ctx.lineTo(fx, fy);
@@ -1405,7 +1384,6 @@
     function endGame() {
       gameRunning = false;
       cancelAnimationFrame(animationId);
-      clearInterval(engineSoundInterval);
       
       finalScoreEl.textContent = score;
       finalSpeedEl.textContent = Math.round(currentSpeedKmh);
@@ -1460,6 +1438,7 @@
   </script>
 </body>
 </html>
+
 
 
 
