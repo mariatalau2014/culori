@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>🚗 Mașinuța Mea</title>
+  <title>🚗 Mașinuța Mea - Cu Volan</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      touch-action: manipulation;
+      touch-action: none;
     }
     body {
-      background: #6a1b9a; /* violet */
+      background: linear-gradient(135deg, #6a1b9a 0%, #4a148c 100%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -23,15 +23,16 @@
     }
     #gameContainer {
       position: relative;
-      width: 320px;
+      width: 360px;
       max-width: 95vw;
     }
     canvas {
-      background: #2e1a47;
-      border: 3px solid #9c27b0;
-      border-radius: 12px;
+      background: linear-gradient(180deg, #1a1a2e 0%, #2d1b4e 100%);
+      border: 4px solid #9c27b0;
+      border-radius: 15px 15px 0 0;
       display: block;
       margin: 0 auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     #ui {
       position: absolute;
@@ -43,378 +44,1160 @@
       padding: 0 15px;
       color: white;
       font-weight: bold;
-      font-size: 16px;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      font-size: 14px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
       z-index: 10;
     }
-    #controls {
+    .ui-box {
+      background: rgba(156, 39, 176, 0.8);
+      padding: 8px 12px;
+      border-radius: 20px;
+      backdrop-filter: blur(5px);
+    }
+    
+    /* === ZONE DE CONTROL PE ECRAN === */
+    #touchControls {
       position: absolute;
-      bottom: 15px;
+      top: 60px;
       left: 0;
       right: 0;
+      bottom: 180px;
       display: flex;
-      justify-content: center;
-      gap: 20px;
-      z-index: 10;
+      z-index: 5;
     }
-    .btn {
-      background: #9c27b0;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 55px;
-      height: 55px;
-      font-size: 24px;
+    .touchZone {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-      cursor: pointer;
-      transition: transform 0.1s;
+      transition: background 0.1s;
     }
-    .btn:active {
-      transform: scale(0.95);
+    .touchZone:active, .touchZone.active {
+      background: rgba(156, 39, 176, 0.3);
     }
-    #exitBtn {
+    .touchZone.left {
+      border-right: 2px dashed rgba(156, 39, 176, 0.3);
+    }
+    .touchHint {
+      font-size: 40px;
+      opacity: 0.3;
+      color: white;
+    }
+    
+    /* === VOLAN === */
+    #steeringWheel {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      background: #e91e63;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      font-size: 20px;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 140px;
       z-index: 20;
     }
-    #gameOver, #startScreen {
+    #wheelBase {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+      border-radius: 50%;
+      border: 4px solid #555;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.5), inset 0 2px 10px rgba(255,255,255,0.1);
+    }
+    #wheelRim {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 8px solid #333;
+      background: transparent;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+    }
+    #wheelCenter {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(145deg, #9c27b0, #7b1fa2);
+      border-radius: 50%;
+      border: 3px solid #ce93d8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+    }
+    #wheelSpoke1, #wheelSpoke2, #wheelSpoke3 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      background: linear-gradient(90deg, #444, #222);
+      transform-origin: left center;
+    }
+    #wheelSpoke1 {
+      width: 60px;
+      height: 12px;
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+    #wheelSpoke2 {
+      width: 60px;
+      height: 12px;
+      transform: translate(-50%, -50%) rotate(-30deg);
+    }
+    #wheelSpoke3 {
+      width: 60px;
+      height: 12px;
+      transform: translate(-50%, -50%) rotate(210deg);
+    }
+    #wheelRotation {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(46, 26, 71, 0.95);
+      transition: transform 0.1s ease-out;
+    }
+    #wheelIndicator {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 15px;
+      background: #ff5722;
+      border-radius: 4px;
+      box-shadow: 0 0 10px #ff5722;
+    }
+    #steeringLabel {
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #ce93d8;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    
+    /* === BUTOANE === */
+    #exitBtn, #soundBtn, #pauseBtn {
+      position: absolute;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 20px;
+      z-index: 25;
+      border: 3px solid rgba(255,255,255,0.3);
+      background: rgba(156, 39, 176, 0.8);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    #exitBtn {
+      top: 10px;
+      right: 10px;
+      background: linear-gradient(145deg, #e91e63, #c2185b);
+      border-color: #f48fb1;
+    }
+    #soundBtn {
+      top: 10px;
+      left: 10px;
+      background: linear-gradient(145deg, #00bcd4, #0097a7);
+      border-color: #80deea;
+    }
+    #pauseBtn {
+      top: 60px;
+      left: 10px;
+      background: linear-gradient(145deg, #ff9800, #f57c00);
+      border-color: #ffcc80;
+    }
+    
+    /* === ECRANE === */
+    #startScreen, #gameOver, #levelUp, #pauseScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: calc(100% - 160px);
+      background: rgba(26, 26, 46, 0.98);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       color: white;
-      border-radius: 12px;
+      border-radius: 15px 15px 0 0;
       text-align: center;
-      padding: 20px;
+      padding: 25px;
       z-index: 30;
     }
-    #startScreen h1, #gameOver h2 {
+    #startScreen h1 {
+      font-size: 26px;
+      margin-bottom: 15px;
+      background: linear-gradient(90deg, #ce93d8, #f48fb1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    #gameOver h2, #levelUp h2 {
       font-size: 24px;
       margin-bottom: 15px;
       color: #ce93d8;
     }
-    #startScreen p, #gameOver p {
+    .info-text {
       margin: 8px 0;
-      font-size: 14px;
+      font-size: 13px;
       max-width: 280px;
+      color: #e1bee7;
+      line-height: 1.5;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 260px;
+      margin: 6px 0;
+      padding: 6px 10px;
+      background: rgba(156, 39, 176, 0.3);
+      border-radius: 8px;
+      font-size: 13px;
     }
     .actionBtn {
-      margin-top: 20px;
-      background: #7e57c2;
+      margin-top: 15px;
+      background: linear-gradient(145deg, #7e57c2, #5e35b1);
       color: white;
       border: none;
-      padding: 12px 30px;
+      padding: 12px 35px;
       border-radius: 25px;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 5px 15px rgba(126, 87, 194, 0.5);
+      transition: all 0.2s;
+      border: 2px solid #b39ddb;
     }
-    .actionBtn:hover {
-      background: #9575cd;
+    .actionBtn:hover, .actionBtn:active {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 20px rgba(126, 87, 194, 0.7);
     }
     .hidden {
       display: none !important;
     }
-    @media (max-height: 500px) {
-      .btn { width: 45px; height: 45px; font-size: 20px; }
-      #ui { font-size: 14px; }
+    
+    /* === POWER-UP INDICATOR === */
+    #powerUpIndicator {
+      position: absolute;
+      top: 60px;
+      right: 10px;
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+    }
+    .power-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    .shield { background: #4fc3f7; }
+    .speed { background: #ff7043; }
+    .double { background: #66bb6a; }
+    
+    #highScore {
+      position: absolute;
+      top: 105px;
+      left: 10px;
+      background: rgba(255, 215, 0, 0.3);
+      padding: 5px 10px;
+      border-radius: 12px;
+      color: #ffd700;
+      font-size: 12px;
+      z-index: 10;
+    }
+    #levelIndicator {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(156, 39, 176, 0.8);
+      padding: 5px 15px;
+      border-radius: 15px;
+      color: white;
+      font-size: 13px;
+      z-index: 10;
+    }
+    
+    /* === VIBRAȚIE VOLAN === */
+    @keyframes vibrate {
+      0%, 100% { transform: translateX(-50%) rotate(0deg); }
+      25% { transform: translateX(-50%) rotate(-2deg); }
+      75% { transform: translateX(-50%) rotate(2deg); }
+    }
+    .vibrating {
+      animation: vibrate 0.1s infinite;
     }
   </style>
 </head>
 <body>
   <div id="gameContainer">
-    <canvas id="game" width="320" height="480"></canvas>
+    <canvas id="game" width="360" height="420"></canvas>
     
     <div id="ui">
-      <span>Scor: <span id="score">0</span>/100</span>
-      <span>Viteza: <span id="speed">1</span>x</span>
+      <div class="ui-box">🏆 <span id="score">0</span>/100</div>
+      <div class="ui-box">⚡ <span id="speed">1</span>x</div>
     </div>
     
-    <button id="exitBtn" class="btn" title="Ieșire">✕</button>
+    <button id="exitBtn" title="Ieșire">✕</button>
+    <button id="soundBtn" title="Sunet">🔊</button>
+    <button id="pauseBtn" title="Pauză">⏸</button>
     
-    <div id="controls">
-      <button class="btn" id="leftBtn">◀</button>
-      <button class="btn" id="rightBtn">▶</button>
+    <div id="levelIndicator">Nivel: <span id="level">1</span></div>
+    <div id="powerUpIndicator"></div>
+    <div id="highScore">🥇 Record: <span id="highScoreVal">0</span></div>
+    
+    <!-- ZONE DE CONTROL PE ECRAN -->
+    <div id="touchControls">
+      <div class="touchZone left" id="touchLeft">
+        <span class="touchHint">◀</span>
+      </div>
+      <div class="touchZone right" id="touchRight">
+        <span class="touchHint">▶</span>
+      </div>
     </div>
     
+    <!-- VOLAN -->
+    <div id="steeringWheel">
+      <div id="wheelRotation">
+        <div id="wheelBase"></div>
+        <div id="wheelRim"></div>
+        <div id="wheelSpoke1"></div>
+        <div id="wheelSpoke2"></div>
+        <div id="wheelSpoke3"></div>
+        <div id="wheelCenter">🚗</div>
+        <div id="wheelIndicator"></div>
+      </div>
+      <div id="steeringLabel">ÎNVARTE VOLANUL</div>
+    </div>
+    
+    <!-- ECRANE -->
     <div id="startScreen">
       <h1>🚗 Mașinuța Mea</h1>
-      <p>Folosește săgețile ← → sau butoanele de jos</p>
-      <p>Ocolește obstacolele! +1 punct la fiecare obstacol evitat</p>
-      <p>-5 puncte dacă lovești un obstacol</p>
+      <p class="info-text">👆 Atinge STÂNGA sau DREAPTA ecranului pentru a vira</p>
+      <p class="info-text">🎮 Sau folosește volanul de jos!</p>
+      <p class="info-text">🟠 Obstacol normal: +1 punct</p>
+      <p class="info-text">🔴 Obstacol rapid: +2 puncte</p>
+      <p class="info-text">💎 Power-up: Efect special</p>
+      <p class="info-text">⚠️ Coliziune: -5 puncte</p>
+      <div class="stat-row">
+        <span>Niveluri:</span>
+        <span>5</span>
+      </div>
+      <div class="stat-row">
+        <span>Scor maxim:</span>
+        <span>100</span>
+      </div>
       <button class="actionBtn" id="startBtn">▶ JOACĂ</button>
     </div>
     
     <div id="gameOver" class="hidden">
       <h2>💥 Joc Terminat!</h2>
-      <p>Scorul tău: <span id="finalScore">0</span>/100</p>
-      <p id="message">Încearcă din nou!</p>
+      <div class="stat-row">
+        <span>Scor final:</span>
+        <span id="finalScore">0</span>
+      </div>
+      <div class="stat-row">
+        <span>Nivel atins:</span>
+        <span id="finalLevel">1</span>
+      </div>
+      <div class="stat-row">
+        <span>Record personal:</span>
+        <span id="personalBest">0</span>
+      </div>
+      <p id="message" class="info-text">Încearcă din nou!</p>
       <button class="actionBtn" id="restartBtn">🔄 REIA</button>
+    </div>
+    
+    <div id="levelUp" class="hidden">
+      <h2>🎉 Nivel Completat!</h2>
+      <p id="levelUpText" class="info-text">Ai ajuns la nivelul 2!</p>
+      <p class="info-text">Viteza crește și obstacolele devin mai multe!</p>
+      <button class="actionBtn" id="continueBtn">▶ CONTINUĂ</button>
+    </div>
+    
+    <div id="pauseScreen" class="hidden">
+      <h2>⏸️ Joc Pauzat</h2>
+      <p class="info-text">Apasă pe butonul de continuare pentru a relua</p>
+      <button class="actionBtn" id="resumeBtn">▶ CONTINUĂ</button>
     </div>
   </div>
 
   <script>
-    // === Config ===
+    // === CONFIG ===
     const canvas = document.getElementById('game');
     const ctx = canvas.getContext('2d');
     const scoreEl = document.getElementById('score');
     const speedEl = document.getElementById('speed');
+    const levelEl = document.getElementById('level');
     const finalScoreEl = document.getElementById('finalScore');
+    const finalLevelEl = document.getElementById('finalLevel');
+    const personalBestEl = document.getElementById('personalBest');
+    const highScoreValEl = document.getElementById('highScoreVal');
     const messageEl = document.getElementById('message');
+    const levelUpText = document.getElementById('levelUpText');
     const startScreen = document.getElementById('startScreen');
     const gameOverScreen = document.getElementById('gameOver');
+    const levelUpScreen = document.getElementById('levelUp');
+    const pauseScreen = document.getElementById('pauseScreen');
+    const powerUpIndicator = document.getElementById('powerUpIndicator');
+    const wheelRotation = document.getElementById('wheelRotation');
+    const touchLeft = document.getElementById('touchLeft');
+    const touchRight = document.getElementById('touchRight');
+    
     const startBtn = document.getElementById('startBtn');
     const restartBtn = document.getElementById('restartBtn');
+    const continueBtn = document.getElementById('continueBtn');
+    const resumeBtn = document.getElementById('resumeBtn');
     const exitBtn = document.getElementById('exitBtn');
-    const leftBtn = document.getElementById('leftBtn');
-    const rightBtn = document.getElementById('rightBtn');
+    const soundBtn = document.getElementById('soundBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
 
-    // === Stare joc ===
-    let gameRunning = false;
-    let score = 0;
-    let speed = 2;
-    let animationId;
+    // === AUDIO ===
+    let soundEnabled = true;
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     
-    // === Mașina jucătorului ===
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        switch(type) {
+          case 'score':
+            oscillator.frequency.value = 800;
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.1);
+            break;
+          case 'powerup':
+            oscillator.frequency.value = 1200;
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.3);
+            break;
+          case 'collision':
+            oscillator.frequency.value = 200;
+            oscillator.type = 'sawtooth';
+            gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.3);
+            break;
+          case 'levelup':
+            oscillator.frequency.value = 600;
+            oscillator.type = 'square';
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            setTimeout(() => {
+              const osc2 = audioCtx.createOscillator();
+              const gain2 = audioCtx.createGain();
+              osc2.connect(gain2);
+              gain2.connect(audioCtx.destination);
+              osc2.frequency.value = 800;
+              gain2.gain.setValueAtTime(0.1, audioCtx.currentTime);
+              gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+              osc2.start();
+              osc2.stop(audioCtx.currentTime + 0.2);
+            }, 100);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.2);
+            break;
+          case 'gameover':
+            oscillator.frequency.value = 300;
+            oscillator.type = 'sawtooth';
+            gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.5);
+            break;
+        }
+      } catch(e) {}
+    }
+    
+    soundBtn.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      soundBtn.textContent = soundEnabled ? '🔊' : '🔇';
+    });
+
+    // === STARE JOC ===
+    let gameRunning = false;
+    let gamePaused = false;
+    let score = 0;
+    let baseSpeed = 2;
+    let currentSpeed = 2;
+    let level = 1;
+    let animationId;
+    let highScore = localStorage.getItem('carGameHighScore') || 0;
+    highScoreValEl.textContent = highScore;
+    
+    // === MAȘINA ===
     const car = {
-      x: canvas.width / 2 - 20,
-      y: canvas.height - 70,
-      width: 40,
-      height: 60,
-      speed: 5,
-      color: '#4fc3f7'
+      x: canvas.width / 2 - 25,
+      y: canvas.height - 80,
+      width: 50,
+      height: 70,
+      speed: 6,
+      color: '#4fc3f7',
+      shield: false,
+      shieldTime: 0,
+      doublePoints: false,
+      doubleTime: 0,
+      angle: 0
     };
     
-    // === Obstacole ===
+    // === OBSTACOLE ===
     let obstacles = [];
-    const obstacleColors = ['#ff7043', '#66bb6a', '#ffa726', '#ab47bc'];
+    let powerUps = [];
+    const obstacleTypes = [
+      { color: '#ff7043', points: 1, speedMod: 1, name: 'normal' },
+      { color: '#e91e63', points: 2, speedMod: 1.5, name: 'fast' },
+      { color: '#7e57c2', points: 3, speedMod: 0.8, name: 'slow' }
+    ];
+    const powerUpTypes = [
+      { color: '#4fc3f7', effect: 'shield', icon: '🛡️', duration: 5000 },
+      { color: '#ff7043', effect: 'speed', icon: '⚡', duration: 3000 },
+      { color: '#66bb6a', effect: 'double', icon: '💎', duration: 4000 }
+    ];
     
-    // === Controale ===
-    const keys = { left: false, right: false };
+    // === NIVELURI ===
+    const levels = [
+      { score: 0, speed: 2, obstacleRate: 1500, name: 'Începător' },
+      { score: 20, speed: 3, obstacleRate: 1200, name: 'Intermediar' },
+      { score: 40, speed: 4, obstacleRate: 1000, name: 'Avansat' },
+      { score: 60, speed: 5, obstacleRate: 800, name: 'Expert' },
+      { score: 80, speed: 6, obstacleRate: 600, name: 'Maestru' }
+    ];
     
-    // === Evenimente tastatură ===
+    // === CONTROALE ===
+    let steeringAngle = 0; // -1 (stânga) la 1 (dreapta)
+    let lastObstacleTime = 0;
+    let lastPowerUpTime = 0;
+    
+    // === CONTROL VOLAN ===
+    let isDragging = false;
+    let startX = 0;
+    const wheelCenter = { x: 180, y: 510 };
+    const maxSteerAngle = 45;
+    
+    function updateSteering(clientX) {
+      const rect = document.getElementById('steeringWheel').getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const deltaX = clientX - centerX;
+      const maxDelta = 70;
+      steeringAngle = Math.max(-1, Math.min(1, deltaX / maxDelta));
+      
+      const rotation = steeringAngle * maxSteerAngle;
+      wheelRotation.style.transform = `rotate(${rotation}deg)`;
+    }
+    
+    // Mouse events pentru volan
+    document.getElementById('steeringWheel').addEventListener('mousedown', (e) => {
+      if (!gameRunning || gamePaused) return;
+      isDragging = true;
+      updateSteering(e.clientX);
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      updateSteering(e.clientX);
+    });
+    
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+      steeringAngle = 0;
+      wheelRotation.style.transform = 'rotate(0deg)';
+    });
+    
+    // Touch events pentru volan
+    document.getElementById('steeringWheel').addEventListener('touchstart', (e) => {
+      if (!gameRunning || gamePaused) return;
+      e.preventDefault();
+      isDragging = true;
+      updateSteering(e.touches[0].clientX);
+    }, { passive: false });
+    
+    document.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      updateSteering(e.touches[0].clientX);
+    }, { passive: false });
+    
+    document.addEventListener('touchend', () => {
+      isDragging = false;
+      steeringAngle = 0;
+      wheelRotation.style.transform = 'rotate(0deg)';
+    });
+    
+    // === CONTROL ZONE ECRAN ===
+    function handleTouchLeft(e) {
+      e.preventDefault();
+      if (!gameRunning || gamePaused) return;
+      steeringAngle = -1;
+      wheelRotation.style.transform = `rotate(-${maxSteerAngle}deg)`;
+      touchLeft.classList.add('active');
+    }
+    
+    function handleTouchRight(e) {
+      e.preventDefault();
+      if (!gameRunning || gamePaused) return;
+      steeringAngle = 1;
+      wheelRotation.style.transform = `rotate(${maxSteerAngle}deg)`;
+      touchRight.classList.add('active');
+    }
+    
+    function releaseTouch() {
+      steeringAngle = 0;
+      wheelRotation.style.transform = 'rotate(0deg)';
+      touchLeft.classList.remove('active');
+      touchRight.classList.remove('active');
+    }
+    
+    touchLeft.addEventListener('touchstart', handleTouchLeft, { passive: false });
+    touchLeft.addEventListener('touchend', releaseTouch);
+    touchLeft.addEventListener('mousedown', handleTouchLeft);
+    touchLeft.addEventListener('mouseup', releaseTouch);
+    touchLeft.addEventListener('mouseleave', releaseTouch);
+    
+    touchRight.addEventListener('touchstart', handleTouchRight, { passive: false });
+    touchRight.addEventListener('touchend', releaseTouch);
+    touchRight.addEventListener('mousedown', handleTouchRight);
+    touchRight.addEventListener('mouseup', releaseTouch);
+    touchRight.addEventListener('mouseleave', releaseTouch);
+    
+    // === TASTATURĂ ===
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') keys.left = true;
-      if (e.key === 'ArrowRight') keys.right = true;
+      if (e.key === 'ArrowLeft') {
+        steeringAngle = -1;
+        wheelRotation.style.transform = `rotate(-${maxSteerAngle}deg)`;
+      }
+      if (e.key === 'ArrowRight') {
+        steeringAngle = 1;
+        wheelRotation.style.transform = `rotate(${maxSteerAngle}deg)`;
+      }
+      if (e.key === 'Escape' && gameRunning) togglePause();
     });
     
     window.addEventListener('keyup', (e) => {
-      if (e.key === 'ArrowLeft') keys.left = false;
-      if (e.key === 'ArrowRight') keys.right = false;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        steeringAngle = 0;
+        wheelRotation.style.transform = 'rotate(0deg)';
+      }
     });
     
-    // === Controale touch/mouse pe butoane ===
-    function addTouch(btn, key) {
-      const start = (e) => { e.preventDefault(); keys[key] = true; };
-      const end = (e) => { e.preventDefault(); keys[key] = false; };
-      btn.addEventListener('touchstart', start, {passive: false});
-      btn.addEventListener('touchend', end);
-      btn.addEventListener('mousedown', start);
-      btn.addEventListener('mouseup', end);
-      btn.addEventListener('mouseleave', end);
-    }
-    addTouch(leftBtn, 'left');
-    addTouch(rightBtn, 'right');
-    
-    // === Buton ieșire ===
+    // === BUTOANE ===
     exitBtn.addEventListener('click', () => {
       if (gameRunning) {
         cancelAnimationFrame(animationId);
         gameRunning = false;
       }
+      gamePaused = false;
       startScreen.classList.remove('hidden');
       gameOverScreen.classList.add('hidden');
+      levelUpScreen.classList.add('hidden');
+      pauseScreen.classList.add('hidden');
       score = 0;
       scoreEl.textContent = score;
       obstacles = [];
+      powerUps = [];
+      resetCar();
     });
     
-    // === Pornire joc ===
+    pauseBtn.addEventListener('click', () => {
+      if (gameRunning) togglePause();
+    });
+    
+    function resetCar() {
+      car.x = canvas.width / 2 - 25;
+      car.shield = false;
+      car.doublePoints = false;
+      car.angle = 0;
+      updatePowerUpIndicator();
+      steeringAngle = 0;
+      wheelRotation.style.transform = 'rotate(0deg)';
+    }
+    
+    // === START JOC ===
     function startGame() {
       startScreen.classList.add('hidden');
       gameOverScreen.classList.add('hidden');
+      levelUpScreen.classList.add('hidden');
+      pauseScreen.classList.add('hidden');
+      
       score = 0;
-      speed = 2;
+      level = 1;
+      baseSpeed = levels[0].speed;
+      currentSpeed = baseSpeed;
       scoreEl.textContent = score;
-      speedEl.textContent = speed;
-      car.x = canvas.width / 2 - 20;
+      speedEl.textContent = currentSpeed.toFixed(1);
+      levelEl.textContent = level;
+      
+      resetCar();
       obstacles = [];
+      powerUps = [];
+      lastObstacleTime = Date.now();
+      lastPowerUpTime = Date.now();
+      
       gameRunning = true;
+      gamePaused = false;
       gameLoop();
+      spawnLoop();
     }
     
     startBtn.addEventListener('click', startGame);
     restartBtn.addEventListener('click', startGame);
+    continueBtn.addEventListener('click', () => {
+      levelUpScreen.classList.add('hidden');
+      gameRunning = true;
+      gameLoop();
+      spawnLoop();
+    });
+    resumeBtn.addEventListener('click', togglePause);
     
-    // === Generare obstacole ===
-    function spawnObstacle() {
+    // === PAUZĂ ===
+    function togglePause() {
       if (!gameRunning) return;
-      const width = 35 + Math.random() * 25;
-      const obstacle = {
+      gamePaused = !gamePaused;
+      if (gamePaused) {
+        cancelAnimationFrame(animationId);
+        pauseScreen.classList.remove('hidden');
+      } else {
+        pauseScreen.classList.add('hidden');
+        gameLoop();
+        spawnLoop();
+      }
+    }
+    
+    // === SPAWN ===
+    function spawnLoop() {
+      if (!gameRunning || gamePaused) return;
+      
+      const currentLevel = levels[Math.min(level - 1, levels.length - 1)];
+      const now = Date.now();
+      
+      if (now - lastObstacleTime > currentLevel.obstacleRate / currentSpeed) {
+        spawnObstacle();
+        lastObstacleTime = now;
+      }
+      
+      if (now - lastPowerUpTime > 8000) {
+        if (Math.random() < 0.3) spawnPowerUp();
+        lastPowerUpTime = now;
+      }
+      
+      setTimeout(spawnLoop, 100);
+    }
+    
+    function spawnObstacle() {
+      if (!gameRunning || gamePaused) return;
+      const type = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+      const width = 40 + Math.random() * 30;
+      obstacles.push({
         x: Math.random() * (canvas.width - width),
         y: -60,
         width: width,
-        height: 40,
-        color: obstacleColors[Math.floor(Math.random() * obstacleColors.length)],
+        height: 45,
+        ...type,
         passed: false
-      };
-      obstacles.push(obstacle);
-      
-      // Următorul obstacol între 800-1500ms
-      const nextSpawn = Math.max(400, 1500 - speed * 200);
-      setTimeout(spawnObstacle, nextSpawn + Math.random() * 700);
+      });
     }
     
-    // === Coliziune ===
+    function spawnPowerUp() {
+      if (!gameRunning || gamePaused) return;
+      const type = powerUpTypes[Math.floor(Math.random() * powerUpTypes.length)];
+      powerUps.push({
+        x: Math.random() * (canvas.width - 40),
+        y: -50,
+        width: 40,
+        height: 40,
+        ...type,
+        collected: false
+      });
+    }
+    
+    // === COLIZIUNE ===
     function checkCollision(a, b) {
-      return a.x < b.x + b.width &&
-             a.x + a.width > b.x &&
-             a.y < b.y + b.height &&
-             a.y + a.height > b.y;
+      return a.x < b.x + b.width && a.x + a.width > b.x &&
+             a.y < b.y + b.height && a.y + a.height > b.y;
     }
     
-    // === Desenare ===
+    // === POWER-UP ===
+    function updatePowerUpIndicator() {
+      powerUpIndicator.innerHTML = '';
+      if (car.shield) {
+        const icon = document.createElement('div');
+        icon.className = 'power-icon shield';
+        icon.textContent = '🛡️';
+        powerUpIndicator.appendChild(icon);
+      }
+      if (car.doublePoints) {
+        const icon = document.createElement('div');
+        icon.className = 'power-icon double';
+        icon.textContent = '💎';
+        powerUpIndicator.appendChild(icon);
+      }
+    }
+    
+    function activatePowerUp(type) {
+      playSound('powerup');
+      switch(type) {
+        case 'shield':
+          car.shield = true;
+          car.shieldTime = Date.now() + 5000;
+          break;
+        case 'speed':
+          currentSpeed = Math.min(8, currentSpeed + 2);
+          speedEl.textContent = currentSpeed.toFixed(1);
+          setTimeout(() => {
+            currentSpeed = baseSpeed;
+            speedEl.textContent = currentSpeed.toFixed(1);
+          }, 3000);
+          break;
+        case 'double':
+          car.doublePoints = true;
+          car.doubleTime = Date.now() + 4000;
+          break;
+      }
+      updatePowerUpIndicator();
+    }
+    
+    function checkPowerUpExpiry() {
+      const now = Date.now();
+      if (car.shield && now > car.shieldTime) {
+        car.shield = false;
+        updatePowerUpIndicator();
+      }
+      if (car.doublePoints && now > car.doubleTime) {
+        car.doublePoints = false;
+        updatePowerUpIndicator();
+      }
+    }
+    
+    function checkLevelUp() {
+      const nextLevel = levels[Math.min(level, levels.length - 1)];
+      if (score >= nextLevel.score && level < levels.length) {
+        level++;
+        baseSpeed = levels[level - 1].speed;
+        currentSpeed = baseSpeed;
+        levelEl.textContent = level;
+        speedEl.textContent = currentSpeed.toFixed(1);
+        playSound('levelup');
+        gameRunning = false;
+        cancelAnimationFrame(animationId);
+        levelUpText.textContent = `Ai ajuns la nivelul ${level} - ${levels[level-1].name}!`;
+        levelUpScreen.classList.remove('hidden');
+      }
+    }
+    
+    function checkWin() {
+      if (score >= 100) {
+        gameRunning = false;
+        cancelAnimationFrame(animationId);
+        messageEl.textContent = '🏆 FELICITĂRI! Ai câștigat jocul!';
+        endGame();
+      }
+    }
+    
+    // === DESENARE ===
     function drawCar() {
-      // Corp mașină
-      ctx.fillStyle = car.color;
-      ctx.fillRect(car.x, car.y, car.width, car.height);
+      ctx.save();
+      ctx.translate(car.x + car.width/2, car.y + car.height/2);
+      ctx.rotate(car.angle * Math.PI / 180);
+      ctx.translate(-car.width/2, -car.height/2);
+      
+      // Umbră
+      ctx.fillStyle = 'rgba(0,0,0,0.3)';
+      ctx.fillRect(5, 5, car.width, car.height);
+      
+      // Corp
+      const gradient = ctx.createLinearGradient(0, 0, car.width, 0);
+      gradient.addColorStop(0, car.color);
+      gradient.addColorStop(0.5, '#81d4fa');
+      gradient.addColorStop(1, car.color);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, car.width, car.height);
       
       // Geamuri
       ctx.fillStyle = '#1a237e';
-      ctx.fillRect(car.x + 5, car.y + 10, car.width - 10, 15);
+      ctx.fillRect(8, 15, car.width - 16, 18);
+      
+      // Dungi
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.fillRect(car.width/2 - 5, 0, 10, car.height);
       
       // Roți
       ctx.fillStyle = '#212121';
-      ctx.fillRect(car.x - 3, car.y + 10, 6, 12);
-      ctx.fillRect(car.x + car.width - 3, car.y + 10, 6, 12);
-      ctx.fillRect(car.x - 3, car.y + 38, 6, 12);
-      ctx.fillRect(car.x + car.width - 3, car.y + 38, 6, 12);
+      ctx.fillRect(-5, 12, 8, 15);
+      ctx.fillRect(car.width - 3, 12, 8, 15);
+      ctx.fillRect(-5, 43, 8, 15);
+      ctx.fillRect(car.width - 3, 43, 8, 15);
       
       // Faruri
       ctx.fillStyle = '#ffeb3b';
-      ctx.fillRect(car.x + 5, car.y, 8, 5);
-      ctx.fillRect(car.x + car.width - 13, car.y, 8, 5);
+      ctx.fillRect(8, 0, 10, 6);
+      ctx.fillRect(car.width - 18, 0, 10, 6);
+      
+      // Stopuri
+      ctx.fillStyle = '#f44336';
+      ctx.fillRect(8, car.height - 6, 10, 6);
+      ctx.fillRect(car.width - 18, car.height - 6, 10, 6);
+      
+      // Scut
+      if (car.shield) {
+        ctx.strokeStyle = 'rgba(79, 195, 247, 0.8)';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(car.width/2, car.height/2, car.width * 0.8, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(79, 195, 247, 0.2)';
+        ctx.fill();
+      }
+      
+      ctx.restore();
     }
     
     function drawObstacle(obs) {
-      ctx.fillStyle = obs.color;
+      ctx.fillStyle = 'rgba(0,0,0,0.3)';
+      ctx.fillRect(obs.x + 3, obs.y + 3, obs.width, obs.height);
+      
+      const gradient = ctx.createLinearGradient(obs.x, obs.y, obs.x, obs.y + obs.height);
+      gradient.addColorStop(0, obs.color);
+      gradient.addColorStop(1, 'rgba(0,0,0,0.3)');
+      ctx.fillStyle = gradient;
       ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
       
-      // Detalii obstacol
-      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(obs.x, obs.y, obs.width, obs.height);
+      
+      ctx.fillStyle = 'rgba(255,255,255,0.2)';
       ctx.fillRect(obs.x + 5, obs.y + 5, obs.width - 10, obs.height - 10);
+      
+      ctx.fillStyle = 'white';
+      ctx.font = '16px Arial';
+      ctx.textAlign = 'center';
+      let icon = '📦';
+      if (obs.name === 'fast') icon = '⚡';
+      if (obs.name === 'slow') icon = '🐌';
+      ctx.fillText(icon, obs.x + obs.width/2, obs.y + obs.height/2 + 5);
+    }
+    
+    function drawPowerUp(pu) {
+      const glow = ctx.createRadialGradient(
+        pu.x + pu.width/2, pu.y + pu.height/2, 0,
+        pu.x + pu.width/2, pu.y + pu.height/2, pu.width
+      );
+      glow.addColorStop(0, pu.color + '80');
+      glow.addColorStop(1, 'transparent');
+      ctx.fillStyle = glow;
+      ctx.fillRect(pu.x - 10, pu.y - 10, pu.width + 20, pu.height + 20);
+      
+      ctx.fillStyle = pu.color;
+      ctx.beginPath();
+      ctx.arc(pu.x + pu.width/2, pu.y + pu.height/2, pu.width/2, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      
+      ctx.fillStyle = 'white';
+      ctx.font = '20px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(pu.icon, pu.x + pu.width/2, pu.y + pu.height/2);
     }
     
     function drawRoad() {
-      // Linii drum
-      ctx.setLineDash([20, 15]);
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.fillRect(5, 0, 8, canvas.height);
+      ctx.fillRect(canvas.width - 13, 0, 8, canvas.height);
+      
+      ctx.setLineDash([30, 25]);
+      ctx.lineDashOffset = -Date.now() / 50 * currentSpeed;
       ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 4;
       ctx.beginPath();
       ctx.moveTo(canvas.width / 2, 0);
       ctx.lineTo(canvas.width / 2, canvas.height);
       ctx.stroke();
       ctx.setLineDash([]);
+      
+      ctx.fillStyle = 'rgba(255,255,255,0.05)';
+      for (let i = 0; i < 5; i++) {
+        const y = ((Date.now() / 100 * currentSpeed) + i * 100) % canvas.height;
+        ctx.fillRect(0, y, canvas.width, 2);
+      }
     }
     
-    // === Actualizare logică ===
+    function drawParticles() {
+      if (car.shield) {
+        for (let i = 0; i < 3; i++) {
+          const angle = Date.now() / 200 + i * (Math.PI * 2 / 3);
+          const x = car.x + car.width/2 + Math.cos(angle) * car.width * 0.7;
+          const y = car.y + car.height/2 + Math.sin(angle) * car.height * 0.7;
+          ctx.fillStyle = 'rgba(79, 195, 247, 0.6)';
+          ctx.beginPath();
+          ctx.arc(x, y, 4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+    
+    // === UPDATE ===
     function update() {
-      // Mișcare mașină
-      if (keys.left && car.x > 10) car.x -= car.speed;
-      if (keys.right && car.x < canvas.width - car.width - 10) car.x += car.speed;
+      checkPowerUpExpiry();
       
-      // Actualizare obstacole
+      // Mișcare mașină bazată pe volan
+      if (steeringAngle !== 0) {
+        car.x += steeringAngle * car.speed;
+        car.angle = steeringAngle * 15;
+        
+        // Limitare
+        if (car.x < 15) car.x = 15;
+        if (car.x > canvas.width - car.width - 15) car.x = canvas.width - car.width - 15;
+      } else {
+        // Returnare la centru gradual
+        car.angle *= 0.8;
+      }
+      
+      // Obstacole
       for (let i = obstacles.length - 1; i >= 0; i--) {
         const obs = obstacles[i];
-        obs.y += speed;
+        obs.y += currentSpeed * obs.speedMod;
         
-        // Scor când obstacolul este evitat
         if (!obs.passed && obs.y > car.y + car.height) {
           obs.passed = true;
-          score = Math.min(100, score + 1);
+          let points = obs.points;
+          if (car.doublePoints) points *= 2;
+          score = Math.min(100, score + points);
           scoreEl.textContent = score;
-          
-          // Creștere viteză la fiecare 10 puncte
-          if (score % 10 === 0 && speed < 6) {
-            speed += 0.5;
-            speedEl.textContent = speed.toFixed(1);
+          playSound('score');
+          checkLevelUp();
+          checkWin();
+        }
+        
+        if (checkCollision(car, obs)) {
+          if (car.shield) {
+            car.shield = false;
+            obstacles.splice(i, 1);
+            updatePowerUpIndicator();
+            playSound('powerup');
+            // Vibrație volan
+            document.getElementById('steeringWheel').classList.add('vibrating');
+            setTimeout(() => {
+              document.getElementById('steeringWheel').classList.remove('vibrating');
+            }, 300);
+          } else {
+            score = Math.max(0, score - 5);
+            scoreEl.textContent = score;
+            playSound('collision');
+            endGame();
+            return;
           }
         }
         
-        // Coliziune
-        if (checkCollision(car, obs)) {
-          score = Math.max(0, score - 5);
-          scoreEl.textContent = score;
-          endGame();
-          return;
+        if (obs.y > canvas.height) obstacles.splice(i, 1);
+      }
+      
+      // Power-ups
+      for (let i = powerUps.length - 1; i >= 0; i--) {
+        const pu = powerUps[i];
+        pu.y += currentSpeed;
+        
+        if (checkCollision(car, pu)) {
+          activatePowerUp(pu.effect);
+          powerUps.splice(i, 1);
+          continue;
         }
         
-        // Eliminarea obstacolelor ieșite din ecran
-        if (obs.y > canvas.height) {
-          obstacles.splice(i, 1);
-        }
+        if (pu.y > canvas.height) powerUps.splice(i, 1);
       }
     }
     
-    // === Sfârșit joc ===
+    // === GAME OVER ===
     function endGame() {
       gameRunning = false;
       cancelAnimationFrame(animationId);
-      finalScoreEl.textContent = score;
       
-      if (score >= 80) {
-        messageEl.textContent = '🌟 Excelent! Ești un pilot grozav!';
-      } else if (score >= 50) {
-        messageEl.textContent = '👍 Bun! Mai exersează pentru scor mai mare!';
+      finalScoreEl.textContent = score;
+      finalLevelEl.textContent = level;
+      
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('carGameHighScore', highScore);
+        highScoreValEl.textContent = highScore;
+        personalBestEl.textContent = highScore + ' (NOU!)';
       } else {
-        messageEl.textContent = '💪 Încearcă din nou! Poți mai mult!';
+        personalBestEl.textContent = highScore;
       }
       
+      if (score >= 100) {
+        messageEl.textContent = '🏆 FELICITĂRI! Ai câștigat jocul!';
+      } else if (score >= 80) {
+        messageEl.textContent = '🌟 Excelent! Ești un pilot grozav!';
+      } else if (score >= 50) {
+        messageEl.textContent = '👍 Bun! Mai exersează!';
+      } else {
+        messageEl.textContent = '💪 Încearcă din nou!';
+      }
+      
+      playSound('gameover');
       gameOverScreen.classList.remove('hidden');
     }
     
-    // === Buclă principală ===
+    // === GAME LOOP ===
     function gameLoop() {
-      if (!gameRunning) return;
+      if (!gameRunning || gamePaused) return;
       
-      // Curățare canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Desenare elemente
       drawRoad();
+      powerUps.forEach(drawPowerUp);
       obstacles.forEach(drawObstacle);
       drawCar();
+      drawParticles();
       
-      // Actualizare logică
       update();
       
-      // Continuare buclă
       animationId = requestAnimationFrame(gameLoop);
     }
     
-    // === Inițializare ===
-    spawnObstacle();
-    
-    // === Prevenire scroll la touch ===
+    // === PREVENIRE SCROLL ===
     document.addEventListener('touchmove', (e) => {
       if (gameRunning) e.preventDefault();
     }, { passive: false });
+    
+    // === INIT AUDIO ===
+    document.addEventListener('click', () => {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }, { once: true });
   </script>
 </body>
 </html>
+
+
