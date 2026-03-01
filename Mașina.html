@@ -88,6 +88,8 @@
       justify-content: center;
       text-transform: uppercase;
       letter-spacing: 2px;
+      user-select: none;
+      -webkit-user-select: none;
     }
     #turboButton:active, #turboButton.active {
       transform: translateX(-50%) scale(0.95);
@@ -790,9 +792,9 @@
       wheelRotation.style.transform = 'rotate(0deg)';
     });
     
-    // === TURBO BUTTON ===
+    // === TURBO BUTTON - FIXAT ===
     function startTurbo(e) {
-      e.preventDefault();
+      if (e) e.preventDefault();
       if (!gameRunning || gamePaused || isTurbo) return;
       
       isTurbo = true;
@@ -801,20 +803,25 @@
       document.getElementById('gameContainer').classList.add('shaking');
       playSound('turboStart');
       
+      // Clear any existing interval
+      if (turboInterval) clearInterval(turboInterval);
+      
+      // Crește viteza progresiv
       turboInterval = setInterval(() => {
         if (targetSpeedKmh < TURBO_MAX_SPEED) {
-          targetSpeedKmh += 5;
+          targetSpeedKmh += 8; // Creștere mai rapidă
+          if (targetSpeedKmh > TURBO_MAX_SPEED) targetSpeedKmh = TURBO_MAX_SPEED;
           updateEngineSound();
           
           if (targetSpeedKmh >= TURBO_MAX_SPEED) {
             playSound('turboMax');
           }
         }
-      }, 50);
+      }, 100); // La fiecare 100ms
     }
     
     function stopTurbo(e) {
-      e.preventDefault();
+      if (e) e.preventDefault();
       if (turboInterval) {
         clearInterval(turboInterval);
         turboInterval = null;
@@ -827,11 +834,28 @@
       targetSpeedKmh = MIN_SPEED;
     }
     
-    turboButton.addEventListener('mousedown', startTurbo);
-    turboButton.addEventListener('mouseup', stopTurbo);
-    turboButton.addEventListener('mouseleave', stopTurbo);
-    turboButton.addEventListener('touchstart', startTurbo, { passive: false });
-    turboButton.addEventListener('touchend', stopTurbo);
+    // Mouse events
+    turboButton.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      startTurbo(e);
+    });
+    document.addEventListener('mouseup', (e) => {
+      if (isTurbo) stopTurbo(e);
+    });
+    
+    // Touch events
+    turboButton.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      startTurbo(e);
+    }, { passive: false });
+    turboButton.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      stopTurbo(e);
+    });
+    turboButton.addEventListener('touchcancel', (e) => {
+      e.preventDefault();
+      stopTurbo(e);
+    });
     
     // === ZONE TOUCH ===
     function handleTouchLeft(e) {
@@ -923,9 +947,9 @@
     // === UPDATE SPEED ===
     function updateSpeed() {
       if (currentSpeedKmh < targetSpeedKmh) {
-        currentSpeedKmh += isTurbo ? 3 : 2;
+        currentSpeedKmh += 4;
       } else if (currentSpeedKmh > targetSpeedKmh) {
-        currentSpeedKmh -= 3;
+        currentSpeedKmh -= 5;
       }
       
       currentSpeedKmh = Math.max(MIN_SPEED, Math.min(TURBO_MAX_SPEED, currentSpeedKmh));
@@ -999,7 +1023,7 @@
       gamePaused = !gamePaused;
       if (gamePaused) {
         cancelAnimationFrame(animationId);
-        stopTurbo({ preventDefault: () => {} });
+        stopTurbo();
         stopEngineSound();
         pauseScreen.classList.remove('hidden');
       } else {
@@ -1433,7 +1457,7 @@
       gameRunning = false;
       cancelAnimationFrame(animationId);
       stopEngineSound();
-      stopTurbo({ preventDefault: () => {} });
+      stopTurbo();
       
       finalScoreEl.textContent = score;
       finalSpeedEl.textContent = Math.round(currentSpeedKmh);
@@ -1488,6 +1512,7 @@
   </script>
 </body>
 </html>
+
 
 
 
