@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -11,6 +10,9 @@
       padding: 0;
       box-sizing: border-box;
       touch-action: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
     body {
       background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 50%, #0f3460 100%);
@@ -20,7 +22,6 @@
       min-height: 100vh;
       font-family: 'Arial Black', 'Impact', sans-serif;
       overflow: hidden;
-      user-select: none;
     }
     #gameContainer {
       position: relative;
@@ -42,7 +43,7 @@
       top: 0;
       left: 0;
       right: 0;
-      bottom: 180px;
+      bottom: 200px;
       display: flex;
       z-index: 5;
     }
@@ -51,7 +52,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.1s;
     }
     .touchZone:active, .touchZone.active {
       background: rgba(255, 0, 64, 0.3);
@@ -62,47 +62,45 @@
     .touchHint {
       font-size: 50px;
       opacity: 0.3;
+      color: white;
     }
     
     /* === TURBO BUTTON === */
     #turboButton {
       position: absolute;
-      bottom: 100px;
+      bottom: 110px;
       left: 50%;
       transform: translateX(-50%);
-      width: 120px;
-      height: 120px;
+      width: 130px;
+      height: 130px;
       border-radius: 50%;
-      border: 5px solid #ff0040;
+      border: 6px solid #ff0040;
       background: linear-gradient(145deg, #ff0040, #cc0033);
       color: white;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
-      cursor: pointer;
-      z-index: 15;
-      box-shadow: 0 5px 25px rgba(255, 0, 64, 0.6);
-      transition: all 0.1s;
+      z-index: 100;
+      box-shadow: 0 5px 30px rgba(255, 0, 64, 0.8);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-transform: uppercase;
       letter-spacing: 2px;
-      user-select: none;
-      -webkit-user-select: none;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
-    #turboButton:active, #turboButton.active {
-      transform: translateX(-50%) scale(0.95);
-      box-shadow: 0 0 30px #ff0040, 0 0 60px #ff0040;
-      animation: turboPulse 0.2s infinite;
+    #turboButton.active {
+      box-shadow: 0 0 40px #ff0040, 0 0 80px #ff0040;
+      animation: turboPulse 0.15s infinite;
     }
     @keyframes turboPulse {
-      0%, 100% { box-shadow: 0 0 30px #ff0040, 0 0 60px #ff0040; }
-      50% { box-shadow: 0 0 50px #ff0040, 0 0 80px #ff0040; }
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(0.95); }
     }
     #turboButton span:first-child {
-      font-size: 35px;
-      margin-bottom: 5px;
+      font-size: 40px;
+      margin-bottom: 3px;
     }
     
     /* === VOLAN === */
@@ -113,7 +111,7 @@
       transform: translateX(-50%);
       width: 100px;
       height: 100px;
-      z-index: 20;
+      z-index: 100;
     }
     #wheelBase {
       position: absolute;
@@ -122,7 +120,7 @@
       background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
       border-radius: 50%;
       border: 4px solid #ff0040;
-      box-shadow: 0 4px 20px rgba(255, 0, 64, 0.8), inset 0 2px 8px rgba(255,255,255,0.1);
+      box-shadow: 0 4px 20px rgba(255, 0, 64, 0.8);
     }
     #wheelRim {
       position: absolute;
@@ -149,7 +147,6 @@
       align-items: center;
       justify-content: center;
       font-size: 18px;
-      box-shadow: 0 2px 15px rgba(255, 0, 64, 0.7);
     }
     #wheelSpoke1, #wheelSpoke2, #wheelSpoke3 {
       position: absolute;
@@ -159,21 +156,9 @@
       transform-origin: left center;
       border-radius: 5px;
     }
-    #wheelSpoke1 {
-      width: 45px;
-      height: 8px;
-      transform: translate(-50%, -50%) rotate(90deg);
-    }
-    #wheelSpoke2 {
-      width: 45px;
-      height: 8px;
-      transform: translate(-50%, -50%) rotate(-30deg);
-    }
-    #wheelSpoke3 {
-      width: 45px;
-      height: 8px;
-      transform: translate(-50%, -50%) rotate(210deg);
-    }
+    #wheelSpoke1 { width: 45px; height: 8px; transform: translate(-50%, -50%) rotate(90deg); }
+    #wheelSpoke2 { width: 45px; height: 8px; transform: translate(-50%, -50%) rotate(-30deg); }
+    #wheelSpoke3 { width: 45px; height: 8px; transform: translate(-50%, -50%) rotate(210deg); }
     #wheelRotation {
       position: absolute;
       top: 0;
@@ -191,7 +176,6 @@
       height: 12px;
       background: #ff6666;
       border-radius: 3px;
-      box-shadow: 0 0 15px #ff6666;
     }
     
     /* === SPEED METER === */
@@ -201,21 +185,19 @@
       right: 15px;
       width: 95px;
       height: 95px;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.9);
       border: 4px solid #00ff88;
       border-radius: 50%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 10;
-      box-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
+      z-index: 50;
     }
     #speedValue {
       font-size: 32px;
       color: #00ff88;
       font-weight: bold;
-      text-shadow: 0 0 15px #00ff88;
     }
     #speedLabel {
       font-size: 11px;
@@ -234,9 +216,8 @@
     }
     #speedBarFill {
       height: 100%;
-      background: linear-gradient(90deg, #00ff88, #88ff44, #ffdd44, #ffaa44, #ff4444);
+      background: linear-gradient(90deg, #00ff88, #ffdd44, #ff4444);
       width: 20%;
-      transition: width 0.1s;
     }
     #turboMode {
       position: absolute;
@@ -247,29 +228,24 @@
       color: #ff0040;
       font-weight: bold;
       display: none;
-      text-shadow: 0 0 10px #ff0040;
     }
-    #turboMode.active {
-      display: block;
-    }
+    #turboMode.active { display: block; }
     
     /* === SCORE === */
     #scoreDisplay {
       position: absolute;
       top: 60px;
       left: 15px;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.9);
       border: 3px solid #ffd700;
       border-radius: 15px;
       padding: 10px 15px;
-      z-index: 10;
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      z-index: 50;
     }
     #scoreValue {
       font-size: 22px;
       color: #ffd700;
       font-weight: bold;
-      text-shadow: 0 0 10px #ffd700;
     }
     #scoreLabel {
       font-size: 11px;
@@ -285,29 +261,24 @@
       height: 45px;
       border-radius: 50%;
       font-size: 20px;
-      z-index: 25;
+      z-index: 100;
       border: 3px solid #ff0040;
-      background: linear-gradient(145deg, #0f3460, #0a2540);
+      background: #0f3460;
       color: #00ff88;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 3px 15px rgba(0, 255, 136, 0.5);
-    }
-    #pauseBtn:active {
-      transform: scale(0.9);
     }
     
     /* === ECRANE === */
-    #startScreen, #gameOver, #levelUp, #pauseScreen {
+    #startScreen, #gameOver {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: calc(100% - 160px);
-      background: rgba(10, 10, 10, 0.97);
+      height: calc(100% - 180px);
+      background: rgba(10, 10, 10, 0.98);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -316,44 +287,28 @@
       border-radius: 15px 15px 0 0;
       text-align: center;
       padding: 20px;
-      z-index: 30;
+      z-index: 200;
     }
-    #startScreen h1 {
-      font-size: 32px;
-      margin-bottom: 10px;
-      color: #ff0040;
-      text-shadow: 0 0 25px #ff0040;
-      letter-spacing: 3px;
-      animation: glow 1.5s infinite;
-    }
-    @keyframes glow {
-      0%, 100% { text-shadow: 0 0 20px #ff0040; }
-      50% { text-shadow: 0 0 40px #ff0040, 0 0 60px #ff0040; }
-    }
-    #gameOver h2, #levelUp h2 {
-      font-size: 28px;
-      margin-bottom: 12px;
-      color: #ff0040;
+    #startScreen h1, #gameOver h2 {
+      font-size: 30px;
+      margin-bottom: 15px;
       text-shadow: 0 0 20px #ff0040;
     }
     .info-text {
       margin: 8px 0;
       font-size: 14px;
-      max-width: 300px;
       color: #00ff88;
       font-weight: bold;
-      line-height: 1.4;
     }
     .emoji-row {
       font-size: 30px;
-      margin: 6px 0;
+      margin: 8px 0;
     }
     .stat-row {
       display: flex;
       justify-content: center;
-      align-items: center;
       gap: 10px;
-      margin: 6px 0;
+      margin: 8px 0;
       padding: 10px 15px;
       background: rgba(255, 0, 64, 0.2);
       border-radius: 10px;
@@ -361,11 +316,6 @@
       font-weight: bold;
       color: #ff0040;
       border: 2px solid #ff0040;
-    }
-    .speed-stat {
-      background: rgba(0, 255, 136, 0.2);
-      color: #00ff88;
-      border-color: #00ff88;
     }
     .turbo-info {
       background: rgba(255, 0, 64, 0.3);
@@ -383,79 +333,21 @@
       border-radius: 30px;
       font-size: 18px;
       font-weight: bold;
-      font-family: 'Arial Black', sans-serif;
       cursor: pointer;
       box-shadow: 0 5px 25px rgba(255, 0, 64, 0.7);
-      transition: all 0.2s;
       border: 3px solid #ff6666;
-      text-transform: uppercase;
-      letter-spacing: 2px;
     }
-    .actionBtn:active {
-      transform: scale(0.95);
-    }
-    .hidden {
-      display: none !important;
-    }
-    
-    /* === POWER-UP INDICATOR === */
-    #powerUpIndicator {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 8px;
-      z-index: 10;
-    }
-    .power-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      border: 3px solid white;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    }
-    .shield { background: linear-gradient(145deg, #00d9ff, #0099cc); }
-    .speed { background: linear-gradient(145deg, #ff6666, #ff0040); }
-    .double { background: linear-gradient(145deg, #ffd700, #ffaa00); }
-    
-    /* === VIBRAȚIE === */
-    @keyframes vibrate {
-      0%, 100% { transform: translateX(-50%) rotate(0deg); }
-      25% { transform: translateX(-50%) rotate(-6deg); }
-      75% { transform: translateX(-50%) rotate(6deg); }
-    }
-    .vibrating {
-      animation: vibrate 0.08s infinite;
-    }
-    
-    /* === EXPLOSION EFFECT === */
-    .explosion {
-      position: absolute;
-      width: 100px;
-      height: 100px;
-      background: radial-gradient(circle, #ff6666 0%, #ff0040 50%, transparent 70%);
-      border-radius: 50%;
-      animation: explode 0.4s ease-out forwards;
-    }
-    @keyframes explode {
-      0% { transform: scale(0.5); opacity: 1; }
-      100% { transform: scale(2.5); opacity: 0; }
-    }
+    .hidden { display: none !important; }
     
     /* === SCREEN SHAKE === */
+    .shaking {
+      animation: screenShake 0.2s infinite;
+    }
     @keyframes screenShake {
       0%, 100% { transform: translate(0, 0); }
-      25% { transform: translate(-5px, -5px); }
-      50% { transform: translate(5px, 5px); }
-      75% { transform: translate(-5px, 5px); }
-    }
-    .shaking {
-      animation: screenShake 0.3s infinite;
+      25% { transform: translate(-4px, -4px); }
+      50% { transform: translate(4px, 4px); }
+      75% { transform: translate(-4px, 4px); }
     }
   </style>
 </head>
@@ -463,7 +355,6 @@
   <div id="gameContainer">
     <canvas id="game" width="420" height="520"></canvas>
     
-    <!-- ZONE DE CONTROL -->
     <div id="touchControls">
       <div class="touchZone left" id="touchLeft">
         <span class="touchHint">⬅️</span>
@@ -473,10 +364,8 @@
       </div>
     </div>
     
-    <!-- BUTON PAUZĂ -->
     <button id="pauseBtn">⏸️</button>
     
-    <!-- SPEED METER -->
     <div id="speedMeter">
       <div id="turboMode">TURBO!</div>
       <div id="speedValue">50</div>
@@ -484,22 +373,16 @@
       <div id="speedBar"><div id="speedBarFill"></div></div>
     </div>
     
-    <!-- SCORE -->
     <div id="scoreDisplay">
       <div id="scoreValue">0 / 50</div>
       <div id="scoreLabel">⭐ PUNCTE</div>
     </div>
     
-    <!-- POWER-UP INDICATOR -->
-    <div id="powerUpIndicator"></div>
-    
-    <!-- TURBO BUTTON -->
     <button id="turboButton">
       <span>🚀</span>
       <span>TURBO</span>
     </button>
     
-    <!-- VOLAN -->
     <div id="steeringWheel">
       <div id="wheelRotation">
         <div id="wheelBase"></div>
@@ -512,20 +395,17 @@
       </div>
     </div>
     
-    <!-- ECRANE -->
     <div id="startScreen">
       <h1>🏎️ TURBO HOLD 🏎️</h1>
-      <p class="info-text">👦 Ține apăsat pentru viteză!</p>
-      <div class="emoji-row">🖐️ Atinge STÂNGA sau DREAPTA!</div>
-      <div class="emoji-row">🎮 Sau învârte VOLANUL!</div>
+      <p class="info-text">👦 Ține apăsat TURBO pentru viteză!</p>
+      <div class="emoji-row">🖐️ Atinge stânga/dreapta pentru viraj!</div>
       <div class="turbo-info">
-        <p class="info-text" style="color: #ff6666;">⚡ ȚINE APĂSAT BUTONUL TURBO ⚡</p>
-        <p class="info-text">Viteza crește cât ții apăsat!</p>
+        <p class="info-text" style="color: #ff6666;">⚡ ȚINE APĂSAT BUTONUL MARE ⚡</p>
+        <p class="info-text">Viteza crește RAPID!</p>
         <p class="info-text">Max: <span style="color: #ff0040;">350 km/h</span></p>
       </div>
       <div class="stat-row">🟧 EVITĂ OBSTACOLELE!</div>
       <div class="stat-row">💥 DACĂ TE LOVEȘTI - PIERZI!</div>
-      <div class="stat-row">⭐ ADUNĂ 50 DE PUNCTE!</div>
       <button class="actionBtn" id="startBtn">🚀 START!</button>
     </div>
     
@@ -535,35 +415,17 @@
         <span>⭐ Puncte:</span>
         <span id="finalScore">0</span>
       </div>
-      <div class="stat-row speed-stat">
+      <div class="stat-row">
         <span>🚀 Viteză:</span>
         <span id="finalSpeed">0</span> km/h
       </div>
-      <div class="stat-row">
-        <span>🏆 Record:</span>
-        <span id="personalBest">0</span>
-      </div>
-      <p id="message" class="info-text">Mai încearcă, campionule!</p>
+      <p id="message" class="info-text">Mai încearcă!</p>
       <button class="actionBtn" id="restartBtn">🔄 DIN NOU!</button>
-    </div>
-    
-    <div id="levelUp" class="hidden">
-      <h2>🎉 NIVEL NOU!</h2>
-      <p id="levelUpText" class="info-text">Ai progresat!</p>
-      <div class="emoji-row">🏎️💨🔥</div>
-      <button class="actionBtn" id="continueBtn">▶ CONTINUĂ!</button>
-    </div>
-    
-    <div id="pauseScreen" class="hidden">
-      <h2>⏸️ PAUZĂ</h2>
-      <p class="info-text">Apasă pe buton pentru a continua!</p>
-      <div class="emoji-row">🏎️</div>
-      <button class="actionBtn" id="resumeBtn">▶ CONTINUĂ!</button>
     </div>
   </div>
 
   <script>
-    // === CONFIG ===
+    // === ELEMENTE ===
     const canvas = document.getElementById('game');
     const ctx = canvas.getContext('2d');
     const scoreValue = document.getElementById('scoreValue');
@@ -573,146 +435,24 @@
     const turboButton = document.getElementById('turboButton');
     const finalScoreEl = document.getElementById('finalScore');
     const finalSpeedEl = document.getElementById('finalSpeed');
-    const personalBestEl = document.getElementById('personalBest');
     const messageEl = document.getElementById('message');
-    const levelUpText = document.getElementById('levelUpText');
     const startScreen = document.getElementById('startScreen');
     const gameOverScreen = document.getElementById('gameOver');
-    const levelUpScreen = document.getElementById('levelUp');
-    const pauseScreen = document.getElementById('pauseScreen');
-    const powerUpIndicator = document.getElementById('powerUpIndicator');
     const wheelRotation = document.getElementById('wheelRotation');
     const touchLeft = document.getElementById('touchLeft');
     const touchRight = document.getElementById('touchRight');
+    const gameContainer = document.getElementById('gameContainer');
     
-    const startBtn = document.getElementById('startBtn');
-    const restartBtn = document.getElementById('restartBtn');
-    const continueBtn = document.getElementById('continueBtn');
-    const resumeBtn = document.getElementById('resumeBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
-
-    // === AUDIO ===
-    let soundEnabled = true;
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    let engineOscillator = null;
-    let engineGain = null;
-    
-    function initEngineSound() {
-      if (!soundEnabled || engineOscillator) return;
-      engineOscillator = audioCtx.createOscillator();
-      engineGain = audioCtx.createGain();
-      engineOscillator.connect(engineGain);
-      engineGain.connect(audioCtx.destination);
-      engineOscillator.type = 'sawtooth';
-      engineOscillator.frequency.value = 80;
-      engineGain.gain.value = 0;
-      engineOscillator.start();
-    }
-    
-    function updateEngineSound() {
-      if (!soundEnabled || !engineOscillator) return;
-      const baseFreq = 80 + (currentSpeedKmh / 350) * 250;
-      const turboBoost = isTurbo ? 50 : 0;
-      engineOscillator.frequency.setValueAtTime(baseFreq + turboBoost, audioCtx.currentTime);
-      engineGain.gain.setValueAtTime(gameRunning && !gamePaused ? 0.08 : 0, audioCtx.currentTime);
-    }
-    
-    function stopEngineSound() {
-      if (engineGain) {
-        engineGain.gain.setValueAtTime(0, audioCtx.currentTime);
-      }
-    }
-    
-    function playSound(type) {
-      if (!soundEnabled) return;
-      try {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        
-        const now = audioCtx.currentTime;
-        
-        switch(type) {
-          case 'score':
-            osc.frequency.setValueAtTime(440, now);
-            osc.frequency.setValueAtTime(554, now + 0.06);
-            osc.frequency.setValueAtTime(659, now + 0.12);
-            gain.gain.setValueAtTime(0.15, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
-            osc.start(now);
-            osc.stop(now + 0.18);
-            break;
-          case 'powerup':
-            osc.frequency.setValueAtTime(523, now);
-            osc.frequency.exponentialRampToValueAtTime(1047, now + 0.2);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-            osc.start(now);
-            osc.stop(now + 0.2);
-            break;
-          case 'collision':
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(150, now);
-            osc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
-            gain.gain.setValueAtTime(0.35, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
-            osc.start(now);
-            osc.stop(now + 0.35);
-            break;
-          case 'win':
-            const notes = [523, 659, 784, 1047, 1319, 1568];
-            notes.forEach((freq, i) => {
-              setTimeout(() => {
-                const o = audioCtx.createOscillator();
-                const g = audioCtx.createGain();
-                o.connect(g);
-                g.connect(audioCtx.destination);
-                o.frequency.value = freq;
-                o.type = 'square';
-                g.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
-                o.start();
-                o.stop(audioCtx.currentTime + 0.12);
-              }, i * 100);
-            });
-            break;
-          case 'turboStart':
-            osc.frequency.setValueAtTime(200, now);
-            osc.frequency.exponentialRampToValueAtTime(600, now + 0.3);
-            gain.gain.setValueAtTime(0.2, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-            osc.start(now);
-            osc.stop(now + 0.3);
-            break;
-          case 'turboMax':
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(400, now);
-            osc.frequency.exponentialRampToValueAtTime(800, now + 0.2);
-            gain.gain.setValueAtTime(0.25, now);
-            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-            osc.start(now);
-            osc.stop(now + 0.2);
-            break;
-        }
-      } catch(e) {}
-    }
-
     // === STARE JOC ===
     let gameRunning = false;
     let gamePaused = false;
     let score = 0;
-    let currentSpeedKmh = 50;
-    let targetSpeedKmh = 50;
-    const MIN_SPEED = 50;
-    const TURBO_MAX_SPEED = 350;
-    let level = 1;
-    let animationId;
-    let highScore = localStorage.getItem('carGameHighScore') || 0;
-    
-    // === TURBO ===
+    let currentSpeed = 50;
+    let targetSpeed = 50;
     let isTurbo = false;
-    let turboInterval = null;
+    let turboTimer = null;
+    let animationId = null;
+    let highScore = localStorage.getItem('carHighScore') || 0;
     
     // === MAȘINA ===
     const car = {
@@ -720,365 +460,297 @@
       y: canvas.height - 110,
       width: 60,
       height: 80,
-      speed: 6,
+      steerSpeed: 6,
       color: '#ff0040',
-      shield: false,
-      shieldTime: 0,
       angle: 0
     };
     
     // === OBSTACOLE ===
     let obstacles = [];
-    let powerUps = [];
-    const obstacleColors = ['#ff6666', '#ffd700', '#ff8c00'];
-    const powerUpTypes = [
-      { color: '#00d9ff', effect: 'shield', icon: '🛡️', duration: 3500 },
-      { color: '#00ff88', effect: 'speed', icon: '⚡', duration: 2500 },
-      { color: '#ffd700', effect: 'double', icon: '💎', duration: 3000 }
-    ];
+    let lastObstacleTime = 0;
     
     // === CONTROALE ===
-    let steeringAngle = 0;
-    let lastObstacleTime = 0;
-    let lastPowerUpTime = 0;
+    let steerLeft = false;
+    let steerRight = false;
+    let wheelAngle = 0;
+    const maxWheelAngle = 45;
     
-    // === VOLAN ===
-    let isDragging = false;
-    const maxSteerAngle = 45;
+    // === SUNETE ===
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     
-    function updateSteering(clientX) {
-      const rect = document.getElementById('steeringWheel').getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const deltaX = clientX - centerX;
-      const maxDelta = 60;
-      steeringAngle = Math.max(-1, Math.min(1, deltaX / maxDelta));
-      
-      const rotation = steeringAngle * maxSteerAngle;
-      wheelRotation.style.transform = `rotate(${rotation}deg)`;
+    function playSound(type) {
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        if (type === 'score') {
+          osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+          osc.frequency.setValueAtTime(659, audioCtx.currentTime + 0.1);
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.15);
+        } else if (type === 'crash') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.3);
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.3);
+        } else if (type === 'turbo') {
+          osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.2);
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.2);
+        } else if (type === 'win') {
+          [523, 659, 784, 1047].forEach((freq, i) => {
+            setTimeout(() => {
+              const o = audioCtx.createOscillator();
+              const g = audioCtx.createGain();
+              o.connect(g);
+              g.connect(audioCtx.destination);
+              o.frequency.value = freq;
+              g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+              g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+              o.start();
+              o.stop(audioCtx.currentTime + 0.15);
+            }, i * 100);
+          });
+        }
+      } catch(e) {}
     }
     
-    document.getElementById('steeringWheel').addEventListener('mousedown', (e) => {
-      if (!gameRunning || gamePaused) return;
-      isDragging = true;
-      updateSteering(e.clientX);
-    });
-    
-    document.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      updateSteering(e.clientX);
-    });
-    
-    document.addEventListener('mouseup', () => {
-      isDragging = false;
-      steeringAngle = 0;
-      wheelRotation.style.transform = 'rotate(0deg)';
-    });
-    
-    document.getElementById('steeringWheel').addEventListener('touchstart', (e) => {
-      if (!gameRunning || gamePaused) return;
-      e.preventDefault();
-      isDragging = true;
-      updateSteering(e.touches[0].clientX);
-    }, { passive: false });
-    
-    document.addEventListener('touchmove', (e) => {
-      if (!isDragging) return;
-      updateSteering(e.touches[0].clientX);
-    }, { passive: false });
-    
-    document.addEventListener('touchend', () => {
-      isDragging = false;
-      steeringAngle = 0;
-      wheelRotation.style.transform = 'rotate(0deg)';
-    });
-    
     // === TURBO BUTTON - FIXAT ===
-    function startTurbo(e) {
-      if (e) e.preventDefault();
+    function startTurbo() {
       if (!gameRunning || gamePaused || isTurbo) return;
       
+      console.log('TURBO START!');
       isTurbo = true;
       turboButton.classList.add('active');
       turboMode.classList.add('active');
-      document.getElementById('gameContainer').classList.add('shaking');
-      playSound('turboStart');
+      gameContainer.classList.add('shaking');
+      playSound('turbo');
       
-      // Clear any existing interval
-      if (turboInterval) clearInterval(turboInterval);
+      // Clear any existing timer
+      if (turboTimer) clearInterval(turboTimer);
       
-      // Crește viteza progresiv
-      turboInterval = setInterval(() => {
-        if (targetSpeedKmh < TURBO_MAX_SPEED) {
-          targetSpeedKmh += 8; // Creștere mai rapidă
-          if (targetSpeedKmh > TURBO_MAX_SPEED) targetSpeedKmh = TURBO_MAX_SPEED;
-          updateEngineSound();
-          
-          if (targetSpeedKmh >= TURBO_MAX_SPEED) {
-            playSound('turboMax');
-          }
+      // Crește viteza FOARTE RAPID
+      turboTimer = setInterval(function() {
+        if (targetSpeed < 350) {
+          targetSpeed += 30; // +30 km/h la fiecare 50ms
+          if (targetSpeed > 350) targetSpeed = 350;
+          updateSpeedDisplay();
         }
-      }, 100); // La fiecare 100ms
+      }, 50);
     }
     
-    function stopTurbo(e) {
-      if (e) e.preventDefault();
-      if (turboInterval) {
-        clearInterval(turboInterval);
-        turboInterval = null;
+    function stopTurbo() {
+      if (!isTurbo) return;
+      
+      console.log('TURBO STOP!');
+      if (turboTimer) {
+        clearInterval(turboTimer);
+        turboTimer = null;
       }
       
       isTurbo = false;
       turboButton.classList.remove('active');
       turboMode.classList.remove('active');
-      document.getElementById('gameContainer').classList.remove('shaking');
-      targetSpeedKmh = MIN_SPEED;
+      gameContainer.classList.remove('shaking');
+      targetSpeed = 50;
+      updateSpeedDisplay();
     }
     
-    // Mouse events
-    turboButton.addEventListener('mousedown', (e) => {
+    // Mouse events pentru turbo button
+    turboButton.addEventListener('mousedown', function(e) {
       e.preventDefault();
-      startTurbo(e);
-    });
-    document.addEventListener('mouseup', (e) => {
-      if (isTurbo) stopTurbo(e);
+      e.stopPropagation();
+      startTurbo();
     });
     
-    // Touch events
-    turboButton.addEventListener('touchstart', (e) => {
+    turboButton.addEventListener('mouseup', function(e) {
       e.preventDefault();
-      startTurbo(e);
+      e.stopPropagation();
+      stopTurbo();
+    });
+    
+    turboButton.addEventListener('mouseleave', function(e) {
+      e.preventDefault();
+      stopTurbo();
+    });
+    
+    // Touch events pentru turbo button
+    turboButton.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      startTurbo();
     }, { passive: false });
-    turboButton.addEventListener('touchend', (e) => {
+    
+    turboButton.addEventListener('touchend', function(e) {
       e.preventDefault();
-      stopTurbo(e);
-    });
-    turboButton.addEventListener('touchcancel', (e) => {
-      e.preventDefault();
-      stopTurbo(e);
+      e.stopPropagation();
+      stopTurbo();
     });
     
-    // === ZONE TOUCH ===
-    function handleTouchLeft(e) {
+    turboButton.addEventListener('touchcancel', function(e) {
+      e.preventDefault();
+      stopTurbo();
+    });
+    
+    // === ZONE TOUCH PENTRU VIRAJ ===
+    function handleLeftStart(e) {
       e.preventDefault();
       if (!gameRunning || gamePaused) return;
-      steeringAngle = -1;
-      wheelRotation.style.transform = `rotate(-${maxSteerAngle}deg)`;
+      steerLeft = true;
+      steerRight = false;
+      wheelAngle = -maxWheelAngle;
+      wheelRotation.style.transform = 'rotate(' + wheelAngle + 'deg)';
       touchLeft.classList.add('active');
     }
     
-    function handleTouchRight(e) {
+    function handleRightStart(e) {
       e.preventDefault();
       if (!gameRunning || gamePaused) return;
-      steeringAngle = 1;
-      wheelRotation.style.transform = `rotate(${maxSteerAngle}deg)`;
+      steerRight = true;
+      steerLeft = false;
+      wheelAngle = maxWheelAngle;
+      wheelRotation.style.transform = 'rotate(' + wheelAngle + 'deg)';
       touchRight.classList.add('active');
     }
     
-    function releaseTouch() {
-      steeringAngle = 0;
+    function handleRelease(e) {
+      e.preventDefault();
+      steerLeft = false;
+      steerRight = false;
+      wheelAngle = 0;
       wheelRotation.style.transform = 'rotate(0deg)';
       touchLeft.classList.remove('active');
       touchRight.classList.remove('active');
     }
     
-    touchLeft.addEventListener('touchstart', handleTouchLeft, { passive: false });
-    touchLeft.addEventListener('touchend', releaseTouch);
-    touchLeft.addEventListener('mousedown', handleTouchLeft);
-    touchLeft.addEventListener('mouseup', releaseTouch);
-    touchLeft.addEventListener('mouseleave', releaseTouch);
+    touchLeft.addEventListener('touchstart', handleLeftStart, { passive: false });
+    touchLeft.addEventListener('touchend', handleRelease);
+    touchLeft.addEventListener('mousedown', handleLeftStart);
+    touchLeft.addEventListener('mouseup', handleRelease);
+    touchLeft.addEventListener('mouseleave', handleRelease);
     
-    touchRight.addEventListener('touchstart', handleTouchRight, { passive: false });
-    touchRight.addEventListener('touchend', releaseTouch);
-    touchRight.addEventListener('mousedown', handleTouchRight);
-    touchRight.addEventListener('mouseup', releaseTouch);
-    touchRight.addEventListener('mouseleave', releaseTouch);
+    touchRight.addEventListener('touchstart', handleRightStart, { passive: false });
+    touchRight.addEventListener('touchend', handleRelease);
+    touchRight.addEventListener('mousedown', handleRightStart);
+    touchRight.addEventListener('mouseup', handleRelease);
+    touchRight.addEventListener('mouseleave', handleRelease);
     
     // === TASTATURĂ ===
-    let keyboardTurbo = false;
-    window.addEventListener('keydown', (e) => {
+    window.addEventListener('keydown', function(e) {
       if (e.key === 'ArrowLeft') {
-        steeringAngle = -1;
-        wheelRotation.style.transform = `rotate(-${maxSteerAngle}deg)`;
+        steerLeft = true;
+        steerRight = false;
+        wheelAngle = -maxWheelAngle;
+        wheelRotation.style.transform = 'rotate(' + wheelAngle + 'deg)';
       }
       if (e.key === 'ArrowRight') {
-        steeringAngle = 1;
-        wheelRotation.style.transform = `rotate(${maxSteerAngle}deg)`;
+        steerRight = true;
+        steerLeft = false;
+        wheelAngle = maxWheelAngle;
+        wheelRotation.style.transform = 'rotate(' + wheelAngle + 'deg)';
       }
-      if (e.key === ' ' && gameRunning && !gamePaused && !keyboardTurbo) {
-        keyboardTurbo = true;
-        startTurbo(e);
+      if (e.key === ' ' && gameRunning && !gamePaused) {
+        startTurbo();
       }
-      if (e.key === 'Escape' && gameRunning) togglePause();
+      if (e.key === 'Escape') {
+        if (gameRunning) {
+          gameRunning = false;
+          cancelAnimationFrame(animationId);
+          if (turboTimer) clearInterval(turboTimer);
+          startScreen.classList.remove('hidden');
+        }
+      }
     });
     
-    window.addEventListener('keyup', (e) => {
+    window.addEventListener('keyup', function(e) {
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-        steeringAngle = 0;
+        steerLeft = false;
+        steerRight = false;
+        wheelAngle = 0;
         wheelRotation.style.transform = 'rotate(0deg)';
       }
-      if (e.key === ' ' && keyboardTurbo) {
-        keyboardTurbo = false;
-        stopTurbo(e);
+      if (e.key === ' ') {
+        stopTurbo();
       }
     });
     
-    // === BUTOANE ===
-    pauseBtn.addEventListener('click', () => {
-      if (gameRunning) togglePause();
+    // === BUTON PAUZĂ ===
+    document.getElementById('pauseBtn').addEventListener('click', function() {
+      if (gameRunning) {
+        gameRunning = false;
+        cancelAnimationFrame(animationId);
+        if (turboTimer) clearInterval(turboTimer);
+        startScreen.classList.remove('hidden');
+      }
     });
     
-    function resetCar() {
-      car.x = canvas.width / 2 - 30;
-      car.shield = false;
-      car.angle = 0;
-      updatePowerUpIndicator();
-      steeringAngle = 0;
-      wheelRotation.style.transform = 'rotate(0deg)';
-      currentSpeedKmh = MIN_SPEED;
-      targetSpeedKmh = MIN_SPEED;
-      isTurbo = false;
-      updateSpeedDisplay();
-      
-      turboButton.classList.remove('active');
-      turboMode.classList.remove('active');
-      document.getElementById('gameContainer').classList.remove('shaking');
-    }
+    // === START/RESTART ===
+    document.getElementById('startBtn').addEventListener('click', startGame);
+    document.getElementById('restartBtn').addEventListener('click', startGame);
     
-    // === UPDATE SPEED ===
-    function updateSpeed() {
-      if (currentSpeedKmh < targetSpeedKmh) {
-        currentSpeedKmh += 4;
-      } else if (currentSpeedKmh > targetSpeedKmh) {
-        currentSpeedKmh -= 5;
-      }
-      
-      currentSpeedKmh = Math.max(MIN_SPEED, Math.min(TURBO_MAX_SPEED, currentSpeedKmh));
-      
-      updateSpeedDisplay();
-      updateEngineSound();
-    }
-    
-    function updateSpeedDisplay() {
-      speedValue.textContent = Math.round(currentSpeedKmh);
-      const percentage = ((currentSpeedKmh - MIN_SPEED) / (TURBO_MAX_SPEED - MIN_SPEED)) * 100;
-      speedBarFill.style.width = percentage + '%';
-      
-      if (currentSpeedKmh >= 300) {
-        speedValue.style.color = '#ff0040';
-        speedValue.style.textShadow = '0 0 20px #ff0040';
-      } else if (currentSpeedKmh >= 200) {
-        speedValue.style.color = '#ffaa44';
-        speedValue.style.textShadow = '0 0 15px #ffaa44';
-      } else {
-        speedValue.style.color = '#00ff88';
-        speedValue.style.textShadow = '0 0 15px #00ff88';
-      }
-    }
-    
-    function getGameSpeed() {
-      return 2 + (currentSpeedKmh / TURBO_MAX_SPEED) * 12;
-    }
-    
-    // === START JOC ===
     function startGame() {
-      initEngineSound();
+      // Resume audio context
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
       
       startScreen.classList.add('hidden');
       gameOverScreen.classList.add('hidden');
-      levelUpScreen.classList.add('hidden');
-      pauseScreen.classList.add('hidden');
       
       score = 0;
-      level = 1;
-      currentSpeedKmh = MIN_SPEED;
-      targetSpeedKmh = MIN_SPEED;
+      currentSpeed = 50;
+      targetSpeed = 50;
+      isTurbo = false;
+      car.x = canvas.width / 2 - 30;
+      car.angle = 0;
+      obstacles = [];
+      lastObstacleTime = Date.now();
+      
       scoreValue.textContent = '0 / 50';
       updateSpeedDisplay();
-      
-      resetCar();
-      obstacles = [];
-      powerUps = [];
-      lastObstacleTime = Date.now();
-      lastPowerUpTime = Date.now();
       
       gameRunning = true;
       gamePaused = false;
       gameLoop();
-      spawnLoop();
     }
     
-    startBtn.addEventListener('click', startGame);
-    restartBtn.addEventListener('click', startGame);
-    continueBtn.addEventListener('click', () => {
-      levelUpScreen.classList.add('hidden');
-      gameRunning = true;
-      gameLoop();
-      spawnLoop();
-    });
-    resumeBtn.addEventListener('click', togglePause);
-    
-    // === PAUZĂ ===
-    function togglePause() {
-      if (!gameRunning) return;
-      gamePaused = !gamePaused;
-      if (gamePaused) {
-        cancelAnimationFrame(animationId);
-        stopTurbo();
-        stopEngineSound();
-        pauseScreen.classList.remove('hidden');
+    function updateSpeedDisplay() {
+      speedValue.textContent = Math.round(currentSpeed);
+      const pct = ((currentSpeed - 50) / (350 - 50)) * 100;
+      speedBarFill.style.width = pct + '%';
+      
+      if (currentSpeed >= 300) {
+        speedValue.style.color = '#ff0040';
+      } else if (currentSpeed >= 200) {
+        speedValue.style.color = '#ffaa44';
       } else {
-        pauseScreen.classList.add('hidden');
-        gameLoop();
-        spawnLoop();
+        speedValue.style.color = '#00ff88';
       }
     }
     
-    // === SPAWN ===
-    function spawnLoop() {
-      if (!gameRunning || gamePaused) return;
-      
-      const now = Date.now();
-      const gameSpeed = getGameSpeed();
-      
-      const obstacleRate = 2000 - (currentSpeedKmh / TURBO_MAX_SPEED) * 1200;
-      if (now - lastObstacleTime > obstacleRate) {
-        spawnObstacle();
-        lastObstacleTime = now;
-      }
-      
-      if (now - lastPowerUpTime > 4000) {
-        if (Math.random() < 0.6) spawnPowerUp();
-        lastPowerUpTime = now;
-      }
-      
-      setTimeout(spawnLoop, 80);
+    function getGameSpeed() {
+      return 2 + (currentSpeed / 350) * 12;
     }
     
+    // === SPAWN OBSTACOLE ===
     function spawnObstacle() {
-      if (!gameRunning || gamePaused) return;
-      const color = obstacleColors[Math.floor(Math.random() * obstacleColors.length)];
       const width = 50 + Math.random() * 35;
       obstacles.push({
         x: Math.random() * (canvas.width - width),
         y: -60,
         width: width,
         height: 50,
-        color: color,
-        passed: false,
-        emoji: ['🟧', '🚧', '🪨', '🛢️'][Math.floor(Math.random() * 4)]
-      });
-    }
-    
-    function spawnPowerUp() {
-      if (!gameRunning || gamePaused) return;
-      const type = powerUpTypes[Math.floor(Math.random() * powerUpTypes.length)];
-      powerUps.push({
-        x: Math.random() * (canvas.width - 45),
-        y: -50,
-        width: 45,
-        height: 45,
-        ...type,
-        collected: false
+        emoji: ['🟧', '🚧', '🪨'][Math.floor(Math.random() * 3)]
       });
     }
     
@@ -1088,68 +760,6 @@
              a.y < b.y + b.height && a.y + a.height > b.y;
     }
     
-    // === POWER-UP ===
-    function updatePowerUpIndicator() {
-      powerUpIndicator.innerHTML = '';
-      if (car.shield) {
-        const icon = document.createElement('div');
-        icon.className = 'power-icon shield';
-        icon.textContent = '🛡️';
-        powerUpIndicator.appendChild(icon);
-      }
-    }
-    
-    function activatePowerUp(type) {
-      playSound('powerup');
-      switch(type) {
-        case 'shield':
-          car.shield = true;
-          car.shieldTime = Date.now() + 3500;
-          break;
-        case 'speed':
-          targetSpeedKmh = TURBO_MAX_SPEED;
-          setTimeout(() => {
-            targetSpeedKmh = MIN_SPEED;
-          }, 2500);
-          break;
-        case 'double':
-          score = Math.min(50, score + 3);
-          scoreValue.textContent = score + ' / 50';
-          break;
-      }
-      updatePowerUpIndicator();
-    }
-    
-    function checkPowerUpExpiry() {
-      const now = Date.now();
-      if (car.shield && now > car.shieldTime) {
-        car.shield = false;
-        updatePowerUpIndicator();
-      }
-    }
-    
-    function checkWin() {
-      if (score >= 50) {
-        gameRunning = false;
-        cancelAnimationFrame(animationId);
-        stopEngineSound();
-        messageEl.textContent = 'EȘTI O LEGENDĂ A CURSELOR! 🏆🔥';
-        playSound('win');
-        createExplosion(canvas.width/2, canvas.height/2);
-        endGame();
-      }
-    }
-    
-    // === EXPLOSION EFFECT ===
-    function createExplosion(x, y) {
-      const explosion = document.createElement('div');
-      explosion.className = 'explosion';
-      explosion.style.left = (x - 50) + 'px';
-      explosion.style.top = (y - 50) + 'px';
-      document.getElementById('gameContainer').appendChild(explosion);
-      setTimeout(() => explosion.remove(), 400);
-    }
-    
     // === DESENARE ===
     function drawCar() {
       ctx.save();
@@ -1157,327 +767,160 @@
       ctx.rotate(car.angle * Math.PI / 180);
       ctx.translate(-car.width/2, -car.height/2);
       
-      ctx.fillStyle = 'rgba(0,0,0,0.5)';
-      ctx.fillRect(5, 5, car.width, car.height);
-      
+      // Corp
       ctx.fillStyle = car.color;
-      ctx.beginPath();
-      ctx.moveTo(12, 0);
-      ctx.lineTo(car.width - 12, 0);
-      ctx.lineTo(car.width, 22);
-      ctx.lineTo(car.width, car.height - 12);
-      ctx.lineTo(car.width - 12, car.height);
-      ctx.lineTo(12, car.height);
-      ctx.lineTo(0, car.height - 12);
-      ctx.lineTo(0, 22);
-      ctx.closePath();
-      ctx.fill();
+      ctx.fillRect(0, 0, car.width, car.height);
       
+      // Dungi
       ctx.fillStyle = '#0a0a0a';
       ctx.fillRect(car.width/2 - 10, 0, 20, car.height);
       
-      ctx.strokeStyle = '#ff6666';
-      ctx.lineWidth = 3;
-      ctx.strokeRect(car.width/2 - 10, 0, 20, car.height);
-      
+      // Geam
       ctx.fillStyle = '#00ff88';
-      ctx.beginPath();
-      ctx.moveTo(18, 28);
-      ctx.lineTo(car.width - 18, 28);
-      ctx.lineTo(car.width - 14, 48);
-      ctx.lineTo(14, 48);
-      ctx.closePath();
-      ctx.fill();
+      ctx.fillRect(10, 20, car.width - 20, 25);
       
-      ctx.fillStyle = '#0a0a0a';
-      ctx.fillRect(8, car.height - 18, car.width - 16, 15);
-      
-      ctx.fillStyle = '#0a0a0a';
-      ctx.fillRect(-10, 20, 14, 25);
-      ctx.fillRect(car.width - 4, 20, 14, 25);
-      ctx.fillRect(-10, car.height - 28, 14, 25);
-      ctx.fillRect(car.width - 4, car.height - 28, 14, 25);
-      
-      ctx.fillStyle = '#ff0040';
-      ctx.beginPath();
-      ctx.arc(-2, 32, 6, 0, Math.PI * 2);
-      ctx.arc(car.width + 2, 32, 6, 0, Math.PI * 2);
-      ctx.arc(-2, car.height - 15, 6, 0, Math.PI * 2);
-      ctx.arc(car.width + 2, car.height - 15, 6, 0, Math.PI * 2);
-      ctx.fill();
-      
+      // Faruri
       ctx.fillStyle = '#ffd700';
-      ctx.beginPath();
-      ctx.ellipse(18, 4, 10, 6, 0, 0, Math.PI * 2);
-      ctx.ellipse(car.width - 18, 4, 10, 6, 0, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.fillRect(8, 2, 12, 8);
+      ctx.fillRect(car.width - 20, 2, 12, 8);
       
-      if (currentSpeedKmh > 150) {
-        const flameIntensity = (currentSpeedKmh - 150) / 200;
-        const flameCount = 5 + Math.floor(flameIntensity * 5);
-        for (let i = 0; i < flameCount; i++) {
-          const fx = car.width/2 - 25 + i * 12;
-          const fy = car.height + 5 + Math.random() * 50 * flameIntensity;
-          ctx.fillStyle = `rgba(255, ${150 - flameIntensity * 100}, 0, 0.9)`;
-          ctx.beginPath();
-          ctx.moveTo(fx - 5, car.height);
-          ctx.lineTo(fx, fy);
-          ctx.lineTo(fx + 5, car.height);
-          ctx.closePath();
-          ctx.fill();
-        }
-      }
+      // Roți
+      ctx.fillStyle = '#0a0a0a';
+      ctx.fillRect(-8, 15, 12, 20);
+      ctx.fillRect(car.width - 4, 15, 12, 20);
+      ctx.fillRect(-8, car.height - 25, 12, 20);
+      ctx.fillRect(car.width - 4, car.height - 25, 12, 20);
       
+      // Turbo effect
       if (isTurbo) {
-        ctx.strokeStyle = `rgba(255, 0, 64, ${0.5 + Math.random() * 0.5})`;
+        ctx.strokeStyle = 'rgba(255, 0, 64, 0.8)';
         ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.arc(car.width/2, car.height/2, car.width * 0.9, 0, Math.PI * 2);
+        ctx.arc(car.width/2, car.height/2, car.width * 0.7, 0, Math.PI * 2);
         ctx.stroke();
-        
-        for (let i = 0; i < 5; i++) {
-          const angle = Math.random() * Math.PI * 2;
-          const px = car.x + car.width/2 + Math.cos(angle) * car.width * 0.8;
-          const py = car.y + car.height/2 + Math.sin(angle) * car.height * 0.8;
-          ctx.fillStyle = `rgba(255, ${Math.random() * 255}, 0, 0.8)`;
-          ctx.beginPath();
-          ctx.arc(px, py, 3 + Math.random() * 3, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-      
-      if (car.shield) {
-        ctx.strokeStyle = 'rgba(0, 217, 255, 0.9)';
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.ellipse(car.width/2, car.height/2, car.width * 0.85, car.height * 0.75, 0, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.fillStyle = 'rgba(0, 217, 255, 0.15)';
-        ctx.fill();
-        
-        for (let i = 0; i < 8; i++) {
-          const angle = Date.now() / 150 + i * (Math.PI * 2 / 8);
-          const px = car.width/2 + Math.cos(angle) * car.width * 0.7;
-          const py = car.height/2 + Math.sin(angle) * car.height * 0.6;
-          ctx.fillStyle = 'rgba(0, 217, 255, 0.8)';
-          ctx.beginPath();
-          ctx.arc(px, py, 4, 0, Math.PI * 2);
-          ctx.fill();
-        }
       }
       
       ctx.restore();
     }
     
     function drawObstacle(obs) {
-      ctx.fillStyle = 'rgba(0,0,0,0.5)';
-      ctx.fillRect(obs.x + 5, obs.y + 5, obs.width, obs.height);
-      
-      const gradient = ctx.createLinearGradient(obs.x, obs.y, obs.x, obs.y + obs.height);
-      gradient.addColorStop(0, obs.color);
-      gradient.addColorStop(1, 'rgba(0,0,0,0.5)');
-      ctx.fillStyle = gradient;
+      ctx.fillStyle = '#ff6666';
       ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-      
-      ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-      ctx.lineWidth = 3;
-      ctx.strokeRect(obs.x, obs.y, obs.width, obs.height);
-      
-      ctx.fillStyle = 'rgba(0,0,0,0.4)';
-      for (let i = 0; i < 4; i++) {
-        ctx.beginPath();
-        ctx.moveTo(obs.x + i * 18, obs.y);
-        ctx.lineTo(obs.x + i * 18 + 18, obs.y + obs.height);
-        ctx.lineTo(obs.x + i * 18 + 12, obs.y + obs.height);
-        ctx.lineTo(obs.x + i * 18 - 6, obs.y);
-        ctx.closePath();
-        ctx.fill();
-      }
-      
       ctx.fillStyle = 'white';
-      ctx.font = 'bold 30px Arial';
+      ctx.font = 'bold 28px Arial';
       ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(obs.emoji, obs.x + obs.width/2, obs.y + obs.height/2);
-    }
-    
-    function drawPowerUp(pu) {
-      const glow = ctx.createRadialGradient(
-        pu.x + pu.width/2, pu.y + pu.height/2, 0,
-        pu.x + pu.width/2, pu.y + pu.height/2, pu.width * 1.8
-      );
-      glow.addColorStop(0, pu.color + 'BB');
-      glow.addColorStop(1, 'transparent');
-      ctx.fillStyle = glow;
-      ctx.fillRect(pu.x - 20, pu.y - 20, pu.width + 40, pu.height + 40);
-      
-      ctx.fillStyle = pu.color;
-      ctx.beginPath();
-      ctx.arc(pu.x + pu.width/2, pu.y + pu.height/2, pu.width/2, 0, Math.PI * 2);
-      ctx.fill();
-      
-      ctx.strokeStyle = 'white';
-      ctx.lineWidth = 4;
-      ctx.stroke();
-      
-      const pulse = 1 + Math.sin(Date.now() / 80) * 0.15;
-      ctx.save();
-      ctx.translate(pu.x + pu.width/2, pu.y + pu.height/2);
-      ctx.scale(pulse, pulse);
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 30px Arial';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(pu.icon, 0, 0);
-      ctx.restore();
+      ctx.fillText(obs.emoji, obs.x + obs.width/2, obs.y + obs.height/2 + 8);
     }
     
     function drawRoad() {
+      // Drum
       ctx.fillStyle = '#1a1a1a';
       ctx.fillRect(25, 0, canvas.width - 50, canvas.height);
       
+      // Linii
       ctx.fillStyle = '#fff';
-      ctx.fillRect(30, 0, 10, canvas.height);
-      ctx.fillRect(canvas.width - 40, 0, 10, canvas.height);
+      ctx.fillRect(30, 0, 8, canvas.height);
+      ctx.fillRect(canvas.width - 38, 0, 8, canvas.height);
       
-      ctx.fillStyle = '#ff0040';
-      const stripeHeight = 40;
-      const stripeGap = 30;
-      const offset = (Date.now() / 30 * getGameSpeed()) % (stripeHeight + stripeGap);
-      for (let y = -offset; y < canvas.height; y += stripeHeight + stripeGap) {
-        ctx.fillRect(25, y, 5, stripeHeight);
-        ctx.fillRect(canvas.width - 30, y, 5, stripeHeight);
-      }
-      
-      ctx.setLineDash([50, 40]);
+      // Linii centrale animate
+      ctx.setLineDash([40, 35]);
       ctx.lineDashOffset = -Date.now() / 25 * getGameSpeed();
       ctx.strokeStyle = '#ffd700';
-      ctx.lineWidth = 8;
+      ctx.lineWidth = 6;
       ctx.beginPath();
       ctx.moveTo(canvas.width / 2, 0);
       ctx.lineTo(canvas.width / 2, canvas.height);
       ctx.stroke();
       ctx.setLineDash([]);
       
+      // Speed lines
       ctx.fillStyle = 'rgba(255, 0, 64, 0.15)';
-      const lineCount = Math.floor(10 + (currentSpeedKmh / TURBO_MAX_SPEED) * 15);
-      for (let i = 0; i < lineCount; i++) {
+      const count = Math.floor(10 + (currentSpeed / 350) * 10);
+      for (let i = 0; i < count; i++) {
         const x = 35 + i * 25;
         const y = ((Date.now() / 40 * getGameSpeed()) + i * 50) % canvas.height;
-        ctx.fillRect(x, y, 5, 70);
-      }
-    }
-    
-    function drawGrid() {
-      ctx.strokeStyle = 'rgba(255, 0, 64, 0.2)';
-      ctx.lineWidth = 1;
-      const gridOffset = (Date.now() / 20 * getGameSpeed()) % 50;
-      for (let y = gridOffset; y < canvas.height; y += 50) {
-        ctx.beginPath();
-        ctx.moveTo(25, y);
-        ctx.lineTo(canvas.width - 25, y);
-        ctx.stroke();
-      }
-      
-      for (let x = 50; x < canvas.width - 25; x += 60) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, canvas.height);
-        ctx.stroke();
+        ctx.fillRect(x, y, 4, 60);
       }
     }
     
     // === UPDATE ===
     function update() {
-      checkPowerUpExpiry();
-      updateSpeed();
+      // Update speed
+      if (currentSpeed < targetSpeed) {
+        currentSpeed += 6;
+      } else if (currentSpeed > targetSpeed) {
+        currentSpeed -= 8;
+      }
+      currentSpeed = Math.max(50, Math.min(350, currentSpeed));
+      updateSpeedDisplay();
       
-      const gameSpeed = getGameSpeed();
-      
-      if (steeringAngle !== 0) {
-        car.x += steeringAngle * car.speed;
-        car.angle = steeringAngle * 20;
-        
-        if (car.x < 30) car.x = 30;
-        if (car.x > canvas.width - car.width - 30) car.x = canvas.width - car.width - 30;
+      // Move car
+      if (steerLeft && car.x > 30) {
+        car.x -= car.steerSpeed;
+        car.angle = -15;
+      } else if (steerRight && car.x < canvas.width - car.width - 30) {
+        car.x += car.steerSpeed;
+        car.angle = 15;
       } else {
         car.angle *= 0.8;
       }
       
+      // Spawn obstacles
+      const now = Date.now();
+      const rate = 1500 - (currentSpeed / 350) * 800;
+      if (now - lastObstacleTime > rate) {
+        spawnObstacle();
+        lastObstacleTime = now;
+      }
+      
+      // Update obstacles
+      const gameSpeed = getGameSpeed();
       for (let i = obstacles.length - 1; i >= 0; i--) {
         const obs = obstacles[i];
         obs.y += gameSpeed;
         
+        // Score
         if (!obs.passed && obs.y > car.y + car.height) {
           obs.passed = true;
           score++;
           scoreValue.textContent = score + ' / 50';
           playSound('score');
-          checkWin();
-        }
-        
-        if (checkCollision(car, obs)) {
-          if (car.shield) {
-            car.shield = false;
-            obstacles.splice(i, 1);
-            updatePowerUpIndicator();
-            playSound('powerup');
-            createExplosion(obs.x + obs.width/2, obs.y + obs.height/2);
-            document.getElementById('steeringWheel').classList.add('vibrating');
-            setTimeout(() => {
-              document.getElementById('steeringWheel').classList.remove('vibrating');
-            }, 250);
-          } else {
-            createExplosion(car.x + car.width/2, car.y + car.height/2);
-            playSound('collision');
+          
+          if (score >= 50) {
+            gameRunning = false;
+            cancelAnimationFrame(animationId);
+            if (turboTimer) clearInterval(turboTimer);
+            messageEl.textContent = 'EȘTI O LEGENDĂ! 🏆🔥';
+            playSound('win');
             endGame();
             return;
           }
         }
         
-        if (obs.y > canvas.height) obstacles.splice(i, 1);
-      }
-      
-      for (let i = powerUps.length - 1; i >= 0; i--) {
-        const pu = powerUps[i];
-        pu.y += gameSpeed;
-        
-        if (checkCollision(car, pu)) {
-          activatePowerUp(pu.effect);
-          powerUps.splice(i, 1);
-          continue;
+        // Collision
+        if (checkCollision(car, obs)) {
+          playSound('crash');
+          gameRunning = false;
+          cancelAnimationFrame(animationId);
+          if (turboTimer) clearInterval(turboTimer);
+          endGame();
+          return;
         }
         
-        if (pu.y > canvas.height) powerUps.splice(i, 1);
+        // Remove off-screen
+        if (obs.y > canvas.height) {
+          obstacles.splice(i, 1);
+        }
       }
     }
     
-    // === GAME OVER ===
     function endGame() {
-      gameRunning = false;
-      cancelAnimationFrame(animationId);
-      stopEngineSound();
-      stopTurbo();
-      
       finalScoreEl.textContent = score;
-      finalSpeedEl.textContent = Math.round(currentSpeedKmh);
+      finalSpeedEl.textContent = Math.round(currentSpeed);
       
       if (score > highScore) {
         highScore = score;
-        localStorage.setItem('carGameHighScore', highScore);
-        personalBestEl.textContent = highScore + ' 🔥';
-      } else {
-        personalBestEl.textContent = highScore;
-      }
-      
-      if (score >= 50) {
-        messageEl.textContent = 'EȘTI O LEGENDĂ! 🏆🔥';
-      } else if (score >= 35) {
-        messageEl.textContent = 'FOARTE BINE, CAMPIONULE! 💪';
-      } else if (score >= 20) {
-        messageEl.textContent = 'BINE! MAI POȚI MAI REPEDE! 🚀';
-      } else {
-        messageEl.textContent = 'ÎNCEARCĂ DIN NOU, EROULE! 🏎️';
+        localStorage.setItem('carHighScore', highScore);
       }
       
       gameOverScreen.classList.remove('hidden');
@@ -1485,13 +928,11 @@
     
     // === GAME LOOP ===
     function gameLoop() {
-      if (!gameRunning || gamePaused) return;
+      if (!gameRunning) return;
       
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      drawGrid();
       drawRoad();
-      powerUps.forEach(drawPowerUp);
       obstacles.forEach(drawObstacle);
       drawCar();
       
@@ -1500,18 +941,15 @@
       animationId = requestAnimationFrame(gameLoop);
     }
     
-    // === PREVENIRE SCROLL ===
-    document.addEventListener('touchmove', (e) => {
-      if (gameRunning) e.preventDefault();
+    // Prevent scroll
+    document.addEventListener('touchmove', function(e) {
+      e.preventDefault();
     }, { passive: false });
-    
-    // === INIT AUDIO ===
-    document.addEventListener('click', () => {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-    }, { once: true });
   </script>
 </body>
 </html>
+
+
 
 
 
