@@ -228,7 +228,7 @@
     <div id="startScreen">
       <div class="mascot">🦄</div>
       <p class="info">
-        <span class="heart">💖</span> 2 calcule distractive!<br>
+        <span class="heart">💖</span> 20 de calcule distractive!<br>
         <span class="heart">💖</span> ➕ Adunări şi ➖ Scăderi<br>
         <span class="heart">💖</span> ⚠️ Dacă greşeşti UNA → o luăm de la început!<br>
         <span class="heart">💖</span> 🏆 15 puncte pentru fiecare joc terminat!
@@ -245,14 +245,14 @@
     <!-- ECRAN JOC -->
     <div id="gameScreen" class="hidden">
       <div class="progress">
-        <span>📝 Problema: <span id="currentNum">1</span>/2</span>
+        <span>📝 Problema: <span id="currentNum">1</span>/20</span>
         <span class="score-display">🌟 <span id="score">100</span></span>
       </div>
       
       <div class="timer-display">⏱️ <span id="timer">00:00</span></div>
       
       <div class="progress-bar">
-        <div class="progress-fill" id="progressFill" style="width: 50%;"></div>
+        <div class="progress-fill" id="progressFill" style="width: 5%;"></div>
       </div>
       
       <!-- Un singur calcul -->
@@ -282,7 +282,7 @@
       </div>
       
       <p class="info">
-        <span class="heart">💖</span> Ai terminat cele 2 calcule!<br>
+        <span class="heart">💖</span> Ai terminat cele 20 de calcule!<br>
         <span class="heart">💖</span> Fiecare joc terminat = 15 puncte!<br>
         <span class="heart">💖</span> Apasă Salvează pentru a adăuga punctele!
       </p>
@@ -319,7 +319,7 @@
     let currentProblem = 1;
     let score = 100;
     let problems = [];
-    const TOTAL_PROBLEMS = 2; // ✅ MODIFICAT: doar 2 calcule
+    const TOTAL_PROBLEMS = 20; // ✅ MODIFICAT: 20 de calcule
     const POINTS_PER_GAME = 15;
     let timerInterval;
     let startTime;
