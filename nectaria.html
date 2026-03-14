@@ -45,7 +45,7 @@
       backdrop-filter: blur(15px);
       border-radius: 30px;
       padding: 35px;
-      max-width: 520px;
+      max-width: 550px;
       width: 100%;
       text-align: center;
       box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 107, 157, 0.4);
@@ -97,6 +97,17 @@
       padding: 12px 20px;
       border-radius: 50px;
       border: 3px solid rgba(255, 255, 255, 0.4);
+    }
+    .timer-display {
+      background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+      padding: 10px 20px;
+      border-radius: 50px;
+      color: #c44569;
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin: 10px 0;
+      display: inline-block;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
     }
     .progress-bar {
       width: 100%;
@@ -152,10 +163,6 @@
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 5px 15px rgba(0,0,0,0.1);
       transform: scale(1.02);
     }
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-      opacity: 1;
-    }
     .btn {
       background: linear-gradient(135deg, #fff 0%, #ffeaa7 100%);
       color: #c44569;
@@ -197,6 +204,10 @@
     .btn-exit {
       background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
       color: white;
+    }
+    .btn-small {
+      padding: 10px 20px;
+      font-size: 1rem;
     }
     .message {
       margin-top: 20px;
@@ -290,6 +301,73 @@
     .flower-2 { top: 10px; right: 10px; }
     .flower-3 { bottom: 10px; left: 10px; }
     .flower-4 { bottom: 10px; right: 10px; }
+    
+    /* Leaderboard styles */
+    .leaderboard {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
+      padding: 20px;
+      border-radius: 20px;
+      margin: 20px 0;
+      border: 3px solid rgba(255, 255, 255, 0.4);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .leaderboard h3 {
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+      color: #ffeaa7;
+      text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+    }
+    .leaderboard-item {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 10px 15px;
+      border-radius: 15px;
+      margin: 8px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    .leaderboard-item:nth-child(1) {
+      background: linear-gradient(135deg, #ffd700, #f39c12);
+      color: #fff;
+      font-weight: 700;
+    }
+    .leaderboard-item:nth-child(2) {
+      background: linear-gradient(135deg, #silver, #bdc3c7);
+      color: #fff;
+      font-weight: 600;
+    }
+    .leaderboard-item:nth-child(3) {
+      background: linear-gradient(135deg, #cd7f32, #d35400);
+      color: #fff;
+      font-weight: 600;
+    }
+    .trophy {
+      font-size: 1.5rem;
+      margin-right: 10px;
+    }
+    .record-info {
+      background: linear-gradient(135deg, rgba(116, 185, 255, 0.4), rgba(0, 184, 148, 0.3));
+      padding: 15px;
+      border-radius: 20px;
+      margin: 15px 0;
+      border: 3px solid rgba(255, 255, 255, 0.4);
+    }
+    .record-info p {
+      margin: 5px 0;
+      font-size: 1.1rem;
+    }
+    .record-info strong {
+      color: #ffeaa7;
+      font-size: 1.3rem;
+    }
+    .scroll-hint {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>
@@ -307,12 +385,15 @@
         <span class="heart">💖</span> 20 de probleme super distractive!<br>
         <span class="heart">💖</span> ➕ Adunări şi ➖ Scăderi<br>
         <span class="heart">💖</span> ⚠️ Dacă greşeşti UNA → o luăm de la început!<br>
-        <span class="heart">💖</span> 🌟 Scor maxim: 100 de steluţe!
+        <span class="heart">💖</span> 🌟 Scor maxim: 100 de steluţe!<br>
+        <span class="heart">💖</span> ⏱️ Timpul tău va fi salvat!
       </p>
       <div class="stars">⭐ ⭐ ⭐</div>
       <button class="btn" onclick="startGame()">🎀 Începe Aventura! 🎀</button>
       <br/>
-      <button class="btn btn-exit" onclick="exitApp()">🏠 Acasă</button>
+      <button class="btn btn-small btn-exit" onclick="showLeaderboard()">🏆 Vezi Recordurile</button>
+      <br/>
+      <button class="btn btn-small btn-exit" onclick="exitApp()">🏠 Acasă</button>
     </div>
 
     <div id="gameScreen" class="hidden">
@@ -320,6 +401,8 @@
         <span>📝 Problema: <span id="currentNum">1</span>/20</span>
         <span class="score-display">🌟 <span id="score">100</span></span>
       </div>
+      
+      <div class="timer-display">⏱️ <span id="timer">00:00</span></div>
       
       <div class="progress-bar">
         <div class="progress-fill" id="progressFill" style="width: 5%;"></div>
@@ -331,7 +414,7 @@
       
       <div>
         <button class="btn" onclick="checkAnswer()">✅ Verifică Răspunsul</button>
-        <button class="btn btn-exit" onclick="exitApp()">🏠 Acasă</button>
+        <button class="btn btn-small btn-exit" onclick="exitApp()">🏠 Acasă</button>
       </div>
       
       <div id="message" class="message hidden"></div>
@@ -342,15 +425,45 @@
       <div class="crown">👑</div>
       <h2>🎉 BRAVO, Eşti O EROINĂ! 🎉</h2>
       <div class="mascot">🦄</div>
+      
+      <div class="record-info">
+        <p>🌟 Scor: <strong id="finalScore">100</strong></p>
+        <p>⏱️ Timp: <strong id="finalTime">00:00</strong></p>
+        <p>📅 Data: <strong id="finalDate"></strong></p>
+      </div>
+      
       <p class="info">
         <span class="heart">💖</span> Ai rezolvat toate cele 20 de probleme!<br>
         <span class="heart">💖</span> Eşti super deşteaptă!<br>
-        <span class="heart">💖</span> Scor final: <strong id="finalScore" style="font-size: 1.5rem; color: #ffeaa7;">100</strong> 🌟
+        <span class="heart">💖</span> Rezultatul a fost salvat! 📝
       </p>
       <div class="stars">⭐ ⭐ ⭐ ⭐ ⭐</div>
+      
+      <div class="leaderboard">
+        <h3>🏆 Topul Tău de Recorduri 🏆</h3>
+        <div id="leaderboardList"></div>
+        <p class="scroll-hint">⬇️ Derulează pentru mai multe ⬇️</p>
+      </div>
+      
       <button class="btn" onclick="startGame()">🔄 Mai Joucăm O Dată?</button>
       <br/>
-      <button class="btn btn-exit" onclick="exitApp()">🏠 Acasă</button>
+      <button class="btn btn-small btn-exit" onclick="clearLeaderboard()">🗑️ Şterge Recordurile</button>
+      <br/>
+      <button class="btn btn-small btn-exit" onclick="exitApp()">🏠 Acasă</button>
+    </div>
+
+    <div id="leaderboardScreen" class="hidden">
+      <div class="crown">🏆</div>
+      <h2>🏆 Topul Recordurilor 🏆</h2>
+      <div class="mascot">🦄</div>
+      
+      <div class="leaderboard">
+        <div id="fullLeaderboardList"></div>
+      </div>
+      
+      <button class="btn" onclick="showStartScreen()">🔙 Înapoi</button>
+      <br/>
+      <button class="btn btn-small btn-exit" onclick="clearLeaderboard()">🗑️ Şterge Tot</button>
     </div>
   </div>
 
@@ -359,6 +472,62 @@
     let score = 100;
     let problems = [];
     const TOTAL_PROBLEMS = 20;
+    let timerInterval;
+    let startTime;
+    let elapsedTime = 0;
+
+    // Load saved records from localStorage
+    function getSavedRecords() {
+      const saved = localStorage.getItem('mathGameRecords');
+      return saved ? JSON.parse(saved) : [];
+    }
+
+    // Save a new record
+    function saveRecord(score, timeInSeconds) {
+      const records = getSavedRecords();
+      const newRecord = {
+        score: score,
+        time: timeInSeconds,
+        date: new Date().toLocaleDateString('ro-RO'),
+        dateTime: new Date().toISOString()
+      };
+      records.push(newRecord);
+      // Sort by time (fastest first)
+      records.sort((a, b) => a.time - b.time);
+      // Keep only top 10
+      records.splice(10);
+      localStorage.setItem('mathGameRecords', JSON.stringify(records));
+      return records;
+    }
+
+    // Format time as MM:SS
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Display leaderboard
+    function displayLeaderboard(elementId, records) {
+      const container = document.getElementById(elementId);
+      if (records.length === 0) {
+        container.innerHTML = '<p style="padding: 20px; text-align: center;">🦋 Încă nu ai recorduri salvate! Joacă acum! 💖</p>';
+        return;
+      }
+      
+      let html = '';
+      records.forEach((record, index) => {
+        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🏅';
+        html += `
+          <div class="leaderboard-item">
+            <span><span class="trophy">${medal}</span> #${index + 1}</span>
+            <span>⏱️ ${formatTime(record.time)}</span>
+            <span>📅 ${record.date}</span>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
 
     function generateProblems() {
       problems = [];
@@ -388,10 +557,33 @@
     }
 
     function showScreen(id) {
-      ['startScreen', 'gameScreen', 'endScreen'].forEach(sid => {
+      ['startScreen', 'gameScreen', 'endScreen', 'leaderboardScreen'].forEach(sid => {
         document.getElementById(sid).classList.add('hidden');
       });
       document.getElementById(id).classList.remove('hidden');
+    }
+
+    function showStartScreen() {
+      showScreen('startScreen');
+    }
+
+    function showLeaderboard() {
+      const records = getSavedRecords();
+      displayLeaderboard('fullLeaderboardList', records);
+      showScreen('leaderboardScreen');
+    }
+
+    function startTimer() {
+      startTime = Date.now();
+      elapsedTime = 0;
+      timerInterval = setInterval(() => {
+        elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        document.getElementById('timer').textContent = formatTime(elapsedTime);
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
     }
 
     function createConfetti() {
@@ -412,12 +604,14 @@
     function startGame() {
       currentProblem = 1;
       score = 100;
+      elapsedTime = 0;
       generateProblems();
       updateUI();
       showScreen('gameScreen');
       document.getElementById('answerInput').value = '';
       document.getElementById('answerInput').focus();
       hideMessage();
+      startTimer();
     }
 
     function updateUI() {
@@ -454,7 +648,22 @@
       
       if (userAnswer === problem.answer) {
         if (currentProblem === TOTAL_PROBLEMS) {
+          // Game completed!
+          stopTimer();
           document.getElementById('finalScore').textContent = score;
+          document.getElementById('finalTime').textContent = formatTime(elapsedTime);
+          document.getElementById('finalDate').textContent = new Date().toLocaleDateString('ro-RO', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          
+          // Save the record
+          const records = saveRecord(score, elapsedTime);
+          displayLeaderboard('leaderboardList', records);
+          
           showScreen('endScreen');
           createConfetti();
         } else {
@@ -472,8 +681,19 @@
       }
     }
 
+    function clearLeaderboard() {
+      if (confirm('🦋 Eşti sigură că vrei să ştergi toate recordurile? Nu se mai pot recupera!')) {
+        localStorage.removeItem('mathGameRecords');
+        alert('🗑️ Recordurile au fost şterse! Poţi începe să faci altele noi! 💖');
+        const records = getSavedRecords();
+        displayLeaderboard('leaderboardList', records);
+        displayLeaderboard('fullLeaderboardList', records);
+      }
+    }
+
     function exitApp() {
       if (confirm('🦋 Eşti sigură că vrei să ieşi? Progresul se va pierde!')) {
+        stopTimer();
         alert('👋 La revedere, prinţesă! Mulţumim că ai jucat cu noi! <span class="heart">💖</span>');
         location.reload();
       }
@@ -485,8 +705,8 @@
       }
     });
 
+    // Initialize - load leaderboard on start
     document.getElementById('answerInput')?.focus();
   </script>
 </body>
 </html>
-
