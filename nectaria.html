@@ -228,7 +228,7 @@
     <div id="startScreen">
       <div class="mascot">🦄</div>
       <p class="info">
-        <span class="heart">💖</span> 20 de calcule distractive!<br>
+        <span class="heart">💖</span> 2 calcule distractive!<br>
         <span class="heart">💖</span> ➕ Adunări şi ➖ Scăderi<br>
         <span class="heart">💖</span> ⚠️ Dacă greşeşti UNA → o luăm de la început!<br>
         <span class="heart">💖</span> 🏆 15 puncte pentru fiecare joc terminat!
@@ -245,14 +245,14 @@
     <!-- ECRAN JOC -->
     <div id="gameScreen" class="hidden">
       <div class="progress">
-        <span>📝 Problema: <span id="currentNum">1</span>/20</span>
+        <span>📝 Problema: <span id="currentNum">1</span>/2</span>
         <span class="score-display">🌟 <span id="score">100</span></span>
       </div>
       
       <div class="timer-display">⏱️ <span id="timer">00:00</span></div>
       
       <div class="progress-bar">
-        <div class="progress-fill" id="progressFill" style="width: 5%;"></div>
+        <div class="progress-fill" id="progressFill" style="width: 50%;"></div>
       </div>
       
       <!-- Un singur calcul -->
@@ -282,7 +282,7 @@
       </div>
       
       <p class="info">
-        <span class="heart">💖</span> Ai terminat cele 20 de calcule!<br>
+        <span class="heart">💖</span> Ai terminat cele 2 calcule!<br>
         <span class="heart">💖</span> Fiecare joc terminat = 15 puncte!<br>
         <span class="heart">💖</span> Apasă Salvează pentru a adăuga punctele!
       </p>
@@ -319,27 +319,25 @@
     let currentProblem = 1;
     let score = 100;
     let problems = [];
-    const TOTAL_PROBLEMS = 20;
-    const POINTS_PER_GAME = 15; // ✅ 15 puncte per joc terminat
+    const TOTAL_PROBLEMS = 2; // ✅ MODIFICAT: doar 2 calcule
+    const POINTS_PER_GAME = 15;
     let timerInterval;
     let startTime;
     let elapsedTime = 0;
 
-    // Obține scorurile salvate (grupate pe zile)
     function getSavedScores() {
       const saved = localStorage.getItem('mathGameScores');
       return saved ? JSON.parse(saved) : {};
     }
 
-    // Salvează un joc terminat: incrementăm contorul pentru ziua curentă
     function saveGameCompletion() {
       const scores = getSavedScores();
-      const today = new Date().toLocaleDateString('ro-RO'); // ex: "14.03.2026"
+      const today = new Date().toLocaleDateString('ro-RO');
       
       if (!scores[today]) {
         scores[today] = 0;
       }
-      scores[today]++; // +1 joc terminat azi
+      scores[today]++;
       
       localStorage.setItem('mathGameScores', JSON.stringify(scores));
       return scores;
@@ -351,7 +349,6 @@
       return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
 
-    // Afișează leaderboard-ul cu puncte calculate: jocuri × 15
     function displayLeaderboard(elementId, scores) {
       const container = document.getElementById(elementId);
       const dates = Object.keys(scores);
@@ -361,7 +358,6 @@
         return;
       }
       
-      // Sortăm descrescător după puncte totale
       const sorted = dates.sort((a, b) => scores[b] * POINTS_PER_GAME - scores[a] * POINTS_PER_GAME);
       
       let html = '';
@@ -517,7 +513,6 @@
       }
     }
 
-    // Salvează jocul și arată leaderboard-ul
     function saveAndShowLeaderboard() {
       const scores = saveGameCompletion();
       displayLeaderboard('fullLeaderboardList', scores);
