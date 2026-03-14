@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calcule 2 Cifre</title>
+  <title>✨ Jocul Matematicii ✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -11,163 +14,343 @@
       padding: 0;
     }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+      font-family: 'Fredoka', cursive;
+      background: linear-gradient(135deg, #ff6b9d 0%, #c44569 50%, #a64ca6 100%);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 20px;
       color: #fff;
+      overflow-x: hidden;
+      position: relative;
+    }
+    body::before {
+      content: '⭐ 🌸 🦋 ⭐ 🌸 🦋 ⭐ 🌸 🦋';
+      position: fixed;
+      top: 10px;
+      left: 0;
+      right: 0;
+      font-size: 1.5rem;
+      opacity: 0.3;
+      letter-spacing: 20px;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
     .container {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 30px;
-      max-width: 500px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
+      backdrop-filter: blur(15px);
+      border-radius: 30px;
+      padding: 35px;
+      max-width: 520px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 107, 157, 0.4);
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      position: relative;
+      z-index: 10;
+    }
+    .container::before {
+      content: '🦄';
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 3rem;
+      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
     }
     h1 {
       margin-bottom: 15px;
-      font-size: 1.8rem;
+      font-size: 2rem;
+      text-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+      letter-spacing: 2px;
+    }
+    .mascot {
+      font-size: 4rem;
+      margin: 10px 0;
+      animation: bounce 1s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
     }
     .info {
-      background: rgba(255, 255, 255, 0.15);
-      padding: 12px;
-      border-radius: 12px;
-      margin: 15px 0;
-      font-size: 0.95rem;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
+      padding: 18px;
+      border-radius: 20px;
+      margin: 20px 0;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      border: 3px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
     .progress {
       display: flex;
       justify-content: space-between;
-      margin: 15px 0;
-      font-weight: bold;
+      margin: 20px 0;
+      font-weight: 700;
+      font-size: 1.2rem;
+      background: rgba(255, 255, 255, 0.25);
+      padding: 12px 20px;
+      border-radius: 50px;
+      border: 3px solid rgba(255, 255, 255, 0.4);
+    }
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      margin: 10px 0 20px 0;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ffeaa7, #fdcb6e, #ff7675);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     }
     .problem {
-      font-size: 2.2rem;
+      font-size: 2.5rem;
       margin: 25px 0;
-      font-weight: bold;
-      background: rgba(255, 255, 255, 0.2);
-      padding: 20px;
-      border-radius: 15px;
-      letter-spacing: 2px;
+      font-weight: 700;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.2));
+      padding: 25px;
+      border-radius: 25px;
+      letter-spacing: 3px;
+      text-shadow: 2px 2px 0px rgba(0,0,0,0.15);
+      border: 4px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
     }
     input[type="number"] {
       width: 100%;
-      padding: 15px;
-      font-size: 1.5rem;
+      padding: 18px;
+      font-size: 1.8rem;
       text-align: center;
-      border: 3px solid #a78bfa;
-      border-radius: 12px;
+      border: 4px solid #ff9ff3;
+      border-radius: 20px;
       background: #fff;
-      color: #333;
+      color: #c44569;
       margin: 15px 0;
       outline: none;
-      transition: border-color 0.3s;
+      transition: all 0.3s;
+      font-family: 'Fredoka', cursive;
+      font-weight: 700;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
     input[type="number"]:focus {
       border-color: #fff;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 5px 15px rgba(0,0,0,0.1);
+      transform: scale(1.02);
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      opacity: 1;
     }
     .btn {
-      background: #fff;
-      color: #6d28d9;
+      background: linear-gradient(135deg, #fff 0%, #ffeaa7 100%);
+      color: #c44569;
       border: none;
-      padding: 14px 30px;
-      font-size: 1.1rem;
-      font-weight: bold;
+      padding: 16px 35px;
+      font-size: 1.2rem;
+      font-weight: 700;
       border-radius: 50px;
       cursor: pointer;
-      margin: 10px 5px;
-      transition: transform 0.2s, box-shadow 0.2s;
+      margin: 10px 8px;
+      transition: all 0.3s;
+      font-family: 'Fredoka', cursive;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+      border: 3px solid rgba(255, 255, 255, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+      transform: rotate(45deg);
+      transition: 0.5s;
+    }
+    .btn:hover::before {
+      left: 100%;
     }
     .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
     .btn:active {
-      transform: translateY(0);
+      transform: translateY(-2px) scale(1.02);
     }
     .btn-exit {
-      background: #f87171;
+      background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
       color: white;
     }
     .message {
       margin-top: 20px;
-      min-height: 24px;
-      font-weight: 500;
-      padding: 10px;
-      border-radius: 10px;
+      min-height: 30px;
+      font-weight: 600;
+      padding: 15px;
+      border-radius: 20px;
+      font-size: 1.1rem;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .success {
-      background: rgba(34, 197, 94, 0.3);
+      background: linear-gradient(135deg, rgba(116, 185, 255, 0.5), rgba(0, 184, 148, 0.4));
       color: #fff;
+      border: 3px solid rgba(255, 255, 255, 0.5);
     }
     .error {
-      background: rgba(248, 113, 113, 0.3);
+      background: linear-gradient(135deg, rgba(255, 118, 117, 0.5), rgba(214, 48, 49, 0.4));
       color: #fff;
+      border: 3px solid rgba(255, 255, 255, 0.5);
     }
     .hidden {
       display: none;
     }
     .score-display {
-      font-size: 1.3rem;
-      margin: 10px 0;
-      font-weight: bold;
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+      padding: 8px 20px;
+      border-radius: 50px;
+      color: #c44569;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: #c44569;
+      font-weight: 700;
     }
     .restart-hint {
-      font-size: 0.9rem;
-      opacity: 0.9;
-      margin-top: 10px;
+      font-size: 0.95rem;
+      opacity: 0.95;
+      margin-top: 15px;
       font-style: italic;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 10px 15px;
+      border-radius: 15px;
+      border: 2px dashed rgba(255, 255, 255, 0.4);
     }
+    .stars {
+      font-size: 2rem;
+      margin: 10px 0;
+    }
+    .confetti {
+      position: fixed;
+      width: 15px;
+      height: 15px;
+      background: #ffeaa7;
+      animation: fall 3s linear forwards;
+      z-index: 5;
+      border-radius: 3px;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+    .heart {
+      color: #ff6b9d;
+      animation: heartBeat 1s ease-in-out infinite;
+      display: inline-block;
+    }
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    .crown {
+      font-size: 3rem;
+      margin: 15px 0;
+      animation: spin 3s ease-in-out infinite;
+    }
+    @keyframes spin {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(10deg); }
+    }
+    .flower-decor {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.6;
+    }
+    .flower-1 { top: 10px; left: 10px; }
+    .flower-2 { top: 10px; right: 10px; }
+    .flower-3 { bottom: 10px; left: 10px; }
+    .flower-4 { bottom: 10px; right: 10px; }
   </style>
 </head>
 <body>
+  <div class="flower-decor flower-1">🌸</div>
+  <div class="flower-decor flower-2">🌺</div>
+  <div class="flower-decor flower-3">🌷</div>
+  <div class="flower-decor flower-4">🌻</div>
+
   <div class="container">
-    <h1>🔢 Calcule cu 2 Cifre</h1>
+    <h1>✨ Jocul Matematicii ✨</h1>
     
     <div id="startScreen">
+      <div class="mascot">🦄</div>
       <p class="info">
-        ✅ 20 de probleme<br>
-        ➕➖ Adunări și scăderi<br>
-        ❌ Dacă greșești UNA → o iei de la capăt!<br>
-        🎯 Scor maxim: 100 puncte
+        <span class="heart">💖</span> 20 de probleme super distractive!<br>
+        <span class="heart">💖</span> ➕ Adunări şi ➖ Scăderi<br>
+        <span class="heart">💖</span> ⚠️ Dacă greşeşti UNA → o luăm de la început!<br>
+        <span class="heart">💖</span> 🌟 Scor maxim: 100 de steluţe!
       </p>
-      <button class="btn" onclick="startGame()">▶️ Începe Jocul</button>
-      <button class="btn btn-exit" onclick="exitApp()">🚪 Ieșire</button>
+      <div class="stars">⭐ ⭐ ⭐</div>
+      <button class="btn" onclick="startGame()">🎀 Începe Aventura! 🎀</button>
+      <br/>
+      <button class="btn btn-exit" onclick="exitApp()">🏠 Acasă</button>
     </div>
 
     <div id="gameScreen" class="hidden">
       <div class="progress">
-        <span>Problema: <span id="currentNum">1</span>/20</span>
-        <span class="score-display">Scor: <span id="score">100</span></span>
+        <span>📝 Problema: <span id="currentNum">1</span>/20</span>
+        <span class="score-display">🌟 <span id="score">100</span></span>
+      </div>
+      
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 5%;"></div>
       </div>
       
       <div class="problem" id="problemText">45 + 23 = ?</div>
       
-      <input type="number" id="answerInput" placeholder="Răspunsul tău" autocomplete="off" />
+      <input type="number" id="answerInput" placeholder="Scrie răspunsul tău aici... 🦋" autocomplete="off" />
       
       <div>
-        <button class="btn" onclick="checkAnswer()">✅ Verifică</button>
-        <button class="btn btn-exit" onclick="exitApp()">🚪 Ieșire</button>
+        <button class="btn" onclick="checkAnswer()">✅ Verifică Răspunsul</button>
+        <button class="btn btn-exit" onclick="exitApp()">🏠 Acasă</button>
       </div>
       
       <div id="message" class="message hidden"></div>
-      <p class="restart-hint">⚠️ Un răspuns greșit = restart total!</p>
+      <p class="restart-hint">⚠️ Ai grijă! Un răspuns greşit = o luăm de la capăt! 🦋</p>
     </div>
 
     <div id="endScreen" class="hidden">
-      <h2>🎉 Felicitări!</h2>
+      <div class="crown">👑</div>
+      <h2>🎉 BRAVO, Eşti O EROINĂ! 🎉</h2>
+      <div class="mascot">🦄</div>
       <p class="info">
-        Ai rezolvat toate cele 20 de probleme!<br>
-        Scor final: <strong id="finalScore">100</strong> / 100
+        <span class="heart">💖</span> Ai rezolvat toate cele 20 de probleme!<br>
+        <span class="heart">💖</span> Eşti super deşteaptă!<br>
+        <span class="heart">💖</span> Scor final: <strong id="finalScore" style="font-size: 1.5rem; color: #ffeaa7;">100</strong> 🌟
       </p>
-      <button class="btn" onclick="startGame()">🔄 Joacă din nou</button>
-      <button class="btn btn-exit" onclick="exitApp()">🚪 Ieșire</button>
+      <div class="stars">⭐ ⭐ ⭐ ⭐ ⭐</div>
+      <button class="btn" onclick="startGame()">🔄 Mai Joucăm O Dată?</button>
+      <br/>
+      <button class="btn btn-exit" onclick="exitApp()">🏠 Acasă</button>
     </div>
   </div>
 
@@ -180,32 +363,27 @@
     function generateProblems() {
       problems = [];
       for (let i = 0; i < TOTAL_PROBLEMS; i++) {
-        const a = Math.floor(Math.random() * 90) + 10; // 10-99
+        const a = Math.floor(Math.random() * 90) + 10;
         const b = Math.floor(Math.random() * 90) + 10;
         const op = Math.random() > 0.5 ? '+' : '-';
         
         let correctAnswer;
         if (op === '+') {
           correctAnswer = a + b;
+          problems.push({ 
+            text: `${a} + ${b} = ?`, 
+            answer: correctAnswer,
+            a, b, op: '+'
+          });
         } else {
-          // Ensure non-negative result for subtraction
           const [max, min] = a >= b ? [a, b] : [b, a];
           correctAnswer = max - min;
           problems.push({ 
             text: `${max} - ${min} = ?`, 
             answer: correctAnswer,
-            a: max,
-            b: min,
-            op: '-'
+            a: max, b: min, op: '-'
           });
-          continue;
         }
-        
-        problems.push({ 
-          text: `${a} ${op} ${b} = ?`, 
-          answer: correctAnswer,
-          a, b, op
-        });
       }
     }
 
@@ -214,6 +392,21 @@
         document.getElementById(sid).classList.add('hidden');
       });
       document.getElementById(id).classList.remove('hidden');
+    }
+
+    function createConfetti() {
+      const colors = ['#ffeaa7', '#fdcb6e', '#ff7675', '#a29bfe', '#74b9ff', '#55efc4'];
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + 'vw';
+          confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+          document.body.appendChild(confetti);
+          setTimeout(() => confetti.remove(), 4000);
+        }, i * 50);
+      }
     }
 
     function startGame() {
@@ -233,11 +426,14 @@
       document.getElementById('problemText').textContent = problems[currentProblem - 1].text;
       document.getElementById('answerInput').value = '';
       document.getElementById('answerInput').focus();
+      
+      const progressPercent = (currentProblem / TOTAL_PROBLEMS) * 100;
+      document.getElementById('progressFill').style.width = progressPercent + '%';
     }
 
     function showMessage(text, type) {
       const msg = document.getElementById('message');
-      msg.textContent = text;
+      msg.innerHTML = text;
       msg.className = `message ${type}`;
       msg.classList.remove('hidden');
     }
@@ -252,49 +448,45 @@
       const problem = problems[currentProblem - 1];
       
       if (isNaN(userAnswer)) {
-        showMessage('⚠️ Te rog scrie un număr!', 'error');
+        showMessage('🦋 Te rog scrie un număr, draga mea! <span class="heart">💖</span>', 'error');
         return;
       }
       
       if (userAnswer === problem.answer) {
-        // Răspuns corect
         if (currentProblem === TOTAL_PROBLEMS) {
-          // Finalizat!
           document.getElementById('finalScore').textContent = score;
           showScreen('endScreen');
+          createConfetti();
         } else {
           currentProblem++;
           updateUI();
-          showMessage('✅ Corect! Continuă...', 'success');
-          setTimeout(hideMessage, 800);
+          showMessage('✅ Super! Eşti grozavă! Continuă! <span class="heart">💖</span>', 'success');
+          setTimeout(hideMessage, 1000);
         }
       } else {
-        // Răspuns greșit → RESTART
-        score = Math.max(0, score - 5); // Deduct 5 points as per preference
-        showMessage(`❌ Greșit! Răspunsul corect: ${problem.answer}.<br>🔄 O luăm de la capăt!`, 'error');
+        score = Math.max(0, score - 5);
+        showMessage(`🦋 Oops! Răspunsul corect era: ${problem.answer}.<br>🔄 Nu-i nimic, o luăm de la început! Tu poţi! <span class="heart">💖</span>`, 'error');
         setTimeout(() => {
-          startGame(); // Restart from beginning
-        }, 2000);
+          startGame();
+        }, 2500);
       }
     }
 
     function exitApp() {
-      if (confirm('Ești sigur că vrei să ieși? Progresul se va pierde.')) {
-        alert('👋 La revedere! Mulțumim că ai jucat!');
-        // In a real app, you could close window or redirect
+      if (confirm('🦋 Eşti sigură că vrei să ieşi? Progresul se va pierde!')) {
+        alert('👋 La revedere, prinţesă! Mulţumim că ai jucat cu noi! <span class="heart">💖</span>');
         location.reload();
       }
     }
 
-    // Allow Enter key to submit answer
     document.getElementById('answerInput')?.addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
         checkAnswer();
       }
     });
 
-    // Initialize
     document.getElementById('answerInput')?.focus();
   </script>
 </body>
 </html>
+
