@@ -2,13 +2,18 @@
 <html lang="ro">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>✨ Jocul Matematicii ✨</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
     body {
       font-family: 'Fredoka', cursive;
       background: linear-gradient(135deg, #ff6b9d 0%, #c44569 50%, #a64ca6 100%);
@@ -16,20 +21,24 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 10px;
       color: #fff;
       overflow-x: hidden;
       position: relative;
+      user-select: none;
     }
     body::before {
       content: '⭐ 🌸 🦋 ⭐ 🌸 🦋 ⭐ 🌸 🦋';
       position: fixed;
-      top: 10px; left: 0; right: 0;
-      font-size: 1.5rem;
+      top: 10px;
+      left: 0;
+      right: 0;
+      font-size: 1.2rem;
       opacity: 0.3;
-      letter-spacing: 20px;
+      letter-spacing: 15px;
       animation: float 3s ease-in-out infinite;
-      z-index: 0;
+      white-space: nowrap;
+      overflow: hidden;
     }
     @keyframes float {
       0%, 100% { transform: translateY(0); }
@@ -39,8 +48,8 @@
       background: linear-gradient(145deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
       backdrop-filter: blur(15px);
       border-radius: 30px;
-      padding: 35px;
-      max-width: 550px;
+      padding: 25px;
+      max-width: 500px;
       width: 100%;
       text-align: center;
       box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 107, 157, 0.4);
@@ -51,168 +60,307 @@
     .container::before {
       content: '🦄';
       position: absolute;
-      top: -25px; left: 50%;
+      top: -25px;
+      left: 50%;
       transform: translateX(-50%);
-      font-size: 3rem;
+      font-size: 2.5rem;
       filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
     }
-    h1 { margin-bottom: 15px; font-size: 2rem; text-shadow: 3px 3px 0px rgba(0,0,0,0.2); letter-spacing: 2px; }
-    h2 { margin-bottom: 20px; font-size: 1.8rem; text-shadow: 2px 2px 0px rgba(0,0,0,0.2); }
-    
-    .mascot { font-size: 4rem; margin: 10px 0; animation: bounce 1s ease-in-out infinite; }
-    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-    
+    h1 {
+      margin-bottom: 10px;
+      font-size: 1.6rem;
+      text-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+      letter-spacing: 1px;
+    }
+    .mascot {
+      font-size: 3.5rem;
+      margin: 5px 0;
+      animation: bounce 1s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
     .info {
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
-      padding: 18px; border-radius: 20px; margin: 20px 0;
-      font-size: 1.05rem; line-height: 1.8;
+      padding: 15px;
+      border-radius: 20px;
+      margin: 15px 0;
+      font-size: 0.95rem;
+      line-height: 1.6;
       border: 3px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
-    
     .progress {
-      display: flex; justify-content: space-between;
-      margin: 20px 0; font-weight: 700; font-size: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      margin: 15px 0;
+      font-weight: 700;
+      font-size: 1.1rem;
       background: rgba(255, 255, 255, 0.25);
-      padding: 12px 20px; border-radius: 50px;
+      padding: 10px 15px;
+      border-radius: 50px;
       border: 3px solid rgba(255, 255, 255, 0.4);
     }
     .timer-display {
       background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
-      padding: 10px 20px; border-radius: 50px;
-      color: #c44569; font-weight: 700; font-size: 1.2rem;
-      margin: 10px 0; display: inline-block;
+      padding: 8px 15px;
+      border-radius: 50px;
+      color: #c44569;
+      font-weight: 700;
+      font-size: 1rem;
+      margin: 10px 0;
+      display: inline-block;
       box-shadow: 0 3px 10px rgba(0,0,0,0.2);
     }
     .progress-bar {
-      width: 100%; height: 12px; background: rgba(255, 255, 255, 0.3);
-      border-radius: 10px; margin: 10px 0 20px 0; overflow: hidden;
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      margin: 10px 0 20px 0;
+      overflow: hidden;
       border: 2px solid rgba(255, 255, 255, 0.5);
     }
     .progress-fill {
-      height: 100%; background: linear-gradient(90deg, #ffeaa7, #fdcb6e, #ff7675);
-      border-radius: 10px; transition: width 0.5s ease;
+      height: 100%;
+      background: linear-gradient(90deg, #ffeaa7, #fdcb6e, #ff7675);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     }
-
     .problem {
-      font-size: 2.5rem;
-      margin: 25px 0;
+      font-size: 2rem;
+      margin: 20px 0;
       font-weight: 700;
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.2));
-      padding: 25px;
+      padding: 20px;
       border-radius: 25px;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       text-shadow: 2px 2px 0px rgba(0,0,0,0.15);
       border: 4px solid rgba(255, 255, 255, 0.5);
       box-shadow: 0 8px 25px rgba(0,0,0,0.2);
       animation: pulse 2s ease-in-out infinite;
     }
-    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
-
-    input[type="number"] {
-      width: 100%; padding: 18px; font-size: 1.8rem; text-align: center;
-      border: 4px solid #ff9ff3; border-radius: 20px;
-      background: #fff; color: #c44569;
-      outline: none; transition: all 0.3s;
-      font-family: 'Fredoka', cursive; font-weight: 700;
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    
+    /* Display Box for the Reverse Number Logic */
+    .input-display {
+      background: #fff;
+      color: #c44569;
+      font-size: 2.2rem;
+      font-weight: 700;
+      padding: 15px;
+      border-radius: 20px;
+      border: 4px solid #ff9ff3;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end; /* Right align for visual flow */
+      margin: 10px 0 20px 0;
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      position: relative;
+      letter-spacing: 5px;
     }
-    input[type="number"]:focus {
-      border-color: #fff;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
-      transform: scale(1.02);
+    .input-placeholder {
+      color: #c4456980;
+      font-size: 1rem;
+      font-weight: 600;
+      position: absolute;
+      left: 20px;
     }
 
+    /* Custom Numpad Grid */
+    .numpad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .num-btn {
+      background: linear-gradient(135deg, #fff 0%, #ffeaa7 100%);
+      color: #c44569;
+      border: none;
+      border-radius: 20px;
+      padding: 15px 0;
+      font-size: 1.8rem;
+      font-family: 'Fredoka', cursive;
+      font-weight: 700;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s;
+      position: relative;
+      overflow: hidden;
+    }
+    .num-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .num-btn.check {
+      background: linear-gradient(135deg, #55efc4, #00b894);
+      color: white;
+      grid-column: span 1;
+    }
+    .num-btn.clear {
+      background: linear-gradient(135deg, #ff7675, #d63031);
+      color: white;
+      font-size: 1.2rem;
+    }
+    
     .btn {
       background: linear-gradient(135deg, #fff 0%, #ffeaa7 100%);
-      color: #c44569; border: none; padding: 16px 35px;
-      font-size: 1.2rem; font-weight: 700; border-radius: 50px;
-      cursor: pointer; margin: 10px 8px; transition: all 0.3s;
+      color: #c44569;
+      border: none;
+      padding: 14px 30px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      margin: 8px 5px;
+      transition: all 0.3s;
       font-family: 'Fredoka', cursive;
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
       border: 3px solid rgba(255, 255, 255, 0.5);
-      position: relative; overflow: hidden;
+      display: inline-block;
     }
-    .btn::before {
-      content: ''; position: absolute; top: -50%; left: -50%;
-      width: 200%; height: 200%;
-      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
-      transform: rotate(45deg); transition: 0.5s;
+    .btn:hover { transform: translateY(-3px); }
+    .btn:active { transform: translateY(-1px); }
+    .btn-exit {
+      background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
+      color: white;
     }
-    .btn:hover::before { left: 100%; }
-    .btn:hover { transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
-    .btn-exit { background: linear-gradient(135deg, #ff7675 0%, #d63031 100%); color: white; }
-    .btn-small { padding: 10px 20px; font-size: 1rem; }
-    .btn-save { 
-      background: linear-gradient(135deg, #55efc4 0%, #00b894 100%); 
-      color: #fff; font-size: 1.4rem; padding: 20px 40px;
-      animation: heartBeat 1.5s infinite;
+    .btn-small {
+      padding: 8px 15px;
+      font-size: 0.9rem;
     }
 
     .message {
-      margin-top: 20px; min-height: 30px; font-weight: 600;
-      padding: 15px; border-radius: 20px; font-size: 1.1rem;
+      margin-top: 15px;
+      min-height: 30px;
+      font-weight: 600;
+      padding: 12px;
+      border-radius: 20px;
+      font-size: 1rem;
       animation: slideIn 0.3s ease;
     }
-    @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-    .success { background: linear-gradient(135deg, rgba(116, 185, 255, 0.5), rgba(0, 184, 148, 0.4)); color: #fff; border: 3px solid rgba(255, 255, 255, 0.5); }
-    .error { background: linear-gradient(135deg, rgba(255, 118, 117, 0.5), rgba(214, 48, 49, 0.4)); color: #fff; border: 3px solid rgba(255, 255, 255, 0.5); }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .success {
+      background: linear-gradient(135deg, rgba(116, 185, 255, 0.5), rgba(0, 184, 148, 0.4));
+      border: 3px solid rgba(255, 255, 255, 0.5);
+    }
+    .error {
+      background: linear-gradient(135deg, rgba(255, 118, 117, 0.5), rgba(214, 48, 49, 0.4));
+      border: 3px solid rgba(255, 255, 255, 0.5);
+    }
     .hidden { display: none; }
     
     .score-display {
-      font-size: 1.4rem; background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
-      padding: 8px 20px; border-radius: 50px; color: #c44569;
-      -webkit-background-clip: text; -webkit-text-fill-color: #c44569; font-weight: 700;
+      font-size: 1.2rem;
+      background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+      padding: 5px 15px;
+      border-radius: 50px;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: #c44569;
+      font-weight: 700;
     }
-    .restart-hint { font-size: 0.95rem; opacity: 0.95; margin-top: 15px; font-style: italic; background: rgba(255, 255, 255, 0.2); padding: 10px 15px; border-radius: 15px; border: 2px dashed rgba(255, 255, 255, 0.4); }
-    .stars { font-size: 2rem; margin: 10px 0; }
+    
+    .restart-hint {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      margin-top: 10px;
+      font-style: italic;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 8px 12px;
+      border-radius: 15px;
+      border: 2px dashed rgba(255, 255, 255, 0.3);
+    }
+    .stars { font-size: 1.5rem; margin: 10px 0; }
     
     .confetti {
-      position: fixed; width: 15px; height: 15px; background: #ffeaa7;
-      animation: fall 3s linear forwards; z-index: 5; border-radius: 3px;
+      position: fixed;
+      width: 15px;
+      height: 15px;
+      background: #ffeaa7;
+      animation: fall 3s linear forwards;
+      z-index: 5;
+      border-radius: 3px;
     }
-    @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-    .heart { color: #ff6b9d; animation: heartBeat 1s ease-in-out infinite; display: inline-block; }
-    @keyframes heartBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
-    .crown { font-size: 3rem; margin: 15px 0; animation: spin 3s ease-in-out infinite; }
-    @keyframes spin { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(10deg); } }
-    
-    .flower-decor { position: absolute; font-size: 2rem; opacity: 0.6; }
-    .flower-1 { top: 10px; left: 10px; } .flower-2 { top: 10px; right: 10px; }
-    .flower-3 { bottom: 10px; left: 10px; } .flower-4 { bottom: 10px; right: 10px; }
+    @keyframes fall {
+      to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+    .heart {
+      color: #ff6b9d;
+      animation: heartBeat 1s ease-in-out infinite;
+      display: inline-block;
+    }
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    .crown {
+      font-size: 2.5rem;
+      margin: 10px 0;
+      animation: spin 3s ease-in-out infinite;
+    }
+    @keyframes spin {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(10deg); }
+    }
+    .flower-decor {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 0.6;
+    }
+    .flower-1 { top: 10px; left: 10px; }
+    .flower-2 { top: 10px; right: 10px; }
+    .flower-3 { bottom: 10px; left: 10px; }
+    .flower-4 { bottom: 10px; right: 10px; }
 
     .leaderboard {
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
-      padding: 20px; border-radius: 20px; margin: 20px 0;
+      padding: 15px;
+      border-radius: 20px;
+      margin: 15px 0;
       border: 3px solid rgba(255, 255, 255, 0.4);
-      max-height: 300px; overflow-y: auto;
+      max-height: 180px;
+      overflow-y: auto;
     }
-    .leaderboard h3 { margin-bottom: 15px; font-size: 1.3rem; color: #ffeaa7; text-shadow: 2px 2px 0px rgba(0,0,0,0.2); }
+    .leaderboard h3 {
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+      color: #ffeaa7;
+      text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+    }
     .leaderboard-item {
-      background: rgba(255, 255, 255, 0.2); padding: 10px 15px;
-      border-radius: 15px; margin: 8px 0;
-      display: flex; justify-content: space-between; align-items: center;
-      font-size: 1rem; border: 2px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 12px;
+      border-radius: 15px;
+      margin: 6px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
     }
     .leaderboard-item:nth-child(1) { background: linear-gradient(135deg, #ffd700, #f39c12); color: #fff; font-weight: 700; }
-    .leaderboard-item:nth-child(2) { background: linear-gradient(135deg, #silver, #bdc3c7); color: #fff; font-weight: 600; }
+    .leaderboard-item:nth-child(2) { background: linear-gradient(135deg, #bdc3c7, #95a5a6); color: #fff; font-weight: 600; }
     .leaderboard-item:nth-child(3) { background: linear-gradient(135deg, #cd7f32, #d35400); color: #fff; font-weight: 600; }
-    .trophy { font-size: 1.5rem; margin-right: 10px; }
+    .trophy { font-size: 1.2rem; margin-right: 5px; }
     .record-info {
       background: linear-gradient(135deg, rgba(116, 185, 255, 0.4), rgba(0, 184, 148, 0.3));
-      padding: 20px; border-radius: 20px; margin: 20px 0;
+      padding: 12px;
+      border-radius: 20px;
+      margin: 12px 0;
       border: 3px solid rgba(255, 255, 255, 0.4);
     }
-    .record-info p { margin: 10px 0; font-size: 1.2rem; }
-    .record-info strong { color: #ffeaa7; font-size: 1.5rem; }
-    .scroll-hint { font-size: 0.8rem; opacity: 0.7; margin-top: 5px; }
-    .points-badge {
-      background: linear-gradient(135deg, #00b894, #00cec9);
-      color: white;
-      padding: 5px 15px;
-      border-radius: 20px;
-      font-weight: 700;
-      font-size: 1.1rem;
-    }
+    .record-info p { margin: 3px 0; font-size: 1rem; }
+    .record-info strong { color: #ffeaa7; font-size: 1.2rem; }
   </style>
 </head>
 <body>
@@ -224,28 +372,26 @@
   <div class="container">
     <h1>✨ Jocul Matematicii ✨</h1>
     
-    <!-- ECRAN START -->
     <div id="startScreen">
       <div class="mascot">🦄</div>
       <p class="info">
-        <span class="heart">💖</span> 20 de calcule distractive!<br>
+        <span class="heart">💖</span> 20 de probleme distractive!<br>
         <span class="heart">💖</span> ➕ Adunări şi ➖ Scăderi<br>
-        <span class="heart">💖</span> ⚠️ Dacă greşeşti UNA → o luăm de la început!<br>
-        <span class="heart">💖</span> 🏆 15 puncte pentru fiecare joc terminat!
+        <span class="heart">💖</span> ⚠️ O greşeală = o luăm de la început!<br>
+        <span class="heart">💖</span> 🌟 Scrie cifra unităților PRIMA!<br>
+        <span class="heart">💖</span> ⏱️ Timpul va fi salvat!
       </p>
       <div class="stars">⭐ ⭐ ⭐</div>
-      
-      <button class="btn" onclick="startGame()">🎀 Începe Aventura! 🎀</button>
+      <button class="btn" onclick="startGame()">🎀 Începe! 🎀</button>
       <br/>
-      <button class="btn btn-small" onclick="showLeaderboard()" style="background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: white;">🏆 Scoruri / Recorduri</button>
+      <button class="btn btn-small btn-exit" onclick="showLeaderboard()">🏆 Recorduri</button>
       <br/>
       <button class="btn btn-small btn-exit" onclick="exitApp()">🏠 Acasă</button>
     </div>
 
-    <!-- ECRAN JOC -->
     <div id="gameScreen" class="hidden">
       <div class="progress">
-        <span>📝 Problema: <span id="currentNum">1</span>/20</span>
+        <span>📝 <span id="currentNum">1</span>/20</span>
         <span class="score-display">🌟 <span id="score">100</span></span>
       </div>
       
@@ -255,61 +401,78 @@
         <div class="progress-fill" id="progressFill" style="width: 5%;"></div>
       </div>
       
-      <!-- Un singur calcul -->
       <div class="problem" id="problemText">45 + 23 = ?</div>
       
-      <input type="number" id="answerInput" placeholder="Scrie răspunsul tău aici... 🦋" autocomplete="off" />
-      
+      <!-- Custom Input Display -->
+      <div class="input-display">
+        <span class="input-placeholder">Unități întâi...</span>
+        <span id="userInputDisplay"></span>
+      </div>
+
+      <!-- Custom Numpad -->
+      <div class="numpad">
+        <button class="num-btn" onclick="appendDigit(1)">1</button>
+        <button class="num-btn" onclick="appendDigit(2)">2</button>
+        <button class="num-btn" onclick="appendDigit(3)">3</button>
+        <button class="num-btn" onclick="appendDigit(4)">4</button>
+        <button class="num-btn" onclick="appendDigit(5)">5</button>
+        <button class="num-btn" onclick="appendDigit(6)">6</button>
+        <button class="num-btn" onclick="appendDigit(7)">7</button>
+        <button class="num-btn" onclick="appendDigit(8)">8</button>
+        <button class="num-btn" onclick="appendDigit(9)">9</button>
+        <button class="num-btn clear" onclick="clearInput()">⌫</button>
+        <button class="num-btn" onclick="appendDigit(0)">0</button>
+        <button class="num-btn check" onclick="checkAnswer()">✓</button>
+      </div>
+
       <div>
-        <button class="btn" onclick="checkAnswer()">✅ Verifică Răspunsul</button>
         <button class="btn btn-small btn-exit" onclick="exitApp()">🏠 Acasă</button>
       </div>
       
       <div id="message" class="message hidden"></div>
-      <p class="restart-hint">⚠️ Ai grijă! Un răspuns greşit = o luăm de la capăt! 🦋</p>
+      <p class="restart-hint">⚠️ Grija! Greşeli = de la capăt! Scrie unitățile prima! 🦋</p>
     </div>
 
-    <!-- ECRAN FINAL (Salvare) -->
     <div id="endScreen" class="hidden">
       <div class="crown">👑</div>
-      <h2>🎉 BRAVO, EROINĂ! 🎉</h2>
+      <h2>🎉 BRAVO! 🎉</h2>
       <div class="mascot">🦄</div>
       
       <div class="record-info">
-        <p>📅 Data: <strong id="finalDate"></strong></p>
+        <p>🌟 Scor: <strong id="finalScore">100</strong></p>
         <p>⏱️ Timp: <strong id="finalTime">00:00</strong></p>
-        <p>🎁 Puncte pentru acest joc: <strong class="points-badge">+15</strong></p>
+        <p>📅 Data: <strong id="finalDate"></strong></p>
       </div>
       
       <p class="info">
-        <span class="heart">💖</span> Ai terminat cele 20 de calcule!<br>
-        <span class="heart">💖</span> Fiecare joc terminat = 15 puncte!<br>
-        <span class="heart">💖</span> Apasă Salvează pentru a adăuga punctele!
+        <span class="heart">💖</span> Ai rezolvat totul!<br>
+        <span class="heart">💖</span> Eşti super deşteaptă!<br>
+        <span class="heart">💖</span> Record salvat!
       </p>
       <div class="stars">⭐ ⭐ ⭐ ⭐ ⭐</div>
       
-      <button class="btn btn-save" onclick="saveAndShowLeaderboard()">💾 Salvează +15 Puncte</button>
+      <div class="leaderboard">
+        <h3>🏆 Top Recorduri 🏆</h3>
+        <div id="leaderboardList"></div>
+      </div>
+      
+      <button class="btn" onclick="startGame()">🔄 Mai Joaci?</button>
       <br/>
-      <button class="btn btn-small btn-exit" onclick="startGame()">🔄 Mai Joucăm O Dată?</button>
+      <button class="btn btn-small btn-exit" onclick="clearLeaderboard()">🗑️ Şterge Recorduri</button>
       <br/>
       <button class="btn btn-small btn-exit" onclick="exitApp()">🏠 Acasă</button>
     </div>
 
-    <!-- ECRAN LEADERBOARD -->
     <div id="leaderboardScreen" class="hidden">
       <div class="crown">🏆</div>
-      <h2>🏆 Punctele Tale pe Zile 🏆</h2>
+      <h2>🏆 Recorduri 🏆</h2>
       <div class="mascot">🦄</div>
-      
-      <p class="info" style="font-size: 0.95rem;">
-        📊 15 puncte × numărul de jocuri terminate în fiecare zi
-      </p>
       
       <div class="leaderboard">
         <div id="fullLeaderboardList"></div>
       </div>
       
-      <button class="btn" onclick="showStartScreen()">🔙 Înapoi la Start</button>
+      <button class="btn" onclick="showStartScreen()">🔙 Înapoi</button>
       <br/>
       <button class="btn btn-small btn-exit" onclick="clearLeaderboard()">🗑️ Şterge Tot</button>
     </div>
@@ -319,28 +482,32 @@
     let currentProblem = 1;
     let score = 100;
     let problems = [];
-    const TOTAL_PROBLEMS = 20; // ✅ MODIFICAT: 20 de calcule
-    const POINTS_PER_GAME = 15;
+    const TOTAL_PROBLEMS = 20;
     let timerInterval;
     let startTime;
     let elapsedTime = 0;
+    
+    // Logic for reverse input
+    let currentInputString = ""; // Stores the raw input as typed
 
-    function getSavedScores() {
-      const saved = localStorage.getItem('mathGameScores');
-      return saved ? JSON.parse(saved) : {};
+    function getSavedRecords() {
+      const saved = localStorage.getItem('mathGameRecords');
+      return saved ? JSON.parse(saved) : [];
     }
 
-    function saveGameCompletion() {
-      const scores = getSavedScores();
-      const today = new Date().toLocaleDateString('ro-RO');
-      
-      if (!scores[today]) {
-        scores[today] = 0;
-      }
-      scores[today]++;
-      
-      localStorage.setItem('mathGameScores', JSON.stringify(scores));
-      return scores;
+    function saveRecord(score, timeInSeconds) {
+      const records = getSavedRecords();
+      const newRecord = {
+        score: score,
+        time: timeInSeconds,
+        date: new Date().toLocaleDateString('ro-RO'),
+        dateTime: new Date().toISOString()
+      };
+      records.push(newRecord);
+      records.sort((a, b) => a.time - b.time);
+      records.splice(10);
+      localStorage.setItem('mathGameRecords', JSON.stringify(records));
+      return records;
     }
 
     function formatTime(seconds) {
@@ -349,28 +516,20 @@
       return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
 
-    function displayLeaderboard(elementId, scores) {
+    function displayLeaderboard(elementId, records) {
       const container = document.getElementById(elementId);
-      const dates = Object.keys(scores);
-      
-      if (dates.length === 0) {
-        container.innerHTML = '<p style="padding: 20px; text-align: center;">🦋 Încă nu ai puncte salvate! Joacă și salvează! 💖</p>';
+      if (records.length === 0) {
+        container.innerHTML = '<p style="padding: 20px; text-align: center;">🦋 Nu ai recorduri încă! Joacă! 💖</p>';
         return;
       }
-      
-      const sorted = dates.sort((a, b) => scores[b] * POINTS_PER_GAME - scores[a] * POINTS_PER_GAME);
-      
       let html = '';
-      sorted.forEach((date, index) => {
-        const games = scores[date];
-        const totalPoints = games * POINTS_PER_GAME;
+      records.forEach((record, index) => {
         const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🏅';
-        
         html += `
           <div class="leaderboard-item">
-            <span><span class="trophy">${medal}</span> ${date}</span>
-            <span>🎮 ${games} joc${games > 1 ? 'uri' : ''}</span>
-            <span class="points-badge">⭐ ${totalPoints} puncte</span>
+            <span><span class="trophy">${medal}</span> #${index + 1}</span>
+            <span>⏱️ ${formatTime(record.time)}</span>
+            <span>📅 ${record.date}</span>
           </div>
         `;
       });
@@ -383,18 +542,15 @@
         const a = Math.floor(Math.random() * 90) + 10;
         const b = Math.floor(Math.random() * 90) + 10;
         const op = Math.random() > 0.5 ? '+' : '-';
-        
-        let correctAnswer, problemText;
+        let correctAnswer;
         if (op === '+') {
           correctAnswer = a + b;
-          problemText = `${a} + ${b} = ?`;
+          problems.push({ text: `${a} + ${b} = ?`, answer: correctAnswer });
         } else {
           const [max, min] = a >= b ? [a, b] : [b, a];
           correctAnswer = max - min;
-          problemText = `${max} - ${min} = ?`;
+          problems.push({ text: `${max} - ${min} = ?`, answer: correctAnswer });
         }
-        
-        problems.push({ text: problemText, answer: correctAnswer });
       }
     }
 
@@ -405,13 +561,10 @@
       document.getElementById(id).classList.remove('hidden');
     }
 
-    function showStartScreen() {
-      showScreen('startScreen');
-    }
-
+    function showStartScreen() { showScreen('startScreen'); }
     function showLeaderboard() {
-      const scores = getSavedScores();
-      displayLeaderboard('fullLeaderboardList', scores);
+      const records = getSavedRecords();
+      displayLeaderboard('fullLeaderboardList', records);
       showScreen('leaderboardScreen');
     }
 
@@ -447,11 +600,10 @@
       currentProblem = 1;
       score = 100;
       elapsedTime = 0;
+      currentInputString = ""; // Reset input
       generateProblems();
       updateUI();
       showScreen('gameScreen');
-      document.getElementById('answerInput').value = '';
-      document.getElementById('answerInput').focus();
       hideMessage();
       startTimer();
     }
@@ -460,11 +612,43 @@
       document.getElementById('currentNum').textContent = currentProblem;
       document.getElementById('score').textContent = score;
       document.getElementById('problemText').textContent = problems[currentProblem - 1].text;
-      document.getElementById('answerInput').value = '';
-      document.getElementById('answerInput').focus();
+      
+      // Reset Input Display
+      currentInputString = "";
+      updateInputDisplay();
       
       const progressPercent = (currentProblem / TOTAL_PROBLEMS) * 100;
       document.getElementById('progressFill').style.width = progressPercent + '%';
+    }
+
+    // Function to update the visual display based on reverse logic
+    function updateInputDisplay() {
+      const displaySpan = document.getElementById('userInputDisplay');
+      const placeholder = document.querySelector('.input-placeholder');
+      
+      if (currentInputString.length === 0) {
+        displaySpan.textContent = "";
+        placeholder.style.display = "block";
+      } else {
+        placeholder.style.display = "none";
+        // Display the string as is (since user types units first, we display them as typed)
+        displaySpan.textContent = currentInputString;
+      }
+    }
+
+    function appendDigit(digit) {
+      // Limit max length to prevent overflow issues (e.g. max 3 digits)
+      if (currentInputString.length < 3) {
+        currentInputString += digit;
+        updateInputDisplay();
+      }
+    }
+
+    function clearInput() {
+      if (currentInputString.length > 0) {
+        currentInputString = currentInputString.slice(0, -1);
+        updateInputDisplay();
+      }
     }
 
     function showMessage(text, type) {
@@ -479,69 +663,63 @@
     }
 
     function checkAnswer() {
-      const input = document.getElementById('answerInput');
-      const userAnswer = parseInt(input.value);
-      const problem = problems[currentProblem - 1];
-      
-      if (isNaN(userAnswer)) {
-        showMessage('🦋 Te rog scrie un număr, draga mea! <span class="heart">💖</span>', 'error');
+      if (currentInputString.length === 0) {
+        showMessage('🦋 Scrie un număr! 💖', 'error');
         return;
       }
+
+      // Convert the reversed string to number
+      // Example: typed "43", logic makes it 34.
+      let userAnswer = 0;
+      for(let i = currentInputString.length - 1; i >= 0; i--) {
+        userAnswer = userAnswer * 10 + parseInt(currentInputString[i]);
+      }
+
+      const problem = problems[currentProblem - 1];
       
       if (userAnswer === problem.answer) {
         if (currentProblem === TOTAL_PROBLEMS) {
           stopTimer();
+          document.getElementById('finalScore').textContent = score;
           document.getElementById('finalTime').textContent = formatTime(elapsedTime);
           document.getElementById('finalDate').textContent = new Date().toLocaleDateString('ro-RO', {
-            day: 'numeric', month: 'long', year: 'numeric'
+            day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
           });
+          const records = saveRecord(score, elapsedTime);
+          displayLeaderboard('leaderboardList', records);
           showScreen('endScreen');
           createConfetti();
         } else {
           currentProblem++;
           updateUI();
-          showMessage('✅ Super! Eşti grozavă! Continuă! <span class="heart">💖</span>', 'success');
+          showMessage('✅ Super! Continuă! 💖', 'success');
           setTimeout(hideMessage, 1000);
         }
       } else {
         score = Math.max(0, score - 5);
-        document.getElementById('score').textContent = score;
-        showMessage(`🦋 Oops! Răspunsul corect era: ${problem.answer}.<br>🔄 Nu-i nimic, o luăm de la început! Tu poţi! <span class="heart">💖</span>`, 'error');
+        showMessage(`🦋 Greşit! Era ${problem.answer}.<br>🔄 Restart! Tu poţi! 💖`, 'error');
         setTimeout(() => {
           startGame();
         }, 2500);
       }
     }
 
-    function saveAndShowLeaderboard() {
-      const scores = saveGameCompletion();
-      displayLeaderboard('fullLeaderboardList', scores);
-      showScreen('leaderboardScreen');
-    }
-
     function clearLeaderboard() {
-      if (confirm('🦋 Eşti sigură că vrei să ştergi toate punctele?')) {
-        localStorage.removeItem('mathGameScores');
-        alert('🗑️ Punctele au fost şterse! Poţi începe să faci altele noi! 💖');
-        const scores = getSavedScores();
-        displayLeaderboard('fullLeaderboardList', scores);
+      if (confirm('🦋 Ştergi recordurile?')) {
+        localStorage.removeItem('mathGameRecords');
+        alert('🗑️ Şters! 💖');
+        displayLeaderboard('leaderboardList', []);
+        displayLeaderboard('fullLeaderboardList', []);
       }
     }
 
     function exitApp() {
-      if (confirm('🦋 Eşti sigură că vrei să ieşi? Progresul se va pierde!')) {
+      if (confirm('🦋 Ieşi? Progresul se pierde!')) {
         stopTimer();
+        alert('👋 La revedere! 💖');
         location.reload();
       }
     }
-
-    document.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        if (!document.getElementById('gameScreen').classList.contains('hidden')) {
-          checkAnswer();
-        }
-      }
-    });
   </script>
 </body>
 </html>
