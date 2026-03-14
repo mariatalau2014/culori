@@ -147,30 +147,54 @@
       50% { transform: scale(1.02); }
     }
     
-    /* Display Box for the Reverse Number Logic */
-    .input-display {
+    /* NEW: Split Boxes Container */
+    .split-input-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin: 15px 0 25px 0;
+    }
+
+    /* Individual Boxes */
+    .digit-box {
       background: #fff;
       color: #c44569;
-      font-size: 2.2rem;
+      font-size: 2.5rem;
       font-weight: 700;
-      padding: 15px;
-      border-radius: 20px;
+      width: 70px;
+      height: 80px;
+      border-radius: 15px;
       border: 4px solid #ff9ff3;
-      min-height: 70px;
       display: flex;
+      justify-content: center;
       align-items: center;
-      justify-content: flex-end; /* Right align for visual flow */
-      margin: 10px 0 20px 0;
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: all 0.2s;
       position: relative;
-      letter-spacing: 5px;
     }
-    .input-placeholder {
-      color: #c4456980;
-      font-size: 1rem;
+    
+    /* Active State styling */
+    .digit-box.active {
+      border-color: #ffeaa7;
+      background: #fffae6;
+      box-shadow: 0 0 15px rgba(255, 234, 167, 0.6);
+      transform: scale(1.05);
+    }
+
+    /* Labels under boxes */
+    .digit-label {
+      font-size: 0.8rem;
+      color: #fff;
+      margin-top: 5px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
       font-weight: 600;
-      position: absolute;
-      left: 20px;
+    }
+    
+    .box-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     /* Custom Numpad Grid */
@@ -403,25 +427,40 @@
       
       <div class="problem" id="problemText">45 + 23 = ?</div>
       
-      <!-- Custom Input Display -->
-      <div class="input-display">
-        <span class="input-placeholder">Unități întâi...</span>
-        <span id="userInputDisplay"></span>
+      <!-- NEW: Separate Boxes for Units and Tens -->
+      <div class="split-input-container">
+        <!-- Hundreds (Hidden initially, appears if needed) -->
+        <div class="box-wrapper" id="hundredsWrapper" style="opacity: 0.3; transform: scale(0.8); transition: 0.3s;">
+          <div class="digit-box" id="boxHundreds"></div>
+          <div class="digit-label">Sute</div>
+        </div>
+        
+        <!-- Tens -->
+        <div class="box-wrapper" id="tensWrapper">
+          <div class="digit-box" id="boxTens"></div>
+          <div class="digit-label">Zeci</div>
+        </div>
+        
+        <!-- Units -->
+        <div class="box-wrapper" id="unitsWrapper">
+          <div class="digit-box active" id="boxUnits"></div>
+          <div class="digit-label">Unități</div>
+        </div>
       </div>
 
       <!-- Custom Numpad -->
       <div class="numpad">
-        <button class="num-btn" onclick="appendDigit(1)">1</button>
-        <button class="num-btn" onclick="appendDigit(2)">2</button>
-        <button class="num-btn" onclick="appendDigit(3)">3</button>
-        <button class="num-btn" onclick="appendDigit(4)">4</button>
-        <button class="num-btn" onclick="appendDigit(5)">5</button>
-        <button class="num-btn" onclick="appendDigit(6)">6</button>
-        <button class="num-btn" onclick="appendDigit(7)">7</button>
-        <button class="num-btn" onclick="appendDigit(8)">8</button>
-        <button class="num-btn" onclick="appendDigit(9)">9</button>
-        <button class="num-btn clear" onclick="clearInput()">⌫</button>
-        <button class="num-btn" onclick="appendDigit(0)">0</button>
+        <button class="num-btn" onclick="pressNumber(1)">1</button>
+        <button class="num-btn" onclick="pressNumber(2)">2</button>
+        <button class="num-btn" onclick="pressNumber(3)">3</button>
+        <button class="num-btn" onclick="pressNumber(4)">4</button>
+        <button class="num-btn" onclick="pressNumber(5)">5</button>
+        <button class="num-btn" onclick="pressNumber(6)">6</button>
+        <button class="num-btn" onclick="pressNumber(7)">7</button>
+        <button class="num-btn" onclick="pressNumber(8)">8</button>
+        <button class="num-btn" onclick="pressNumber(9)">9</button>
+        <button class="num-btn clear" onclick="pressClear()">⌫</button>
+        <button class="num-btn" onclick="pressNumber(0)">0</button>
         <button class="num-btn check" onclick="checkAnswer()">✓</button>
       </div>
 
@@ -430,7 +469,7 @@
       </div>
       
       <div id="message" class="message hidden"></div>
-      <p class="restart-hint">⚠️ Grija! Greşeli = de la capăt! Scrie unitățile prima! 🦋</p>
+      <p class="restart-hint">⚠️ Scrie unitățile prima, apoi zecile! 🦋</p>
     </div>
 
     <div id="endScreen" class="hidden">
@@ -487,8 +526,9 @@
     let startTime;
     let elapsedTime = 0;
     
-    // Logic for reverse input
-    let currentInputString = ""; // Stores the raw input as typed
+    // Input State: Stores digits as they are typed (reverse order of actual number)
+    // index 0 = units typed, index 1 = tens typed, index 2 = hundreds typed
+    let inputDigits = []; 
 
     function getSavedRecords() {
       const saved = localStorage.getItem('mathGameRecords');
@@ -600,7 +640,7 @@
       currentProblem = 1;
       score = 100;
       elapsedTime = 0;
-      currentInputString = ""; // Reset input
+      inputDigits = []; 
       generateProblems();
       updateUI();
       showScreen('gameScreen');
@@ -614,40 +654,80 @@
       document.getElementById('problemText').textContent = problems[currentProblem - 1].text;
       
       // Reset Input Display
-      currentInputString = "";
-      updateInputDisplay();
+      inputDigits = [];
+      renderInputBoxes();
       
       const progressPercent = (currentProblem / TOTAL_PROBLEMS) * 100;
       document.getElementById('progressFill').style.width = progressPercent + '%';
     }
 
-    // Function to update the visual display based on reverse logic
-    function updateInputDisplay() {
-      const displaySpan = document.getElementById('userInputDisplay');
-      const placeholder = document.querySelector('.input-placeholder');
+    function renderInputBoxes() {
+      const boxUnits = document.getElementById('boxUnits');
+      const boxTens = document.getElementById('boxTens');
+      const boxHundreds = document.getElementById('boxHundreds');
+      const wrapHundreds = document.getElementById('hundredsWrapper');
+
+      // Clear current text
+      boxUnits.textContent = "";
+      boxTens.textContent = "";
+      boxHundreds.textContent = "";
+
+      // Reset visual active state
+      boxUnits.classList.remove('active');
+      boxTens.classList.remove('active');
+      boxHundreds.classList.remove('active');
+
+      // Hide hundreds box initially
+      wrapHundreds.style.opacity = '0.3';
+      wrapHundreds.style.transform = 'scale(0.8)';
+
+      // Populate based on inputDigits
+      // inputDigits[0] is the first typed digit (Units)
+      if (inputDigits.length > 0) {
+        boxUnits.textContent = inputDigits[0];
+      }
       
-      if (currentInputString.length === 0) {
-        displaySpan.textContent = "";
-        placeholder.style.display = "block";
+      // Highlight Units box if we haven't typed the second digit yet
+      if (inputDigits.length < 2) {
+        boxUnits.classList.add('active');
+      }
+
+      // inputDigits[1] is the second typed digit (Tens)
+      if (inputDigits.length > 1) {
+        boxTens.textContent = inputDigits[1];
+        boxTens.classList.add('active'); // Highlight Tens when ready for next step or checking
       } else {
-        placeholder.style.display = "none";
-        // Display the string as is (since user types units first, we display them as typed)
-        displaySpan.textContent = currentInputString;
+        // If we have typed the unit, maybe highlight tens to indicate next step?
+        // Actually, let's highlight the box that WAS just filled or IS being filled.
+        if(inputDigits.length === 1) {
+             // Option: Highlight Tens as "Next Target"? 
+             // Let's keep highlighting the last filled one or the next empty one. 
+             // For kids, highlighting the one they need to fill next is best.
+             // But they already filled units. Now they need Tens.
+             boxTens.classList.add('active'); 
+        }
+      }
+
+      // inputDigits[2] is the third typed digit (Hundreds)
+      if (inputDigits.length > 2) {
+        boxHundreds.textContent = inputDigits[2];
+        wrapHundreds.style.opacity = '1';
+        wrapHundreds.style.transform = 'scale(1)';
+        boxHundreds.classList.add('active');
       }
     }
 
-    function appendDigit(digit) {
-      // Limit max length to prevent overflow issues (e.g. max 3 digits)
-      if (currentInputString.length < 3) {
-        currentInputString += digit;
-        updateInputDisplay();
+    function pressNumber(num) {
+      if (inputDigits.length < 3) {
+        inputDigits.push(num);
+        renderInputBoxes();
       }
     }
 
-    function clearInput() {
-      if (currentInputString.length > 0) {
-        currentInputString = currentInputString.slice(0, -1);
-        updateInputDisplay();
+    function pressClear() {
+      if (inputDigits.length > 0) {
+        inputDigits.pop();
+        renderInputBoxes();
       }
     }
 
@@ -663,16 +743,16 @@
     }
 
     function checkAnswer() {
-      if (currentInputString.length === 0) {
-        showMessage('🦋 Scrie un număr! 💖', 'error');
+      if (inputDigits.length === 0) {
+        showMessage('🦋 Scrie unitățile prima! 💖', 'error');
         return;
       }
 
-      // Convert the reversed string to number
-      // Example: typed "43", logic makes it 34.
+      // Convert the reversed array to a real number
+      // [4, 2] -> 24
       let userAnswer = 0;
-      for(let i = currentInputString.length - 1; i >= 0; i--) {
-        userAnswer = userAnswer * 10 + parseInt(currentInputString[i]);
+      for (let i = inputDigits.length - 1; i >= 0; i--) {
+        userAnswer = userAnswer * 10 + inputDigits[i];
       }
 
       const problem = problems[currentProblem - 1];
