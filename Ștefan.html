@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jocuri Educative pentru Copii</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --dark: #292F36;
+            --light: #F7FFF7;
+            --success: #95E06C;
+            --font-main: 'Fredoka', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            touch-action: manipulation; /* Prevents double-tap zoom */
+            user-select: none; /* Prevents text selection */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-main);
+            background-color: var(--light);
+            color: var(--dark);
+            overflow: hidden; /* Prevent scrolling */
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* --- UI Components --- */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--light);
+            z-index: 10;
+        }
+
+        .home-btn {
+            background: var(--primary);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #c44d4d;
+            transition: transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .home-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #c44d4d;
+        }
+
+        main {
+            flex: 1;
+            position: relative;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+
+        /* --- Screens --- */
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+        }
+
+        /* --- Menu Grid --- */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.1);
+            border: 4px solid transparent;
+        }
+
+        .menu-card:active {
+            transform: scale(0.95);
+        }
+
+        .menu-card.c1 { background-color: #FF9F1C; color: white; border-color: #e08b17; }
+        .menu-card.c2 { background-color: #2EC4B6; color: white; border-color: #26a398; }
+        .menu-card.c3 { background-color: #E71D36; color: white; border-color: #c4192e; }
+        .menu-card.c4 { background-color: #8338EC; color: white; border-color: #6e2ecc; }
+
+        .menu-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .menu-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* --- Game Elements --- */
+        .game-area {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .question-text {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--dark);
+        }
+
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .option-btn {
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
+            border: none;
+            background: white;
+            box-shadow: 0 6px 0 #ddd;
+            font-size: 3rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .option-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0 0 #ddd;
+        }
+
+        .option-btn.correct {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 6px 0 #7ac456;
+            animation: bounce 0.5s;
+        }
+
+        .option-btn.wrong {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 6px 0 #c44d4d;
+            animation: shake 0.4s;
+        }
+
+        /* --- Canvas Area (Drawing) --- */
+        #drawingCanvas {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .tools {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .color-picker {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+        
+        .color-picker.selected {
+            border-color: var(--dark);
+            transform: scale(1.1);
+        }
+
+        .clear-btn {
+            background: var(--dark);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-family: var(--font-main);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* --- Animations --- */
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(720deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-height: 600px) {
+            .menu-grid { gap: 10px; }
+            .menu-card { padding: 10px; }
+            .menu-icon { font-size: 2rem; }
+            h1 { font-size: 1.5rem; margin-bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header id="app-header" style="display:none;">
+        <button class="home-btn" onclick="goHome()">🏠</button>
+        <div style="font-size: 1.5rem; font-weight: bold; color: var(--secondary);">Joacă!</div>
+        <div style="width: 50px;"></div> <!-- Spacer for centering -->
+    </header>
+
+    <main>
+        <!-- MENU SCREEN -->
+        <div id="screen-menu" class="screen active">
+            <h1>Ce vrei să joci?</h1>
+            <div class="menu-grid">
+                <div class="menu-card c1" onclick="startGame('animals')">
+                    <div class="menu-icon">🦁</div>
+                    <div class="menu-title">Animale</div>
+                </div>
+                <div class="menu-card c2" onclick="startGame('colors')">
+                    <div class="menu-icon">🎨</div>
+                    <div class="menu-title">Culori</div>
+                </div>
+                <div class="menu-card c3" onclick="startGame('numbers')">
+                    <div class="menu-icon">1️⃣</div>
+                    <div class="menu-title">Numere</div>
+                </div>
+                <div class="menu-card c4" onclick="startGame('draw')">
+                    <div class="menu-icon">✏️</div>
+                    <div class="menu-title">Desenează</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GAME SCREEN (Generic for Quiz Games) -->
+        <div id="screen-game" class="screen">
+            <div class="game-area">
+                <div id="game-question" class="question-text">Întrebare?</div>
+                <div id="game-options" class="options-container">
+                    <!-- Buttons generated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- DRAWING SCREEN -->
+        <div id="screen-draw" class="screen">
+            <canvas id="drawingCanvas"></canvas>
+            <div class="tools">
+                <div class="color-picker selected" style="background: #000;" onclick="setColor('#000', this)"></div>
+                <div class="color-picker" style="background: #FF6B6B;" onclick="setColor('#FF6B6B', this)"></div>
+                <div class="color-picker" style="background: #4ECDC4;" onclick="setColor('#4ECDC4', this)"></div>
+                <div class="color-picker" style="background: #FFE66D;" onclick="setColor('#FFE66D', this)"></div>
+                <button class="clear-btn" onclick="clearCanvas()">Șterge</button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    // --- Data ---
+    const gameData = {
+        animals: [
+            { q: "Care animal face Miau?", a: "🐱", options: ["🐶", "🐱", "🐮"] },
+            { q: "Care animal este mare?", a: "🐘", options: ["🐘", "🐜", "🐝"] },
+            { q: "Unde stă peștele?", a: "💧", options: ["🌳", "💧", "☁️"] },
+            { q: "Cine zboară?", a: "🦅", options: ["🦅", "🐢", "🦁"] },
+            { q: "Care mănâncă morcovi?", a: "🐰", options: ["🐰", "🐺", "🦈"] }
+        ],
+        colors: [
+            { q: "Găsește culoarea ROȘU", a: "red", options: ["red", "blue", "green"], type: "color" },
+            { q: "Găsește culoarea ALBASTRU", a: "blue", options: ["yellow", "blue", "purple"], type: "color" },
+            { q: "Găsește culoarea GALBEN", a: "yellow", options: ["green", "orange", "yellow"], type: "color" },
+            { q: "Găsește culoarea VERDE", a: "green", options: ["red", "green", "black"], type: "color" }
+        ],
+        numbers: [
+            { q: "Numără: Câte mere sunt?", a: "2", options: ["1", "2", "3"], visual: "🍎 🍎" },
+            { q: "Numără: Câți baloni sunt?", a: "3", options: ["2", "3", "4"], visual: "🎈 🎈 🎈" },
+            { q: "Numără: Câte stele?", a: "1", options: ["1", "5", "2"], visual: "⭐" },
+            { q: "Care este numărul TREI?", a: "3", options: ["1", "2", "3"], visual: null }
+        ]
+    };
+
+    // --- State ---
+    let currentCategory = '';
+    let currentQuestionIndex = 0;
+    let isAnimating = false;
+
+    // --- Audio Context (Simple Synth) ---
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playSound(type) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        if (type === 'correct') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(500, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1);
+            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.5);
+        } else if (type === 'wrong') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+            osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        } else if (type === 'pop') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+    }
+
+    // --- Navigation ---
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+        
+        const header = document.getElementById('app-header');
+        if (screenId === 'screen-menu') {
+            header.style.display = 'none';
+        } else {
+            header.style.display = 'flex';
+        }
+    }
+
+    function goHome() {
+        playSound('pop');
+        showScreen('screen-menu');
+    }
+
+    function startGame(category) {
+        currentCategory = category;
+        currentQuestionIndex = 0;
+        playSound('pop');
+        
+        if (category === 'draw') {
+            showScreen('screen-draw');
+            initCanvas();
+        } else {
+            showScreen('screen-game');
+            loadQuestion();
+        }
+    }
+
+    // --- Game Logic ---
+    function loadQuestion() {
+        const data = gameData[currentCategory];
+        // Randomize question order slightly or just go sequential
+        const qData = data[currentQuestionIndex % data.length];
+        
+        const qEl = document.getElementById('game-question');
+        const optsEl = document.getElementById('game-options');
+        
+        // Set Question Text
+        if (qData.visual) {
+            qEl.innerHTML = `${qData.q}<br><div style="font-size:3rem; margin-top:10px;">${qData.visual}</div>`;
+        } else {
+            qEl.textContent = qData.q;
+        }
+
+        // Generate Options
+        optsEl.innerHTML = '';
+        
+        // Shuffle options
+        let shuffledOptions = [...qData.options].sort(() => Math.random() - 0.5);
+
+        shuffledOptions.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            
+            if (currentCategory === 'colors') {
+                btn.style.backgroundColor = opt;
+                btn.textContent = ''; // No text for colors
+                if (opt === 'white' || opt === 'yellow') btn.style.border = '2px solid #ccc';
+            } else {
+                btn.textContent = opt;
+            }
+
+            btn.onclick = () => checkAnswer(btn, opt, qData.a);
+            optsEl.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(btn, selected, correct) {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        if (selected === correct) {
+            btn.classList.add('correct');
+            playSound('correct');
+            createConfetti();
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+                isAnimating = false;
+            }, 1500);
+        } else {
+            btn.classList.add('wrong');
+            playSound('wrong');
+            setTimeout(() => {
+                btn.classList.remove('wrong');
+                isAnimating = false;
+            }, 500);
+        }
+    }
+
+    function createConfetti() {
+        const colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E06C'];
+        for (let i = 0; i < 30; i++) {
+            const conf = document.createElement('div');
+            conf.className = 'confetti';
+            conf.style.left = Math.random() * 100 + 'vw';
+            conf.style.top = -10 + 'px';
+            conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            conf.style.animationDuration = (Math.random() * 2 + 1) + 's';
+            document.body.appendChild(conf);
+            setTimeout(() => conf.remove(), 3000);
+        }
+    }
+
+    // --- Drawing Logic ---
+    let canvas, ctx;
+    let painting = false;
+    let currentColor = '#000000';
+
+    function initCanvas() {
+        canvas = document.getElementById('drawingCanvas');
+        ctx = canvas.getContext('2d');
+        
+        // Resize canvas to fit container
+        const container = canvas.parentElement;
+        canvas.width = container.clientWidth - 40; // minus padding
+        canvas.height = container.clientHeight - 100; // minus tools
+        
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 10;
+        ctx.strokeStyle = currentColor;
+
+        // Mouse Events
+        canvas.addEventListener('mousedown', startPosition);
+        canvas.addEventListener('mouseup', endPosition);
+        canvas.addEventListener('mousemove', draw);
+        
+        // Touch Events
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevent scrolling
+            startPosition(e.touches[0]);
+        }, {passive: false});
+        canvas.addEventListener('touchend', endPosition);
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            draw(e.touches[0]);
+        }, {passive: false});
+    }
+
+    function startPosition(e) {
+        painting = true;
+        draw(e);
+        playSound('pop');
+    }
+
+    function endPosition() {
+        painting = false;
+        ctx.beginPath();
+    }
+
+    function draw(e) {
+        if (!painting) return;
+        
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX || e.pageX) - rect.left;
+        const y = (e.clientY || e.pageY) - rect.top;
+
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+    }
+
+    function setColor(color, el) {
+        currentColor = color;
+        ctx.strokeStyle = color;
+        document.querySelectorAll('.color-picker').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        playSound('pop');
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        playSound('pop');
+    }
+
+    // Handle resize for canvas
+    window.addEventListener('resize', () => {
+        if(document.getElementById('screen-draw').classList.contains('active')) {
+            // Simple reload of canvas content could be added here, 
+            // but for simplicity we just re-init which clears it.
+            // In a production app, we'd save the image data.
+            initCanvas(); 
+        }
+    });
+
+</script>
+
+</body>
+</html>
+
