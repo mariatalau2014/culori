@@ -147,7 +147,7 @@
       50% { transform: scale(1.02); }
     }
     
-    /* NEW: Split Boxes Container */
+    /* Split Boxes Container */
     .split-input-container {
       display: flex;
       justify-content: center;
@@ -399,7 +399,7 @@
     <div id="startScreen">
       <div class="mascot">🦄</div>
       <p class="info">
-        <span class="heart">💖</span> 20 de probleme distractive!<br>
+        <span class="heart">💖</span> 20 de probleme cu rezultate de 2 cifre!<br>
         <span class="heart">💖</span> ➕ Adunări şi ➖ Scăderi<br>
         <span class="heart">💖</span> ⚠️ O greşeală = o luăm de la început!<br>
         <span class="heart">💖</span> 🌟 Scrie cifra unităților PRIMA!<br>
@@ -427,14 +427,8 @@
       
       <div class="problem" id="problemText">45 + 23 = ?</div>
       
-      <!-- NEW: Separate Boxes for Units and Tens -->
+      <!-- Separate Boxes for Units and Tens -->
       <div class="split-input-container">
-        <!-- Hundreds (Hidden initially, appears if needed) -->
-        <div class="box-wrapper" id="hundredsWrapper" style="opacity: 0.3; transform: scale(0.8); transition: 0.3s;">
-          <div class="digit-box" id="boxHundreds"></div>
-          <div class="digit-label">Sute</div>
-        </div>
-        
         <!-- Tens -->
         <div class="box-wrapper" id="tensWrapper">
           <div class="digit-box" id="boxTens"></div>
@@ -527,7 +521,7 @@
     let elapsedTime = 0;
     
     // Input State: Stores digits as they are typed (reverse order of actual number)
-    // index 0 = units typed, index 1 = tens typed, index 2 = hundreds typed
+    // index 0 = units typed, index 1 = tens typed
     let inputDigits = []; 
 
     function getSavedRecords() {
@@ -578,18 +572,56 @@
 
     function generateProblems() {
       problems = [];
-      for (let i = 0; i < TOTAL_PROBLEMS; i++) {
-        const a = Math.floor(Math.random() * 90) + 10;
-        const b = Math.floor(Math.random() * 90) + 10;
+      let attempts = 0;
+      
+      while (problems.length < TOTAL_PROBLEMS && attempts < 1000) {
+        attempts++;
         const op = Math.random() > 0.5 ? '+' : '-';
-        let correctAnswer;
+        let a, b, result;
+
         if (op === '+') {
-          correctAnswer = a + b;
-          problems.push({ text: `${a} + ${b} = ?`, answer: correctAnswer });
+          // Generate addition resulting in 10-99
+          // Ensure sum is at least 10 and at most 99
+          const minSum = 10;
+          const maxSum = 99;
+          
+          // Random sum
+          const sum = Math.floor(Math.random() * (maxSum - minSum + 1)) + minSum;
+          
+          // Split sum into a and b such that a and b are at least 1 (optional, usually 0 is fine but let's keep it simple)
+          // Let's ensure a and b are somewhat reasonable (e.g. not 0 + 10, though valid, less fun)
+          // Let's restrict addends to 1-98
+          a = Math.floor(Math.random() * (sum - 1)) + 1;
+          b = sum - a;
+          result = sum;
         } else {
-          const [max, min] = a >= b ? [a, b] : [b, a];
-          correctAnswer = max - min;
-          problems.push({ text: `${max} - ${min} = ?`, answer: correctAnswer });
+          // Generate subtraction resulting in 10-99
+          // Result (difference) is between 10 and 99
+          const minDiff = 10;
+          const maxDiff = 99;
+          
+          // Random difference
+          result = Math.floor(Math.random() * (maxDiff - minDiff + 1)) + minDiff;
+          
+          // Random amount to subtract, ensuring result is 2 digits
+          // b can be from 0 up to (result - 10)
+          // But wait, standard subtraction: a - b = c. c is 2 digits.
+          // a must be larger than b.
+          // a can be c + b.
+          // Let's pick b first, then a = result + b.
+          // To keep a reasonable (maybe 2 or 3 digits? Let's stick to 2-3 digits total, but result must be 2).
+          // Let's say b is random 1-50. Then a = result + b.
+          b = Math.floor(Math.random() * 50) + 1; 
+          a = result + b;
+        }
+
+        // Final Check: Is result strictly 2 digits? (10-99)
+        if (result >= 10 && result <= 99) {
+          problems.push({ 
+            text: `${a} ${op} ${b} = ?`, 
+            answer: result,
+            a, b, op: op
+          });
         }
       }
     }
@@ -664,22 +696,14 @@
     function renderInputBoxes() {
       const boxUnits = document.getElementById('boxUnits');
       const boxTens = document.getElementById('boxTens');
-      const boxHundreds = document.getElementById('boxHundreds');
-      const wrapHundreds = document.getElementById('hundredsWrapper');
 
       // Clear current text
       boxUnits.textContent = "";
       boxTens.textContent = "";
-      boxHundreds.textContent = "";
 
       // Reset visual active state
       boxUnits.classList.remove('active');
       boxTens.classList.remove('active');
-      boxHundreds.classList.remove('active');
-
-      // Hide hundreds box initially
-      wrapHundreds.style.opacity = '0.3';
-      wrapHundreds.style.transform = 'scale(0.8)';
 
       // Populate based on inputDigits
       // inputDigits[0] is the first typed digit (Units)
@@ -699,26 +723,14 @@
       } else {
         // If we have typed the unit, maybe highlight tens to indicate next step?
         // Actually, let's highlight the box that WAS just filled or IS being filled.
-        if(inputDigits.length === 1) {
-             // Option: Highlight Tens as "Next Target"? 
-             // Let's keep highlighting the last filled one or the next empty one. 
-             // For kids, highlighting the one they need to fill next is best.
-             // But they already filled units. Now they need Tens.
-             boxTens.classList.add('active'); 
-        }
-      }
-
-      // inputDigits[2] is the third typed digit (Hundreds)
-      if (inputDigits.length > 2) {
-        boxHundreds.textContent = inputDigits[2];
-        wrapHundreds.style.opacity = '1';
-        wrapHundreds.style.transform = 'scale(1)';
-        boxHundreds.classList.add('active');
+        // For kids, highlighting the one they need to fill next is best.
+        // But they already filled units. Now they need Tens.
+        boxTens.classList.add('active'); 
       }
     }
 
     function pressNumber(num) {
-      if (inputDigits.length < 3) {
+      if (inputDigits.length < 2) {
         inputDigits.push(num);
         renderInputBoxes();
       }
