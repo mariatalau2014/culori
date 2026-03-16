@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subiect + Haiku | Culori</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color: #f9fafb;
+        background-color: #05060a;
+        font-family: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        --surface: rgba(17, 24, 39, 0.72);
+        --surface-strong: rgba(15, 23, 42, 0.95);
+        --border: rgba(255, 255, 255, 0.14);
+        --accent: #f97316;
+        --accent-strong: #fb923c;
+        --muted: rgba(241, 245, 249, 0.7);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: radial-gradient(circle at top, #121124, #05060a 55%);
+        color: #f9fafb;
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+        padding: 1.5rem;
+      }
+
+      main {
+        width: min(1100px, 100%);
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      header {
+        background: var(--surface-strong);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: clamp(1.5rem, 3vw, 2.5rem);
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        box-shadow: 0 25px 45px rgba(5, 6, 10, 0.65);
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: clamp(2rem, 4vw, 3rem);
+        color: #fff7ef;
+      }
+
+      header p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      form {
+        background: var(--surface);
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        padding: clamp(1.25rem, 3vw, 2rem);
+        display: grid;
+        gap: 1rem;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        color: var(--muted);
+      }
+
+      input,
+      select,
+      button {
+        font-family: inherit;
+        font-size: 1rem;
+      }
+
+      input,
+      select,
+      textarea {
+        padding: 0.9rem 1rem;
+        border-radius: 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(15, 23, 42, 0.8);
+        color: #f8fafc;
+        transition: border-color 0.15s ease;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+      }
+
+      .field-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+      }
+
+      button {
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        border: none;
+        color: #0f172a;
+        font-weight: 600;
+        border-radius: 0.85rem;
+        padding: 1rem 1.5rem;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      button:not(:disabled):hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px rgba(249, 115, 22, 0.35);
+      }
+
+      section.result {
+        background: var(--surface);
+        border-radius: 1.25rem;
+        border: 1px solid var(--border);
+        padding: clamp(1.25rem, 3vw, 1.75rem);
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+      }
+
+      .result header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .result header h2 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: #f8fafc;
+      }
+
+      .status {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .response {
+        min-height: 210px;
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 1rem;
+        border: 1px dashed rgba(255, 255, 255, 0.18);
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        line-height: 1.6;
+        font-size: 1rem;
+      }
+
+      .response p {
+        margin: 0;
+        color: #eef2ff;
+      }
+
+      .response .muted {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .notes {
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 1rem;
+        padding: 1rem 1.1rem;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: var(--muted);
+      }
+
+      .notes strong {
+        color: #fff;
+      }
+
+      .hint {
+        margin-top: 0.35rem;
+        font-size: 0.85rem;
+        color: rgba(249, 249, 249, 0.7);
+      }
+
+      @media (max-width: 600px) {
+        body {
+          padding: 1rem;
+        }
+        form {
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Subiect + Haiku</h1>
+        <p>
+          Dă-i un subiect, alege un model Haiku din Vercel AI Gateway și primești un text explicativ, orientat
+          spre informație utilă și sugestii practice.
+        </p>
+        <p class="muted">
+          Cererile trec prin <strong>/api/haiku</strong>, iar Vercel injectează <code>AI_GATEWAY_API_KEY</code> înainte de a ajunge la
+          <strong>https://ai-gateway.vercel.sh/v1/chat/completions</strong>.
+        </p>
+      </header>
+
+      <form aria-label="Generator de text despre subiect" id="haiku-form">
+        <div class="field-row">
+          <label>
+            Subiectul tău
+            <input
+              id="subject"
+              name="subject"
+              required
+              autocomplete="off"
+              placeholder="Ex: o mie de cai pe o mare de hărți"
+            />
+          </label>
+          <label>
+            Model Haiku
+            <select id="model" name="model">
+              <option value="anthropic/claude-3-haiku">anthropic/claude-3-haiku</option>
+              <option value="anthropic/claude-haiku-4.5">anthropic/claude-haiku-4.5</option>
+              <option value="anthropic/claude-opus-4.6">anthropic/claude-opus-4.6</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="field-row">
+          <label>
+            Tonul propus
+            <select id="focus" name="focus">
+              <option value="insight">Analiză pe segmente: definiție, context, recomandări</option>
+              <option value="genius">Idei rapide, bullet point, inspirație artistică</option>
+              <option value="story">Narațiune scurtă + concluzie pragmatică</option>
+            </select>
+          </label>
+          <label>
+            Limita maximă de tokeni
+            <input id="maxTokens" type="number" min="64" max="1200" value="420" />
+          </label>
+        </div>
+
+        <p class="hint">
+          <strong>Notă:</strong> Nu e nevoie să introduci o cheie în browser pentru că `/api/haiku` trimite requestul către
+          Vercel AI Gateway folosind cheia din setările tale de proiect.
+        </p>
+
+        <button type="submit" id="generate">Scrie informații despre subiect</button>
+      </form>
+
+      <section class="result">
+        <header>
+          <h2>Rezultatul generatorului</h2>
+          <span class="status" id="status">Aștept subiectul; `/api/haiku` folosește cheia AI din mediu.</span>
+        </header>
+        <div class="response" id="assistant-response" aria-live="polite">
+          <p class="muted">Nicio generație încă. Apasă butonul pentru a cere un rezumat.</p>
+        </div>
+      </section>
+
+      <section class="notes">
+        <strong>Note de folosire</strong>
+        <ul>
+          <li>Setează <code>AI_GATEWAY_API_KEY</code> ca variabilă de mediu în dashboardul Vercel înainte de a publica aplicația.</li>
+          <li>Funcția <code>/api/haiku</code> face proxy la <strong>https://ai-gateway.vercel.sh/v1/chat/completions</strong> și păstrează cheia pe server.</li>
+          <li>Modelul Haiku preferă claritate, context și un final care invită la acțiune. Adaugă detalii precum "pentru elevi" sau "pentru gameri" în subiect.
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <script>
+      const form = document.getElementById('haiku-form');
+      const statusEl = document.getElementById('status');
+      const responseEl = document.getElementById('assistant-response');
+      const generateButton = document.getElementById('generate');
+      const focusSelect = document.getElementById('focus');
+      const subjectInput = document.getElementById('subject');
+      const maxTokensInput = document.getElementById('maxTokens');
+      const modelSelect = document.getElementById('model');
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        await generate();
+      });
+
+      const setStatus = (text) => {
+        statusEl.textContent = text;
+      };
+
+      const renderResponse = (content) => {
+        if (!content) {
+          responseEl.innerHTML = '<p class="muted">Răspunsul nu conține text.</p>';
+          return;
+        }
+        const paragraphs = content
+          .split(/\n{2,}/)
+          .map((line) => line.trim())
+          .filter(Boolean)
+          .map((line) => `<p>${line}</p>`);
+        responseEl.innerHTML = paragraphs.join('');
+      };
+
+      const generate = async () => {
+        const subject = subjectInput.value.trim();
+        const model = modelSelect.value;
+        const maxTokens = Number(maxTokensInput.value) || 420;
+
+        if (!subject) {
+          setStatus('Completează subiectul înainte de a cere informații.');
+          subjectInput.focus();
+          return;
+        }
+
+        setStatus('Trimitem promptul către serverless…');
+        generateButton.disabled = true;
+        responseEl.innerHTML = '<p class="muted">Aștept răspunsul...</p>';
+
+        try {
+          const response = await fetch('/api/haiku', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              subject,
+              focus: focusSelect.value,
+              model,
+              maxTokens,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data?.error || 'Răspuns invalid de la server.');
+          }
+
+          const text = data?.choices?.[0]?.message?.content?.trim();
+          renderResponse(text);
+          setStatus('Se afișează textul generat.');
+        } catch (error) {
+          console.error(error);
+          renderResponse('');
+          setStatus(`A apărut o eroare: ${error.message}`);
+        } finally {
+          generateButton.disabled = false;
+        }
+      };
+    </script>
+  </body>
+</html>
