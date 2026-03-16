@@ -34,9 +34,11 @@ export default async function handler(req, res) {
     return;
   }
 
-  const apiKey = process.env.AI_GATEWAY_API_KEY;
-  if (!apiKey) {
-    res.status(500).json({ error: 'Lipsește AI_GATEWAY_API_KEY în variabilele de mediu Vercel.' });
+  const authToken = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN;
+  if (!authToken) {
+    res
+      .status(500)
+      .json({ error: 'Lipsește AI_GATEWAY_API_KEY și nu există VERCEL_OIDC_TOKEN auto-generat în mediu.' });
     return;
   }
 
@@ -61,7 +63,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${authToken}`,
       },
       body: JSON.stringify(payload),
     });

@@ -231,7 +231,8 @@
           spre informație utilă și sugestii practice.
         </p>
         <p class="muted">
-          Cererile trec prin <strong>/api/haiku</strong>, iar Vercel injectează <code>AI_GATEWAY_API_KEY</code> înainte de a ajunge la
+          Cererile trec prin <strong>/api/haiku</strong>; Vercel adaugă automat credențialul necesar (tokenul
+          <code>AI_GATEWAY_API_KEY</code> sau <code>VERCEL_OIDC_TOKEN</code>) înainte de a ajunge la
           <strong>https://ai-gateway.vercel.sh/v1/chat/completions</strong>.
         </p>
       </header>
@@ -274,8 +275,8 @@
         </div>
 
         <p class="hint">
-          <strong>Notă:</strong> Nu e nevoie să introduci o cheie în browser pentru că `/api/haiku` trimite requestul către
-          Vercel AI Gateway folosind cheia din setările tale de proiect.
+          <strong>Notă:</strong> Nu e nevoie să introduci o cheie în browser; `/api/haiku` folosește tokenul generat de Vercel
+          (sau <code>AI_GATEWAY_API_KEY</code> dacă îl adaugi pentru test local).
         </p>
 
         <button type="submit" id="generate">Scrie informații despre subiect</button>
@@ -284,7 +285,7 @@
       <section class="result">
         <header>
           <h2>Rezultatul generatorului</h2>
-          <span class="status" id="status">Aștept subiectul; `/api/haiku` folosește cheia AI din mediu.</span>
+          <span class="status" id="status">Aștept subiectul; backendul Vercel se autentifică automat.</span>
         </header>
         <div class="response" id="assistant-response" aria-live="polite">
           <p class="muted">Nicio generație încă. Apasă butonul pentru a cere un rezumat.</p>
@@ -294,8 +295,10 @@
       <section class="notes">
         <strong>Note de folosire</strong>
         <ul>
-          <li>Setează <code>AI_GATEWAY_API_KEY</code> ca variabilă de mediu în dashboardul Vercel înainte de a publica aplicația.</li>
-          <li>Funcția <code>/api/haiku</code> face proxy la <strong>https://ai-gateway.vercel.sh/v1/chat/completions</strong> și păstrează cheia pe server.</li>
+          <li>Vercel injectează automat <code>VERCEL_OIDC_TOKEN</code> în funcția serverless; nu expune nimic în browser.</li>
+          <li>Când rulezi local, poți seta <code>AI_GATEWAY_API_KEY</code> în mediul tău sau în fișierul `.env.local` și folosește
+            <code>vercel env pull</code> pentru a testa.</li>
+          <li>Funcția <code>/api/haiku</code> face proxy la <strong>https://ai-gateway.vercel.sh/v1/chat/completions</strong> și redă răspunsul în UI.</li>
           <li>Modelul Haiku preferă claritate, context și un final care invită la acțiune. Adaugă detalii precum "pentru elevi" sau "pentru gameri" în subiect.
           </li>
         </ul>
