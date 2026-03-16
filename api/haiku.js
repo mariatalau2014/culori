@@ -34,8 +34,9 @@ export default async function handler(req, res) {
     return;
   }
 
-  const authToken = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN;
-  if (!authToken) {
+  const apiKey = process.env.AI_GATEWAY_API_KEY;
+  const hasCredentials = Boolean(apiKey) || Boolean(process.env.VERCEL_OIDC_TOKEN);
+  if (!hasCredentials) {
     res
       .status(500)
       .json({ error: 'Lipsește AI_GATEWAY_API_KEY și nu există VERCEL_OIDC_TOKEN auto-generat în mediu.' });
@@ -63,7 +64,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${authToken}`,
+        ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
       },
       body: JSON.stringify(payload),
     });
