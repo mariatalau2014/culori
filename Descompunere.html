@@ -81,6 +81,15 @@
             margin-bottom: 20px;
         }
         
+        .input-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .input-row .input-group {
+            flex: 1;
+        }
+        
         label {
             display: block;
             margin-bottom: 8px;
@@ -126,6 +135,18 @@
             font-size: 20px;
             font-weight: bold;
             color: #4facfe;
+        }
+
+        /* Specific styling for Prime Squares Tab */
+        .prime-info {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            color: #92400e;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.5;
         }
         
         .mixed-inputs {
@@ -289,6 +310,11 @@
                 flex-direction: column;
             }
             
+            .input-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
             .mixed-input-group {
                 flex-direction: column;
                 gap: 10px;
@@ -311,8 +337,10 @@
         <div class="tabs">
             <div class="tab active" onclick="switchTab('power')">Putere (a<sup>n</sup>)</div>
             <div class="tab" onclick="switchTab('number')">Număr Direct</div>
+            <div class="tab" onclick="switchTab('primes')">Pătrate Prime (p²)</div>
         </div>
         
+        <!-- Tab 1: Putere -->
         <div id="powerTab" class="tab-content active">
             <div class="input-section">
                 <div class="input-group">
@@ -331,6 +359,7 @@
             </div>
         </div>
         
+        <!-- Tab 2: Număr Direct -->
         <div id="numberTab" class="tab-content">
             <div class="input-section">
                 <div class="input-group">
@@ -344,7 +373,31 @@
             </div>
         </div>
         
-        <div class="mixed-inputs">
+        <!-- Tab 3: Pătrate Prime -->
+        <div id="primesTab" class="tab-content">
+            <div class="input-section">
+                <div class="prime-info">
+                    Descompune numărul în sumă de pătrate perfecte ale numerelor prime (ex: 2², 3², 5²...). Un număr prim se divide doar cu 1 și cu el însuși.
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="primeInput">Numărul de descompus:</label>
+                        <input type="number" id="primeInput" min="1" placeholder="Ex: 50">
+                    </div>
+                    <div class="input-group">
+                        <label for="termCountInput">Nr. Termeni (Opțional):</label>
+                        <input type="number" id="termCountInput" min="1" placeholder="Ex: 2">
+                    </div>
+                </div>
+                
+                <div class="number-display" id="primeDisplay">
+                    Număr = ?
+                </div>
+            </div>
+        </div>
+        
+        <!-- Secțiune pentru Descompunerea Mixtă Generală -->
+        <div id="mixedInputsSection" class="mixed-inputs">
             <h3 style="margin-bottom: 15px; color: #1e40af;">Configurație Descompunere Mixtă</h3>
             <div id="mixedTerms">
                 <div class="mixed-input-group">
@@ -397,24 +450,38 @@
             document.querySelectorAll('.tab').forEach(tabEl => {
                 tabEl.classList.remove('active');
             });
-            event.target.classList.add('active');
+            const tabs = document.querySelectorAll('.tab');
+            if (tab === 'power') tabs[0].classList.add('active');
+            if (tab === 'number') tabs[1].classList.add('active');
+            if (tab === 'primes') tabs[2].classList.add('active');
             
             // Show/hide tab content
             document.getElementById('powerTab').classList.toggle('active', tab === 'power');
             document.getElementById('numberTab').classList.toggle('active', tab === 'number');
+            document.getElementById('primesTab').classList.toggle('active', tab === 'primes');
+            
+            // Toggle Mixed Input Section (hide for primes)
+            const mixedSection = document.getElementById('mixedInputsSection');
+            if (tab === 'primes') {
+                mixedSection.style.display = 'none';
+            } else {
+                mixedSection.style.display = 'block';
+            }
+            
+            // Reset result display
+            document.getElementById('result').style.display = 'none';
             
             // Update displays
-            if (tab === 'power') {
-                updatePowerDisplay();
-            } else {
-                updateNumberDisplay();
-            }
+            if (tab === 'power') updatePowerDisplay();
+            else if (tab === 'number') updateNumberDisplay();
+            else if (tab === 'primes') updatePrimeDisplay();
         }
         
-        // Update displays when inputs change
+        // Listeners
         document.getElementById('baseInput').addEventListener('input', updatePowerDisplay);
         document.getElementById('exponentInput').addEventListener('input', updatePowerDisplay);
         document.getElementById('numberInput').addEventListener('input', updateNumberDisplay);
+        document.getElementById('primeInput').addEventListener('input', updatePrimeDisplay);
         
         function updatePowerDisplay() {
             if (currentTab !== 'power') return;
@@ -450,6 +517,19 @@
             
             document.getElementById('numberDisplay').innerHTML = `Număr = ${number}`;
         }
+
+        function updatePrimeDisplay() {
+            if (currentTab !== 'primes') return;
+            
+            const number = parseInt(document.getElementById('primeInput').value);
+            
+            if (isNaN(number) || number <= 0) {
+                document.getElementById('primeDisplay').innerHTML = 'Număr = ?';
+                return;
+            }
+            
+            document.getElementById('primeDisplay').innerHTML = `Număr = ${number}`;
+        }
         
         function addMixedTerm() {
             termCount++;
@@ -477,7 +557,6 @@
             const root = Math.pow(value, 1/k);
             const roundedRoot = Math.round(root);
             
-            // Check if it's a perfect k-th power
             if (Math.abs(root - roundedRoot) < 1e-10 && Math.pow(roundedRoot, k) === value) {
                 if (k === 2) {
                     return `<span class="power-form">${roundedRoot}²</span>`;
@@ -496,11 +575,52 @@
             const roundedRoot = Math.round(root);
             return Math.abs(root - roundedRoot) < 1e-10 && Math.pow(roundedRoot, k) === value;
         }
+
+        // --- Prime Number Helpers ---
         
+        function isPrime(num) {
+            if (num <= 1) return false;
+            if (num <= 3) return true;
+            if (num % 2 === 0 || num % 3 === 0) return false;
+            for (let i = 5; i * i <= num; i += 6) {
+                if (num % i === 0 || num % (i + 2) === 0) return false;
+            }
+            return true;
+        }
+
+        function getPrimesUpTo(limit) {
+            const primes = [];
+            for (let i = 2; i <= limit; i++) {
+                if (isPrime(i)) primes.push(i);
+            }
+            return primes;
+        }
+
+        // --- Main Decomposition Logic ---
+
         function decompose() {
             let numberToDecompose;
             let displayText;
             
+            if (currentTab === 'primes') {
+                const number = parseInt(document.getElementById('primeInput').value);
+                const termCountInput = document.getElementById('termCountInput').value;
+                const requestedTerms = termCountInput ? parseInt(termCountInput) : null;
+                
+                if (isNaN(number) || number <= 0) {
+                    showError('Vă rugăm să introduceți un număr pozitiv valid.');
+                    return;
+                }
+
+                if (requestedTerms !== null && (isNaN(requestedTerms) || requestedTerms <= 0)) {
+                    showError('Numărul de termeni trebuie să fie pozitiv.');
+                    return;
+                }
+                
+                decomposePrimeSquares(number, requestedTerms);
+                return;
+            }
+
             if (currentTab === 'power') {
                 const base = parseInt(document.getElementById('baseInput').value);
                 const exponent = parseInt(document.getElementById('exponentInput').value);
@@ -536,7 +656,6 @@
                 displayText = `${number}`;
             }
             
-            // Get power configuration
             const powerSelects = document.querySelectorAll('.power-select');
             const powerConfig = Array.from(powerSelects).map(select => parseInt(select.value));
             
@@ -547,6 +666,103 @@
             
             const result = findMixedPowerDecomposition(numberToDecompose, powerConfig);
             showResult(result, displayText, numberToDecompose, powerConfig);
+        }
+
+        function decomposePrimeSquares(n, targetCount) {
+            const maxPrime = Math.floor(Math.sqrt(n));
+            const primes = getPrimesUpTo(maxPrime);
+            
+            if (n < 4) {
+                 showError(`Numărul ${n} este prea mic pentru a fi reprezentat ca sumă de pătrate de numere prime (minim 2² = 4).`);
+                 return;
+            }
+
+            let result = null;
+
+            if (targetCount === null) {
+                // Find any combination (shortest or first found)
+                // Use dynamic programming or backtracking to find ANY solution
+                result = findAnyPrimeSquareSum(n, primes);
+            } else {
+                // Find specific length
+                result = findPrimeSquareSumWithCount(n, primes, targetCount);
+            }
+            
+            const resultDiv = document.getElementById('result');
+            const resultText = document.getElementById('resultText');
+            const decompositionList = document.getElementById('decompositionList');
+
+            if (result) {
+                resultDiv.className = 'result success';
+                const countText = targetCount ? `folosind exact ${targetCount} termeni` : 'suma de pătrate de numere prime';
+                resultText.innerHTML = `✅ <strong>${n}</strong> poate fi descompus în ${countText}:`;
+                
+                decompositionList.innerHTML = '';
+                result.forEach((prime, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'decomposition-item';
+                    item.innerHTML = `
+                        <span>Termen ${index + 1} (Prim ${prime}):</span>
+                        <span><strong>${prime}²</strong> = ${prime*prime}</span>
+                    `;
+                    decompositionList.appendChild(item);
+                });
+                decompositionList.style.display = 'block';
+            } else {
+                resultDiv.className = 'result error';
+                const constraintText = targetCount 
+                    ? `folosind exact ${targetCount} termeni` 
+                    : 'ca sumă de pătrate de numere prime';
+                resultText.innerHTML = `❌ Nu s-a găsit nicio descompunere a lui <strong>${n}</strong> ${constraintText}.`;
+                decompositionList.style.display = 'none';
+            }
+            resultDiv.style.display = 'block';
+        }
+
+        function findAnyPrimeSquareSum(target, primes) {
+            // Simple backtracking that stops at first solution
+            function backtrack(remaining, startIndex, path) {
+                if (remaining === 0) return path;
+                if (remaining < 0) return null;
+
+                for (let i = startIndex; i < primes.length; i++) {
+                    const p = primes[i];
+                    const square = p * p;
+                    if (square > remaining) break;
+
+                    const res = backtrack(remaining - square, i, path.concat(p));
+                    if (res) return res;
+                }
+                return null;
+            }
+            return backtrack(target, 0, []);
+        }
+
+        function findPrimeSquareSumWithCount(target, primes, count) {
+            // Backtracking with exact depth
+            function backtrack(remaining, startIndex, depth, path) {
+                if (depth === count) {
+                    return remaining === 0 ? path : null;
+                }
+                if (remaining <= 0) return null;
+                
+                // Optimization: if we need 'remainingDepth' more terms, 
+                // and we can't fit min possible sum (depth * 2^2) or max possible, prune?
+                // Min is 4, Max is large. Check if remaining < (count - depth) * 4
+                
+                if (remaining < (count - depth) * 4) return null;
+
+                for (let i = startIndex; i < primes.length; i++) {
+                    const p = primes[i];
+                    const square = p * p;
+                    if (square > remaining) break;
+
+                    const res = backtrack(remaining - square, i, depth + 1, path.concat(p));
+                    if (res) return res;
+                }
+                return null;
+            }
+            return backtrack(target, 0, 0, []);
         }
         
         function findMixedPowerDecomposition(n, powerConfig) {
@@ -561,12 +777,10 @@
                 }
             }
             
-            // For small number of terms, try exhaustive search
             if (k_terms <= 4) {
                 return findMixedPowerDecompositionExhaustive(n, powerConfig);
             }
             
-            // For larger number of terms, use approximate method
             return findApproximateMixedPowerDecomposition(n, powerConfig);
         }
         
@@ -685,24 +899,13 @@
         }
         
         // Allow Enter key to trigger decomposition
-        document.getElementById('baseInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                decompose();
-            }
-        });
-        
-        document.getElementById('exponentInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                decompose();
-            }
-        });
-        
-        document.getElementById('numberInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                decompose();
-            }
+        ['baseInput', 'exponentInput', 'numberInput', 'primeInput', 'termCountInput'].forEach(id => {
+            document.getElementById(id).addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    decompose();
+                }
+            });
         });
     </script>
 </body>
 </html>
-
