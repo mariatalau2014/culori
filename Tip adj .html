@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizor Adjective: Participiu vs. Propriu-zis</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #50e3c2;
+            --accent-color: #ff6b6b;
+            --background-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-light: #777777;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), #357abd);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Container */
+        main {
+            flex: 1;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Input Section */
+        .input-section {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: transform 0.2s;
+        }
+
+        .input-section:focus-within {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 1.1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s;
+            min-width: 200px;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #357abd;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* Result Section */
+        #result-area {
+            width: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease-out;
+            pointer-events: none; /* Prevent clicks when hidden */
+        }
+
+        #result-area.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border-left: 6px solid #ccc;
+        }
+
+        .result-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.participiu {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge.propriu {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .badge.uncertain {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .result-body {
+            padding: 1.5rem;
+        }
+
+        .explanation {
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .example-box {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            font-style: italic;
+            color: var(--text-light);
+            border-left: 3px solid #ddd;
+        }
+
+        /* Educational Section */
+        .info-section {
+            margin-top: 3rem;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .info-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            border-top: 1px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+
+        /* Utility */
+        .error-msg {
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            min-height: 1.4em;
+            font-weight: 600;
+        }
+
+        /* Icon SVG styling */
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.5rem; }
+            .input-group { flex-direction: column; }
+            button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Detector Adjective</h1>
+    <p>Află dacă un adjectiv este derivat dintr-un verb (participiu) sau este unul propriu-zis (primitiv).</p>
+</header>
+
+<main>
+    <section class="input-section">
+        <label for="word-input">Introdu adjectivul (la masculin, singular):</label>
+        <div class="input-group">
+            <input type="text" id="word-input" placeholder="Exemplu: obosit, frumos, uitat, verde..." autocomplete="off">
+            <button id="analyze-btn">Analizează</button>
+        </div>
+        <div id="error-message" class="error-msg"></div>
+    </section>
+
+    <section id="result-area">
+        <div class="result-card" id="result-card">
+            <div class="result-header">
+                <span class="result-title" id="result-word">Cuvânt</span>
+                <span class="badge" id="result-badge">Tip</span>
+            </div>
+            <div class="result-body">
+                <p class="explanation" id="result-explanation">Explicația va apărea aici.</p>
+                <div class="example-box" id="result-details">
+                    Detalii lingvistice...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="info-section">
+        <div class="info-card">
+            <h3>
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                Adjectiv Propriu-zis
+            </h3>
+            <p>Adjectivele care nu provin din verbe. Ele descriu însușiri intrinseci sau stări generale, nu rezultatul unei acțiuni.</p>
+            <p style="margin-top:10px; font-weight:600; color:#555;">Exemple: <em>frumos, verde, tare, mic, greu, curat.</em></p>
+        </div>
+        <div class="info-card">
+            <h3>
+                <svg class="icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                Adjectiv din Participiu
+            </h3>
+            <p>Formate din participiul unui verb. Arată starea în care a ajuns un obiect sau o persoană în urma unei acțiuni.</p>
+            <p style="margin-top:10px; font-weight:600; color:#555;">Exemple: <em>obosit (de a obosi), spălat (de a spăla), încântat.</em></p>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>Instrument educativ de analiză morfologică simplificată.</p>
+</footer>
+
+<script>
+    // Baza de date internă (limitată pentru demo)
+    // Deoarece nu avem un API backend, folosim liste de cuvinte și logică heuristică.
+    const adjectivesDB = {
+        primitives: [
+            "frumos", "frumoasă", "mic", "mică", "mare", "bun", "bună", "rău", "rea", 
+            "verde", "albastru", "roșu", "galben", "negru", "alb", "tânăr", "bătrân", 
+            "greu", "ușor", "lung", "scurt", "lat", "îngust", "inalt", "jos", 
+            "drept", "curbat", "rotund", "pătrat", "ascuțit", "tobă", "dulce", "amar", 
+            "sărat", "acru", "iute", "rece", "cald", "uscat", "ud", "curat", "murdar",
+            "nou", "vechi", "sălbatic", "domestic", "stângaci", "îndemânatic", "sincer",
+            "mincinos", "deștept", "prost", "înțelept", "tăcut", "guraliv", "smecher",
+            "complex", "simplu", "clar", "intunecat", "fericit", "trist", "bolnav", "sănătos"
+            // Notă: Unele cuvinte pot fi ambigue, dar acestea sunt în general considerate primitive
+        ],
+        // Cuvinte care SE TERMINĂ ca participii dar SUNT adjective primitive (false positives de evitat)
+        exceptionsPrimitive: [
+            "curat", "socrat", "mărginar", "familiar", "particular", "polar", "solar", "lunar", 
+            "popular", "secular", "regular", "insular", "ular", "consular", "doctoral", 
+            "profesor", "sor", "dor", "or", "nor", "foc", "joc", "poc" // Stop words basics
+        ]
+    };
+
+    // Sufixe comune pentru participiu (masculin singular)
+    const participleSuffixes = [
+        'at', 'ut', 'it',  // Participiul propriu-zis (cantat, baut, coborât)
+        's'               // Participiul scurt (adus, venit, spart) - Atenție, și adjectivele primitive se pot termina în s (ex: frumos)
+    ];
+
+    const inputField = document.getElementById('word-input');
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const resultArea = document.getElementById('result-area');
+    const errorMsg = document.getElementById('error-message');
+
+    // Elemente pentru afișare rezultat
+    const elWord = document.getElementById('result-word');
+    const elBadge = document.getElementById('result-badge');
+    const elExplanation = document.getElementById('result-explanation');
+    const elDetails = document.getElementById('result-details');
+    const elCard = document.getElementById('result-card');
+
+    function normalizeText(word) {
+        return word.trim().toLowerCase().replace(/[^a-zăâîșț]+/g, '');
+    }
+
+    function analyzeAdjective() {
+        const rawInput = inputField.value;
+        const word = normalizeText(rawInput);
+
+        // Validare
+        if (!word) {
+            errorMsg.textContent = "Te rog introdu un cuvânt.";
+            resultArea.classList.remove('visible');
+            return;
+        }
+        if (word.length < 3) {
+            errorMsg.textContent = "Cuvântul este prea scurt pentru a fi analizat.";
+            resultArea.classList.remove('visible');
+            return;
+        }
+
+        errorMsg.textContent = "";
+
+        // 1. Verificare în lista de Primitive (Baza de date "Hardcoded")
+        if (adjectivesDB.primitives.includes(word)) {
+            showResult(word, 'propriu', 
+                `Acesta este un <strong>adjectiv propriu-zis (primitiv)</strong>.`,
+                `Nu se poate conjuga la un verb corespunzător din care să provină direct (ex: nu există "a frumosi"). Cuvântul descrie o calitate de bază.`
+            );
+            return;
+        }
+
+        // 2. Verificare excepții (cuvinte care arată ca participii dar nu sunt)
+        if (adjectivesDB.exceptionsPrimitive.includes(word)) {
+            showResult(word, 'propriu', 
+                `Acesta este un <strong>adjectiv propriu-zis</strong>, deși se termină ca un participiu.`,
+                `Deși are sufix specific, cuvântul nu provine dintr-un verb (ex: "curat" nu vine de la "a cura", ci de la latină "purus").`
+            );
+            return;
+        }
+
+        // 3. Verificare logică heuristică (Sufixe)
+        let isLikelyParticiple = false;
+        let suffixMatch = "";
+
+        for (let suffix of participleSuffixes) {
+            if (word.endsWith(suffix)) {
+                isLikelyParticiple = true;
+                suffixMatch = suffix;
+                break;
+            }
+        }
+
+        // Analiză specială pentru terminatia 's'
+        // Multe adjective primitive se termină în 'os', 'as', 'es'. Participiul scurt e doar 's' (adus, spus, înțeles).
+        if (word.endsWith('s') && !word.endsWith('os') && !word.endsWith('as') && !word.endsWith('es')) {
+            // Termina doar în s, e foarte probabil participiu scurt
+            isLikelyParticiple = true;
+        } else if (word.endsWith('os') || word.endsWith('as') || word.endsWith('es')) {
+            // Adjective precum 'frumos', 'greu', 'sălbatic' sunt primitive.
+            // Dacă nu e în lista noastră de primitive (e unul necunoscut care se termină în os/as/es), e ambiguu.
+            // Presupunem că e primitive dacă se termină în 'os'/'as'/'es', decât dovada contrară.
+            isLikelyParticiple = false; 
+        }
+
+        if (isLikelyParticiple) {
+            showResult(word, 'participiu', 
+                `Acest cuvânt pare a fi un <strong>adjectiv derivat din participiu</strong>.`,
+                `Se termină în „-${suffixMatch || 's'}”, ceea ce indică starea rezultată în urma unei acțiuni (ex: dacă ar exista verbul „a ${word}”).`
+            );
+        } else {
+            // Cazul default: nu suntem siguri, nu e în listă și nu se potrivește tiparelor clare
+            showResult(word, 'uncertain', 
+                `<strong>Analiză incertă / Adjectiv propriu-zis probabil.</strong>`,
+                `Cuvântul nu se potrivește tiparelor uzuale de participiu și nu se află în lista noastră de cuvinte cunoscute. Este cel mai probabil un adjectiv primitiv necatalogat sau un termen specific.`
+            );
+        }
+    }
+
+    function showResult(word, type, titleHtml, detailsText) {
+        // Setare conținut
+        elWord.textContent = word.charAt(0).toUpperCase() + word.slice(1);
+        elExplanation.innerHTML = titleHtml;
+        elDetails.textContent = detailsText;
+
+        // Resetare clase badge
+        elBadge.className = 'badge';
+        elCard.style.borderLeftColor = '#ccc';
+
+        // Styling pe tip
+        if (type === 'participiu') {
+            elBadge.textContent = "Din Participiu";
+            elBadge.classList.add('participiu');
+            elCard.style.borderLeftColor = '#1976d2';
+        } else if (type === 'propriu') {
+            elBadge.textContent = "Propriu-zis";
+            elBadge.classList.add('propriu');
+            elCard.style.borderLeftColor = '#2e7d32';
+        } else {
+            elBadge.textContent = "Necunoscut";
+            elBadge.classList.add('uncertain');
+            elCard.style.borderLeftColor = '#ef6c00';
+        }
+
+        // Animatie afisare
+        resultArea.classList.add('visible');
+    }
+
+    // Event Listeners
+    analyzeBtn.addEventListener('click', analyzeAdjective);
+    
+    inputField.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            analyzeAdjective();
+        }
+    });
+
+    // Ascundem rezultatul când utilizatorul începe să scrie din nou
+    inputField.addEventListener('input', function() {
+        if(resultArea.classList.contains('visible')) {
+            // Optional: putem ascunde imediat sau aștepta
+        }
+    });
+
+</script>
+
+</body>
+</html>
