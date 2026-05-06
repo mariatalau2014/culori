@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizator Adjective Românești</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--primary-color);
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        main {
+            padding: 24px;
+            flex: 1;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        button.analyze-btn {
+            padding: 12px 24px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button.analyze-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Results Grid */
+        .results-area {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+            .input-wrapper {
+                flex-direction: column;
+            }
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary-color);
+        }
+
+        .card-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+
+        .card-input {
+            width: 100%;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+            border: none;
+            border-bottom: 2px solid transparent;
+            background: transparent;
+            padding: 4px 0;
+            transition: border-color 0.2s;
+        }
+
+        .card-input:focus {
+            outline: none;
+            border-bottom-color: var(--primary-color);
+        }
+
+        .card-input:hover {
+            border-bottom-color: #e2e8f0;
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            color: #f59e0b; /* Amber for warning/info */
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .actions {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        .info-msg {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--bg-color);
+            border-color: var(--text-muted);
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, bottom 0.3s;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            bottom: 40px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Analizor de Adjective</h1>
+        <p>Introdu un adjectiv pentru a vedea toate formele sale de declinare</p>
+    </header>
+
+    <main>
+        <div class="input-group">
+            <div class="input-wrapper">
+                <input type="text" id="adjectiveInput" placeholder="ex: frumos, mic, mare, bun..." autocomplete="off">
+                <button class="analyze-btn" id="analyzeBtn">Analizează</button>
+            </div>
+        </div>
+
+        <div id="resultsArea" class="results-area">
+            <div class="grid-container">
+                <!-- Masculin Singular -->
+                <div class="card">
+                    <label class="card-label">Masculin Singular</label>
+                    <input type="text" class="card-input" id="mascSg" readonly>
+                </div>
+
+                <!-- Masculin Plural -->
+                <div class="card">
+                    <label class="card-label">Masculin Plural</label>
+                    <input type="text" class="card-input" id="mascPl">
+                </div>
+
+                <!-- Feminin Singular -->
+                <div class="card">
+                    <label class="card-label">Feminin Singular</label>
+                    <input type="text" class="card-input" id="femSg">
+                </div>
+
+                <!-- Feminin Plural -->
+                <div class="card">
+                    <label class="card-label">Feminin Plural</label>
+                    <input type="text" class="card-input" id="femPl">
+                </div>
+            </div>
+
+            <div id="logicHint" class="hint" style="display:none; justify-content: center; margin-top: 10px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <span>Formele generate sunt estimări automate. Te rog să verifici și să editezi corect.</span>
+            </div>
+
+            <div class="actions">
+                <span class="info-msg" id="inputTypeDisplay">Tip: -os</span>
+                <button class="copy-btn" id="copyBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    Copiază tot
+                </button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div id="toast" class="toast">Copiat în clipboard!</div>
+
+<script>
+    // Dicționar mic de adjective pentru a corecta erorile de logică automată
+    const dictionary = {
+        "frumos": { m_sg: "frumos", m_pl: "frumoși", f_sg: "frumoasă", f_pl: "frumoase" },
+        "mic": { m_sg: "mic", m_pl: "mici", f_sg: "mică", f_pl: "mici" },
+        "mare": { m_sg: "mare", m_pl: "mari", f_sg: "mare", f_pl: "mari" },
+        "bun": { m_sg: "bun", m_pl: "buni", f_sg: "bună", f_pl: "bune" },
+        "nou": { m_sg: "nou", m_pl: "noi", f_sg: "nouă", f_pl: "noi" },
+        "alb": { m_sg: "alb", m_pl: "albi", f_sg: "albă", f_pl: "albe" },
+        "verde": { m_sg: "verde", m_pl: "verzi", f_sg: "verde", f_pl: "verzi" },
+        "sănătos": { m_sg: "sănătos", m_pl: "sănătoși", f_sg: "sănătoasă", f_pl: "sănătoase" },
+        "fericit": { m_sg: "fericit", m_pl: "fericiți", f_sg: "fericită", f_pl: "fericite" },
+        "bătrân": { m_sg: "bătrân", m_pl: "bătrâni", f_sg: "bătrână", f_pl: "bătrâne" },
+        "greu": { m_sg: "greu", m_pl: "grei", f_sg: "grea", f_pl: "grele" },
+        "reușit": { m_sg: "reușit", m_pl: "reușiți", f_sg: "reușită", f_pl: "reușite" },
+        "simplu": { m_sg: "simplu", m_pl: "simpli", f_sg: "simplă", f_pl: "simple" }
+    };
+
+    // Elemente DOM
+    const input = document.getElementById('adjectiveInput');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const resultsArea = document.getElementById('resultsArea');
+    const logicHint = document.getElementById('logicHint');
+    const typeDisplay = document.getElementById('inputTypeDisplay');
+    const copyBtn = document.getElementById('copyBtn');
+    const toast = document.getElementById('toast');
+
+    const mSgInput = document.getElementById('mascSg');
+    const mPlInput = document.getElementById('mascPl');
+    const fSgInput = document.getElementById('femSg');
+    const fPlInput = document.getElementById('femPl');
+
+    // Funcție principală de analiză
+    function analyzeAdjective() {
+        const word = input.value.trim().toLowerCase();
+        
+        if (word.length < 2) return; // Ignorăm intrările prea scurte
+
+        let result = {};
+
+        // 1. Verificăm dacă există în dicționarul nostru
+        if (dictionary[word]) {
+            result = { ...dictionary[word] };
+            logicHint.style.display = 'none'; 
+        } else {
+            // 2. Dacă nu e în dicționar, încercăm să deducem logic
+            result = guessForms(word);
+            logicHint.style.display = 'flex'; // Afișăm avertismentul că e generat automat
+        }
+
+        // 3. Afișăm rezultatele
+        mSgInput.value = capitalize(result.m_sg);
+        mPlInput.value = capitalize(result.m_pl);
+        fSgInput.value = capitalize(result.f_sg);
+        fPlInput.value = capitalize(result.f_pl);
+
+        resultsArea.style.display = 'block';
+        typeDisplay.textContent = `Analizat pentru: "${capitalize(result.m_sg)}"`;
+    }
+
+    // Logică de "ghicire" a formelor (Regex și reguli gramaticale)
+    function guessForms(word) {
+        let m_sg = word;
+        let m_pl = "";
+        let f_sg = "";
+        let f_pl = "";
+        let type = "";
+
+        // Regex patterns
+        const endsWithConsonant = /[^aeiouăîâ\s]$/i; 
+        const endsWithU = /u$/i;
+        const endsWithI = /i$/i; // Dar nu 'chi' sau 'ghi' (deși adjectivul e rar strict în -i la sg, de obicei plural)
+        const endsWithE = /e$/i;
+        const endsWithA = /a$/i;
+
+        // Caz 1: Adjective terminate în consonană (ex: bun, mic, fericit, greu - dacă nu e e/u)
+        if (endsWithConsonant.test(word)) {
+            // Caz special: -t (ex: fericit, obosit) -> des, ți, ță, te
+            if (word.endsWith('t')) {
+                type = "consoană (-t)";
+                m_pl = word + "i"; 
+                f_sg = word + "ă";
+                f_pl = word.endsWith("it") ? word.slice(0, -2) + "ite" : word + "e"; 
+                // Corecție pentru -it: fericit -> fericite
+                if(word.endsWith("it")) f_pl = word.slice(0, -2) + "ite";
+                else f_pl = word + "e"; 
+            } 
+            // Caz general: (ex: bun, mic, alb)
+            else {
+                type = "consoană";
+                m_pl = word + "i";
+                f_sg = word + "ă";
+                f_pl = word + "e";
+            }
+        }
+        // Caz 2: Terminate în -u (ex: nou, simplu, crunt)
+        else if (endsWithU.test(word)) {
+            type = "-u";
+            let stem = word.slice(0, -1);
+            // nou -> noi (pluralul se schimbă uneori radical, dar aici ne ținem de regulă)
+            // regulă simplă: simplu -> simpli
+            m_pl = stem + "i";
+            f_sg = stem + "ă";
+            f_pl = stem + "e";
+        }
+        // Caz 3: Terminate în -e (ex: mare, verde, trist)
+        else if (endsWithE.test(word)) {
+            type = "-e";
+            // Subcaz: trist (se comportă ca la consoană) vs verde (invariant)
+            // Dacă lungimea > 5 și se termină în -este, e adverb mai des. Să presupunem adjectiv comun.
+            // Verde: verde, verzi, verde, verzi
+            // Trist: trist, triști, tristă, triste
+            // Să folosim o listă mică de adjective invariante în -e
+            const invariantE = ["verde", "maro", "sare", "vale", "ocre", "suprem", "extrem"]; // suprema există...
+            
+            if (invariantE.includes(word)) {
+                m_pl = word + "i"; // verde -> verzi
+                f_sg = word;       // verde
+                f_pl = word + "i"; // verzi
+            } else {
+                // Comportament ca la consoană (trist, puternic - dacă scapă de i)
+                // Dar inputul e cuvântul de la utilizator. Dacă a scris "triste", ar fi ciudat la sg.
+                // Presupunem masculin singular "trist".
+                m_pl = word + "i"; // triști (dublează i-ul din trist? Nu, trist+i = triști. ok)
+                f_sg = word + "ă"; // tristă
+                f_pl = word + "e"; // triste
+            }
+        }
+        // Caz 4: Terminate în -i (ex: unchi, ciudat - rar adjectiv pur în -i la sg)
+        else if (endsWithI.test(word)) {
+            type = "-i";
+            let stem = word.slice(0, -1);
+            // De obicei adjectivele în -i la sg sunt neregulate sau substantive.
+            // Încercăm totuși: unchi -> unchi?
+            m_pl = word; // neschimbat
+            f_sg = stem + "e";
+            f_pl = word;
+        }
+        // Caz 5: Terminate în -ă (deja e feminin singular, ex: bună)
+        else if (word.endsWith("ă")) {
+            type = "-ă (input feminin)";
+            // Trebuie să ne întoarcem la masculin.
+            // bună -> bun
+            let stem = word.slice(0, -1);
+            // Dacă stemul se termină în 'e' (ex: neregulate? grea -> greu)
+            // Este greu să deducem invers perfect fără dicționar.
+            // Vom presupune că e un adjectiv simplu: "frumoasă" -> "frumos"
+            if (stem.endsWith("oas")) { // frumoasă
+                m_sg = stem + "u"; // frumos - greu de dedus algoritmic
+                // Să nu inventăm. Dacă userul pune "frumoasă", îl întrebăm sau bănuim.
+                // O să facem un swap simplu: ă -> null, osare -> os? Prea complex.
+                // Să setăm m_sg = stem (bună -> bun) și restul pe baza lui m_sg nou.
+                m_sg = stem; 
+                // Recalculăm m_sg. Daca stem = bun.
+                m_pl = stem + "i";
+                f_sg = word; // original
+                f_pl = stem + "e";
+            } else {
+                m_sg = stem;
+                m_pl = stem + "i";
+                f_sg = word;
+                f_pl = stem + "e";
+            }
+        } else {
+            // Fallback (altceva)
+            m_pl = word;
+            f_sg = word;
+            f_pl = word;
+        }
+
+        return { m_sg, m_pl, f_sg, f_pl };
+    }
+
+    // Utilitare
+    function capitalize(str) {
+        if (!str) return "";
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function showToast() {
+        toast.classList.add("show");
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 2000);
+    }
+
+    // Event Listeners
+    analyzeBtn.addEventListener('click', analyzeAdjective);
+    
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') analyzeAdjective();
+    });
+
+    // Funcție Copiere
+    copyBtn.addEventListener('click', () => {
+        const textToCopy = 
+`Masculin Singular: ${mSgInput.value}
+Masculin Plural: ${mPlInput.value}
+Feminin Singular: ${fSgInput.value}
+Feminin Plural: ${fPlInput.value}`;
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            showToast();
+        }).catch(err => {
+            console.error('Eroare la copiere', err);
+            // Fallback pentru browsere vechi
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast();
+        });
+    });
+
+    // Input validation pentru a nu lăsa câmpuri goale dacă se editează manual (opțional)
+    [mPlInput, fSgInput, fPlInput].forEach(inp => {
+        inp.addEventListener('focus', () => {
+            inp.removeAttribute('readonly'); // Deblocare la focus
+            inp.select();
+        });
+        inp.addEventListener('blur', () => {
+            if(inp.value === '') inp.value = "..."; // Nu lăsa complet gol vizual
+        });
+    });
+
+</script>
+
+</body>
+</html>
