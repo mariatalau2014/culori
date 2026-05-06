@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Calculator Complet</title>
+    <style>
+        :root {
+            --bg-color: #f2f2f7;
+            --btn-bg: #ffffff;
+            --sci-bg: #e5e5ea;
+            --btn-text: #000000;
+            --op-color: #ff9f0a;
+            --equals-bg: #af52de;
+            --action-color: #a5a5a5;
+            --modal-bg: #ffffff;
+            --text-history: #8e8e93;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
+
+        body {
+            background-color: #fff;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .calculator-app {
+            background-color: var(--bg-color);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 5px;
+            position: relative;
+        }
+
+        .display-area {
+            flex: 0 0 auto;
+            height: 15vh; /* Redus puțin să încapă butoanele */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+            padding: 5px 15px;
+            overflow-x: auto; /* Scroll orizontal dacă rezultatul e lung */
+        }
+        .history { font-size: 1rem; color: var(--text-history); margin-bottom: 2px; white-space: nowrap; }
+        .current-input { font-size: 2.8rem; font-weight: 300; color: #000; line-height: 1.1; text-align: right; white-space: nowrap; }
+        
+        /* Container pentru cele 2 rânduri de sus */
+        .sci-container {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 5px;
+            padding: 0 5px;
+        }
+
+        .sci-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .sci-btn {
+            background: var(--sci-bg);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 0;
+            flex: 1;
+            margin: 0 2px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .sci-btn:active { background: #d1d1d6; }
+
+        /* Tastatura Principală */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 8px;
+            padding: 5px 10px 15px 10px;
+            flex-grow: 1; /* Umple restul spațiului */
+        }
+
+        button {
+            border-radius: 50%;
+            border: none;
+            font-size: 2rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+            outline: none; 
+            background: var(--btn-bg); 
+            color: var(--btn-text);
+            width: 100%; height: 100%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button:active { filter: brightness(0.9); transform: scale(0.95); }
+
+        .btn-num { background: #ffffff; font-size: 2.2rem; color: #000; }
+        .btn-op { color: var(--op-color); font-size: 2.2rem; background: var(--btn-bg); }
+        .btn-action { color: #000; background: var(--action-color); font-size: 1.5rem; font-weight: 700; }
+        .btn-equals { background-color: var(--equals-bg); color: #fff; grid-column: 1 / 2; grid-row: 5 / 6; border-radius: 35px; }
+        .btn-zero { grid-column: 2 / 5; border-radius: 35px; justify-content: flex-start; padding-left: 30px; }
+
+        /* MODAL */
+        .modal-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: var(--modal-bg);
+            width: 85%;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border: 1px solid #e5e5ea;
+        }
+        .modal-title { color: #000; font-size: 1.3rem; margin-bottom: 20px; font-weight: 600; }
+        .modal-input-group { margin-bottom: 12px; text-align: left; }
+        .modal-label { color: #666; font-size: 0.9rem; margin-bottom: 4px; display: block; }
+        .modal-input {
+            width: 100%; padding: 12px; border-radius: 10px; border: 2px solid #d1d1d6;
+            background: #f9f9f9; color: #000; font-size: 1.3rem; outline: none; text-align: center;
+        }
+        .modal-input:focus { border-color: var(--equals-bg); background: #fff; }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .modal-btn { flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 1.1rem; font-weight: 600; cursor: pointer; }
+        .btn-cancel { background: #e5e5ea; color: #000; }
+        .btn-ok { background: var(--equals-bg); color: #fff; }
+
+        .current-input.small-font { font-size: 2rem; }
+        .current-input.tiny-font { font-size: 1.4rem; }
+    </style>
+</head>
+<body>
+
+<div class="calculator-app">
+    <div class="display-area">
+        <div class="history" id="historyDisplay"></div>
+        <div class="current-input" id="mainDisplay">0</div>
+    </div>
+
+    <!-- RÂNDURI BUTOANE ȘTIINȚIFICE (2 Rânduri pentru vizibilitate) -->
+    <div class="sci-container">
+        <div class="sci-row">
+            <button class="sci-btn" onclick="inputParen('(')">(</button>
+            <button class="sci-btn" onclick="inputParen(')')">)</button>
+            <button class="sci-btn" onclick="handleFactorial()">!</button>
+            <button class="sci-btn" onclick="handleA2()">a²</button>
+            <button class="sci-btn" onclick="initPowerKMode()">a^k</button>
+        </div>
+        <div class="sci-row">
+            <button class="sci-btn" onclick="inputFunc('sqrt')">√</button>
+            <button class="sci-btn" onclick="inputAngle('°')">°</button>
+            <button class="sci-btn" onclick="inputAngle('\'')">'</button>
+            <button class="sci-btn" onclick="inputAngle('\"')">"</button>
+        </div>
+    </div>
+
+    <div class="keypad">
+        <button class="btn-action" onclick="clearAll()">AC</button>
+        <button class="btn-action" onclick="deleteLast()">⌫</button>
+        <button class="btn-action" onclick="inputOperator('%')">%</button>
+        <button class="btn-op" onclick="inputOperator('/')">÷</button>
+
+        <button class="btn-num" onclick="inputNumber('7')">7</button>
+        <button class="btn-num" onclick="inputNumber('8')">8</button>
+        <button class="btn-num" onclick="inputNumber('9')">9</button>
+        <button class="btn-op" onclick="inputOperator('*')">×</button>
+
+        <button class="btn-num" onclick="inputNumber('4')">4</button>
+        <button class="btn-num" onclick="inputNumber('5')">5</button>
+        <button class="btn-num" onclick="inputNumber('6')">6</button>
+        <button class="btn-op" onclick="inputOperator('-')">−</button>
+
+        <button class="btn-num" onclick="inputNumber('1')">1</button>
+        <button class="btn-num" onclick="inputNumber('2')">2</button>
+        <button class="btn-num" onclick="inputNumber('3')">3</button>
+        <button class="btn-op" onclick="inputOperator('+')">+</button>
+
+        <button class="btn-equals" onclick="calculate()">=</button>
+        <button class="btn-num btn-zero" onclick="inputNumber('0')">0</button>
+        <button class="btn-num" onclick="inputDecimal()">,</button>
+    </div>
+
+    <!-- MODAL a^2 -->
+    <div class="modal-overlay" id="power2Modal">
+        <div class="modal-content">
+            <div class="modal-title">a la pătrat</div>
+            <div class="modal-input-group">
+                <span class="modal-label">Valoare a</span>
+                <input type="number" id="inputA2" class="modal-input" placeholder="0">
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn btn-cancel" onclick="closeModal2()">Anulare</button>
+                <button class="modal-btn btn-ok" onclick="confirmPower2()">Calculează</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let displayValue = "0";
+    let justCalculated = false;
+    const mainDisplay = document.getElementById('mainDisplay');
+    const historyDisplay = document.getElementById('historyDisplay');
+    
+    const modal2 = document.getElementById('power2Modal');
+    const inputA2 = document.getElementById('inputA2');
+
+    let powerKMode = false;
+    let storedK = null;
+
+    // --- LOGICĂ UNGHURI ---
+    function dmsToDecimal(str) {
+        const regex = /(\d+)°(\d+)?'?(\d+)?"?/g;
+        return str.replace(regex, function(match, degrees, minutes, seconds) {
+            let d = parseInt(degrees) || 0;
+            let m = parseInt(minutes) || 0;
+            let s = parseInt(seconds) || 0;
+            let decimal = d + (m / 60) + (s / 3600);
+            return decimal.toString();
+        });
+    }
+
+    function decimalToDms(val) {
+        let d = Math.floor(val);
+        let minFloat = (val - d) * 60;
+        let m = Math.floor(minFloat);
+        let secFloat = (minFloat - m) * 60;
+        let s = Math.round(secFloat);
+        if (s === 60) { s = 0; m++; }
+        if (m === 60) { m = 0; d++; }
+        return `${d}°${m}'${s}"`;
+    }
+
+    function inputAngle(symbol) {
+        if (justCalculated) { displayValue = symbol; justCalculated = false; }
+        else {
+            if (displayValue === "0") displayValue = symbol;
+            else displayValue += symbol;
+        }
+        updateDisplay();
+    }
+
+    // --- FACTORIAL ---
+    function factorial(n) {
+        if (n < 0) return NaN;
+        if (n === 0 || n === 1) return 1n;
+        let result = 1n;
+        for (let i = 2n; i <= BigInt(n); i++) result *= i;
+        return result;
+    }
+
+    function handleFactorial() {
+        const match = displayValue.match(/(\d+)$/);
+        if (match) {
+            let numStr = match[0];
+            let bigNum;
+            try {
+                bigNum = BigInt(numStr);
+                let result = factorial(bigNum);
+                displayValue = displayValue.substring(0, match.index) + result.toString();
+                updateDisplay();
+            } catch(e) {
+                alert("Număr prea mare!");
+            }
+        } else {
+            alert("Scrie un număr înainte de !");
+        }
+    }
+
+    // --- STANDARD ---
+    function inputParen(char) {
+        if (justCalculated) { displayValue = char; justCalculated = false; }
+        else {
+            if (displayValue === "0") displayValue = char;
+            else displayValue += char;
+        }
+        updateDisplay();
+    }
+
+    function initPowerKMode() {
+        const match = displayValue.match(/(-?\d+\.?\d*)$/);
+        if (match) {
+            storedK = parseFloat(match[0]);
+            displayValue = displayValue.substring(0, match.index);
+            if (displayValue === "") displayValue = "0"; 
+            powerKMode = true;
+            updateDisplay();
+        } else {
+            alert("Scrie k (exponentul) înainte de a^k");
+        }
+    }
+
+    function handleA2() {
+        const match = displayValue.match(/(-?\d+\.?\d*)$/);
+        if (match) {
+            let numStr = match[0];
+            let num = parseFloat(numStr);
+            let square = Math.pow(num, 2);
+            displayValue = displayValue.substring(0, match.index) + square;
+            updateDisplay();
+        } else {
+            inputA2.value = ''; modal2.style.display = 'flex'; setTimeout(() => inputA2.focus(), 100);
+        }
+    }
+
+    function closeModal2() { modal2.style.display = 'none'; }
+    function confirmPower2() {
+        const a = parseFloat(inputA2.value);
+        if (isNaN(a)) return alert("Valoare invalidă");
+        let valStr = Math.pow(a, 2).toFixed(6).replace(/\.?0+$/, "");
+        if (justCalculated) { displayValue = valStr; justCalculated = false; }
+        else { if (displayValue === "0") displayValue = valStr; else displayValue += valStr; }
+        updateDisplay(); closeModal2();
+    }
+
+    function updateDisplay() {
+        mainDisplay.innerHTML = displayValue;
+        if (displayValue.length > 15) mainDisplay.className = "current-input tiny-font";
+        else if (displayValue.length > 10) mainDisplay.className = "current-input small-font";
+        else mainDisplay.className = "current-input";
+    }
+
+    function inputNumber(num) {
+        if (powerKMode) {
+            let a = parseFloat(num);
+            if (storedK !== null) {
+                let result = Math.pow(a, storedK);
+                displayValue = result.toFixed(6).replace(/\.?0+$/, "");
+                powerKMode = false;
+                storedK = null;
+                justCalculated = true;
+            }
+        } else {
+            if (justCalculated) { displayValue = num; justCalculated = false; }
+            else if (displayValue === "0") displayValue = num;
+            else displayValue += num;
+        }
+        updateDisplay();
+    }
+
+    function inputDecimal() {
+        if (justCalculated) { displayValue = "0."; justCalculated = false; }
+        else if (!displayValue.endsWith(',')) displayValue += ",";
+        updateDisplay();
+    }
+
+    function inputFunc(func) {
+        if (justCalculated) { displayValue = func + "("; justCalculated = false; }
+        else { if (displayValue === "0") displayValue = func + "("; else displayValue += func + "("; }
+        updateDisplay();
+    }
+
+    function inputOperator(op) {
+        let trimmedDisplay = displayValue.trimEnd();
+        let endsWithOp = ['×', '÷', '−', '+'].includes(trimmedDisplay.slice(-1));
+
+        if (endsWithOp) {
+            displayValue = displayValue.slice(0, -3);
+            let displayOp = op === '*' ? '×' : (op === '/' ? '÷' : op);
+            displayValue += " " + displayOp + " ";
+        } else {
+            if (justCalculated) justCalculated = false;
+            let displayOp = op === '*' ? '×' : (op === '/' ? '÷' : op);
+            displayValue += " " + displayOp + " ";
+        }
+        updateDisplay();
+    }
+
+    function deleteLast() {
+        if (powerKMode) {
+            powerKMode = false;
+            storedK = null;
+            displayValue = "0";
+        } else if (justCalculated) {
+            clearAll(); return;
+        } else {
+            if (displayValue.length > 1) displayValue = displayValue.slice(0, -1);
+            else displayValue = "0";
+        }
+        updateDisplay();
+    }
+
+    function clearAll() {
+        displayValue = "0"; justCalculated = false; powerKMode = false; storedK = null;
+        historyDisplay.innerText = "";
+        updateDisplay();
+    }
+
+    function calculate() {
+        let expr = displayValue;
+        
+        // Convertim DMS în zecimal
+        let exprForCalc = dmsToDecimal(expr);
+        
+        // Evaluare
+        exprForCalc = exprForCalc.replace(/×/g, '*').replace(/÷/g, '/').replace(/,/g, '.').replace(/−/g, '-').replace(/\^/g, '**');
+        exprForCalc = exprForCalc.replace(/sqrt\(/g, 'Math.sqrt(').replace(/%/g, '/100');
+
+        historyDisplay.innerText = displayValue + " =";
+
+        try {
+            const result = new Function('return ' + exprForCalc)();
+            let rawStr = result.toString();
+            
+            // Convertim înapoi în DMS dacă e cazul
+            if (displayValue.includes('°') || displayValue.includes("'") || displayValue.includes('"')) {
+                displayValue = decimalToDms(result);
+            } else {
+                // Formatare pătrat perfect
+                let formattedResult = rawStr;
+                if (!rawStr.includes('e') && !rawStr.includes('.')) {
+                    let root = Math.round(Math.sqrt(result));
+                    if (root * root === result && result > 0) {
+                        formattedResult = root + "<sup>2</sup>";
+                    }
+                }
+                displayValue = formattedResult;
+            }
+            
+            justCalculated = true;
+            updateDisplay();
+        } catch (e) {
+            displayValue = "Eroare";
+            updateDisplay();
+            setTimeout(clearAll, 2000);
+        }
+    }
+</script>
+
+</body>
+  </html>
