@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title>Math Magic - Joc Matematic</title>
+    
+    <!-- Fonturi -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Comic Neue"', 'cursive'],
+                        display: ['"Fredoka"', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#7c3aed', // Violet preferat
+                        secondary: '#f59e0b', // Cald (amber)
+                        accent: '#ec4899', // Roz cald
+                        background: '#f3e8ff', // Violet foarte deschis
+                        surface: '#ffffff',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f3e8ff; /* Violet background preference */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.4) 2px, transparent 3px),
+                radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.4) 2px, transparent 3px);
+            background-attachment: fixed;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-press {
+            transition: all 0.1s;
+        }
+        .btn-press:active {
+            transform: scale(0.95) translateY(2px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Ascundere elemente pentru tranziții simple */
+        .hidden-screen {
+            display: none !important;
+        }
+        
+        .card-enter {
+            animation: slideIn 0.3s ease-out forwards;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px) scale(0.9); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-gray-800 flex flex-col items-center justify-center p-4">
+
+    <!-- ECRAN START (HOME) -->
+    <div id="screen-home" class="w-full max-w-4xl flex flex-col items-center text-center space-y-8">
+        <div class="animate-float bg-white p-6 rounded-full shadow-xl mb-4 border-4 border-primary/20">
+            <span class="text-6xl">🧙‍♂️</span>
+        </div>
+        
+        <h1 class="text-5xl md:text-7xl font-display font-bold text-primary drop-shadow-sm">
+            Math Magic
+        </h1>
+        <p class="text-xl md:text-2xl font-bold text-gray-600">
+            Alege nivelul și începe aventura!
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full px-4">
+            <!-- Buton Nivel Foarte Ușor -->
+            <button onclick="startGame('very-easy')" class="btn-press relative w-full p-6 rounded-[2rem] border-4 text-left shadow-[0_8px_0_rgba(0,0,0,0.1)] hover:shadow-[0_12px_0_rgba(0,0,0,0.1)] active:shadow-none active:translate-y-2 bg-blue-100 border-blue-400 text-blue-700 group overflow-hidden">
+                <div class="relative z-10 flex items-center gap-4">
+                    <span class="text-4xl">✨</span>
+                    <div>
+                        <h3 class="text-2xl font-display font-bold">Super Începător</h3>
+                        <p class="opacity-90 font-bold text-lg">Numărat & Tipare (3-5 ani)</p>
+                    </div>
+                </div>
+            </button>
+
+            <!-- Buton Nivel Ușor -->
+            <button onclick="startGame('easy')" class="btn-press relative w-full p-6 rounded-[2rem] border-4 text-left shadow-[0_8px_0_rgba(0,0,0,0.1)] hover:shadow-[0_12px_0_rgba(0,0,0,0.1)] active:shadow-none active:translate-y-2 bg-green-100 border-green-400 text-green-700 group overflow-hidden">
+                <div class="relative z-10 flex items-center gap-4">
+                    <span class="text-4xl">🧮</span>
+                    <div>
+                        <h3 class="text-2xl font-display font-bold">Ușor Peșor</h3>
+                        <p class="opacity-90 font-bold text-lg">Adunări & Scăderi Simple</p>
+                    </div>
+                </div>
+            </button>
+
+            <!-- Buton Nivel Mediu -->
+            <button onclick="startGame('medium')" class="btn-press relative w-full p-6 rounded-[2rem] border-4 text-left shadow-[0_8px_0_rgba(0,0,0,0.1)] hover:shadow-[0_12px_0_rgba(0,0,0,0.1)] active:shadow-none active:translate-y-2 bg-purple-100 border-purple-400 text-purple-700 group overflow-hidden">
+                <div class="relative z-10 flex items-center gap-4">
+                    <span class="text-4xl">🧠</span>
+                    <div>
+                        <h3 class="text-2xl font-display font-bold">Maestru Matematic</h3>
+                        <p class="opacity-90 font-bold text-lg">Înmulțiri & Împărțiri</p>
+                    </div>
+                </div>
+            </button>
+
+            <!-- Buton Nivel Greu -->
+            <button onclick="startGame('hard')" class="btn-press relative w-full p-6 rounded-[2rem] border-4 text-left shadow-[0_8px_0_rgba(0,0,0,0.1)] hover:shadow-[0_12px_0_rgba(0,0,0,0.1)] active:shadow-none active:translate-y-2 bg-red-100 border-red-400 text-red-700 group overflow-hidden md:col-span-2 max-w-lg mx-auto">
+                <div class="relative z-10 flex items-center gap-4">
+                    <span class="text-4xl">🎓</span>
+                    <div>
+                        <h3 class="text-2xl font-display font-bold">Mod Geniu</h3>
+                        <p class="opacity-90 font-bold text-lg">Calcule grele & Puteri (Pătrate)</p>
+                    </div>
+                </div>
+            </button>
+        </div>
+
+        <button onclick="showLeaderboard()" class="mt-8 flex items-center gap-2 px-8 py-4 rounded-full bg-white border-4 border-yellow-400 text-yellow-600 font-bold text-xl shadow-lg hover:bg-yellow-50 transition-colors btn-press">
+            <span>🏆</span> Vezi Clasamentul
+        </button>
+    </div>
+
+    <!-- ECRAN JOC -->
+    <div id="screen-game" class="hidden-screen w-full max-w-4xl flex flex-col h-full">
+        <!-- Bara de sus -->
+        <div class="flex items-center justify-between mb-6 bg-white/80 backdrop-blur p-4 rounded-2xl shadow-md">
+            <button onclick="goHome()" class="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition">
+                <span class="text-2xl">⬅️</span>
+            </button>
+            
+            <div class="flex items-center gap-4 font-display font-bold text-xl">
+                <div class="flex items-center gap-2 text-primary">
+                    <span>✅</span>
+                    <span id="game-progress">1 / 20</span>
+                </div>
+                <div class="h-6 w-[2px] bg-gray-300"></div>
+                <div class="flex items-center gap-1 text-red-500">
+                    <span id="lives-container">❤️❤️❤️❤️❤️</span>
+                </div>
+            </div>
+
+            <div id="timer-box" class="flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xl bg-white text-primary shadow-sm">
+                <span>⏱️</span>
+                <span id="timer-display">30s</span>
+            </div>
+        </div>
+
+        <!-- Zona Principală Joc -->
+        <main class="flex-1 flex flex-col items-center justify-center w-full relative">
+            <div id="question-card" class="w-full max-w-2xl bg-white rounded-[3rem] border-8 border-primary/20 p-8 shadow-2xl relative overflow-hidden card-enter">
+                
+                <!-- Vizualizare Întrebare -->
+                <div class="text-center mb-8 min-h-[120px] flex flex-col justify-center items-center">
+                    <!-- Container pentru puncte (counting) -->
+                    <div id="visuals-container" class="flex flex-wrap justify-center gap-4 mb-4 hidden"></div>
+                    
+                    <!-- Container pentru secvențe -->
+                    <div id="sequence-container" class="flex justify-center items-center gap-4 mb-4 hidden"></div>
+
+                    <h2 id="question-text" class="text-4xl md:text-6xl font-display font-bold text-gray-800 tracking-tight drop-shadow-sm">
+                        Întrebarea apare aici
+                    </h2>
+                </div>
+
+                <!-- Opțiuni Răspuns -->
+                <div id="options-grid" class="grid grid-cols-2 gap-4 md:gap-6">
+                    <!-- Butoanele se generează din JS -->
+                </div>
+            </div>
+
+            <div class="mt-6 text-2xl font-display font-bold text-primary bg-white/90 backdrop-blur px-8 py-3 rounded-2xl shadow-sm">
+                Scor: <span id="current-score">0</span>
+            </div>
+        </main>
+    </div>
+
+    <!-- ECRAN REZULTATE (MODAL) -->
+    <div id="modal-result" class="hidden-screen fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div class="bg-white border-8 border-primary/20 rounded-[2rem] p-8 max-w-md w-full text-center shadow-2xl animate-float">
+            <div class="text-6xl mb-4" id="result-emoji">🎉</div>
+            <h2 class="text-4xl font-display font-bold text-primary mb-2">Joc Terminat!</h2>
+            
+            <p class="text-xl text-gray-600 mb-6">
+                Ai scored <span id="final-score" class="text-primary font-bold text-3xl">0</span> puncte!
+            </p>
+            
+            <div class="space-y-4">
+                <div class="text-left">
+                    <label class="block text-lg font-bold mb-2 text-gray-700">Numele tău:</label>
+                    <input type="text" id="player-name" placeholder="Magicianul Matematic" 
+                        class="w-full text-lg py-4 rounded-xl border-4 border-gray-200 focus:border-primary focus:outline-none px-4 font-bold">
+                </div>
+                
+                <button onclick="saveScore()" class="w-full h-14 text-xl rounded-xl bg-primary hover:bg-violet-700 text-white font-display font-bold shadow-lg btn-press transition-colors">
+                    Salvează Scorul
+                </button>
+                
+                <button onclick="goHome()" class="w-full h-12 rounded-xl text-lg font-bold text-gray-500 hover:bg-gray-100 btn-press">
+                    Înapoi la Meniu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ECRAN CLASAMENT -->
+    <div id="screen-leaderboard" class="hidden-screen w-full max-w-3xl flex flex-col h-full">
+        <div class="flex items-center gap-4 mb-8">
+            <button onclick="goHome()" class="p-3 bg-white rounded-full shadow-md hover:scale-105 transition-transform text-primary btn-press">
+                <span class="text-2xl">⬅️</span>
+            </button>
+            <h1 class="text-4xl font-display font-bold text-primary flex items-center gap-3">
+                <span>🏆</span> Sala Faimei
+            </h1>
+        </div>
+
+        <div id="leaderboard-list" class="space-y-4 overflow-y-auto max-h-[70vh] pr-2">
+            <!-- Lista se generează din JS -->
+            <div class="text-center py-10 text-gray-400 font-bold text-xl">Se încarcă...</div>
+        </div>
+    </div>
+
+    <!-- LOGICA JAVASCRIPT -->
+    <script>
+        // --- STARE GLOBALĂ ---
+        const STATE = {
+            level: 'easy',
+            score: 0,
+            mistakes: 0,
+            questionCount: 1,
+            totalQuestions: 20,
+            maxMistakes: 5,
+            timeLeft: 30,
+            timerInterval: null,
+            currentQuestion: null,
+            isAnswering: false,
+            leaderboard: []
+        };
+
+        // --- UTILITARE ---
+        const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+        const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
+
+        // Generare opțiuni (răspuns corect + 3 greșite apropiate)
+        const generateOptions = (correct, count = 3, min = 0, max = 100) => {
+            const options = new Set([correct]);
+            while (options.size < count + 1) {
+                const diff = getRandomInt(1, 5);
+                const sign = Math.random() > 0.5 ? 1 : -1;
+                let option = correct + (diff * sign);
+                
+                if (option < min) option = min + getRandomInt(1, 5);
+                if (option > max) option = max - getRandomInt(1, 5);
+                if (Math.random() > 0.7) option = getRandomInt(min, max); // Uneia random
+                
+                if (option !== correct) options.add(option);
+            }
+            return shuffleArray(Array.from(options));
+        };
+
+        // --- LOGICA DE JOC (GENERARE ÎNTREBĂRI) ---
+        const generateQuestion = (level) => {
+            const id = Math.random().toString(36).substr(2, 9);
+            let q = { id, type: 'math', text: '', options: [], correctAnswer: 0 };
+
+            if (level === 'very-easy') {
+                const roll = Math.random();
+                if (roll < 0.4) { // Numărat puncte
+                    const count = getRandomInt(1, 9);
+                    q.type = 'counting';
+                    q.text = 'Câte puncte sunt?';
+                    q.visuals = count;
+                    q.correctAnswer = count;
+                    q.options = generateOptions(count, 3, 1, 10);
+                } else if (roll < 0.7) { // Secvență
+                    const start = getRandomInt(1, 5);
+                    q.type = 'sequence';
+                    q.text = 'Ce urmează?';
+                    q.sequence = [start, start + 1, null];
+                    q.correctAnswer = start + 2;
+                    q.options = generateOptions(start + 2, 3, 1, 10);
+                } else { // Adunare simplă
+                    const a = getRandomInt(1, 5);
+                    const b = getRandomInt(1, 4);
+                    q.text = `${a} + ${b} = ?`;
+                    q.correctAnswer = a + b;
+                    q.options = generateOptions(a + b, 3, 1, 10);
+                }
+            } 
+            else if (level === 'easy') {
+                const isAdd = Math.random() > 0.5;
+                const a = getRandomInt(10, 40);
+                const b = getRandomInt(5, 40);
+                if (isAdd) {
+                    q.text = `${a} + ${b} = ?`;
+                    q.correctAnswer = a + b;
+                } else {
+                    const max = Math.max(a, b);
+                    const min = Math.min(a, b);
+                    q.text = `${max} - ${min} = ?`;
+                    q.correctAnswer = max - min;
+                }
+                q.options = generateOptions(q.correctAnswer, 4, 0, 100);
+            }
+            else if (level === 'medium') {
+                const isMult = Math.random() > 0.4;
+                if (isMult) {
+                    const a = getRandomInt(2, 9);
+                    const b = getRandomInt(2, 9);
+                    q.text = `${a} × ${b} = ?`;
+                    q.correctAnswer = a * b;
+                } else {
+                    const b = getRandomInt(2, 9);
+                    const ans = getRandomInt(2, 9);
+                    const a = b * ans;
+                    q.text = `${a} ÷ ${b} = ?`;
+                    q.correctAnswer = ans;
+                }
+                q.options = generateOptions(q.correctAnswer, 4, 0, 100);
+            }
+            else if (level === 'hard') {
+                const roll = Math.random();
+                if (roll < 0.4) { // Înmulțire grea
+                    const a = getRandomInt(6, 12);
+                    const b = getRandomInt(6, 12);
+                    q.text = `${a} × ${b} = ?`;
+                    q.correctAnswer = a * b;
+                    q.options = generateOptions(a * b, 4, 30, 150);
+                } else if (roll < 0.7) { // Împărțire grea
+                    const b = getRandomInt(4, 12);
+                    const ans = getRandomInt(5, 15);
+                    const a = b * ans;
+                    q.text = `${a} ÷ ${b} = ?`;
+                    q.correctAnswer = ans;
+                    q.options = generateOptions(ans, 4, 0, 30);
+                } else { // Puteri (Pătrate) - Preferința utilizatorului
+                    const a = getRandomInt(2, 12);
+                    q.text = `${a}² = ?`; // Afișare pătrat perfect
+                    q.correctAnswer = a * a;
+                    q.options = generateOptions(a * a, 4, 0, 150);
+                }
+            }
+
+            return q;
+        };
+
+        const getTimerForLevel = (level) => {
+            switch(level) {
+                case 'very-easy': return 45;
+                case 'hard': return 40;
+                default: return 30;
+            }
+        };
+
+        // --- MANAGEMENT INTERFAȚĂ ---
+        function showScreen(screenId) {
+            ['screen-home', 'screen-game', 'screen-leaderboard', 'modal-result'].forEach(id => {
+                const el = document.getElementById(id);
+                if (id === screenId || (screenId === 'modal-result' && id === 'screen-game')) {
+                   // Modalul se suprapune, nu ascundem jocul sub el dacă e cazul, dar aici logic e separat
+                   if(id !== 'modal-result') el.classList.remove('hidden-screen');
+                } else {
+                   if(id !== 'modal-result') el.classList.add('hidden-screen');
+                }
+            });
+            
+            const modal = document.getElementById('modal-result');
+            if (screenId !== 'modal-result') modal.classList.add('hidden-screen');
+            else modal.classList.remove('hidden-screen');
+        }
+
+        function goHome() {
+            stopTimer();
+            showScreen('screen-home');
+        }
+
+        function startGame(level) {
+            STATE.level = level;
+            STATE.score = 0;
+            STATE.mistakes = 0;
+            STATE.questionCount = 1;
+            STATE.isAnswering = false;
+            
+            document.getElementById('current-score').innerText = '0';
+            updateLives();
+            document.getElementById('game-progress').innerText = `1 / ${STATE.totalQuestions}`;
+            
+            showScreen('screen-game');
+            nextRound();
+        }
+
+        function updateLives() {
+            const hearts = "❤️".repeat(STATE.maxMistakes - STATE.mistakes) + "💔".repeat(STATE.mistakes);
+            document.getElementById('lives-container').innerText = hearts;
+        }
+
+        function renderQuestion(q) {
+            const card = document.getElementById('question-card');
+            // Reset animations
+            card.classList.remove('card-enter');
+            void card.offsetWidth; // trigger reflow
+            card.classList.add('card-enter');
+
+            const visualsContainer = document.getElementById('visuals-container');
+            const sequenceContainer = document.getElementById('sequence-container');
+            const questionText = document.getElementById('question-text');
+            const optionsGrid = document.getElementById('options-grid');
+
+            visualsContainer.innerHTML = '';
+            sequenceContainer.innerHTML = '';
+            optionsGrid.innerHTML = '';
+
+            // Render Visuals (Counting)
+            if (q.type === 'counting' && q.visuals) {
+                visualsContainer.classList.remove('hidden');
+                for(let i=0; i<q.visuals; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = "w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-primary to-blue-400 shadow-lg border-4 border-white animate-float";
+                    dot.style.animationDelay = `${i * 0.1}s`;
+                    visualsContainer.appendChild(dot);
+                }
+            } else {
+                visualsContainer.classList.add('hidden');
+            }
+
+            // Render Sequence
+            if (q.type === 'sequence' && q.sequence) {
+                sequenceContainer.classList.remove('hidden');
+                q.sequence.forEach(num => {
+                    const box = document.createElement('div');
+                    box.className = `w-20 h-24 md:w-24 md:h-32 flex items-center justify-center rounded-2xl text-4xl md:text-5xl font-display font-bold border-b-8 shadow-inner ${num === null ? 'bg-gray-100 border-gray-300 text-gray-400 border-dashed' : 'bg-blue-50 border-blue-200 text-primary'}`;
+                    box.innerText = num === null ? '?' : num;
+                    sequenceContainer.appendChild(box);
+                });
+            } else {
+                sequenceContainer.classList.add('hidden');
+            }
+
+            questionText.innerText = q.text;
+
+            // Render Options
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "btn-press h-24 md:h-32 rounded-2xl text-3xl md:text-5xl font-display font-bold border-b-8 shadow-md bg-white border-gray-200 hover:border-primary hover:bg-blue-50 hover:text-primary text-gray-700 transition-all duration-200";
+                btn.innerText = opt;
+                btn.onclick = () => handleAnswer(opt, btn);
+                optionsGrid.appendChild(btn);
+            });
+        }
+
+        function nextRound() {
+            if (STATE.questionCount > STATE.totalQuestions) {
+                endGame();
+                return;
+            }
+            
+            STATE.currentQuestion = generateQuestion(STATE.level);
+            STATE.timeLeft = getTimerForLevel(STATE.level);
+            STATE.isAnswering = false;
+            
+            document.getElementById('game-progress').innerText = `${STATE.questionCount} / ${STATE.totalQuestions}`;
+            document.getElementById('timer-display').innerText = `${STATE.timeLeft}s`;
+            document.getElementById('timer-display').parentElement.className = "flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xl bg-white text-primary shadow-sm";
+            
+            renderQuestion(STATE.currentQuestion);
+            startTimer();
+        }
+
+        function startTimer() {
+            stopTimer();
+            STATE.timerInterval = setInterval(() => {
+                STATE.timeLeft--;
+                document.getElementById('timer-display').innerText = `${STATE.timeLeft}s`;
+                
+                if (STATE.timeLeft <= 10) {
+                    document.getElementById('timer-display').parentElement.className = "flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xl bg-red-100 text-red-600 shadow-sm animate-pulse";
+                }
+
+                if (STATE.timeLeft <= 0) {
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (STATE.timerInterval) clearInterval(STATE.timerInterval);
+        }
+
+        function handleTimeout() {
+            stopTimer();
+            STATE.mistakes++;
+            updateLives();
+            
+            // Feedback vizual simplu (toast simulat prin console sau alertă discretă, aici doar trecem mai departe)
+            if (STATE.mistakes >= STATE.maxMistakes) {
+                endGame();
+            } else {
+                setTimeout(nextRound, 1500);
+            }
+        }
+
+        function handleAnswer(selected, btnElement) {
+            if (STATE.isAnswering) return;
+            STATE.isAnswering = true;
+            stopTimer();
+
+            const isCorrect = selected === STATE.currentQuestion.correctAnswer;
+            const allBtns = document.querySelectorAll('#options-grid button');
+
+            if (isCorrect) {
+                btnElement.className = "btn-press h-24 md:h-32 rounded-2xl text-3xl md:text-5xl font-display font-bold border-b-8 shadow-md bg-green-100 border-green-500 text-green-700 ring-4 ring-green-200 z-10";
+                STATE.score += 10 + Math.ceil(STATE.timeLeft / 2);
+                document.getElementById('current-score').innerText = STATE.score;
+                
+                // Confetti mic
+                confetti({
+                    particleCount: 50,
+                    spread: 60,
+                    origin: { y: 0.7 },
+                    colors: ['#4CAF50', '#8BC34A']
+                });
+            } else {
+                btnElement.className = "btn-press h-24 md:h-32 rounded-2xl text-3xl md:text-5xl font-display font-bold border-b-8 shadow-md bg-red-100 border-red-500 text-red-700 opacity-80";
+                document.getElementById('question-card').classList.add('animate-shake');
+                setTimeout(() => document.getElementById('question-card').classList.remove('animate-shake'), 500);
+                
+                STATE.mistakes++;
+                updateLives();
+
+                // Arată răspunsul corect
+                allBtns.forEach(b => {
+                    if (parseInt(b.innerText) === STATE.currentQuestion.correctAnswer) {
+                        b.className = "btn-press h-24 md:h-32 rounded-2xl text-3xl md:text-5xl font-display font-bold border-b-8 shadow-md bg-green-100 border-green-500 text-green-700 ring-4 ring-green-200 z-10";
+                    }
+                });
+            }
+
+            setTimeout(() => {
+                if (STATE.mistakes >= STATE.maxMistakes) {
+                    endGame();
+                } else {
+                    STATE.questionCount++;
+                    nextRound();
+                }
+            }, 1500);
+        }
+
+        function endGame() {
+            stopTimer();
+            document.getElementById('final-score').innerText = STATE.score;
+            document.getElementById('result-emoji').innerText = STATE.score > 100 ? '🦄' : '🤔';
+            document.getElementById('player-name').value = '';
+            showScreen('modal-result');
+            
+            // Confetti mare
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6 }
+            });
+        }
+
+        // --- CLASAMENT (SIMULAT LOCAL STORAGE) ---
+        function loadLeaderboard() {
+            const data = localStorage.getItem('mathMagicLeaderboard');
+            STATE.leaderboard = data ? JSON.parse(data) : [];
+        }
+
+        function saveScoreToLocal(name, score, level) {
+            STATE.leaderboard.push({ name, score, level, date: new Date().toISOString() });
+            STATE.leaderboard.sort((a, b) => b.score - a.score);
+            STATE.leaderboard = STATE.leaderboard.slice(0, 50); // Păstrează top 50
+            localStorage.setItem('mathMagicLeaderboard', JSON.stringify(STATE.leaderboard));
+        }
+
+        function saveScore() {
+            const nameInput = document.getElementById('player-name');
+            const name = nameInput.value.trim() || "Anonim";
+            
+            saveScoreToLocal(name, STATE.score, STATE.level);
+            
+            // Feedback
+            nameInput.value = "Salvat!";
+            nameInput.disabled = true;
+            setTimeout(() => {
+                showLeaderboard();
+            }, 1000);
+        }
+
+        function showLeaderboard() {
+            loadLeaderboard();
+            const list = document.getElementById('leaderboard-list');
+            list.innerHTML = '';
+
+            if (STATE.leaderboard.length === 0) {
+                list.innerHTML = '<div class="text-center py-20 bg-white rounded-[2rem] shadow-sm"><p class="text-2xl text-gray-400 font-bold">Nu există scoruri încă. Fii primul!</p></div>';
+            } else {
+                STATE.leaderboard.forEach((entry, index) => {
+                    const item = document.createElement('div');
+                    item.className = "bg-white p-6 rounded-2xl shadow-sm border-b-4 border-gray-100 flex items-center justify-between group hover:border-primary/20 transition-colors";
+                    
+                    let medal = `#${index + 1}`;
+                    if (index === 0) medal = '🥇';
+                    if (index === 1) medal = '🥈';
+                    if (index === 2) medal = '🥉';
+
+                    item.innerHTML = `
+                        <div class="flex items-center gap-6">
+                            <div class="flex-shrink-0 w-12 h-12 flex items-center justify-center font-display font-bold text-2xl text-gray-400">
+                                ${medal}
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800">${entry.name}</h3>
+                                <p class="text-sm text-gray-400 font-bold uppercase tracking-wider">${entry.level}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-display font-bold text-primary">${entry.score}</div>
+                            <div class="text-xs text-gray-400 font-bold uppercase">Puncte</div>
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+            }
+            showScreen('screen-leaderboard');
+        }
+
+        // Inițializare
+        loadLeaderboard();
+    </script>
+</body>
+</html>
+
