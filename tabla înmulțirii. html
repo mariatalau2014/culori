@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla Înmulțirii Magică</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--primary:#9b59b6;--secondary:#ff9ff3;--success:#55efc4;--error:#ff7675;--locked:#dfe6e9;--locked-text:#b2bec3;--bg-start:#a29bfe;--bg-end:#fd79a8;--card:rgba(255,255,255,0.95);--text:#2d3436}
+        *{box-sizing:border-box;margin:0;padding:0;font-family:'Fredoka',sans-serif;user-select:none}
+        body{background:linear-gradient(135deg,var(--bg-start),var(--bg-end));min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;position:relative;overflow-x:hidden}
+        .bg-deco{position:fixed;font-size:4rem;opacity:.12;pointer-events:none;animation:float 6s ease-in-out infinite;z-index:0}
+        .d1{top:5%;left:5%}.d2{top:15%;right:10%;animation-delay:1s;font-size:3rem}.d3{bottom:10%;left:15%;animation-delay:2s;font-size:5rem}.d4{bottom:20%;right:5%;animation-delay:3s}
+        @keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-20px) rotate(5deg)}}
+        .app-container{background:var(--card);width:100%;max-width:540px;border-radius:30px;box-shadow:0 20px 60px rgba(0,0,0,.15);padding:25px;text-align:center;position:relative;z-index:1;backdrop-filter:blur(10px)}
+        h1{font-size:1.7rem;color:var(--primary);text-shadow:2px 2px 0 var(--secondary);margin-bottom:5px}
+        p.subtitle{color:#636e72;font-weight:600;margin-bottom:15px}
+        .tutorial-overlay{position:absolute;inset:0;background:var(--card);border-radius:30px;z-index:100;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:30px;transition:opacity .5s}
+        .tutorial-overlay.hidden{opacity:0;pointer-events:none}
+        .step-icon{font-size:4rem;margin-bottom:15px;animation:float 3s ease-in-out infinite}
+        .step-title{font-size:1.3rem;color:var(--primary);margin-bottom:10px;font-weight:700}
+        .step-desc{font-size:1rem;color:#636e72;line-height:1.6;margin-bottom:25px;max-width:350px}
+        .step-dots{display:flex;gap:8px;margin-bottom:20px}
+        .dot{width:10px;height:10px;border-radius:50%;background:#ddd;transition:.3s}
+        .dot.active{background:var(--primary);transform:scale(1.3)}
+        .btn-tutorial{padding:14px 40px;background:linear-gradient(135deg,var(--primary),#8e44ad);color:white;border:none;border-radius:16px;font-size:1.1rem;font-weight:700;cursor:pointer;box-shadow:0 5px 20px rgba(155,89,182,.3);transition:.3s}
+        .btn-tutorial:hover{transform:translateY(-3px)}
+        .streak-banner{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#fff9e6,#fff0f7);border:2px solid #feca57;border-radius:16px;padding:12px 16px;margin-bottom:15px}
+        .streak-fire{font-size:2rem}.streak-info{text-align:left}
+        .streak-count{font-size:1.4rem;font-weight:800;color:#e67e22}
+        .streak-label{font-size:.75rem;color:#636e72;font-weight:600}
+        .done-days-label{font-size:.8rem;font-weight:700;color:var(--primary);margin-bottom:8px;text-align:left}
+        .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:15px}
+        .cal-day{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#b2bec3;background:#f8f9fa;border:2px solid transparent;position:relative;line-height:1}
+        .cal-day .cal-num{font-size:.7rem}.cal-day .cal-check{font-size:.6rem;line-height:1}
+        .cal-day.done{background:var(--success);color:white;border-color:#00b894;box-shadow:0 2px 8px rgba(0,184,148,.3)}
+        .cal-day.missed{background:var(--error);color:white;border-color:#d63031}
+        .cal-day.today{border-color:var(--primary);box-shadow:0 0 0 2px rgba(155,89,182,.3)}
+        .cal-day.future{opacity:.3}
+        .cal-header{font-size:.6rem;font-weight:700;color:#b2bec3;text-transform:uppercase}
+        .menu-section{display:block}
+        .progress-banner{background:linear-gradient(135deg,#faf5ff,#fff0f7);border:2px solid #f0e6ff;border-radius:16px;padding:10px;margin-bottom:15px;font-weight:700;color:var(--primary);font-size:.9rem}
+        .number-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:15px}
+        .num-btn{aspect-ratio:1;border:3px solid #f0e6ff;border-radius:16px;background:white;font-size:1.3rem;font-weight:700;cursor:pointer;transition:.3s;color:var(--primary);position:relative;overflow:hidden}
+        .num-btn:hover:not(.locked):not(.completed){border-color:var(--primary);transform:translateY(-3px);box-shadow:0 5px 15px rgba(155,89,182,.3)}
+        .num-btn.completed{background:var(--success);border-color:#00b894;color:white;cursor:pointer;pointer-events:auto}
+        .num-btn.completed::after{content:'✓';position:absolute;top:2px;right:6px;font-size:.8rem;font-weight:800}
+        .num-btn.locked{background:var(--locked);border-color:#ccc;color:var(--locked-text);cursor:not-allowed;pointer-events:none}
+        .num-btn.locked::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1rem}
+        .num-btn.current{border-color:var(--primary);background:white;color:var(--primary);animation:glowPulse 1.5s ease-in-out infinite}
+        @keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(155,89,182,.4)}50%{box-shadow:0 0 0 8px rgba(155,89,182,0)}}
+        .review-btn{padding:12px 20px;background:linear-gradient(135deg,#ff7675,#d63031);color:white;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:.3s;box-shadow:0 5px 20px rgba(214,48,49,.3);margin-bottom:10px;display:none}
+        .review-btn.visible{display:block}.review-btn:hover{transform:translateY(-3px)}
+        .review-count{background:rgba(255,255,255,.3);padding:2px 8px;border-radius:10px;font-size:.85rem;margin-left:6px}
+        .practice-banner{display:none;margin-top:15px;padding:18px;background:linear-gradient(135deg,#a29bfe,#6c5ce7);border-radius:20px;color:white}
+        .practice-banner.visible{display:block}
+        .practice-banner h2{font-size:1.2rem;margin-bottom:6px}
+        .practice-banner p{font-size:.85rem;margin-bottom:12px;opacity:.95;line-height:1.5}
+        .practice-timer-display{font-size:1.8rem;font-weight:800;margin:8px 0;text-shadow:2px 2px 0 rgba(0,0,0,.15)}
+        .practice-hint{font-size:.75rem;opacity:.8;margin-top:8px}
+        .learn-panel{display:none;margin-top:15px;padding:18px;background:#faf5ff;border-radius:20px;border:2px solid #f0e6ff}
+        .learn-panel.visible{display:block}
+        .learn-panel h3{color:var(--primary);margin-bottom:10px;font-size:1.1rem}
+        .learn-timer-box{background:white;border-radius:14px;padding:8px 12px;margin-bottom:10px;border:2px solid #f0e6ff}
+        .learn-timer-label{font-size:.8rem;font-weight:700;color:var(--primary);margin-bottom:5px}
+        .learn-timer-label .secs{font-size:1rem;color:#e67e22}
+        .learn-timer-track{height:8px;background:#eee;border-radius:10px;overflow:hidden}
+        .learn-timer-fill{height:100%;width:100%;border-radius:10px;background:linear-gradient(90deg,#a29bfe,#6c5ce7);transition:width 1s linear,background .5s}
+        .multiplication-table{display:grid;gap:5px;max-height:200px;overflow-y:auto;margin-bottom:12px}
+        .table-row{padding:8px 12px;background:white;border-radius:10px;font-size:.95rem;display:flex;justify-content:space-between;border-left:4px solid var(--secondary)}
+        .btn-start-test{padding:12px 25px;background:linear-gradient(135deg,var(--primary),#8e44ad);color:white;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:.3s;box-shadow:0 5px 20px rgba(155,89,182,.3)}
+        .btn-start-test:hover{transform:translateY(-3px)}
+        .btn-cancel-learn{margin-top:8px;padding:8px;background:transparent;border:2px solid #ddd;border-radius:12px;color:#636e72;font-weight:600;cursor:pointer;width:100%;transition:.3s}
+        .btn-cancel-learn:hover{border-color:var(--primary);color:var(--primary)}
+        .final-test-banner{display:none;margin-top:15px;padding:18px;background:linear-gradient(135deg,#feca57,#e67e22);border-radius:20px;color:white;animation:float 3s ease-in-out infinite}
+        .final-test-banner.visible{display:block}
+        .final-test-banner h2{font-size:1.3rem;margin-bottom:6px}
+        .final-test-banner p{font-size:.9rem;margin-bottom:12px;opacity:.95}
+        .btn-final{padding:12px 25px;background:white;color:#e67e22;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:.3s;box-shadow:0 5px 20px rgba(0,0,0,.15)}
+        .btn-final:hover{transform:translateY(-3px)}
+        .quiz-area{display:none}.quiz-area.active{display:block}
+        .big-timer-wrap{margin:5px auto 12px}
+        .big-timer{width:110px;height:110px;border-radius:50%;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;background:linear-gradient(135deg,#a29bfe,#6c5ce7);box-shadow:0 10px 30px rgba(108,92,231,.45),0 0 0 6px rgba(162,155,254,.25);transition:background .3s,box-shadow .3s}
+        .big-timer .big-timer-num{font-size:3rem;font-weight:800;line-height:1}
+        .big-timer .big-timer-caption{font-size:.65rem;font-weight:600;opacity:.9;margin-top:2px}
+        .big-timer.warning{background:linear-gradient(135deg,#feca57,#e67e22);box-shadow:0 10px 30px rgba(230,126,34,.45),0 0 0 6px rgba(254,202,87,.3)}
+        .big-timer.danger{background:linear-gradient(135deg,#ff7675,#d63031);box-shadow:0 10px 30px rgba(214,48,49,.5),0 0 0 6px rgba(255,118,117,.35);animation:bigPulse .5s ease-in-out infinite}
+        @keyframes bigPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+        .selected-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;padding:5px 16px;border-radius:30px;font-weight:700;margin-bottom:6px;box-shadow:0 4px 15px rgba(155,89,182,.3);font-size:.9rem}
+        .progress-label{font-size:.8rem;color:#636e72;font-weight:600;margin-bottom:6px}
+        .global-timer-line{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:.75rem;font-weight:700;color:#636e72}
+        .global-timer-line .gt-label{white-space:nowrap;color:var(--primary);min-width:40px}
+        .global-timer-track{flex:1;height:7px;background:#eee;border-radius:10px;overflow:hidden}
+        .global-timer-bar{height:100%;width:100%;border-radius:10px;transform-origin:left;transition:transform .1s linear;background:linear-gradient(90deg,#55efc4,#00b894)}
+        .question-card{font-size:2.8rem;font-weight:800;margin:6px 0;color:var(--primary);text-shadow:3px 3px 0 var(--secondary)}
+        input[type="number"]{width:130px;padding:12px;font-size:1.8rem;text-align:center;border:4px solid #f0e6ff;border-radius:20px;outline:none;transition:.3s;font-weight:700;-moz-appearance:textfield;color:var(--text)}
+        input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
+        input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(155,89,182,.1)}
+        input.correct{border-color:var(--success);background:#eafff7;color:var(--success)}
+        input.wrong{border-color:var(--error);background:#fff5f5;color:var(--error);animation:shake .5s}
+        .feedback-msg{min-height:28px;margin-top:8px;font-weight:700;font-size:1rem}
+        .feedback-msg.error{color:var(--error)}.feedback-msg.success{color:var(--success)}.feedback-msg.retry{color:#e67e22}
+        .btn-action{margin-top:12px;padding:12px 25px;background:linear-gradient(135deg,var(--primary),#8e44ad);color:white;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:.3s;box-shadow:0 5px 20px rgba(155,89,182,.3)}
+        .btn-action:hover{transform:translateY(-3px)}
+        .score-board{margin:10px 0;padding:8px;background:linear-gradient(135deg,#faf5ff,#fff0f7);border-radius:16px;display:flex;justify-content:space-around;font-weight:700;border:2px solid #f0e6ff;font-size:.9rem}
+        .results-screen{display:none;text-align:center;padding:15px 0}.results-screen.active{display:block}
+        .results-emoji{font-size:4.5rem;margin-bottom:8px;animation:float 3s ease-in-out infinite}
+        .results-title{font-size:1.4rem;color:var(--primary);margin-bottom:5px;font-weight:700}
+        .results-score{font-size:2.2rem;font-weight:800;color:var(--primary);margin:8px 0}
+        .results-detail{color:#636e72;margin-bottom:15px;font-weight:600;line-height:1.6;font-size:.9rem}
+        .results-reason{display:inline-block;padding:6px 14px;border-radius:12px;font-weight:700;font-size:.85rem;margin-bottom:12px}
+        .reason-perfect{background:#eafff7;color:var(--success)}.reason-time{background:#fff9e6;color:#e67e22}
+        .auto-return-msg{margin-top:12px;padding:8px;background:#faf5ff;border-radius:12px;font-weight:600;color:var(--primary);font-size:.85rem}
+        @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-12px) rotate(-2deg)}40%{transform:translateX(12px) rotate(2deg)}60%{transform:translateX(-8px)}80%{transform:translateX(8px)}}
+        @keyframes sparkle{0%{transform:scale(0) rotate(0deg);opacity:1}100%{transform:scale(1.5) rotate(180deg);opacity:0}}
+        .sparkle-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:5rem;pointer-events:none;animation:sparkle .8s ease-out forwards;z-index:10}
+        @media(max-width:400px){.number-grid{grid-template-columns:repeat(3,1fr)}.question-card{font-size:2.2rem}h1{font-size:1.4rem}.big-timer{width:95px;height:95px}.big-timer .big-timer-num{font-size:2.4rem}}
+    </style>
+</head>
+<body>
+<div class="bg-deco d1">🦄</div><div class="bg-deco d2">🧚‍♀️</div><div class="bg-deco d3">✨</div><div class="bg-deco d4">🦄</div>
+<div class="app-container" id="appContainer">
+    <div class="tutorial-overlay" id="tutorialOverlay">
+        <div class="step-icon" id="stepIcon">🧚‍♀️</div>
+        <div class="step-title" id="stepTitle">Bine ai venit!</div>
+        <div class="step-desc" id="stepDesc">...</div>
+        <div class="step-dots" id="stepDots"></div>
+        <button class="btn-tutorial" id="stepBtn" onclick="nextStep()">Începe Magia ✨</button>
+    </div>
+    <h1>🦄 Tabla Magică ✨</h1>
+    <p class="subtitle">Învață cu zâne și unicorni!</p>
+    <div id="menu-section" class="menu-section">
+        <div class="streak-banner">
+            <div class="streak-fire">🔥</div>
+            <div class="streak-info"><div class="streak-count" id="streakCount">0 zile</div><div class="streak-label">serie consecutivă</div></div>
+        </div>
+        <div class="done-days-label">📅 Calendar: ✅ făcut &nbsp; ❌ nefăcut</div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+        <div class="progress-banner">🌟 Progres: <span id="completedCount">0</span>/9 cifre deblocate</div>
+        <button class="review-btn" id="reviewBtn" onclick="startReviewMode()">🔄 Revizuiește Greșelile <span class="review-count" id="reviewCount">0</span></button>
+        <p style="margin-bottom:8px;font-weight:700;color:var(--primary);font-size:.9rem;" id="menuInstruction">Alege următoarea cifră magică:</p>
+        <div class="number-grid" id="numberGrid"></div>
+        <!-- ⭐ BANNER ANTRENAMENT 2H -->
+        <div class="practice-banner" id="practiceBanner">
+            <h2>🎯 Perioadă de Antrenament!</h2>
+            <p>Toate cifrele sunt verzi! Exersează liber înainte de Testul Final.</p>
+            <div class="practice-timer-display" id="practiceTimerDisplay">2:00:00</div>
+            <p class="practice-hint">💡 Apasă pe orice cifră verde pentru un mini-test rapid!</p>
+        </div>
+        <div class="learn-panel" id="learnPanel">
+            <h3 id="learnTitle">📚 Tabla lui 1</h3>
+            <div class="learn-timer-box">
+                <div class="learn-timer-label">⏳ Înveți maxim <span class="secs" id="learnCountdown">60</span>s, apoi testul începe automat!</div>
+                <div class="learn-timer-track"><div class="learn-timer-fill" id="learnTimerFill"></div></div>
+            </div>
+            <div class="multiplication-table" id="learnTable"></div>
+            <button class="btn-start-test" onclick="confirmStartQuiz()">🎯 Începe Testul Acum!</button>
+            <button class="btn-cancel-learn" onclick="closeLearnPanel()">← Înapoi la meniu</button>
+        </div>
+        <!-- ⭐ BANNER TEST FINAL (apare DUPĂ cele 2h) -->
+        <div class="final-test-banner" id="finalTestBanner">
+            <h2>🏆 Testul Final e gata!</h2>
+            <p>40 de întrebări din toată tabla înmulțirii, 4 minute!</p>
+            <button class="btn-final" onclick="startFinalTest()">🚀 Începe Testul Final!</button>
+        </div>
+    </div>
+    <div id="quiz-section" class="quiz-area">
+        <div id="quizContent" style="display:none;">
+            <div class="big-timer-wrap"><div class="big-timer" id="bigTimer"><div class="big-timer-num" id="bigTimerNum">7</div><div class="big-timer-caption">secunde</div></div></div>
+            <div class="selected-badge" id="quizBadge">🌟 <span id="quizSelectedNum">-</span></div>
+            <div class="progress-label" id="progressLabel">Rămase: 9</div>
+            <div class="score-board"><span style="color:var(--success)">✅ <b id="correctCount">0</b></span><span style="color:var(--error)">❌ <b id="wrongCount">0</b></span></div>
+            <div class="global-timer-line"><span>⏰</span><div class="global-timer-track"><div class="global-timer-bar" id="globalTimerBar"></div></div><span class="gt-label" id="globalTimerLabel">2:00</span></div>
+            <div class="question-card" id="question">? × ?</div>
+            <input type="number" id="answerInput" placeholder="?" autocomplete="off">
+            <div class="feedback-msg" id="feedbackMsg"></div>
+            <button class="btn-action" id="checkBtn" onclick="checkAnswer()">✨ Verifică</button>
+            <button class="btn-action" id="nextBtn" onclick="nextQuestion()" style="display:none;">Următoarea ➡️</button>
+        </div>
+        <div class="results-screen" id="resultsScreen">
+            <div class="results-emoji" id="resultsEmoji">🏆</div>
+            <div class="results-title" id="resultsTitle">Felicitări!</div>
+            <div class="results-reason" id="resultsReason"></div>
+            <div class="results-score" id="resultsScore">0</div>
+            <div class="results-detail" id="resultsDetail"></div>
+            <div class="auto-return-msg">⏳ Revenire la meniu în <span id="autoReturnCountdown">3</span>s...</div>
+        </div>
+    </div>
+</div>
+<script>
+const MAX_NUMBER=9,QUESTION_TIME=7,SESSION_TIME=120,FINAL_TEST_TIME=240,FINAL_TEST_QUESTIONS=40,LEARN_TIME=60,AUTO_RETURN_DELAY=3;
+const PRACTICE_WINDOW_MS=2*60*60*1000; // ⭐ 2 ORE fereastră antrenament
+const STORAGE_PROGRESS='tablaMagica_progress',STORAGE_MISTAKES='tablaMagica_mistakes',STORAGE_HISTORY='tablaMagica_history',STORAGE_STREAK='tablaMagica_streak',STORAGE_ALLDONE='tablaMagica_allDoneDate',STORAGE_ALLDONE_TS='tablaMagica_allDoneTimestamp';
+
+let completedNumbers=[],mistakeSet=new Set(),dayHistory={},streakData={count:0,lastDate:null},allDoneDate=null,allDoneTimestamp=null;
+let currentNumber=null,pendingNumber=null,isFinalTest=false,isReviewMode=false;
+let totalCorrect=0,totalWrong=0,mainQueue=[],retryQueue=[],currentMultiplier=0,isRetryPhase=false,questionAnswered=false;
+let globalTimerInterval=null,globalTimeLeft=SESSION_TIME,globalTimerRunning=false,currentSessionTime=SESSION_TIME;
+let questionTimerInterval=null,questionTimeLeft=QUESTION_TIME,questionTimerRunning=false;
+let learnTimerInterval=null,learnTimeLeft=LEARN_TIME,stopReason='',autoReturnTimer=null,practiceDisplayInterval=null;
+
+const STEPS=[
+    {icon:'🧚‍♀️',title:'Pasul 1: Învață (60s)',desc:'Apasă pe cifra activă. Ai MAXIM 60s să memorezi tabla, apoi testul începe automat!'},
+    {icon:'🎯',title:'Pasul 2: Testează-te',desc:'7 SECUNDE per întrebare, 2 MINUTE per cifră. Greșești? Întrebarea revine la final!'},
+    {icon:'🔥',title:'Pasul 3: Serie Zilnică',desc:'Calendarul bifează VERDE ✅ zilele făcute și ROȘU ❌ cele nefăcute.'},
+    {icon:'🔄',title:'Pasul 4: Revizuiește',desc:'Greșelile se salvează. Apasă "Revizuiește Greșelile" pentru a le exersa din nou!'},
+    {icon:'🏆',title:'Pasul 5: Testul Final',desc:'Când toate 9 sunt verzi → 2 ORE antrenament liber → Test Final (40 întrebări, 4 min) → A doua zi reset!'}
+];
+let currentStep=0;
+
+function todayStr(){return new Date().toISOString().slice(0,10)}
+function yesterdayStr(){const d=new Date();d.setDate(d.getDate()-1);return d.toISOString().slice(0,10)}
+function dateDiffDays(a,b){return Math.round((new Date(b)-new Date(a))/86400000)}
+
+function loadAll(){
+    try{completedNumbers=JSON.parse(localStorage.getItem(STORAGE_PROGRESS))||[]}catch(e){completedNumbers=[]}
+    try{const m=JSON.parse(localStorage.getItem(STORAGE_MISTAKES))||[];mistakeSet=new Set(m)}catch(e){mistakeSet=new Set()}
+    try{dayHistory=JSON.parse(localStorage.getItem(STORAGE_HISTORY))||{}}catch(e){dayHistory={}}
+    try{streakData=JSON.parse(localStorage.getItem(STORAGE_STREAK))||{count:0,lastDate:null}}catch(e){streakData={count:0,lastDate:null}}
+    try{allDoneDate=localStorage.getItem(STORAGE_ALLDONE)||null}catch(e){allDoneDate=null}
+    try{allDoneTimestamp=parseInt(localStorage.getItem(STORAGE_ALLDONE_TS))||null}catch(e){allDoneTimestamp=null}
+    checkDayReset();recalcStreak()
+}
+function saveProgress(){try{localStorage.setItem(STORAGE_PROGRESS,JSON.stringify(completedNumbers))}catch(e){}}
+function saveMistakes(){try{localStorage.setItem(STORAGE_MISTAKES,JSON.stringify([...mistakeSet]))}catch(e){}}
+function saveHistory(){try{localStorage.setItem(STORAGE_HISTORY,JSON.stringify(dayHistory))}catch(e){}}
+function saveStreak(){try{localStorage.setItem(STORAGE_STREAK,JSON.stringify(streakData))}catch(e){}}
+function saveAllDone(){try{if(allDoneDate)localStorage.setItem(STORAGE_ALLDONE,allDoneDate);else localStorage.removeItem(STORAGE_ALLDONE);if(allDoneTimestamp)localStorage.setItem(STORAGE_ALLDONE_TS,String(allDoneTimestamp));else localStorage.removeItem(STORAGE_ALLDONE_TS)}catch(e){}}
+
+function markCompleted(num){if(!completedNumbers.includes(num)){completedNumbers.push(num);saveProgress();if(completedNumbers.length>=MAX_NUMBER&&!allDoneDate){allDoneDate=todayStr();allDoneTimestamp=Date.now();saveAllDone()}}}
+function allCompleted(){return completedNumbers.length>=MAX_NUMBER}
+function resetAllProgress(){completedNumbers=[];saveProgress()}
+function checkDayReset(){if(allDoneDate&&allDoneDate<todayStr()){completedNumbers=[];saveProgress();allDoneDate=null;allDoneTimestamp=null;saveAllDone()}}
+function isInPracticeWindow(){if(!allDoneTimestamp)return false;return(Date.now()-allDoneTimestamp)<PRACTICE_WINDOW_MS}
+function getPracticeRemainingMs(){if(!allDoneTimestamp)return 0;return Math.max(0,PRACTICE_WINDOW_MS-(Date.now()-allDoneTimestamp))}
+
+function addMistake(a,b){const key=`${Math.min(a,b)}x${Math.max(a,b)}`;if(!mistakeSet.has(key)){mistakeSet.add(key);saveMistakes()}}
+function removeMistake(a,b){const key=`${Math.min(a,b)}x${Math.max(a,b)}`;if(mistakeSet.has(key)){mistakeSet.delete(key);saveMistakes()}}
+
+function recalcStreak(){const today=todayStr(),yesterday=yesterdayStr();if(streakData.lastDate===today)return;if(streakData.lastDate===yesterday){if(!dayHistory[yesterday]){streakData.count=0;streakData.lastDate=null;saveStreak()}}else if(streakData.lastDate&&streakData.lastDate!==today){if(dateDiffDays(streakData.lastDate,today)>1){streakData.count=0;streakData.lastDate=null;saveStreak()}}}
+function markTodayDone(){const today=todayStr();dayHistory[today]=true;saveHistory();const yesterday=yesterdayStr();if(streakData.lastDate===today)return;if(streakData.lastDate===yesterday||streakData.count===0)streakData.count++;else streakData.count=1;streakData.lastDate=today;saveStreak()}
+
+document.addEventListener('DOMContentLoaded',()=>{loadAll();renderMenu();initTutorial();document.getElementById('answerInput').addEventListener('keypress',(e)=>{if(e.key==='Enter'){if(document.getElementById('checkBtn').style.display!=='none')checkAnswer();else nextQuestion()}})});
+
+function initTutorial(){const c=document.getElementById('stepDots');c.innerHTML='';STEPS.forEach((_,i)=>{const d=document.createElement('div');d.className=`dot ${i===0?'active':''}`;c.appendChild(d)});renderStep()}
+function renderStep(){const s=STEPS[currentStep];document.getElementById('stepIcon').textContent=s.icon;document.getElementById('stepTitle').textContent=s.title;document.getElementById('stepDesc').textContent=s.desc;document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===currentStep));document.getElementById('stepBtn').textContent=currentStep===STEPS.length-1?'Am înțeles! 🚀':'Următorul Pas ➡️'}
+function nextStep(){if(currentStep<STEPS.length-1){currentStep++;renderStep()}else document.getElementById('tutorialOverlay').classList.add('hidden')}
+
+function renderMenu(){
+    checkDayReset();stopPracticeDisplay();
+    document.getElementById('streakCount').textContent=`${streakData.count} ${streakData.count===1?'zi':'zile'}`;
+    const calGrid=document.getElementById('calendarGrid');calGrid.innerHTML='';
+    ['L','M','M','J','V','S','D'].forEach(h=>{const el=document.createElement('div');el.className='cal-header';el.textContent=h;calGrid.appendChild(el)});
+    const today=new Date();today.setHours(0,0,0,0);const startDay=new Date(today);startDay.setDate(startDay.getDate()-27);
+    const dow=startDay.getDay();const mo=dow===0?-6:1-dow;startDay.setDate(startDay.getDate()+mo);
+    const totalDays=Math.ceil((today-startDay)/86400000)+1;
+    for(let i=0;i<totalDays;i++){const d=new Date(startDay);d.setDate(d.getDate()+i);const ds=d.toISOString().slice(0,10);
+        const el=document.createElement('div');el.className='cal-day';
+        const numSpan=document.createElement('span');numSpan.className='cal-num';numSpan.textContent=d.getDate();el.appendChild(numSpan);
+        const isDone=dayHistory[ds]===true,isFuture=d>today,isToday=ds===todayStr();
+        if(isToday)el.classList.add('today');
+        if(isFuture)el.classList.add('future');
+        else if(isDone){el.classList.add('done');const ck=document.createElement('span');ck.className='cal-check';ck.textContent='✓';el.appendChild(ck)}
+        else if(!isToday)el.classList.add('missed');
+        calGrid.appendChild(el)}
+    const grid=document.getElementById('numberGrid');grid.innerHTML='';const practiceActive=isInPracticeWindow();
+    let nextAvailable=null;for(let i=1;i<=MAX_NUMBER;i++){if(!completedNumbers.includes(i)){nextAvailable=i;break}}
+    for(let i=1;i<=MAX_NUMBER;i++){const btn=document.createElement('button');btn.className='num-btn';btn.textContent=i;
+        if(completedNumbers.includes(i)){btn.classList.add('completed');if(practiceActive)btn.onclick=()=>openLearnPanel(i)}
+        else if(i===nextAvailable){btn.classList.add('current');btn.onclick=()=>openLearnPanel(i)}
+        else btn.classList.add('locked');grid.appendChild(btn)}
+    document.getElementById('completedCount').textContent=completedNumbers.length;
+    const instrEl=document.getElementById('menuInstruction');
+    if(allCompleted()&&practiceActive)instrEl.textContent='🎯 Exersează pe orice cifră verde!';
+    else if(allCompleted())instrEl.textContent='🏆 Toate cifrele deblocate!';
+    else instrEl.textContent='Alege următoarea cifră magică:';
+    const pb=document.getElementById('practiceBanner'),fb=document.getElementById('finalTestBanner');
+    if(allCompleted()&&practiceActive){pb.classList.add('visible');fb.classList.remove('visible');startPracticeDisplay()}
+    else if(allCompleted()&&!practiceActive){pb.classList.remove('visible');fb.classList.add('visible')}
+    else{pb.classList.remove('visible');fb.classList.remove('visible')}
+    document.getElementById('reviewCount').textContent=mistakeSet.size;
+    document.getElementById('reviewBtn').classList.toggle('visible',mistakeSet.size>0)
+}
+
+function startPracticeDisplay(){stopPracticeDisplay();updatePracticeDisplay();practiceDisplayInterval=setInterval(updatePracticeDisplay,1000)}
+function stopPracticeDisplay(){clearInterval(practiceDisplayInterval)}
+function updatePracticeDisplay(){const r=getPracticeRemainingMs();if(r<=0){stopPracticeDisplay();renderMenu();return}const ts=Math.ceil(r/1000);const h=Math.floor(ts/3600);const m=Math.floor((ts%3600)/60);const s=ts%60;document.getElementById('practiceTimerDisplay').textContent=`${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`}
+
+function openLearnPanel(num){pendingNumber=num;document.getElementById('learnTitle').textContent=`📚 Tabla lui ${num}`;const t=document.getElementById('learnTable');t.innerHTML='';for(let i=1;i<=MAX_NUMBER;i++){const r=document.createElement('div');r.className='table-row';r.innerHTML=`<span>${num} × ${i}</span> <b>= ${num*i}</b>`;t.appendChild(r)}document.getElementById('learnPanel').classList.add('visible');document.getElementById('learnPanel').scrollIntoView({behavior:'smooth',block:'nearest'});startLearnTimer()}
+function startLearnTimer(){stopLearnTimer();learnTimeLeft=LEARN_TIME;updateLearnTimerUI();learnTimerInterval=setInterval(()=>{learnTimeLeft--;updateLearnTimerUI();if(learnTimeLeft<=0){stopLearnTimer();confirmStartQuiz()}},1000)}
+function stopLearnTimer(){clearInterval(learnTimerInterval)}
+function updateLearnTimerUI(){document.getElementById('learnCountdown').textContent=learnTimeLeft;const f=document.getElementById('learnTimerFill');const p=Math.max(0,(learnTimeLeft/LEARN_TIME)*100);f.style.width=`${p}%`;if(p>50)f.style.background='linear-gradient(90deg,#a29bfe,#6c5ce7)';else if(p>25)f.style.background='linear-gradient(90deg,#feca57,#e67e22)';else f.style.background='linear-gradient(90deg,#ff7675,#d63031)'}
+function closeLearnPanel(){stopLearnTimer();pendingNumber=null;document.getElementById('learnPanel').classList.remove('visible')}
+function confirmStartQuiz(){if(!pendingNumber)return;stopLearnTimer();currentNumber=pendingNumber;isFinalTest=false;isReviewMode=false;currentSessionTime=SESSION_TIME;document.getElementById('learnPanel').classList.remove('visible');launchQuiz(`Mini-test: Cifra ${currentNumber}`)}
+function startFinalTest(){currentNumber=null;isFinalTest=true;isReviewMode=false;currentSessionTime=FINAL_TEST_TIME;launchQuiz('🏆 TEST FINAL')}
+function startReviewMode(){if(mistakeSet.size===0)return;isReviewMode=true;isFinalTest=false;currentNumber=null;currentSessionTime=SESSION_TIME;launchQuiz('🔄 REVIZUIRE GREȘELI')}
+
+function launchQuiz(label){document.getElementById('menu-section').style.display='none';document.getElementById('quiz-section').classList.add('active');document.getElementById('quizContent').style.display='block';document.getElementById('resultsScreen').classList.remove('active');document.getElementById('quizSelectedNum').textContent=label;totalCorrect=0;totalWrong=0;updateScore();
+    if(isReviewMode){mainQueue=[...mistakeSet].map(k=>{const[a,b]=k.split('x').map(Number);return{a,b}});shuffleArray(mainQueue);currentSessionTime=Math.max(SESSION_TIME,mainQueue.length*(QUESTION_TIME+3))}
+    else if(isFinalTest){const ap=[];for(let a=1;a<=MAX_NUMBER;a++)for(let b=1;b<=MAX_NUMBER;b++)ap.push({a,b});shuffleArray(ap);mainQueue=ap.slice(0,FINAL_TEST_QUESTIONS)}
+    else{mainQueue=Array.from({length:MAX_NUMBER},(_,i)=>i+1);shuffleArray(mainQueue)}
+    retryQueue=[];isRetryPhase=false;globalTimeLeft=currentSessionTime;startGlobalTimer();showQuestion()}
+function shuffleArray(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
+
+function showQuestion(){stopQuestionTimer();if(globalTimeLeft<=0){stopReason='timeout';endSession();return}let sq;if(mainQueue.length>0){sq=mainQueue;isRetryPhase=false}else if(retryQueue.length>0){sq=retryQueue;isRetryPhase=true}else{stopReason='perfect';endSession();return}
+    const item=sq.shift();questionAnswered=false;let qA,qB;if(isFinalTest||isReviewMode){qA=item.a;qB=item.b}else{qA=currentNumber;qB=item}currentMultiplier=item;
+    const inp=document.getElementById('answerInput');inp.value='';inp.className='';inp.disabled=false;inp.focus();
+    document.getElementById('feedbackMsg').textContent='';document.getElementById('feedbackMsg').className='feedback-msg';
+    document.getElementById('checkBtn').style.display='block';document.getElementById('nextBtn').style.display='none';
+    document.getElementById('progressLabel').textContent=`Rămase: ${mainQueue.length+retryQueue.length+1}${isRetryPhase?' 🔄 Reluare':''}`;
+    document.getElementById('question').textContent=Math.random()>0.5?`${qA} × ${qB}`:`${qB} × ${qA}`;startQuestionTimer()}
+function nextQuestion(){showQuestion()}
+
+function startQuestionTimer(){stopQuestionTimer();questionTimeLeft=QUESTION_TIME;questionTimerRunning=true;updateQuestionTimerUI();questionTimerInterval=setInterval(()=>{questionTimeLeft-=0.1;updateQuestionTimerUI();if(questionTimeLeft<=0){questionTimeLeft=0;stopQuestionTimer();handleQuestionTimeout()}},100)}
+function stopQuestionTimer(){clearInterval(questionTimerInterval);questionTimerRunning=false}
+function updateQuestionTimerUI(){const bt=document.getElementById('bigTimer');document.getElementById('bigTimerNum').textContent=Math.ceil(questionTimeLeft);bt.classList.remove('warning','danger');const p=questionTimeLeft/QUESTION_TIME;if(p<=0.3)bt.classList.add('danger');else if(p<=0.55)bt.classList.add('warning')}
+function handleQuestionTimeout(){if(questionAnswered)return;questionAnswered=true;const inp=document.getElementById('answerInput');const fb=document.getElementById('feedbackMsg');let a,b;if(isFinalTest||isReviewMode){a=currentMultiplier.a;b=currentMultiplier.b}else{a=currentNumber;b=currentMultiplier}addMistake(a,b);inp.disabled=true;inp.classList.add('wrong');document.getElementById('checkBtn').style.display='none';const air=retryQueue.some(it=>isFinalTest||isReviewMode?it.a===currentMultiplier.a&&it.b===currentMultiplier.b:it===currentMultiplier);if(!air)retryQueue.push(currentMultiplier);totalWrong++;fb.textContent=`⚡ Timp expirat! Răspunsul era: ${a*b}. Revine la final!`;fb.className='feedback-msg retry';updateScore();document.getElementById('nextBtn').style.display='block';document.getElementById('nextBtn').focus()}
+
+function startGlobalTimer(){stopGlobalTimer();globalTimerRunning=true;updateGlobalTimerUI();globalTimerInterval=setInterval(()=>{globalTimeLeft-=0.1;updateGlobalTimerUI();if(globalTimeLeft<=0){globalTimeLeft=0;stopGlobalTimer();stopQuestionTimer();stopReason='timeout';handleGlobalTimeout()}},100)}
+function stopGlobalTimer(){clearInterval(globalTimerInterval);globalTimerRunning=false}
+function updateGlobalTimerUI(){const p=Math.max(0,globalTimeLeft/currentSessionTime);document.getElementById('globalTimerBar').style.transform=`scaleX(${p})`;const mi=Math.floor(globalTimeLeft/60);const se=Math.ceil(globalTimeLeft%60);document.getElementById('globalTimerLabel').textContent=`${mi}:${se.toString().padStart(2,'0')}`;const bar=document.getElementById('globalTimerBar');if(p>0.5)bar.style.background='linear-gradient(90deg,#55efc4,#00b894)';else if(p>0.25)bar.style.background='linear-gradient(90deg,#feca57,#fdcb6e)';else bar.style.background='linear-gradient(90deg,#ff7675,#d63031)'}
+function handleGlobalTimeout(){const inp=document.getElementById('answerInput');const fb=document.getElementById('feedbackMsg');if(inp&&!inp.disabled){inp.disabled=true;document.getElementById('checkBtn').style.display='none';document.getElementById('nextBtn').style.display='none';fb.textContent='⏰ Timpul a expirat!';fb.className='feedback-msg error'}setTimeout(()=>endSession(),1500)}
+
+function checkAnswer(){if(questionAnswered||(!globalTimerRunning&&globalTimeLeft<=0))return;const inp=document.getElementById('answerInput');const fb=document.getElementById('feedbackMsg');const ua=parseInt(inp.value);let a,b;if(isFinalTest||isReviewMode){a=currentMultiplier.a;b=currentMultiplier.b}else{a=currentNumber;b=currentMultiplier}const correct=a*b;if(isNaN(ua))return;questionAnswered=true;stopQuestionTimer();inp.disabled=true;document.getElementById('checkBtn').style.display='none';
+    if(ua===correct){inp.classList.add('correct');fb.textContent=isRetryPhase?'🎉 Corect la reluare!':'🎉 Corect! Bravo!';fb.className='feedback-msg success';totalCorrect++;showSparkle();if(isRetryPhase&&isReviewMode)removeMistake(a,b)}
+    else{inp.classList.add('wrong');addMistake(a,b);const air=retryQueue.some(it=>isFinalTest||isReviewMode?it.a===currentMultiplier.a&&it.b===currentMultiplier.b:it===currentMultiplier);if(!air)retryQueue.push(currentMultiplier);fb.textContent=`❌ Greșit! Răspunsul corect: ${correct}. Va reveni!`;fb.className='feedback-msg retry';totalWrong++}
+    updateScore();document.getElementById('nextBtn').style.display='block';document.getElementById('nextBtn').focus()}
+function updateScore(){document.getElementById('correctCount').textContent=totalCorrect;document.getElementById('wrongCount').textContent=totalWrong}
+
+function endSession(){stopQuestionTimer();stopGlobalTimer();document.getElementById('quizContent').style.display='none';document.getElementById('resultsScreen').classList.add('active');if(globalTimeLeft<=0&&stopReason!=='timeout')stopReason='timeout';if(!isReviewMode)markTodayDone();if(stopReason==='perfect'&&!isFinalTest&&!isReviewMode&&currentNumber)markCompleted(currentNumber);
+    const re=document.getElementById('resultsReason');let emoji,title,text,cls;
+    if(isReviewMode){if(stopReason==='perfect'){emoji='🔄✨';title='Greșeli revizuite!';text='✨ Ai rezolvat toate greșelile!';cls='reason-perfect'}else{emoji='⏰🔄';title='Timp expirat';text=`Mai rămâneau ${mainQueue.length+retryQueue.length} exerciții.`;cls='reason-time'}}
+    else if(isFinalTest){if(stopReason==='perfect'){emoji='👑🦄🏆';title='MAESTRU SUPREM!';text='✨ Test Final trecut! Mâine aventura o ia de la capăt!';cls='reason-perfect'}else{emoji='⏰🦄';title='Test Final - Timp expirat!';text=`Mai rămâneau ${mainQueue.length+retryQueue.length} întrebări.`;cls='reason-time'}}
+    else{if(stopReason==='perfect'){emoji='🦄👑';title=`Cifra ${currentNumber} completă!`;text=`✨ Mini-test terminat!`;cls='reason-perfect'}else{emoji='⏰🦄';title='Timpul s-a terminat!';text=`⏰ Mai exersează cifra ${currentNumber}!`;cls='reason-time'}}
+    document.getElementById('resultsEmoji').textContent=emoji;document.getElementById('resultsTitle').textContent=title;re.textContent=text;re.className=`results-reason ${cls}`;document.getElementById('resultsScore').textContent=`${totalCorrect} ✅ / ${totalWrong} ❌`;document.getElementById('resultsDetail').innerHTML=`Scor: <b>${totalCorrect}</b> răspunsuri corecte.${isReviewMode&&stopReason==='perfect'?'<br>🎉 Greșelile corecte eliminate din jurnal!':''}`;startAutoReturn()}
+
+function startAutoReturn(){let cd=AUTO_RETURN_DELAY;document.getElementById('autoReturnCountdown').textContent=cd;autoReturnTimer=setInterval(()=>{cd--;document.getElementById('autoReturnCountdown').textContent=cd;if(cd<=0){clearInterval(autoReturnTimer);showMenu()}},1000)}
+function showMenu(){clearTimeout(autoReturnTimer);stopQuestionTimer();stopGlobalTimer();stopLearnTimer();document.getElementById('menu-section').style.display='block';document.getElementById('quiz-section').classList.remove('active');document.getElementById('learnPanel').classList.remove('visible');pendingNumber=null;renderMenu()}
+function showSparkle(){const s=document.createElement('div');s.className='sparkle-overlay';s.textContent='✨🦄✨';document.querySelector('.app-container').appendChild(s);setTimeout(()=>s.remove(),900)}
+</script>
+</body>
+</html>
