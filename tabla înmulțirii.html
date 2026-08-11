@@ -31,9 +31,12 @@
         .streak-label{font-size:.75rem;color:#636e72;font-weight:600}
         .done-days-label{font-size:.8rem;font-weight:700;color:var(--primary);margin-bottom:8px;text-align:left}
         .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:15px}
-        .cal-day{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#b2bec3;background:#f8f9fa;border:2px solid transparent;position:relative;line-height:1}
-        .cal-day .cal-num{font-size:.7rem}.cal-day .cal-check{font-size:.6rem;line-height:1}
+        .cal-day{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;color:#b2bec3;background:#f8f9fa;border:2px solid transparent;position:relative;line-height:1.1;gap:1px}
+        .cal-day .cal-num{font-size:.65rem}
+        .cal-day .cal-mark{font-size:.85rem;font-weight:800;line-height:1}
+        /* ✅ Făcute = verde cu bifă MARE */
         .cal-day.done{background:var(--success);color:white;border-color:#00b894;box-shadow:0 2px 8px rgba(0,184,148,.3)}
+        /* ❌ Nefăcute = roșu cu X mare */
         .cal-day.missed{background:var(--error);color:white;border-color:#d63031}
         .cal-day.today{border-color:var(--primary);box-shadow:0 0 0 2px rgba(155,89,182,.3)}
         .cal-day.future{opacity:.3}
@@ -134,13 +137,12 @@
             <div class="streak-fire">🔥</div>
             <div class="streak-info"><div class="streak-count" id="streakCount">0 zile</div><div class="streak-label">serie consecutivă</div></div>
         </div>
-        <div class="done-days-label">📅 Calendar: ✅ făcut &nbsp; ❌ nefăcut</div>
+        <div class="done-days-label">📅 Calendar: ✅ făcut &nbsp; ✗ nefăcut</div>
         <div class="calendar-grid" id="calendarGrid"></div>
         <div class="progress-banner">🌟 Progres: <span id="completedCount">0</span>/9 cifre deblocate</div>
         <button class="review-btn" id="reviewBtn" onclick="startReviewMode()">🔄 Revizuiește Greșelile <span class="review-count" id="reviewCount">0</span></button>
         <p style="margin-bottom:8px;font-weight:700;color:var(--primary);font-size:.9rem;" id="menuInstruction">Alege următoarea cifră magică:</p>
         <div class="number-grid" id="numberGrid"></div>
-        <!-- ⭐ BANNER ANTRENAMENT 2H -->
         <div class="practice-banner" id="practiceBanner">
             <h2>🎯 Perioadă de Antrenament!</h2>
             <p>Toate cifrele sunt verzi! Exersează liber înainte de Testul Final.</p>
@@ -157,7 +159,6 @@
             <button class="btn-start-test" onclick="confirmStartQuiz()">🎯 Începe Testul Acum!</button>
             <button class="btn-cancel-learn" onclick="closeLearnPanel()">← Înapoi la meniu</button>
         </div>
-        <!-- ⭐ BANNER TEST FINAL (apare DUPĂ cele 2h) -->
         <div class="final-test-banner" id="finalTestBanner">
             <h2>🏆 Testul Final e gata!</h2>
             <p>40 de întrebări din toată tabla înmulțirii, 4 minute!</p>
@@ -189,7 +190,7 @@
 </div>
 <script>
 const MAX_NUMBER=9,QUESTION_TIME=7,SESSION_TIME=120,FINAL_TEST_TIME=240,FINAL_TEST_QUESTIONS=40,LEARN_TIME=60,AUTO_RETURN_DELAY=3;
-const PRACTICE_WINDOW_MS=2*60*60*1000; // ⭐ 2 ORE fereastră antrenament
+const PRACTICE_WINDOW_MS=2*60*60*1000;
 const STORAGE_PROGRESS='tablaMagica_progress',STORAGE_MISTAKES='tablaMagica_mistakes',STORAGE_HISTORY='tablaMagica_history',STORAGE_STREAK='tablaMagica_streak',STORAGE_ALLDONE='tablaMagica_allDoneDate',STORAGE_ALLDONE_TS='tablaMagica_allDoneTimestamp';
 
 let completedNumbers=[],mistakeSet=new Set(),dayHistory={},streakData={count:0,lastDate:null},allDoneDate=null,allDoneTimestamp=null;
@@ -202,7 +203,7 @@ let learnTimerInterval=null,learnTimeLeft=LEARN_TIME,stopReason='',autoReturnTim
 const STEPS=[
     {icon:'🧚‍♀️',title:'Pasul 1: Învață (60s)',desc:'Apasă pe cifra activă. Ai MAXIM 60s să memorezi tabla, apoi testul începe automat!'},
     {icon:'🎯',title:'Pasul 2: Testează-te',desc:'7 SECUNDE per întrebare, 2 MINUTE per cifră. Greșești? Întrebarea revine la final!'},
-    {icon:'🔥',title:'Pasul 3: Serie Zilnică',desc:'Calendarul bifează VERDE ✅ zilele făcute și ROȘU ❌ cele nefăcute.'},
+    {icon:'🔥',title:'Pasul 3: Serie Zilnică',desc:'Calendarul bifează automat: VERDE ✅ zilele făcute, ROȘU ✗ cele nefăcute.'},
     {icon:'🔄',title:'Pasul 4: Revizuiește',desc:'Greșelile se salvează. Apasă "Revizuiește Greșelile" pentru a le exersa din nou!'},
     {icon:'🏆',title:'Pasul 5: Testul Final',desc:'Când toate 9 sunt verzi → 2 ORE antrenament liber → Test Final (40 întrebări, 4 min) → A doua zi reset!'}
 ];
@@ -254,15 +255,25 @@ function renderMenu(){
     const today=new Date();today.setHours(0,0,0,0);const startDay=new Date(today);startDay.setDate(startDay.getDate()-27);
     const dow=startDay.getDay();const mo=dow===0?-6:1-dow;startDay.setDate(startDay.getDate()+mo);
     const totalDays=Math.ceil((today-startDay)/86400000)+1;
-    for(let i=0;i<totalDays;i++){const d=new Date(startDay);d.setDate(d.getDate()+i);const ds=d.toISOString().slice(0,10);
+    for(let i=0;i<totalDays;i++){
+        const d=new Date(startDay);d.setDate(d.getDate()+i);const ds=d.toISOString().slice(0,10);
         const el=document.createElement('div');el.className='cal-day';
         const numSpan=document.createElement('span');numSpan.className='cal-num';numSpan.textContent=d.getDate();el.appendChild(numSpan);
         const isDone=dayHistory[ds]===true,isFuture=d>today,isToday=ds===todayStr();
         if(isToday)el.classList.add('today');
-        if(isFuture)el.classList.add('future');
-        else if(isDone){el.classList.add('done');const ck=document.createElement('span');ck.className='cal-check';ck.textContent='✓';el.appendChild(ck)}
-        else if(!isToday)el.classList.add('missed');
-        calGrid.appendChild(el)}
+        if(isFuture){
+            el.classList.add('future');
+        } else if(isDone){
+            // ✅ BIFĂ VERDE
+            el.classList.add('done');
+            const mark=document.createElement('span');mark.className='cal-mark';mark.textContent='✓';el.appendChild(mark);
+        } else if(!isToday){
+            // ✗ BIFĂ ROȘIE pentru nefăcut
+            el.classList.add('missed');
+            const mark=document.createElement('span');mark.className='cal-mark';mark.textContent='✗';el.appendChild(mark);
+        }
+        calGrid.appendChild(el);
+    }
     const grid=document.getElementById('numberGrid');grid.innerHTML='';const practiceActive=isInPracticeWindow();
     let nextAvailable=null;for(let i=1;i<=MAX_NUMBER;i++){if(!completedNumbers.includes(i)){nextAvailable=i;break}}
     for(let i=1;i<=MAX_NUMBER;i++){const btn=document.createElement('button');btn.className='num-btn';btn.textContent=i;
