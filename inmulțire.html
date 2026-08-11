@@ -22,7 +22,6 @@
         h1{font-size:1.7rem;color:var(--primary);text-shadow:2px 2px 0 var(--secondary);margin-bottom:5px}
         p.subtitle{color:#636e72;font-weight:600;margin-bottom:15px}
 
-        /* Tutorial */
         .tutorial-overlay{position:absolute;inset:0;background:var(--card);border-radius:30px;z-index:100;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:30px;transition:opacity .5s}
         .tutorial-overlay.hidden{opacity:0;pointer-events:none}
         .step-icon{font-size:4rem;margin-bottom:15px;animation:float 3s ease-in-out infinite}
@@ -34,21 +33,19 @@
         .btn-tutorial{padding:14px 40px;background:linear-gradient(135deg,var(--primary),#8e44ad);color:white;border:none;border-radius:16px;font-size:1.1rem;font-weight:700;cursor:pointer;box-shadow:0 5px 20px rgba(155,89,182,.3);transition:.3s}
         .btn-tutorial:hover{transform:translateY(-3px)}
 
-        /* STREAK & CALENDAR */
         .streak-banner{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#fff9e6,#fff0f7);border:2px solid #feca57;border-radius:16px;padding:12px 16px;margin-bottom:15px}
         .streak-fire{font-size:2rem}
         .streak-info{text-align:left}
         .streak-count{font-size:1.4rem;font-weight:800;color:#e67e22}
         .streak-label{font-size:.75rem;color:#636e72;font-weight:600}
+        .done-days-label{font-size:.8rem;font-weight:700;color:var(--primary);margin-bottom:8px;text-align:left}
         .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:15px}
-        .cal-day{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#636e72;background:#f8f9fa;border:2px solid transparent}
-        .cal-day.done{background:var(--success);color:white;border-color:#00b894}
-        .cal-day.missed{background:var(--error);color:white;border-color:#d63031}
+        .cal-day{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#b2bec3;background:#f8f9fa;border:2px solid transparent}
+        .cal-day.done{background:var(--success);color:white;border-color:#00b894;box-shadow:0 2px 8px rgba(0,184,148,.3)}
         .cal-day.today{border-color:var(--primary);box-shadow:0 0 0 2px rgba(155,89,182,.3)}
-        .cal-day.future{opacity:.4}
+        .cal-day.future{opacity:.3}
         .cal-header{font-size:.6rem;font-weight:700;color:#b2bec3;text-transform:uppercase}
 
-        /* MENU */
         .menu-section{display:block}
         .progress-banner{background:linear-gradient(135deg,#faf5ff,#fff0f7);border:2px solid #f0e6ff;border-radius:16px;padding:10px;margin-bottom:15px;font-weight:700;color:var(--primary);font-size:.9rem}
         .number-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:15px}
@@ -61,13 +58,11 @@
         .num-btn.current{border-color:var(--primary);background:white;color:var(--primary);animation:glowPulse 1.5s ease-in-out infinite}
         @keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(155,89,182,.4)}50%{box-shadow:0 0 0 8px rgba(155,89,182,0)}}
 
-        /* REVIEW MISTAKES BUTTON */
         .review-btn{padding:12px 20px;background:linear-gradient(135deg,#ff7675,#d63031);color:white;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:.3s;box-shadow:0 5px 20px rgba(214,48,49,.3);margin-bottom:10px;display:none}
         .review-btn.visible{display:block}
         .review-btn:hover{transform:translateY(-3px)}
         .review-count{background:rgba(255,255,255,.3);padding:2px 8px;border-radius:10px;font-size:.85rem;margin-left:6px}
 
-        /* LEARN PANEL */
         .learn-panel{display:none;margin-top:15px;padding:18px;background:#faf5ff;border-radius:20px;border:2px solid #f0e6ff}
         .learn-panel.visible{display:block}
         .learn-panel h3{color:var(--primary);margin-bottom:10px;font-size:1.1rem}
@@ -83,7 +78,6 @@
         .btn-cancel-learn{margin-top:8px;padding:8px;background:transparent;border:2px solid #ddd;border-radius:12px;color:#636e72;font-weight:600;cursor:pointer;width:100%;transition:.3s}
         .btn-cancel-learn:hover{border-color:var(--primary);color:var(--primary)}
 
-        /* FINAL TEST BANNER */
         .final-test-banner{display:none;margin-top:15px;padding:18px;background:linear-gradient(135deg,#feca57,#e67e22);border-radius:20px;color:white;animation:float 3s ease-in-out infinite}
         .final-test-banner.visible{display:block}
         .final-test-banner h2{font-size:1.3rem;margin-bottom:6px}
@@ -91,7 +85,6 @@
         .btn-final{padding:12px 25px;background:white;color:#e67e22;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:.3s;box-shadow:0 5px 20px rgba(0,0,0,.15)}
         .btn-final:hover{transform:translateY(-3px)}
 
-        /* QUIZ */
         .quiz-area{display:none}.quiz-area.active{display:block}
         .big-timer-wrap{margin:5px auto 12px}
         .big-timer{width:110px;height:110px;border-radius:50%;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;background:linear-gradient(135deg,#a29bfe,#6c5ce7);box-shadow:0 10px 30px rgba(108,92,231,.45),0 0 0 6px rgba(162,155,254,.25);transition:background .3s,box-shadow .3s}
@@ -118,7 +111,6 @@
         .btn-action:hover{transform:translateY(-3px)}
         .score-board{margin:10px 0;padding:8px;background:linear-gradient(135deg,#faf5ff,#fff0f7);border-radius:16px;display:flex;justify-content:space-around;font-weight:700;border:2px solid #f0e6ff;font-size:.9rem}
 
-        /* RESULTS */
         .results-screen{display:none;text-align:center;padding:15px 0}.results-screen.active{display:block}
         .results-emoji{font-size:4.5rem;margin-bottom:8px;animation:float 3s ease-in-out infinite}
         .results-title{font-size:1.4rem;color:var(--primary);margin-bottom:5px;font-weight:700}
@@ -138,7 +130,6 @@
 <div class="bg-deco d1">🦄</div><div class="bg-deco d2">🧚‍♀️</div><div class="bg-deco d3">✨</div><div class="bg-deco d4">🦄</div>
 
 <div class="app-container" id="appContainer">
-    <!-- TUTORIAL -->
     <div class="tutorial-overlay" id="tutorialOverlay">
         <div class="step-icon" id="stepIcon">🧚‍♀️</div>
         <div class="step-title" id="stepTitle">Bine ai venit!</div>
@@ -150,9 +141,7 @@
     <h1>🦄 Tabla Magică ✨</h1>
     <p class="subtitle">Învață cu zâne și unicorni!</p>
 
-    <!-- MENU -->
     <div id="menu-section" class="menu-section">
-        <!-- STREAK + CALENDAR -->
         <div class="streak-banner">
             <div class="streak-fire">🔥</div>
             <div class="streak-info">
@@ -160,11 +149,11 @@
                 <div class="streak-label">serie consecutivă</div>
             </div>
         </div>
+        <div class="done-days-label">✨ Zilele în care ai exersat:</div>
         <div class="calendar-grid" id="calendarGrid"></div>
 
         <div class="progress-banner">🌟 Progres: <span id="completedCount">0</span>/9 cifre deblocate</div>
 
-        <!-- REVIEW MISTAKES -->
         <button class="review-btn" id="reviewBtn" onclick="startReviewMode()">
             🔄 Revizuiește Greșelile <span class="review-count" id="reviewCount">0</span>
         </button>
@@ -172,7 +161,6 @@
         <p style="margin-bottom:8px;font-weight:700;color:var(--primary);font-size:.9rem;">Alege următoarea cifră magică:</p>
         <div class="number-grid" id="numberGrid"></div>
 
-        <!-- Learn Panel -->
         <div class="learn-panel" id="learnPanel">
             <h3 id="learnTitle">📚 Tabla lui 1</h3>
             <div class="learn-timer-box">
@@ -184,15 +172,13 @@
             <button class="btn-cancel-learn" onclick="closeLearnPanel()">← Înapoi la meniu</button>
         </div>
 
-        <!-- Final Test Banner -->
         <div class="final-test-banner" id="finalTestBanner">
             <h2>🏆 Toate cifrele deblocate!</h2>
-            <p>40 de întrebări din toată tabla înmulțirii, 4 minute!</p>
+            <p>40 de întrebări din toată tabla înmulțirii, 4 minute! Mâine aventura o ia de la capăt.</p>
             <button class="btn-final" onclick="startFinalTest()">🚀 Începe Testul Final!</button>
         </div>
     </div>
 
-    <!-- QUIZ -->
     <div id="quiz-section" class="quiz-area">
         <div id="quizContent" style="display:none;">
             <div class="big-timer-wrap">
@@ -218,7 +204,6 @@
             <button class="btn-action" id="checkBtn" onclick="checkAnswer()">✨ Verifică</button>
             <button class="btn-action" id="nextBtn" onclick="nextQuestion()" style="display:none;">Următoarea ➡️</button>
         </div>
-        <!-- RESULTS -->
         <div class="results-screen" id="resultsScreen">
             <div class="results-emoji" id="resultsEmoji">🏆</div>
             <div class="results-title" id="resultsTitle">Felicitări!</div>
@@ -241,14 +226,16 @@ const LEARN_TIME = 60;
 const AUTO_RETURN_DELAY = 3;
 const STORAGE_PROGRESS = 'tablaMagica_progress';
 const STORAGE_MISTAKES = 'tablaMagica_mistakes';
-const STORAGE_HISTORY = 'tablaMagica_history';   // {dateStr: true/false}
-const STORAGE_STREAK = 'tablaMagica_streak';      // {count, lastDate}
+const STORAGE_HISTORY = 'tablaMagica_history';
+const STORAGE_STREAK = 'tablaMagica_streak';
+const STORAGE_ALLDONE = 'tablaMagica_allDoneDate';   // ⭐ data când toate cifrele au devenit verzi
 
 // ===================== STATE =====================
 let completedNumbers = [];
-let mistakeSet = new Set();       // "3x7", "7x3" etc.
-let dayHistory = {};              // {"2026-08-11": true, ...}
+let mistakeSet = new Set();
+let dayHistory = {};
 let streakData = { count: 0, lastDate: null };
+let allDoneDate = null;   // ⭐ reține ziua în care toate cifrele au fost verzi
 
 let currentNumber = null;
 let pendingNumber = null;
@@ -268,9 +255,9 @@ let stopReason = '', autoReturnTimer = null;
 const STEPS = [
     { icon:'🧚‍♀️', title:'Pasul 1: Învață (60s)', desc:'Apasă pe cifra activă. Ai MAXIM 60s să memorezi tabla, apoi testul începe automat!' },
     { icon:'🎯', title:'Pasul 2: Testează-te', desc:'7 SECUNDE per întrebare, 2 MINUTE per cifră. Greșești? Întrebarea revine la final și se salvează în jurnal!' },
-    { icon:'🔥', title:'Pasul 3: Serie Zilnică', desc:'Exersează în fiecare zi pentru a menține seria! Calendarul arată zilele făcute ✅ și cele ratate ❌.' },
+    { icon:'🔥', title:'Pasul 3: Serie Zilnică', desc:'Exersează în fiecare zi pentru a menține seria! Calendarul arată doar zilele în care ai exersat ✨.' },
     { icon:'🔄', title:'Pasul 4: Revizuiește', desc:'Greșelile se salvează automat. Apasă butonul roșu "Revizuiește Greșelile" pentru a le exersa din nou!' },
-    { icon:'🏆', title:'Pasul 5: Testul Final', desc:'Când toate 9 cifre sunt verzi → Test Final: 40 întrebări, 4 min! Perfect = jocul se ia de la capăt!' }
+    { icon:'🏆', title:'Pasul 5: Testul Final', desc:'Când toate 9 cifre sunt verzi → Test Final: 40 întrebări, 4 min! A doua zi aventura o ia de la capăt automat!' }
 ];
 let currentStep = 0;
 
@@ -285,16 +272,44 @@ function loadAll() {
     try { const m = JSON.parse(localStorage.getItem(STORAGE_MISTAKES)) || []; mistakeSet = new Set(m); } catch(e) { mistakeSet = new Set(); }
     try { dayHistory = JSON.parse(localStorage.getItem(STORAGE_HISTORY)) || {}; } catch(e) { dayHistory = {}; }
     try { streakData = JSON.parse(localStorage.getItem(STORAGE_STREAK)) || { count: 0, lastDate: null }; } catch(e) { streakData = { count: 0, lastDate: null }; }
+    try { allDoneDate = localStorage.getItem(STORAGE_ALLDONE) || null; } catch(e) { allDoneDate = null; }
+    checkDayReset();   // ⭐ verifică dacă trebuie resetat (a doua zi)
     recalcStreak();
 }
 function saveProgress() { try { localStorage.setItem(STORAGE_PROGRESS, JSON.stringify(completedNumbers)); } catch(e){} }
 function saveMistakes() { try { localStorage.setItem(STORAGE_MISTAKES, JSON.stringify([...mistakeSet])); } catch(e){} }
 function saveHistory() { try { localStorage.setItem(STORAGE_HISTORY, JSON.stringify(dayHistory)); } catch(e){} }
 function saveStreak() { try { localStorage.setItem(STORAGE_STREAK, JSON.stringify(streakData)); } catch(e){} }
+function saveAllDoneDate() {
+    try {
+        if (allDoneDate) localStorage.setItem(STORAGE_ALLDONE, allDoneDate);
+        else localStorage.removeItem(STORAGE_ALLDONE);
+    } catch(e){}
+}
 
-function markCompleted(num) { if (!completedNumbers.includes(num)) { completedNumbers.push(num); saveProgress(); } }
+function markCompleted(num) {
+    if (!completedNumbers.includes(num)) {
+        completedNumbers.push(num);
+        saveProgress();
+        // ⭐ Când toate cifrele au devenit verzi, reținem data
+        if (completedNumbers.length >= MAX_NUMBER && !allDoneDate) {
+            allDoneDate = todayStr();
+            saveAllDoneDate();
+        }
+    }
+}
 function allCompleted() { return completedNumbers.length >= MAX_NUMBER; }
 function resetAllProgress() { completedNumbers = []; saveProgress(); }
+
+// ⭐ RESET AUTOMAT A DOUA ZI: dacă toate cifrele au fost verzi într-o zi anterioară, o luăm de la capăt
+function checkDayReset() {
+    if (allDoneDate && allDoneDate < todayStr()) {
+        completedNumbers = [];
+        saveProgress();
+        allDoneDate = null;
+        saveAllDoneDate();
+    }
+}
 
 // ===================== MISTAKE MANAGEMENT =====================
 function addMistake(a, b) {
@@ -310,41 +325,22 @@ function removeMistake(a, b) {
 function recalcStreak() {
     const today = todayStr();
     const yesterday = yesterdayStr();
-    
-    if (streakData.lastDate === today) return; // deja actualizat azi
-    
+    if (streakData.lastDate === today) return;
     if (streakData.lastDate === yesterday) {
-        // Seria continuă dacă ieri a fost marcat
-        if (!dayHistory[yesterday]) {
-            // Ieri nu a fost marcat → serie ruptă
-            streakData.count = 0;
-            streakData.lastDate = null;
-            saveStreak();
-        }
+        if (!dayHistory[yesterday]) { streakData.count = 0; streakData.lastDate = null; saveStreak(); }
     } else if (streakData.lastDate && streakData.lastDate !== today) {
-        // Mai mult de o zi diferență → serie ruptă
         const diff = dateDiffDays(streakData.lastDate, today);
-        if (diff > 1) {
-            streakData.count = 0;
-            streakData.lastDate = null;
-            saveStreak();
-        }
+        if (diff > 1) { streakData.count = 0; streakData.lastDate = null; saveStreak(); }
     }
 }
-
 function markTodayDone() {
     const today = todayStr();
     dayHistory[today] = true;
     saveHistory();
-    
     const yesterday = yesterdayStr();
-    if (streakData.lastDate === today) return; // deja numărat azi
-    
-    if (streakData.lastDate === yesterday || streakData.count === 0) {
-        streakData.count++;
-    } else {
-        streakData.count = 1;
-    }
+    if (streakData.lastDate === today) return;
+    if (streakData.lastDate === yesterday || streakData.count === 0) streakData.count++;
+    else streakData.count = 1;
     streakData.lastDate = today;
     saveStreak();
 }
@@ -383,40 +379,35 @@ function nextStep() {
 
 // ===================== MENU RENDER =====================
 function renderMenu() {
-    // Streak
+    checkDayReset();   // ⭐ verifică resetarea zilnică de fiecare dată când afișăm meniul
     document.getElementById('streakCount').textContent = `${streakData.count} ${streakData.count === 1 ? 'zi' : 'zile'}`;
     
-    // Calendar (last 14 days)
     const calGrid = document.getElementById('calendarGrid');
     calGrid.innerHTML = '';
     const headers = ['L','M','M','J','V','S','D'];
     headers.forEach(h => { const el = document.createElement('div'); el.className = 'cal-header'; el.textContent = h; calGrid.appendChild(el); });
     
-    const today = new Date();
+    const today = new Date(); today.setHours(0,0,0,0);
     const startDay = new Date(today);
-    startDay.setDate(startDay.getDate() - 13); // 14 zile
-    // Aliniem la luni
+    startDay.setDate(startDay.getDate() - 27);
     const dayOfWeek = startDay.getDay();
     const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
     startDay.setDate(startDay.getDate() + mondayOffset);
     
-    for (let i = 0; i < 28; i++) { // 4 săptămâni
+    const totalDays = Math.ceil((today - startDay) / 86400000) + 1;
+    for (let i = 0; i < totalDays; i++) {
         const d = new Date(startDay);
         d.setDate(d.getDate() + i);
         const ds = d.toISOString().slice(0,10);
         const el = document.createElement('div');
         el.className = 'cal-day';
         el.textContent = d.getDate();
-        
+        if (dayHistory[ds] === true) el.classList.add('done');
         if (ds === todayStr()) el.classList.add('today');
         if (d > today) el.classList.add('future');
-        else if (dayHistory[ds] === true) el.classList.add('done');
-        else if (d < today && !dayHistory[ds]) el.classList.add('missed');
-        
         calGrid.appendChild(el);
     }
     
-    // Number grid
     const grid = document.getElementById('numberGrid');
     grid.innerHTML = '';
     let nextAvailable = null;
@@ -432,7 +423,6 @@ function renderMenu() {
     document.getElementById('completedCount').textContent = completedNumbers.length;
     document.getElementById('finalTestBanner').classList.toggle('visible', allCompleted());
     
-    // Review button
     const reviewBtn = document.getElementById('reviewBtn');
     const mistakeCount = mistakeSet.size;
     document.getElementById('reviewCount').textContent = mistakeCount;
@@ -499,7 +489,6 @@ function launchQuiz(label) {
     totalCorrect = 0; totalWrong = 0; updateScore();
     
     if (isReviewMode) {
-        // Construim coada din greșelile salvate
         mainQueue = [...mistakeSet].map(key => {
             const [a, b] = key.split('x').map(Number);
             return { a, b };
@@ -598,7 +587,6 @@ function checkAnswer() {
         feedback.textContent = isRetryPhase ? '🎉 Corect la reluare!' : '🎉 Corect! Bravo!';
         feedback.className = 'feedback-msg success';
         totalCorrect++; showSparkle();
-        // Dacă e corect la reluare în review mode, eliminăm din greșeli
         if (isRetryPhase && isReviewMode) removeMistake(a, b);
     } else {
         input.classList.add('wrong');
@@ -621,11 +609,10 @@ function endSession() {
     document.getElementById('resultsScreen').classList.add('active');
     if (globalTimeLeft <= 0 && stopReason !== 'timeout') stopReason = 'timeout';
     
-    // Marcăm ziua ca făcută (orice sesiune terminată contează)
     if (!isReviewMode) markTodayDone();
     
     if (stopReason === 'perfect' && !isFinalTest && !isReviewMode && currentNumber) markCompleted(currentNumber);
-    if (stopReason === 'perfect' && isFinalTest) resetAllProgress();
+    // ⭐ NU mai resetăm imediat la Testul Final – resetarea are loc automat a doua zi
     
     const reasonEl = document.getElementById('resultsReason');
     let emoji, title, reasonText, reasonClass;
@@ -633,7 +620,7 @@ function endSession() {
         if (stopReason==='perfect') { emoji='🔄✨'; title='Greșeli revizuite!'; reasonText='✨ Ai rezolvat toate greșelile salvate!'; reasonClass='reason-perfect'; }
         else { emoji='⏰🔄'; title='Timp expirat la revizuire'; reasonText=`Mai rămâneau ${mainQueue.length+retryQueue.length} exerciții.`; reasonClass='reason-time'; }
     } else if (isFinalTest) {
-        if (stopReason==='perfect') { emoji='👑🦄🏆'; title='MAESTRU SUPREM!'; reasonText='✨ Test Final trecut! Jocul se ia de la capăt!'; reasonClass='reason-perfect'; }
+        if (stopReason==='perfect') { emoji='👑🦄🏆'; title='MAESTRU SUPREM!'; reasonText='✨ Test Final trecut! Mâine aventura o ia de la capăt!'; reasonClass='reason-perfect'; }
         else { emoji='⏰🦄'; title='Test Final - Timp expirat!'; reasonText=`Mai rămâneau ${mainQueue.length+retryQueue.length} întrebări.`; reasonClass='reason-time'; }
     } else {
         if (stopReason==='perfect') { emoji='🦄👑'; title=`Cifra ${currentNumber} deblocată!`; reasonText=`✨ Cifra ${currentNumber} este acum verde!`; reasonClass='reason-perfect'; }
