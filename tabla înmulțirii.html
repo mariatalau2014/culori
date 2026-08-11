@@ -41,13 +41,13 @@
         .cal-header{font-size:.6rem;font-weight:700;color:#b2bec3;text-transform:uppercase}
         .menu-section{display:block}
         .progress-banner{background:linear-gradient(135deg,#faf5ff,#fff0f7);border:2px solid #f0e6ff;border-radius:16px;padding:10px;margin-bottom:15px;font-weight:700;color:var(--primary);font-size:.9rem}
-        .number-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:15px}
-        .num-btn{aspect-ratio:1;border:3px solid #f0e6ff;border-radius:16px;background:white;font-size:1.3rem;font-weight:700;cursor:pointer;transition:.3s;color:var(--primary);position:relative;overflow:hidden}
+        .number-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:15px}
+        .num-btn{aspect-ratio:1;border:3px solid #f0e6ff;border-radius:12px;background:white;font-size:1.2rem;font-weight:700;cursor:pointer;transition:.3s;color:var(--primary);position:relative;overflow:hidden}
         .num-btn:hover:not(.locked):not(.completed){border-color:var(--primary);transform:translateY(-3px);box-shadow:0 5px 15px rgba(155,89,182,.3)}
         .num-btn.completed{background:var(--success);border-color:#00b894;color:white;cursor:pointer;pointer-events:auto}
-        .num-btn.completed::after{content:'✓';position:absolute;top:2px;right:6px;font-size:.8rem;font-weight:800}
+        .num-btn.completed::after{content:'✓';position:absolute;top:0px;right:4px;font-size:.7rem;font-weight:800}
         .num-btn.locked{background:var(--locked);border-color:#ccc;color:var(--locked-text);cursor:not-allowed;pointer-events:none}
-        .num-btn.locked::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1rem}
+        .num-btn.locked::after{content:'🔒';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:.9rem}
         .num-btn.current{border-color:var(--primary);background:white;color:var(--primary);animation:glowPulse 1.5s ease-in-out infinite}
         @keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(155,89,182,.4)}50%{box-shadow:0 0 0 8px rgba(155,89,182,0)}}
         .review-btn{padding:12px 20px;background:linear-gradient(135deg,#ff7675,#d63031);color:white;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:.3s;box-shadow:0 5px 20px rgba(214,48,49,.3);margin-bottom:10px;display:none}
@@ -124,7 +124,7 @@
         @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-12px) rotate(-2deg)}40%{transform:translateX(12px) rotate(2deg)}60%{transform:translateX(-8px)}80%{transform:translateX(8px)}}
         @keyframes sparkle{0%{transform:scale(0) rotate(0deg);opacity:1}100%{transform:scale(1.5) rotate(180deg);opacity:0}}
         .sparkle-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:5rem;pointer-events:none;animation:sparkle .8s ease-out forwards;z-index:10}
-        @media(max-width:400px){.number-grid{grid-template-columns:repeat(3,1fr)}.question-card{font-size:2.2rem}h1{font-size:1.4rem}.big-timer{width:95px;height:95px}.big-timer .big-timer-num{font-size:2.4rem}}
+        @media(max-width:400px){.number-grid{grid-template-columns:repeat(5,1fr)}.question-card{font-size:2.2rem}h1{font-size:1.4rem}.big-timer{width:95px;height:95px}.big-timer .big-timer-num{font-size:2.4rem}}
     </style>
 </head>
 <body>
@@ -146,16 +146,16 @@
         </div>
         <div class="done-days-label">📅 Calendar: ✅ făcut &nbsp; ✗ nefăcut</div>
         <div class="calendar-grid" id="calendarGrid"></div>
-        <div class="progress-banner">🌟 Progres: <span id="completedCount">0</span>/9 cifre deblocate</div>
+        <div class="progress-banner">🌟 Progres: <span id="completedCount">0</span>/10 cifre deblocate</div>
         <button class="review-btn" id="reviewBtn" onclick="startReviewMode()">🔄 Revizuiește Greșelile <span class="review-count" id="reviewCount">0</span></button>
         <p style="margin-bottom:8px;font-weight:700;color:var(--primary);font-size:.9rem;" id="menuInstruction">Alege următoarea cifră magică:</p>
         <div class="number-grid" id="numberGrid"></div>
-        <!-- ⭐ BANNER ANTRENAMENT 2H -->
+        
         <div class="practice-banner" id="practiceBanner">
             <h2>🎯 Perioadă de Antrenament!</h2>
-            <p>Toate cifrele sunt verzi! Exersează liber înainte de Testul Final.</p>
+            <p>Toate cifrele sunt verzi! Exersează liber înainte de Testele Finale.</p>
             <div class="practice-timer-display" id="practiceTimerDisplay">2:00:00</div>
-            <p class="practice-hint">💡 Apasă pe orice cifră verde pentru un mini-test rapid. Testul Final apare când timpul expiră!</p>
+            <p class="practice-hint">💡 Apasă pe orice cifră verde pentru un mini-test rapid (5 întrebări).</p>
         </div>
         <div class="learn-panel" id="learnPanel">
             <h3 id="learnTitle">📚 Tabla lui 1</h3>
@@ -167,18 +167,19 @@
             <button class="btn-start-test" onclick="confirmStartQuiz()">🎯 Începe Testul Acum!</button>
             <button class="btn-cancel-learn" onclick="closeLearnPanel()">← Înapoi la meniu</button>
         </div>
-        <!-- ⭐ TEST FINAL - apare DOAR după cele 2h -->
+        
         <div class="final-test-banner" id="finalTestBanner">
             <h2>🏆 Testul Final e gata!</h2>
-            <p>40 de întrebări din toată tabla înmulțirii, 5 minute!</p>
-            <button class="btn-final" onclick="startFinalTest()">🚀 Începe Testul Final!</button>
+            <p>Ai terminat învățarea! Trebuie să dai 8 Teste Finale (câte 10 întrebări fiecare).</p>
+            <p style="font-weight:800; margin-top:5px;">Test curent: <span id="finalCycleDisplay">1</span> / 8</p>
+            <button class="btn-final" onclick="startFinalTest()">🚀 Începe Testul!</button>
         </div>
     </div>
     <div id="quiz-section" class="quiz-area">
         <div id="quizContent" style="display:none;">
-            <div class="big-timer-wrap"><div class="big-timer" id="bigTimer"><div class="big-timer-num" id="bigTimerNum">7</div><div class="big-timer-caption">secunde</div></div></div>
+            <div class="big-timer-wrap"><div class="big-timer" id="bigTimer"><div class="big-timer-num" id="bigTimerNum">20</div><div class="big-timer-caption">secunde</div></div></div>
             <div class="selected-badge" id="quizBadge">🌟 <span id="quizSelectedNum">-</span></div>
-            <div class="progress-label" id="progressLabel">Rămase: 9</div>
+            <div class="progress-label" id="progressLabel">Rămase: 5</div>
             <div class="score-board"><span style="color:var(--success)">✅ <b id="correctCount">0</b></span><span style="color:var(--error)">❌ <b id="wrongCount">0</b></span></div>
             <div class="global-timer-line"><span>⏰</span><div class="global-timer-track"><div class="global-timer-bar" id="globalTimerBar"></div></div><span class="gt-label" id="globalTimerLabel">2:00</span></div>
             <div class="question-card" id="question">? × ?</div>
@@ -206,17 +207,22 @@
             <div class="results-reason" id="resultsReason"></div>
             <div class="results-score" id="resultsScore">0</div>
             <div class="results-detail" id="resultsDetail"></div>
-            <div class="all-done-note" id="allDoneNote" style="display:none;">🎯 Toate cifrele deblocate! Ai 2 ORE de antrenament înainte de Testul Final!</div>
+            <div class="all-done-note" id="allDoneNote" style="display:none;"></div>
             <div class="auto-return-msg">⏳ Revenire la meniu în <span id="autoReturnCountdown">3</span>s...</div>
         </div>
     </div>
 </div>
 <script>
-const MAX_NUMBER=9,QUESTION_TIME=7,SESSION_TIME=120,FINAL_TEST_TIME=300,FINAL_TEST_QUESTIONS=40,LEARN_TIME=60,AUTO_RETURN_DELAY=3; // MODIFICAT: FINAL_TEST_TIME = 300 (5 min)
+// MODIFICAT: MINI_TEST_QUESTIONS = 5
+const MAX_NUMBER=10, MINI_TEST_QUESTIONS=5, QUESTION_TIME=20, SESSION_TIME=120, FINAL_TEST_TIME=300, FINAL_TEST_QUESTIONS=10, LEARN_TIME=60, AUTO_RETURN_DELAY=3; 
+const REQUIRED_FINAL_CYCLES = 8;
 const PRACTICE_WINDOW_MS=2*60*60*1000;   
-const STORAGE_PROGRESS='tablaMagica_progress',STORAGE_MISTAKES='tablaMagica_mistakes',STORAGE_HISTORY='tablaMagica_history',STORAGE_STREAK='tablaMagica_streak',STORAGE_ALLDONE='tablaMagica_allDoneDate',STORAGE_ALLDONE_TS='tablaMagica_allDoneTimestamp';
+
+const STORAGE_PROGRESS='tablaMagica_progress_v2',STORAGE_MISTAKES='tablaMagica_mistakes_v2',STORAGE_HISTORY='tablaMagica_history_v2',STORAGE_STREAK='tablaMagica_streak_v2',STORAGE_ALLDONE='tablaMagica_allDoneDate_v2',STORAGE_ALLDONE_TS='tablaMagica_allDoneTimestamp_v2', STORAGE_CYCLE='tablaMagica_finalCycle_v2';
 
 let completedNumbers=[],mistakeSet=new Set(),dayHistory={},streakData={count:0,lastDate:null},allDoneDate=null,allDoneTimestamp=null;
+let finalCycleCount = 0;
+
 let currentNumber=null,pendingNumber=null,isFinalTest=false,isReviewMode=false;
 let totalCorrect=0,totalWrong=0,mainQueue=[],retryQueue=[],currentMultiplier=0,isRetryPhase=false,questionAnswered=false;
 let globalTimerInterval=null,globalTimeLeft=SESSION_TIME,globalTimerRunning=false,currentSessionTime=SESSION_TIME;
@@ -225,11 +231,11 @@ let learnTimerInterval=null,learnTimeLeft=LEARN_TIME,stopReason='',autoReturnTim
 let answerValue='';
 
 const STEPS=[
-    {icon:'🧚‍♀️',title:'Pasul 1: Învață (60s)',desc:'Apasă pe cifra activă. Ai MAXIM 60s să memorezi tabla, apoi testul începe automat!'},
-    {icon:'🎯',title:'Pasul 2: Testează-te',desc:'7 SECUNDE per întrebare, 2 MINUTE per cifră. Tastează răspunsul și apasă ✓!'},
+    {icon:'🧚‍♀️',title:'Pasul 1: Învață (60s)',desc:'Apasă pe cifra activă (1-10). Ai MAXIM 60s să memorezi tabla, apoi testul începe automat!'},
+    {icon:'🎯',title:'Pasul 2: Mini-Test (5 întrebări)',desc:'20 SECUNDE per întrebare. Primești 5 înmulțiri aleatorii cu cifra aleasă. Tastează răspunsul și apasă ✓!'},
     {icon:'🔥',title:'Pasul 3: Serie Zilnică',desc:'Calendarul bifează automat: VERDE ✅ zilele făcute, ROȘU ✗ cele nefăcute.'},
     {icon:'🔄',title:'Pasul 4: Revizuiește',desc:'Greșelile se salvează. Apasă "Revizuiește Greșelile" pentru a le exersa din nou!'},
-    {icon:'🏆',title:'Pasul 5: Testul Final',desc:'Când toate 9 sunt verzi → ai 2 ORE de antrenament liber → apoi Testul Final (40 întrebări, 5 min). După test → reset total!'}
+    {icon:'🏆',title:'Pasul 5: Marea Provocare',desc:'După ce deblochezi toate cifrele, trebuie să treci de 8 TESTE FINALE (câte 10 întrebări fiecare) pentru a termina jocul!'}
 ];
 let currentStep=0;
 
@@ -244,19 +250,32 @@ function loadAll(){
     try{streakData=JSON.parse(localStorage.getItem(STORAGE_STREAK))||{count:0,lastDate:null}}catch(e){streakData={count:0,lastDate:null}}
     try{allDoneDate=localStorage.getItem(STORAGE_ALLDONE)||null}catch(e){allDoneDate=null}
     try{allDoneTimestamp=parseInt(localStorage.getItem(STORAGE_ALLDONE_TS))||null}catch(e){allDoneTimestamp=null}
+    try{finalCycleCount=parseInt(localStorage.getItem(STORAGE_CYCLE))||0}catch(e){finalCycleCount=0}
+    
     checkDayReset();recalcStreak()
 }
 function saveProgress(){try{localStorage.setItem(STORAGE_PROGRESS,JSON.stringify(completedNumbers))}catch(e){}}
 function saveMistakes(){try{localStorage.setItem(STORAGE_MISTAKES,JSON.stringify([...mistakeSet]))}catch(e){}}
 function saveHistory(){try{localStorage.setItem(STORAGE_HISTORY,JSON.stringify(dayHistory))}catch(e){}}
 function saveStreak(){try{localStorage.setItem(STORAGE_STREAK,JSON.stringify(streakData))}catch(e){}}
+function saveCycle(){try{localStorage.setItem(STORAGE_CYCLE, String(finalCycleCount))}catch(e){}}
 function saveAllDone(){try{if(allDoneDate)localStorage.setItem(STORAGE_ALLDONE,allDoneDate);else localStorage.removeItem(STORAGE_ALLDONE);if(allDoneTimestamp)localStorage.setItem(STORAGE_ALLDONE_TS,String(allDoneTimestamp));else localStorage.removeItem(STORAGE_ALLDONE_TS)}catch(e){}}
 
 function markCompleted(num){if(!completedNumbers.includes(num)){completedNumbers.push(num);saveProgress();if(completedNumbers.length>=MAX_NUMBER&&!allDoneDate){allDoneDate=todayStr();allDoneTimestamp=Date.now();saveAllDone()}}}
 function allCompleted(){return completedNumbers.length>=MAX_NUMBER}
-function resetAllProgress(){completedNumbers=[];mistakeSet.clear();allDoneDate=null;allDoneTimestamp=null;saveProgress();saveMistakes();saveAllDone()} // Reset complet inclusiv greșeli
+function resetAllProgress(){
+    completedNumbers=[];
+    mistakeSet.clear();
+    allDoneDate=null;
+    allDoneTimestamp=null;
+    finalCycleCount=0;
+    saveProgress();saveMistakes();saveAllDone();saveCycle();
+} 
 function checkDayReset(){if(allDoneDate&&allDoneDate<todayStr()){resetAllProgress()}}
-function isInPracticeWindow(){if(!allDoneTimestamp)return false;return(Date.now()-allDoneTimestamp)<PRACTICE_WINDOW_MS}
+function isInPracticeWindow(){
+    if(!allDoneTimestamp)return false;
+    return (finalCycleCount < REQUIRED_FINAL_CYCLES) && ((Date.now()-allDoneTimestamp)<PRACTICE_WINDOW_MS);
+}
 function getPracticeRemainingMs(){if(!allDoneTimestamp)return 0;return Math.max(0,PRACTICE_WINDOW_MS-(Date.now()-allDoneTimestamp))}
 
 function addMistake(a,b){const key=`${Math.min(a,b)}x${Math.max(a,b)}`;if(!mistakeSet.has(key)){mistakeSet.add(key);saveMistakes()}}
@@ -266,7 +285,7 @@ function recalcStreak(){const today=todayStr(),yesterday=yesterdayStr();if(strea
 function markTodayDone(){const today=todayStr();dayHistory[today]=true;saveHistory();const yesterday=yesterdayStr();if(streakData.lastDate===today)return;if(streakData.lastDate===yesterday||streakData.count===0)streakData.count++;else streakData.count=1;streakData.lastDate=today;saveStreak()}
 
 function updateAnswerDisplay(){const disp=document.getElementById('answerDisplay');if(answerValue===''){disp.textContent='?';disp.classList.add('empty')}else{disp.textContent=answerValue;disp.classList.remove('empty')}}
-function pressDigit(d){if(questionAnswered)return;if(answerValue.length>=2)return;answerValue+=d;updateAnswerDisplay()}
+function pressDigit(d){if(questionAnswered)return;if(answerValue.length>=3)return;answerValue+=d;updateAnswerDisplay()}
 function pressBackspace(){if(questionAnswered)return;answerValue=answerValue.slice(0,-1);updateAnswerDisplay()}
 function pressCheck(){if(questionAnswered)return;if(answerValue==='')return;checkAnswer()}
 document.addEventListener('keydown',(e)=>{const qa=document.getElementById('quiz-section').classList.contains('active')&&document.getElementById('quizContent').style.display!=='none';if(!qa)return;if(e.key>='0'&&e.key<='9'){pressDigit(parseInt(e.key))}else if(e.key==='Backspace'){pressBackspace()}else if(e.key==='Enter'){if(document.getElementById('nextBtn').style.display!=='none')nextQuestion();else pressCheck()}});
@@ -304,13 +323,26 @@ function renderMenu(){
         else btn.classList.add('locked');grid.appendChild(btn)}
     document.getElementById('completedCount').textContent=completedNumbers.length;
     const instrEl=document.getElementById('menuInstruction');
-    if(allCompleted()&&practiceActive)instrEl.textContent='🎯 Exersează pe orice cifră verde!';
-    else if(allCompleted())instrEl.textContent='🏆 Toate cifrele deblocate!';
-    else instrEl.textContent='Alege următoarea cifră magică:';
+    
     const pb=document.getElementById('practiceBanner'),fb=document.getElementById('finalTestBanner');
-    if(allCompleted()&&practiceActive){pb.classList.add('visible');fb.classList.remove('visible');startPracticeDisplay()}
-    else if(allCompleted()&&!practiceActive){pb.classList.remove('visible');fb.classList.add('visible')}
-    else{pb.classList.remove('visible');fb.classList.remove('visible')}
+    
+    if(allCompleted() && finalCycleCount < REQUIRED_FINAL_CYCLES){
+        pb.classList.add('visible');
+        fb.classList.add('visible');
+        instrEl.textContent='🏆 Ești la etapa Testelor Finale!';
+        document.getElementById('finalCycleDisplay').textContent = finalCycleCount + 1;
+        startPracticeDisplay();
+    } else if (allCompleted() && finalCycleCount >= REQUIRED_FINAL_CYCLES) {
+         pb.classList.remove('visible');
+         fb.classList.remove('visible');
+         instrEl.textContent='🎉 Joc complet! Resetare...';
+    } else {
+        pb.classList.remove('visible');
+        fb.classList.remove('visible');
+        if(allCompleted()) instrEl.textContent='🎯 Exersează pe orice cifră verde!';
+        else instrEl.textContent='Alege următoarea cifră magică:';
+    }
+
     document.getElementById('reviewCount').textContent=mistakeSet.size;
     document.getElementById('reviewBtn').classList.toggle('visible',mistakeSet.size>0)
 }
@@ -325,14 +357,48 @@ function stopLearnTimer(){clearInterval(learnTimerInterval)}
 function updateLearnTimerUI(){document.getElementById('learnCountdown').textContent=learnTimeLeft;const f=document.getElementById('learnTimerFill');const p=Math.max(0,(learnTimeLeft/LEARN_TIME)*100);f.style.width=`${p}%`;if(p>50)f.style.background='linear-gradient(90deg,#a29bfe,#6c5ce7)';else if(p>25)f.style.background='linear-gradient(90deg,#feca57,#e67e22)';else f.style.background='linear-gradient(90deg,#ff7675,#d63031)'}
 function closeLearnPanel(){stopLearnTimer();pendingNumber=null;document.getElementById('learnPanel').classList.remove('visible')}
 function confirmStartQuiz(){if(!pendingNumber)return;stopLearnTimer();currentNumber=pendingNumber;isFinalTest=false;isReviewMode=false;currentSessionTime=SESSION_TIME;document.getElementById('learnPanel').classList.remove('visible');launchQuiz(`Mini-test: Cifra ${currentNumber}`)}
-function startFinalTest(){currentNumber=null;isFinalTest=true;isReviewMode=false;currentSessionTime=FINAL_TEST_TIME;launchQuiz('🏆 TEST FINAL')}
+
+function startFinalTest(){
+    currentNumber=null;
+    isFinalTest=true;
+    isReviewMode=false;
+    currentSessionTime=FINAL_TEST_TIME;
+    launchQuiz(`🏆 TEST FINAL (${finalCycleCount+1}/${REQUIRED_FINAL_CYCLES})`)
+}
+
 function startReviewMode(){if(mistakeSet.size===0)return;isReviewMode=true;isFinalTest=false;currentNumber=null;currentSessionTime=SESSION_TIME;launchQuiz('🔄 REVIZUIRE GREȘELI')}
 
-function launchQuiz(label){document.getElementById('menu-section').style.display='none';document.getElementById('quiz-section').classList.add('active');document.getElementById('quizContent').style.display='block';document.getElementById('resultsScreen').classList.remove('active');document.getElementById('quizSelectedNum').textContent=label;totalCorrect=0;totalWrong=0;updateScore();
-    if(isReviewMode){mainQueue=[...mistakeSet].map(k=>{const[a,b]=k.split('x').map(Number);return{a,b}});shuffleArray(mainQueue);currentSessionTime=Math.max(SESSION_TIME,mainQueue.length*(QUESTION_TIME+3))}
-    else if(isFinalTest){const ap=[];for(let a=1;a<=MAX_NUMBER;a++)for(let b=1;b<=MAX_NUMBER;b++)ap.push({a,b});shuffleArray(ap);mainQueue=ap.slice(0,FINAL_TEST_QUESTIONS)}
-    else{mainQueue=Array.from({length:MAX_NUMBER},(_,i)=>i+1);shuffleArray(mainQueue)}
-    retryQueue=[];isRetryPhase=false;globalTimeLeft=currentSessionTime;startGlobalTimer();showQuestion()}
+function launchQuiz(label){
+    document.getElementById('menu-section').style.display='none';
+    document.getElementById('quiz-section').classList.add('active');
+    document.getElementById('quizContent').style.display='block';
+    document.getElementById('resultsScreen').classList.remove('active');
+    document.getElementById('quizSelectedNum').textContent=label;
+    totalCorrect=0;totalWrong=0;updateScore();
+    
+    if(isReviewMode){
+        mainQueue=[...mistakeSet].map(k=>{const[a,b]=k.split('x').map(Number);return{a,b}});
+        shuffleArray(mainQueue);
+        currentSessionTime=Math.max(SESSION_TIME,mainQueue.length*(QUESTION_TIME+3));
+    }
+    else if(isFinalTest){
+        const ap=[];
+        for(let a=1;a<=MAX_NUMBER;a++) {
+            for(let b=1;b<=MAX_NUMBER;b++) {
+                ap.push({a,b});
+            }
+        }
+        shuffleArray(ap);
+        mainQueue=ap.slice(0,FINAL_TEST_QUESTIONS);
+    }
+    else{
+        // MODIFICAT: Mini-test cu MINI_TEST_QUESTIONS (5) întrebări aleatorii
+        const allMults = Array.from({length:MAX_NUMBER},(_,i)=>i+1);
+        shuffleArray(allMults);
+        mainQueue = allMults.slice(0, MINI_TEST_QUESTIONS);
+    }
+    retryQueue=[];isRetryPhase=false;globalTimeLeft=currentSessionTime;startGlobalTimer();showQuestion();
+}
 function shuffleArray(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
 
 function showQuestion(){stopQuestionTimer();if(globalTimeLeft<=0){stopReason='timeout';endSession();return}let sq;if(mainQueue.length>0){sq=mainQueue;isRetryPhase=false}else if(retryQueue.length>0){sq=retryQueue;isRetryPhase=true}else{stopReason='perfect';endSession();return}
@@ -363,27 +429,60 @@ function updateScore(){document.getElementById('correctCount').textContent=total
 
 function endSession(){stopQuestionTimer();stopGlobalTimer();document.getElementById('quizContent').style.display='none';document.getElementById('resultsScreen').classList.add('active');if(globalTimeLeft<=0&&stopReason!=='timeout')stopReason='timeout';if(!isReviewMode)markTodayDone();
     
-    // LOGICĂ RESETARE DUPĂ TEST FINAL
     const wasFinalTest = isFinalTest;
-
     const justCompletedAll=(stopReason==='perfect'&&!isFinalTest&&!isReviewMode&&currentNumber&&!allCompleted());
+    
     if(stopReason==='perfect'&&!isFinalTest&&!isReviewMode&&currentNumber)markCompleted(currentNumber);
     
     const re=document.getElementById('resultsReason');let emoji,title,text,cls;
-    if(isReviewMode){if(stopReason==='perfect'){emoji='🔄✨';title='Greșeli revizuite!';text='✨ Ai rezolvat toate greșelile!';cls='reason-perfect'}else{emoji='⏰🔄';title='Timp expirat';text=`Mai rămâneau ${mainQueue.length+retryQueue.length} exerciții.`;cls='reason-time'}}
-    else if(isFinalTest){
-        if(stopReason==='perfect'){emoji='👑🦄🏆';title='MAESTRU SUPREM!';text='✨ Test Final trecut! Totul s-a resetat pentru mâine!';cls='reason-perfect'}
-        else{emoji='⏰🦄';title='Test Final - Timp expirat!';text=`Mai rămâneau ${mainQueue.length+retryQueue.length} întrebări. Resetare completă!`;cls='reason-time'}
+    let shouldReset = false;
+
+    if(isReviewMode){
+        if(stopReason==='perfect'){emoji='🔄✨';title='Greșeli revizuite!';text='✨ Ai rezolvat toate greșelile!';cls='reason-perfect'}
+        else{emoji='⏰🔄';title='Timp expirat';text=`Mai rămâneau ${mainQueue.length+retryQueue.length} exerciții.`;cls='reason-time'}
     }
-    else{if(stopReason==='perfect'){emoji='🦄👑';title=`Cifra ${currentNumber} completă!`;text=`✨ Mini-test terminat!`;cls='reason-perfect'}else{emoji='⏰🦄';title='Timpul s-a terminat!';text=`⏰ Mai exersează cifra ${currentNumber}!`;cls='reason-time'}}
+    else if(isFinalTest){
+        if(stopReason==='perfect'){
+            finalCycleCount++;
+            saveCycle();
+            
+            if(finalCycleCount >= REQUIRED_FINAL_CYCLES){
+                emoji='👑🦄🏆';
+                title='MAESTRU SUPREM!';
+                text='✨ Ai terminat toate cele 8 Teste Finale! Ești liber!';
+                cls='reason-perfect';
+                shouldReset = true;
+            } else {
+                emoji='🎉🦄';
+                title=`Test Final ${finalCycleCount} Complet!`;
+                text=`Bravo! Mai ai ${REQUIRED_FINAL_CYCLES - finalCycleCount} teste finale de trecut.`;
+                cls='reason-perfect';
+            }
+        }
+        else{
+            emoji='⏰🦄';
+            title='Test Final - Timp expirat!';
+            text=`Mai rămâneau ${mainQueue.length+retryQueue.length} întrebări. Mai încearcă!`;
+            cls='reason-time';
+        }
+    }
+    else{
+        if(stopReason==='perfect'){emoji='🦄👑';title=`Cifra ${currentNumber} completă!`;text=`✨ Mini-test terminat!`;cls='reason-perfect'}
+        else{emoji='⏰🦄';title='Timpul s-a terminat!';text=`⏰ Mai exersează cifra ${currentNumber}!`;cls='reason-time'}
+    }
     
     document.getElementById('resultsEmoji').textContent=emoji;document.getElementById('resultsTitle').textContent=title;re.textContent=text;re.className=`results-reason ${cls}`;document.getElementById('resultsScore').textContent=`${totalCorrect} ✅ / ${totalWrong} ❌`;document.getElementById('resultsDetail').innerHTML=`Scor: <b>${totalCorrect}</b> răspunsuri corecte.${isReviewMode&&stopReason==='perfect'?'<br>🎉 Greșelile corecte eliminate din jurnal!':''}`;
     
-    document.getElementById('allDoneNote').style.display=(justCompletedAll&&allCompleted())?'block':'none';
+    const note = document.getElementById('allDoneNote');
+    if(justCompletedAll && allCompleted()){
+        note.style.display='block';
+        note.textContent = '🎯 Toate cifrele deblocate! Începe seria de 8 Teste Finale!';
+    } else {
+        note.style.display='none';
+    }
     
-    // ⭐ RESETARE TOTALĂ DACĂ A FOST TEST FINAL
-    if(wasFinalTest) {
-        resetAllProgress();
+    if(shouldReset) {
+        setTimeout(resetAllProgress, 100);
     }
 
     startAutoReturn()}
