@@ -99,13 +99,27 @@
             50% { box-shadow: 0 0 0 8px rgba(155,89,182,0); }
         }
 
-        /* LEARN TABLE (inside menu, shown when number selected) */
+        /* LEARN PANEL */
         .learn-panel {
             display: none; margin-top: 20px; padding: 20px;
             background: #faf5ff; border-radius: 20px; border: 2px solid #f0e6ff;
         }
         .learn-panel.visible { display: block; }
         .learn-panel h3 { color: var(--primary); margin-bottom: 12px; font-size: 1.2rem; }
+        .learn-timer-box {
+            background: white; border-radius: 14px; padding: 10px 14px;
+            margin-bottom: 12px; border: 2px solid #f0e6ff;
+        }
+        .learn-timer-label {
+            font-size: 0.85rem; font-weight: 700; color: var(--primary); margin-bottom: 6px;
+        }
+        .learn-timer-label .secs { font-size: 1.1rem; color: #e67e22; }
+        .learn-timer-track { height: 10px; background: #eee; border-radius: 10px; overflow: hidden; }
+        .learn-timer-fill {
+            height: 100%; width: 100%; border-radius: 10px;
+            background: linear-gradient(90deg, #a29bfe, #6c5ce7);
+            transition: width 1s linear, background 0.5s;
+        }
         .multiplication-table { display: grid; gap: 6px; max-height: 220px; overflow-y: auto; margin-bottom: 15px; }
         .table-row { 
             padding: 10px 14px; background: white; border-radius: 10px; font-size: 1rem;
@@ -264,18 +278,28 @@
         <p style="margin-bottom:10px;font-weight:700;color:var(--primary);">Alege următoarea cifră magică:</p>
         <div class="number-grid" id="numberGrid"></div>
         
-        <!-- Learn Panel (apare când selectezi o cifră) -->
+        <!-- Learn Panel -->
         <div class="learn-panel" id="learnPanel">
             <h3 id="learnTitle">📚 Tabla lui 1</h3>
+            
+            <div class="learn-timer-box">
+                <div class="learn-timer-label">
+                    ⏳ Înveți timp de maxim <span class="secs" id="learnCountdown">60</span>s, apoi testul începe automat!
+                </div>
+                <div class="learn-timer-track">
+                    <div class="learn-timer-fill" id="learnTimerFill"></div>
+                </div>
+            </div>
+            
             <div class="multiplication-table" id="learnTable"></div>
-            <button class="btn-start-test" onclick="confirmStartQuiz()">🎯 Începe Testul!</button>
+            <button class="btn-start-test" onclick="confirmStartQuiz()">🎯 Începe Testul Acum!</button>
             <button class="btn-cancel-learn" onclick="closeLearnPanel()">← Înapoi la meniu</button>
         </div>
 
         <!-- Final Test Banner -->
         <div class="final-test-banner" id="finalTestBanner">
             <h2>🏆 Toate cifrele deblocate!</h2>
-            <p>Ești pregătit pentru Testul Final? 81 de întrebări, 5 minute!</p>
+            <p>Ești pregătit pentru Testul Final? 40 de întrebări din toată tabla înmulțirii, 4 minute!</p>
             <button class="btn-final" onclick="startFinalTest()">🚀 Începe Testul Final!</button>
         </div>
     </div>
@@ -330,15 +354,17 @@
 // ===================== CONFIG =====================
 const MAX_NUMBER = 9;
 const QUESTION_TIME = 7;
-const SESSION_TIME = 120;
-const FINAL_TEST_TIME = 300;
+const SESSION_TIME = 120;          // 2 min per cifră
+const FINAL_TEST_TIME = 240;       // ⭐ 4 minute test final
+const FINAL_TEST_QUESTIONS = 40;   // ⭐ 40 întrebări test final
+const LEARN_TIME = 60;
 const AUTO_RETURN_DELAY = 3;
 const STORAGE_KEY = 'tablaMagica_progress';
 
 // ===================== STATE =====================
 let completedNumbers = [];
 let currentNumber = null;
-let pendingNumber = null;       // Cifra selectată în learn panel
+let pendingNumber = null;
 let isFinalTest = false;
 
 let totalCorrect = 0;
@@ -358,14 +384,17 @@ let questionTimerInterval = null;
 let questionTimeLeft = QUESTION_TIME;
 let questionTimerRunning = false;
 
+let learnTimerInterval = null;
+let learnTimeLeft = LEARN_TIME;
+
 let stopReason = '';
 let autoReturnTimer = null;
 
 // Tutorial
 const STEPS = [
-    { icon: '🧚‍♀️', title: 'Pasul 1: Meniul Magic', desc: 'Cifrele se deblochează una câte una. Apasă pe cifra activă pentru a vedea tabla ei și apoi începe testul!' },
+    { icon: '🧚‍♀️', title: 'Pasul 1: Învață (60s)', desc: 'Apasă pe cifra activă. Ai MAXIM 60 de secunde să memorezi tabla ei, apoi testul începe automat!' },
     { icon: '🎯', title: 'Pasul 2: Testează-te', desc: 'Ai 7 SECUNDE per întrebare (cronometrul mare de sus!) și 2 MINUTE per cifră. Greșești? Întrebarea revine la final!' },
-    { icon: '🏆', title: 'Pasul 3: Testul Final', desc: 'Când toate 9 cifre sunt verzi, vei primi Testul Final cu TOATĂ tabla înmulțirii! Ești pregătit?' }
+    { icon: '🏆', title: 'Pasul 3: Testul Final', desc: 'Când toate 9 cifre sunt verzi, primești Testul Final: 40 de întrebări din toată tabla în 4 minute!' }
 ];
 let currentStep = 0;
 
@@ -391,7 +420,8 @@ function loadProgress() {
     } catch(e) { completedNumbers = []; }
 }
 function saveProgress() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(completedNumbers)); } catch(e) {} }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(completedNumbers)); } catch(e) {}
+}
 function markCompleted(num) {
     if (!completedNumbers.includes(num)) { completedNumbers.push(num); saveProgress(); }
 }
@@ -442,10 +472,9 @@ function renderMenu() {
     document.getElementById('finalTestBanner').classList.toggle('visible', allCompleted());
 }
 
-// ===================== LEARN PANEL =====================
+// ===================== LEARN PANEL + 60s TIMER =====================
 function openLearnPanel(num) {
     pendingNumber = num;
-    const panel = document.getElementById('learnPanel');
     document.getElementById('learnTitle').textContent = `📚 Tabla lui ${num}`;
     const table = document.getElementById('learnTable');
     table.innerHTML = '';
@@ -455,21 +484,54 @@ function openLearnPanel(num) {
         row.innerHTML = `<span>${num} × ${i}</span> <b>= ${num * i}</b>`;
         table.appendChild(row);
     }
-    panel.classList.add('visible');
-    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    document.getElementById('learnPanel').classList.add('visible');
+    document.getElementById('learnPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    startLearnTimer();
+}
+
+function startLearnTimer() {
+    stopLearnTimer();
+    learnTimeLeft = LEARN_TIME;
+    updateLearnTimerUI();
+    
+    learnTimerInterval = setInterval(() => {
+        learnTimeLeft--;
+        updateLearnTimerUI();
+        if (learnTimeLeft <= 0) {
+            stopLearnTimer();
+            confirmStartQuiz();
+        }
+    }, 1000);
+}
+
+function stopLearnTimer() {
+    clearInterval(learnTimerInterval);
+}
+
+function updateLearnTimerUI() {
+    document.getElementById('learnCountdown').textContent = learnTimeLeft;
+    const fill = document.getElementById('learnTimerFill');
+    const pct = Math.max(0, (learnTimeLeft / LEARN_TIME) * 100);
+    fill.style.width = `${pct}%`;
+    
+    if (pct > 50) fill.style.background = 'linear-gradient(90deg, #a29bfe, #6c5ce7)';
+    else if (pct > 25) fill.style.background = 'linear-gradient(90deg, #feca57, #e67e22)';
+    else fill.style.background = 'linear-gradient(90deg, #ff7675, #d63031)';
 }
 
 function closeLearnPanel() {
+    stopLearnTimer();
     pendingNumber = null;
     document.getElementById('learnPanel').classList.remove('visible');
 }
 
 function confirmStartQuiz() {
     if (!pendingNumber) return;
+    stopLearnTimer();
     currentNumber = pendingNumber;
     isFinalTest = false;
     currentSessionTime = SESSION_TIME;
-    closeLearnPanel();
+    document.getElementById('learnPanel').classList.remove('visible');
     launchQuiz(`Cifra ${currentNumber}`);
 }
 
@@ -491,11 +553,13 @@ function launchQuiz(label) {
     totalCorrect = 0; totalWrong = 0; updateScore();
     
     if (isFinalTest) {
-        mainQueue = [];
+        // ⭐ Construim toate cele 81 combinații, le amestecăm și luăm doar 40
+        const allPairs = [];
         for (let a = 1; a <= MAX_NUMBER; a++)
             for (let b = 1; b <= MAX_NUMBER; b++)
-                mainQueue.push({a, b});
-        shuffleArray(mainQueue);
+                allPairs.push({a, b});
+        shuffleArray(allPairs);
+        mainQueue = allPairs.slice(0, FINAL_TEST_QUESTIONS);
     } else {
         mainQueue = Array.from({length: MAX_NUMBER}, (_, i) => i + 1);
         shuffleArray(mainQueue);
@@ -503,7 +567,6 @@ function launchQuiz(label) {
     retryQueue = [];
     isRetryPhase = false;
     
-    // ⭐ FIX: Resetăm timer-ul global CORECT
     globalTimeLeft = currentSessionTime;
     startGlobalTimer();
     showQuestion();
@@ -672,8 +735,8 @@ function endSession() {
     const reasonEl = document.getElementById('resultsReason');
     let emoji, title, reasonText, reasonClass;
     if (isFinalTest) {
-        if (stopReason === 'perfect') { emoji='👑🦄🏆'; title='MAESTRU SUPREM!'; reasonText='✨ Ai completat TOATĂ tabla înmulțirii!'; reasonClass='reason-perfect'; }
-        else { emoji='⏰🦄'; title='Test Final - Timp expirat!'; reasonText=`Mai rămâneau ${mainQueue.length+retryQueue.length} întrebări.`; reasonClass='reason-time'; }
+        if (stopReason === 'perfect') { emoji='👑🦄🏆'; title='MAESTRU SUPREM!'; reasonText='✨ Ai răspuns corect la toate cele 40 de întrebări din Testul Final!'; reasonClass='reason-perfect'; }
+        else { emoji='⏰🦄'; title='Test Final - Timp expirat!'; reasonText=`⏰ Cele 4 minute s-au terminat. Mai rămâneau ${mainQueue.length+retryQueue.length} întrebări.`; reasonClass='reason-time'; }
     } else {
         if (stopReason==='perfect') { emoji='🦄👑'; title=`Cifra ${currentNumber} deblocată!`; reasonText=`✨ Cifra ${currentNumber} este acum verde!`; reasonClass='reason-perfect'; }
         else { emoji='⏰🦄'; title='Timpul s-a terminat!'; reasonText=`⏰ Mai încearcă cifra ${currentNumber}!`; reasonClass='reason-time'; }
@@ -701,7 +764,7 @@ function startAutoReturn() {
 
 function showMenu() {
     clearTimeout(autoReturnTimer);
-    stopQuestionTimer(); stopGlobalTimer();
+    stopQuestionTimer(); stopGlobalTimer(); stopLearnTimer();
     document.getElementById('menu-section').style.display = 'block';
     document.getElementById('quiz-section').classList.remove('active');
     document.getElementById('learnPanel').classList.remove('visible');
