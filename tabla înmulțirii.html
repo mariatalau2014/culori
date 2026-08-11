@@ -93,11 +93,16 @@
         .global-timer-track{flex:1;height:7px;background:#eee;border-radius:10px;overflow:hidden}
         .global-timer-bar{height:100%;width:100%;border-radius:10px;transform-origin:left;transition:transform .1s linear;background:linear-gradient(90deg,#55efc4,#00b894)}
         .question-card{font-size:2.8rem;font-weight:800;margin:6px 0;color:var(--primary);text-shadow:3px 3px 0 var(--secondary)}
-        input[type="number"]{width:130px;padding:12px;font-size:1.8rem;text-align:center;border:4px solid #f0e6ff;border-radius:20px;outline:none;transition:.3s;font-weight:700;-moz-appearance:textfield;color:var(--text)}
-        input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
-        input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(155,89,182,.1)}
-        input.correct{border-color:var(--success);background:#eafff7;color:var(--success)}
-        input.wrong{border-color:var(--error);background:#fff5f5;color:var(--error);animation:shake .5s}
+        .answer-display{width:min(100%,180px);margin:0 auto;padding:10px 14px;font-size:1.8rem;text-align:center;border:4px solid #f0e6ff;border-radius:20px;font-weight:700;color:var(--text);background:white;min-height:3.2rem;line-height:1.2;transition:.3s}
+        .answer-display.placeholder{color:#b2bec3}
+        .answer-display.correct{border-color:var(--success);background:#eafff7;color:var(--success)}
+        .answer-display.wrong{border-color:var(--error);background:#fff5f5;color:var(--error);animation:shake .5s}
+        .numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:280px;margin:12px auto 0;touch-action:manipulation}
+        .numpad-btn{appearance:none;-webkit-appearance:none;border:3px solid #f0e6ff;border-radius:14px;background:white;color:var(--primary);font-size:1.45rem;font-weight:800;padding:12px 0;cursor:pointer;transition:transform .12s,border-color .2s,background .2s;min-height:48px;line-height:1}
+        .numpad-btn:active:not(:disabled){transform:scale(.94)}
+        .numpad-btn:disabled{opacity:.45;cursor:not-allowed}
+        .numpad-btn.action{background:linear-gradient(135deg,#faf5ff,#fff0f7);font-size:1.15rem}
+        .numpad-btn.check{background:linear-gradient(135deg,var(--primary),#8e44ad);color:white;border-color:#8e44ad}
         .feedback-msg{min-height:28px;margin-top:8px;font-weight:700;font-size:1rem}
         .feedback-msg.error{color:var(--error)}.feedback-msg.success{color:var(--success)}.feedback-msg.retry{color:#e67e22}
         .btn-action{margin-top:12px;padding:12px 25px;background:linear-gradient(135deg,var(--primary),#8e44ad);color:white;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:.3s;box-shadow:0 5px 20px rgba(155,89,182,.3)}
@@ -114,7 +119,7 @@
         @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-12px) rotate(-2deg)}40%{transform:translateX(12px) rotate(2deg)}60%{transform:translateX(-8px)}80%{transform:translateX(8px)}}
         @keyframes sparkle{0%{transform:scale(0) rotate(0deg);opacity:1}100%{transform:scale(1.5) rotate(180deg);opacity:0}}
         .sparkle-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:5rem;pointer-events:none;animation:sparkle .8s ease-out forwards;z-index:10}
-        @media(max-width:400px){.number-grid{grid-template-columns:repeat(3,1fr)}.question-card{font-size:2.2rem}h1{font-size:1.4rem}.big-timer{width:95px;height:95px}.big-timer .big-timer-num{font-size:2.4rem}}
+        @media(max-width:400px){.number-grid{grid-template-columns:repeat(3,1fr)}.question-card{font-size:2.2rem}h1{font-size:1.4rem}.big-timer{width:80px;height:80px}.big-timer .big-timer-num{font-size:2.1rem}.numpad{gap:6px;max-width:260px}.numpad-btn{padding:10px 0;font-size:1.3rem;min-height:44px}.answer-display{font-size:1.5rem;padding:8px 12px}}
     </style>
 </head>
 <body>
@@ -172,9 +177,23 @@
             <div class="score-board"><span style="color:var(--success)">✅ <b id="correctCount">0</b></span><span style="color:var(--error)">❌ <b id="wrongCount">0</b></span></div>
             <div class="global-timer-line"><span>⏰</span><div class="global-timer-track"><div class="global-timer-bar" id="globalTimerBar"></div></div><span class="gt-label" id="globalTimerLabel">2:00</span></div>
             <div class="question-card" id="question">? × ?</div>
-            <input type="number" id="answerInput" placeholder="?" autocomplete="off">
+            <div class="answer-display placeholder" id="answerDisplay" aria-live="polite">?</div>
+            <div class="numpad" id="numpad" aria-label="Tastatură numerică">
+                <button type="button" class="numpad-btn" data-digit="1">1</button>
+                <button type="button" class="numpad-btn" data-digit="2">2</button>
+                <button type="button" class="numpad-btn" data-digit="3">3</button>
+                <button type="button" class="numpad-btn" data-digit="4">4</button>
+                <button type="button" class="numpad-btn" data-digit="5">5</button>
+                <button type="button" class="numpad-btn" data-digit="6">6</button>
+                <button type="button" class="numpad-btn" data-digit="7">7</button>
+                <button type="button" class="numpad-btn" data-digit="8">8</button>
+                <button type="button" class="numpad-btn" data-digit="9">9</button>
+                <button type="button" class="numpad-btn action" data-action="backspace" aria-label="Șterge">⌫</button>
+                <button type="button" class="numpad-btn" data-digit="0">0</button>
+                <button type="button" class="numpad-btn check" data-action="check" aria-label="Verifică">✓</button>
+            </div>
             <div class="feedback-msg" id="feedbackMsg"></div>
-            <button class="btn-action" id="checkBtn" onclick="checkAnswer()">✨ Verifică</button>
+            <button class="btn-action" id="checkBtn" onclick="checkAnswer()" style="display:none;">✨ Verifică</button>
             <button class="btn-action" id="nextBtn" onclick="nextQuestion()" style="display:none;">Următoarea ➡️</button>
         </div>
         <div class="results-screen" id="resultsScreen">
@@ -198,6 +217,7 @@ let totalCorrect=0,totalWrong=0,mainQueue=[],retryQueue=[],currentMultiplier=0,i
 let globalTimerInterval=null,globalTimeLeft=SESSION_TIME,globalTimerRunning=false,currentSessionTime=SESSION_TIME;
 let questionTimerInterval=null,questionTimeLeft=QUESTION_TIME,questionTimerRunning=false;
 let learnTimerInterval=null,learnTimeLeft=LEARN_TIME,stopReason='',autoReturnTimer=null,practiceDisplayInterval=null;
+let answerValue='',numpadEnabled=true;
 
 const STEPS=[
     {icon:'🧚‍♀️',title:'Pasul 1: Învață (60s)',desc:'Apasă pe cifra activă. Ai MAXIM 60s să memorezi tabla, apoi testul începe automat!'},
@@ -240,7 +260,68 @@ function removeMistake(a,b){const key=`${Math.min(a,b)}x${Math.max(a,b)}`;if(mis
 function recalcStreak(){const today=todayStr(),yesterday=yesterdayStr();if(streakData.lastDate===today)return;if(streakData.lastDate===yesterday){if(!dayHistory[yesterday]){streakData.count=0;streakData.lastDate=null;saveStreak()}}else if(streakData.lastDate&&streakData.lastDate!==today){if(dateDiffDays(streakData.lastDate,today)>1){streakData.count=0;streakData.lastDate=null;saveStreak()}}}
 function markTodayDone(){const today=todayStr();dayHistory[today]=true;saveHistory();const yesterday=yesterdayStr();if(streakData.lastDate===today)return;if(streakData.lastDate===yesterday||streakData.count===0)streakData.count++;else streakData.count=1;streakData.lastDate=today;saveStreak()}
 
-document.addEventListener('DOMContentLoaded',()=>{loadAll();renderMenu();initTutorial();document.getElementById('answerInput').addEventListener('keypress',(e)=>{if(e.key==='Enter'){if(document.getElementById('checkBtn').style.display!=='none')checkAnswer();else nextQuestion()}})});
+document.addEventListener('DOMContentLoaded',()=>{
+    loadAll();renderMenu();initTutorial();initNumpad();
+    document.addEventListener('keydown',handleQuizKeydown);
+});
+
+function initNumpad(){
+    const pad=document.getElementById('numpad');
+    pad.addEventListener('click',(e)=>{
+        const btn=e.target.closest('.numpad-btn');
+        if(!btn||btn.disabled)return;
+        const digit=btn.dataset.digit;
+        const action=btn.dataset.action;
+        if(digit!==undefined)appendDigit(digit);
+        else if(action==='backspace')backspaceDigit();
+        else if(action==='check')checkAnswer();
+    });
+}
+function isQuizActive(){return document.getElementById('quiz-section').classList.contains('active')&&document.getElementById('quizContent').style.display!=='none'}
+function handleQuizKeydown(e){
+    if(!isQuizActive())return;
+    if(e.key>='0'&&e.key<='9'){e.preventDefault();appendDigit(e.key);return}
+    if(e.key==='Backspace'){e.preventDefault();backspaceDigit();return}
+    if(e.key==='Enter'){
+        e.preventDefault();
+        if(!questionAnswered)checkAnswer();
+        else if(document.getElementById('nextBtn').style.display!=='none')nextQuestion();
+    }
+}
+function updateAnswerDisplay(){
+    const el=document.getElementById('answerDisplay');
+    if(!answerValue){el.textContent='?';el.classList.add('placeholder')}
+    else{el.textContent=answerValue;el.classList.remove('placeholder')}
+}
+function setAnswerState(state){
+    const el=document.getElementById('answerDisplay');
+    el.classList.remove('correct','wrong','placeholder');
+    if(state==='correct')el.classList.add('correct');
+    else if(state==='wrong')el.classList.add('wrong');
+    else if(!answerValue)el.classList.add('placeholder');
+}
+function setNumpadEnabled(on){
+    numpadEnabled=on;
+    document.querySelectorAll('#numpad .numpad-btn').forEach(btn=>{btn.disabled=!on});
+}
+function appendDigit(d){
+    if(!numpadEnabled||questionAnswered)return;
+    if(answerValue.length>=3)return;
+    answerValue+=d;
+    updateAnswerDisplay();
+}
+function backspaceDigit(){
+    if(!numpadEnabled||questionAnswered)return;
+    answerValue=answerValue.slice(0,-1);
+    updateAnswerDisplay();
+}
+function resetAnswerInput(){
+    answerValue='';
+    const el=document.getElementById('answerDisplay');
+    el.className='answer-display placeholder';
+    el.textContent='?';
+    setNumpadEnabled(true);
+}
 
 function initTutorial(){const c=document.getElementById('stepDots');c.innerHTML='';STEPS.forEach((_,i)=>{const d=document.createElement('div');d.className=`dot ${i===0?'active':''}`;c.appendChild(d)});renderStep()}
 function renderStep(){const s=STEPS[currentStep];document.getElementById('stepIcon').textContent=s.icon;document.getElementById('stepTitle').textContent=s.title;document.getElementById('stepDesc').textContent=s.desc;document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===currentStep));document.getElementById('stepBtn').textContent=currentStep===STEPS.length-1?'Am înțeles! 🚀':'Următorul Pas ➡️'}
@@ -296,6 +377,7 @@ function startFinalTest(){currentNumber=null;isFinalTest=true;isReviewMode=false
 function startReviewMode(){if(mistakeSet.size===0)return;isReviewMode=true;isFinalTest=false;currentNumber=null;currentSessionTime=SESSION_TIME;launchQuiz('🔄 REVIZUIRE GREȘELI')}
 
 function launchQuiz(label){document.getElementById('menu-section').style.display='none';document.getElementById('quiz-section').classList.add('active');document.getElementById('quizContent').style.display='block';document.getElementById('resultsScreen').classList.remove('active');document.getElementById('quizSelectedNum').textContent=label;totalCorrect=0;totalWrong=0;updateScore();
+    document.querySelector('h1').style.display='none';document.querySelector('.subtitle').style.display='none';
     if(isReviewMode){mainQueue=[...mistakeSet].map(k=>{const[a,b]=k.split('x').map(Number);return{a,b}});shuffleArray(mainQueue);currentSessionTime=Math.max(SESSION_TIME,mainQueue.length*(QUESTION_TIME+3))}
     else if(isFinalTest){const ap=[];for(let a=1;a<=MAX_NUMBER;a++)for(let b=1;b<=MAX_NUMBER;b++)ap.push({a,b});shuffleArray(ap);mainQueue=ap.slice(0,FINAL_TEST_QUESTIONS)}
     else{mainQueue=Array.from({length:MAX_NUMBER},(_,i)=>i+1);shuffleArray(mainQueue)}
@@ -304,9 +386,10 @@ function shuffleArray(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.r
 
 function showQuestion(){stopQuestionTimer();if(globalTimeLeft<=0){stopReason='timeout';endSession();return}let sq;if(mainQueue.length>0){sq=mainQueue;isRetryPhase=false}else if(retryQueue.length>0){sq=retryQueue;isRetryPhase=true}else{stopReason='perfect';endSession();return}
     const item=sq.shift();questionAnswered=false;let qA,qB;if(isFinalTest||isReviewMode){qA=item.a;qB=item.b}else{qA=currentNumber;qB=item}currentMultiplier=item;
-    const inp=document.getElementById('answerInput');inp.value='';inp.className='';inp.disabled=false;inp.focus();
+    resetAnswerInput();
     document.getElementById('feedbackMsg').textContent='';document.getElementById('feedbackMsg').className='feedback-msg';
-    document.getElementById('checkBtn').style.display='block';document.getElementById('nextBtn').style.display='none';
+    document.getElementById('checkBtn').style.display='none';document.getElementById('nextBtn').style.display='none';
+    document.getElementById('numpad').style.display='grid';
     document.getElementById('progressLabel').textContent=`Rămase: ${mainQueue.length+retryQueue.length+1}${isRetryPhase?' 🔄 Reluare':''}`;
     document.getElementById('question').textContent=Math.random()>0.5?`${qA} × ${qB}`:`${qB} × ${qA}`;startQuestionTimer()}
 function nextQuestion(){showQuestion()}
@@ -314,17 +397,17 @@ function nextQuestion(){showQuestion()}
 function startQuestionTimer(){stopQuestionTimer();questionTimeLeft=QUESTION_TIME;questionTimerRunning=true;updateQuestionTimerUI();questionTimerInterval=setInterval(()=>{questionTimeLeft-=0.1;updateQuestionTimerUI();if(questionTimeLeft<=0){questionTimeLeft=0;stopQuestionTimer();handleQuestionTimeout()}},100)}
 function stopQuestionTimer(){clearInterval(questionTimerInterval);questionTimerRunning=false}
 function updateQuestionTimerUI(){const bt=document.getElementById('bigTimer');document.getElementById('bigTimerNum').textContent=Math.ceil(questionTimeLeft);bt.classList.remove('warning','danger');const p=questionTimeLeft/QUESTION_TIME;if(p<=0.3)bt.classList.add('danger');else if(p<=0.55)bt.classList.add('warning')}
-function handleQuestionTimeout(){if(questionAnswered)return;questionAnswered=true;const inp=document.getElementById('answerInput');const fb=document.getElementById('feedbackMsg');let a,b;if(isFinalTest||isReviewMode){a=currentMultiplier.a;b=currentMultiplier.b}else{a=currentNumber;b=currentMultiplier}addMistake(a,b);inp.disabled=true;inp.classList.add('wrong');document.getElementById('checkBtn').style.display='none';const air=retryQueue.some(it=>isFinalTest||isReviewMode?it.a===currentMultiplier.a&&it.b===currentMultiplier.b:it===currentMultiplier);if(!air)retryQueue.push(currentMultiplier);totalWrong++;fb.textContent=`⚡ Timp expirat! Răspunsul era: ${a*b}. Revine la final!`;fb.className='feedback-msg retry';updateScore();document.getElementById('nextBtn').style.display='block';document.getElementById('nextBtn').focus()}
+function handleQuestionTimeout(){if(questionAnswered)return;questionAnswered=true;const fb=document.getElementById('feedbackMsg');let a,b;if(isFinalTest||isReviewMode){a=currentMultiplier.a;b=currentMultiplier.b}else{a=currentNumber;b=currentMultiplier}addMistake(a,b);setNumpadEnabled(false);setAnswerState('wrong');document.getElementById('checkBtn').style.display='none';const air=retryQueue.some(it=>isFinalTest||isReviewMode?it.a===currentMultiplier.a&&it.b===currentMultiplier.b:it===currentMultiplier);if(!air)retryQueue.push(currentMultiplier);totalWrong++;fb.textContent=`⚡ Timp expirat! Răspunsul era: ${a*b}. Revine la final!`;fb.className='feedback-msg retry';updateScore();document.getElementById('nextBtn').style.display='block'}
 
 function startGlobalTimer(){stopGlobalTimer();globalTimerRunning=true;updateGlobalTimerUI();globalTimerInterval=setInterval(()=>{globalTimeLeft-=0.1;updateGlobalTimerUI();if(globalTimeLeft<=0){globalTimeLeft=0;stopGlobalTimer();stopQuestionTimer();stopReason='timeout';handleGlobalTimeout()}},100)}
 function stopGlobalTimer(){clearInterval(globalTimerInterval);globalTimerRunning=false}
 function updateGlobalTimerUI(){const p=Math.max(0,globalTimeLeft/currentSessionTime);document.getElementById('globalTimerBar').style.transform=`scaleX(${p})`;const mi=Math.floor(globalTimeLeft/60);const se=Math.ceil(globalTimeLeft%60);document.getElementById('globalTimerLabel').textContent=`${mi}:${se.toString().padStart(2,'0')}`;const bar=document.getElementById('globalTimerBar');if(p>0.5)bar.style.background='linear-gradient(90deg,#55efc4,#00b894)';else if(p>0.25)bar.style.background='linear-gradient(90deg,#feca57,#fdcb6e)';else bar.style.background='linear-gradient(90deg,#ff7675,#d63031)'}
-function handleGlobalTimeout(){const inp=document.getElementById('answerInput');const fb=document.getElementById('feedbackMsg');if(inp&&!inp.disabled){inp.disabled=true;document.getElementById('checkBtn').style.display='none';document.getElementById('nextBtn').style.display='none';fb.textContent='⏰ Timpul a expirat!';fb.className='feedback-msg error'}setTimeout(()=>endSession(),1500)}
+function handleGlobalTimeout(){const fb=document.getElementById('feedbackMsg');if(!questionAnswered){setNumpadEnabled(false);document.getElementById('checkBtn').style.display='none';document.getElementById('nextBtn').style.display='none';fb.textContent='⏰ Timpul a expirat!';fb.className='feedback-msg error'}setTimeout(()=>endSession(),1500)}
 
-function checkAnswer(){if(questionAnswered||(!globalTimerRunning&&globalTimeLeft<=0))return;const inp=document.getElementById('answerInput');const fb=document.getElementById('feedbackMsg');const ua=parseInt(inp.value);let a,b;if(isFinalTest||isReviewMode){a=currentMultiplier.a;b=currentMultiplier.b}else{a=currentNumber;b=currentMultiplier}const correct=a*b;if(isNaN(ua))return;questionAnswered=true;stopQuestionTimer();inp.disabled=true;document.getElementById('checkBtn').style.display='none';
-    if(ua===correct){inp.classList.add('correct');fb.textContent=isRetryPhase?'🎉 Corect la reluare!':'🎉 Corect! Bravo!';fb.className='feedback-msg success';totalCorrect++;showSparkle();if(isRetryPhase&&isReviewMode)removeMistake(a,b)}
-    else{inp.classList.add('wrong');addMistake(a,b);const air=retryQueue.some(it=>isFinalTest||isReviewMode?it.a===currentMultiplier.a&&it.b===currentMultiplier.b:it===currentMultiplier);if(!air)retryQueue.push(currentMultiplier);fb.textContent=`❌ Greșit! Răspunsul corect: ${correct}. Va reveni!`;fb.className='feedback-msg retry';totalWrong++}
-    updateScore();document.getElementById('nextBtn').style.display='block';document.getElementById('nextBtn').focus()}
+function checkAnswer(){if(questionAnswered||(!globalTimerRunning&&globalTimeLeft<=0))return;const fb=document.getElementById('feedbackMsg');const ua=parseInt(answerValue,10);let a,b;if(isFinalTest||isReviewMode){a=currentMultiplier.a;b=currentMultiplier.b}else{a=currentNumber;b=currentMultiplier}const correct=a*b;if(isNaN(ua))return;questionAnswered=true;stopQuestionTimer();setNumpadEnabled(false);document.getElementById('checkBtn').style.display='none';
+    if(ua===correct){setAnswerState('correct');fb.textContent=isRetryPhase?'🎉 Corect la reluare!':'🎉 Corect! Bravo!';fb.className='feedback-msg success';totalCorrect++;showSparkle();if(isRetryPhase&&isReviewMode)removeMistake(a,b)}
+    else{setAnswerState('wrong');addMistake(a,b);const air=retryQueue.some(it=>isFinalTest||isReviewMode?it.a===currentMultiplier.a&&it.b===currentMultiplier.b:it===currentMultiplier);if(!air)retryQueue.push(currentMultiplier);fb.textContent=`❌ Greșit! Răspunsul corect: ${correct}. Va reveni!`;fb.className='feedback-msg retry';totalWrong++}
+    updateScore();document.getElementById('nextBtn').style.display='block'}
 function updateScore(){document.getElementById('correctCount').textContent=totalCorrect;document.getElementById('wrongCount').textContent=totalWrong}
 
 function endSession(){stopQuestionTimer();stopGlobalTimer();document.getElementById('quizContent').style.display='none';document.getElementById('resultsScreen').classList.add('active');if(globalTimeLeft<=0&&stopReason!=='timeout')stopReason='timeout';if(!isReviewMode)markTodayDone();if(stopReason==='perfect'&&!isFinalTest&&!isReviewMode&&currentNumber)markCompleted(currentNumber);
@@ -335,7 +418,7 @@ function endSession(){stopQuestionTimer();stopGlobalTimer();document.getElementB
     document.getElementById('resultsEmoji').textContent=emoji;document.getElementById('resultsTitle').textContent=title;re.textContent=text;re.className=`results-reason ${cls}`;document.getElementById('resultsScore').textContent=`${totalCorrect} ✅ / ${totalWrong} ❌`;document.getElementById('resultsDetail').innerHTML=`Scor: <b>${totalCorrect}</b> răspunsuri corecte.${isReviewMode&&stopReason==='perfect'?'<br>🎉 Greșelile corecte eliminate din jurnal!':''}`;startAutoReturn()}
 
 function startAutoReturn(){let cd=AUTO_RETURN_DELAY;document.getElementById('autoReturnCountdown').textContent=cd;autoReturnTimer=setInterval(()=>{cd--;document.getElementById('autoReturnCountdown').textContent=cd;if(cd<=0){clearInterval(autoReturnTimer);showMenu()}},1000)}
-function showMenu(){clearTimeout(autoReturnTimer);stopQuestionTimer();stopGlobalTimer();stopLearnTimer();document.getElementById('menu-section').style.display='block';document.getElementById('quiz-section').classList.remove('active');document.getElementById('learnPanel').classList.remove('visible');pendingNumber=null;renderMenu()}
+function showMenu(){clearTimeout(autoReturnTimer);stopQuestionTimer();stopGlobalTimer();stopLearnTimer();document.getElementById('menu-section').style.display='block';document.getElementById('quiz-section').classList.remove('active');document.getElementById('learnPanel').classList.remove('visible');document.querySelector('h1').style.display='';document.querySelector('.subtitle').style.display='';pendingNumber=null;renderMenu()}
 function showSparkle(){const s=document.createElement('div');s.className='sparkle-overlay';s.textContent='✨🦄✨';document.querySelector('.app-container').appendChild(s);setTimeout(()=>s.remove(),900)}
 </script>
 </body>
