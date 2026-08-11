@@ -9,23 +9,21 @@
         :root {
             --primary: #9b59b6;
             --secondary: #ff9ff3;
-            --accent: #feca57;
             --success: #55efc4;
             --error: #ff7675;
+            --locked: #dfe6e9;
+            --locked-text: #b2bec3;
             --bg-start: #a29bfe;
             --bg-end: #fd79a8;
             --card: rgba(255, 255, 255, 0.95);
             --text: #2d3436;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Fredoka', sans-serif; user-select: none; }
-        
         body { 
             background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
             min-height: 100vh; display: flex; justify-content: center; align-items: center; 
             padding: 20px; position: relative; overflow-x: hidden;
         }
-
         .bg-deco { position: fixed; font-size: 4rem; opacity: 0.12; pointer-events: none; animation: float 6s ease-in-out infinite; z-index: 0; }
         .d1 { top: 5%; left: 5%; } .d2 { top: 15%; right: 10%; animation-delay: 1s; font-size: 3rem; }
         .d3 { bottom: 10%; left: 15%; animation-delay: 2s; font-size: 5rem; } .d4 { bottom: 20%; right: 5%; animation-delay: 3s; }
@@ -36,7 +34,6 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.15); padding: 30px; text-align: center;
             position: relative; z-index: 1; backdrop-filter: blur(10px);
         }
-
         h1 { font-size: 1.8rem; color: var(--primary); text-shadow: 2px 2px 0 var(--secondary); margin-bottom: 5px; }
         p.subtitle { color: #636e72; font-weight: 600; margin-bottom: 20px; }
 
@@ -60,43 +57,97 @@
         }
         .btn-tutorial:hover { transform: translateY(-3px); }
 
-        /* Auto-start bar */
-        .auto-start-bar { width: 100%; height: 6px; background: #eee; border-radius: 10px; margin-top: 15px; overflow: hidden; display: none; }
-        .auto-start-bar.visible { display: block; }
-        .auto-start-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 10px; transition: width 0.5s linear; }
-        .auto-start-label { font-size: 0.8rem; color: var(--primary); font-weight: 600; margin-top: 5px; display: none; }
-        .auto-start-label.visible { display: block; }
-
-        /* Learn */
-        .number-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        /* MENU */
+        .menu-section { display: block; }
+        .progress-banner {
+            background: linear-gradient(135deg, #faf5ff, #fff0f7);
+            border: 2px solid #f0e6ff; border-radius: 16px;
+            padding: 12px; margin-bottom: 20px; font-weight: 700; color: var(--primary);
+        }
+        .number-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
         .num-btn {
             aspect-ratio: 1; border: 3px solid #f0e6ff; border-radius: 16px; background: white;
-            font-size: 1.3rem; font-weight: 700; cursor: pointer; transition: 0.2s; color: var(--primary);
+            font-size: 1.4rem; font-weight: 700; cursor: pointer; transition: 0.3s; color: var(--primary);
+            position: relative; overflow: hidden;
         }
-        .num-btn:hover, .num-btn.active { 
-            border-color: var(--primary); background: var(--primary); color: white;
-            transform: translateY(-3px); box-shadow: 0 5px 15px rgba(155,89,182,0.3);
+        .num-btn:hover:not(.locked):not(.completed) { 
+            border-color: var(--primary); transform: translateY(-3px); 
+            box-shadow: 0 5px 15px rgba(155,89,182,0.3);
         }
-        .multiplication-table { display: grid; gap: 8px; max-height: 260px; overflow-y: auto; padding-right: 5px; }
-        .table-row { 
-            padding: 12px 15px; background: #faf5ff; border-radius: 12px; font-size: 1.1rem;
-            display: flex; justify-content: space-between; border-left: 4px solid var(--secondary);
+        .num-btn.completed {
+            background: var(--success); border-color: #00b894; color: white;
+            cursor: default; pointer-events: none;
+        }
+        .num-btn.completed::after {
+            content: '✓'; position: absolute; top: 2px; right: 6px;
+            font-size: 0.8rem; font-weight: 800;
+        }
+        .num-btn.locked {
+            background: var(--locked); border-color: #ccc; color: var(--locked-text);
+            cursor: not-allowed; pointer-events: none;
+        }
+        .num-btn.locked::after {
+            content: '🔒'; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); font-size: 1rem;
+        }
+        .num-btn.current {
+            border-color: var(--primary); background: white; color: var(--primary);
+            animation: glowPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes glowPulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(155,89,182,0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(155,89,182,0); }
         }
 
-        /* Quiz */
+        /* LEARN TABLE (inside menu, shown when number selected) */
+        .learn-panel {
+            display: none; margin-top: 20px; padding: 20px;
+            background: #faf5ff; border-radius: 20px; border: 2px solid #f0e6ff;
+        }
+        .learn-panel.visible { display: block; }
+        .learn-panel h3 { color: var(--primary); margin-bottom: 12px; font-size: 1.2rem; }
+        .multiplication-table { display: grid; gap: 6px; max-height: 220px; overflow-y: auto; margin-bottom: 15px; }
+        .table-row { 
+            padding: 10px 14px; background: white; border-radius: 10px; font-size: 1rem;
+            display: flex; justify-content: space-between; border-left: 4px solid var(--secondary);
+        }
+        .btn-start-test {
+            padding: 14px 30px; background: linear-gradient(135deg, var(--primary), #8e44ad);
+            color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 700;
+            cursor: pointer; width: 100%; transition: 0.3s; box-shadow: 0 5px 20px rgba(155,89,182,0.3);
+        }
+        .btn-start-test:hover { transform: translateY(-3px); }
+        .btn-cancel-learn {
+            margin-top: 10px; padding: 10px; background: transparent; border: 2px solid #ddd;
+            border-radius: 12px; color: #636e72; font-weight: 600; cursor: pointer; width: 100%; transition: 0.3s;
+        }
+        .btn-cancel-learn:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* FINAL TEST BANNER */
+        .final-test-banner {
+            display: none; margin-top: 20px; padding: 20px;
+            background: linear-gradient(135deg, #feca57, #e67e22);
+            border-radius: 20px; color: white; animation: float 3s ease-in-out infinite;
+        }
+        .final-test-banner.visible { display: block; }
+        .final-test-banner h2 { font-size: 1.4rem; margin-bottom: 8px; }
+        .final-test-banner p { font-size: 0.95rem; margin-bottom: 15px; opacity: 0.95; }
+        .btn-final {
+            padding: 14px 30px; background: white; color: #e67e22;
+            border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 700;
+            cursor: pointer; width: 100%; transition: 0.3s; box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        .btn-final:hover { transform: translateY(-3px); }
+
+        /* QUIZ */
         .quiz-area { display: none; }
         .quiz-area.active { display: block; }
 
-        /* ⭐ BIG TIMER - sus, mare, circular */
         .big-timer-wrap { margin: 5px auto 15px; }
         .big-timer {
-            width: 120px; height: 120px;
-            border-radius: 50%;
-            margin: 0 auto;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            color: white;
-            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            width: 120px; height: 120px; border-radius: 50%; margin: 0 auto;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; background: linear-gradient(135deg, #a29bfe, #6c5ce7);
             box-shadow: 0 10px 30px rgba(108,92,231,0.45), 0 0 0 6px rgba(162,155,254,0.25);
             transition: background 0.3s, box-shadow 0.3s;
         }
@@ -117,12 +168,9 @@
             display: inline-flex; align-items: center; gap: 8px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white; padding: 6px 18px; border-radius: 30px; font-weight: 700;
-            margin-bottom: 8px; box-shadow: 0 4px 15px rgba(155,89,182,0.3);
-            font-size: 0.95rem;
+            margin-bottom: 8px; box-shadow: 0 4px 15px rgba(155,89,182,0.3); font-size: 0.95rem;
         }
         .progress-label { font-size: 0.85rem; color: #636e72; font-weight: 600; margin-bottom: 8px; }
-
-        /* Global timer - micuț, sub cronometrul mare */
         .global-timer-line {
             display: flex; align-items: center; gap: 10px;
             margin-bottom: 12px; font-size: 0.8rem; font-weight: 700; color: #636e72;
@@ -134,9 +182,7 @@
             transform-origin: left; transition: transform 0.1s linear;
             background: linear-gradient(90deg,#55efc4,#00b894);
         }
-
         .question-card { font-size: 3rem; font-weight: 800; margin: 8px 0; color: var(--primary); text-shadow: 3px 3px 0 var(--secondary); }
-        
         input[type="number"] {
             width: 140px; padding: 15px; font-size: 2rem; text-align: center;
             border: 4px solid #f0e6ff; border-radius: 20px; outline: none; transition: 0.3s;
@@ -146,26 +192,22 @@
         input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(155,89,182,0.1); }
         input.correct { border-color: var(--success); background: #eafff7; color: var(--success); }
         input.wrong { border-color: var(--error); background: #fff5f5; color: var(--error); animation: shake 0.5s; }
-
         .feedback-msg { min-height: 30px; margin-top: 10px; font-weight: 700; font-size: 1.05rem; }
         .feedback-msg.error { color: var(--error); }
         .feedback-msg.success { color: var(--success); }
         .feedback-msg.retry { color: #e67e22; }
-
         .btn-action {
             margin-top: 15px; padding: 14px 30px; background: linear-gradient(135deg, var(--primary), #8e44ad);
             color: white; border: none; border-radius: 16px; font-size: 1.05rem; font-weight: 700;
             cursor: pointer; width: 100%; transition: 0.3s; box-shadow: 0 5px 20px rgba(155,89,182,0.3);
         }
         .btn-action:hover { transform: translateY(-3px); }
-        .btn-secondary { background: linear-gradient(135deg, #636e72, #2d3436); margin-top: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-
         .score-board { 
             margin: 12px 0; padding: 10px; background: linear-gradient(135deg, #faf5ff, #fff0f7);
             border-radius: 16px; display: flex; justify-content: space-around; font-weight: 700; border: 2px solid #f0e6ff;
         }
 
-        /* Results */
+        /* RESULTS */
         .results-screen { display: none; text-align: center; padding: 20px 0; }
         .results-screen.active { display: block; }
         .results-emoji { font-size: 5rem; margin-bottom: 10px; animation: float 3s ease-in-out infinite; }
@@ -178,6 +220,10 @@
         }
         .reason-perfect { background: #eafff7; color: var(--success); }
         .reason-time { background: #fff9e6; color: #e67e22; }
+        .auto-return-msg {
+            margin-top: 15px; padding: 10px; background: #faf5ff; border-radius: 12px;
+            font-weight: 600; color: var(--primary); font-size: 0.9rem;
+        }
 
         @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-12px) rotate(-2deg)} 40%{transform:translateX(12px) rotate(2deg)} 60%{transform:translateX(-8px)} 80%{transform:translateX(8px)} }
         @keyframes sparkle { 0%{transform:scale(0) rotate(0deg);opacity:1} 100%{transform:scale(1.5) rotate(180deg);opacity:0} }
@@ -185,8 +231,7 @@
 
         @media(max-width:400px){ 
             .number-grid{grid-template-columns:repeat(3,1fr)} 
-            .question-card{font-size:2.4rem} 
-            h1{font-size:1.5rem}
+            .question-card{font-size:2.4rem} h1{font-size:1.5rem}
             .big-timer{width:100px;height:100px}
             .big-timer .big-timer-num{font-size:2.6rem}
         }
@@ -211,22 +256,33 @@
     <h1>🦄 Tabla Magică ✨</h1>
     <p class="subtitle">Învață cu zâne și unicorni!</p>
 
-    <!-- LEARN -->
-    <div id="learn-section">
-        <p style="margin-bottom:10px;font-weight:700;color:var(--primary);">Pasul 1: Alege o cifră magică:</p>
-        <div class="number-grid" id="numberGrid"></div>
-        <div class="multiplication-table" id="tableDisplay">
-            <div style="padding:30px;color:#b2bec3;font-weight:600;">🧚‍♀️ Selectează o cifră pentru a descoperi magia ei!</div>
+    <!-- MENU + LEARN PANEL -->
+    <div id="menu-section" class="menu-section">
+        <div class="progress-banner">
+            🌟 Progres: <span id="completedCount">0</span>/9 cifre deblocate
         </div>
-        <div class="auto-start-label" id="autoStartLabel">⏳ Testare automată peste <span id="autoStartCountdown">60</span>s...</div>
-        <div class="auto-start-bar" id="autoStartBar"><div class="auto-start-fill" id="autoStartFill"></div></div>
+        <p style="margin-bottom:10px;font-weight:700;color:var(--primary);">Alege următoarea cifră magică:</p>
+        <div class="number-grid" id="numberGrid"></div>
+        
+        <!-- Learn Panel (apare când selectezi o cifră) -->
+        <div class="learn-panel" id="learnPanel">
+            <h3 id="learnTitle">📚 Tabla lui 1</h3>
+            <div class="multiplication-table" id="learnTable"></div>
+            <button class="btn-start-test" onclick="confirmStartQuiz()">🎯 Începe Testul!</button>
+            <button class="btn-cancel-learn" onclick="closeLearnPanel()">← Înapoi la meniu</button>
+        </div>
+
+        <!-- Final Test Banner -->
+        <div class="final-test-banner" id="finalTestBanner">
+            <h2>🏆 Toate cifrele deblocate!</h2>
+            <p>Ești pregătit pentru Testul Final? 81 de întrebări, 5 minute!</p>
+            <button class="btn-final" onclick="startFinalTest()">🚀 Începe Testul Final!</button>
+        </div>
     </div>
 
     <!-- QUIZ -->
     <div id="quiz-section" class="quiz-area">
         <div id="quizContent" style="display:none;">
-
-            <!-- ⭐ CRONOMETRUL MARE - SUS -->
             <div class="big-timer-wrap">
                 <div class="big-timer" id="bigTimer">
                     <div class="big-timer-num" id="bigTimerNum">7</div>
@@ -234,7 +290,7 @@
                 </div>
             </div>
 
-            <div class="selected-badge">🌟 Cifra: <span id="quizSelectedNum" style="font-size:1.1rem;margin-left:4px;">-</span></div>
+            <div class="selected-badge" id="quizBadge">🌟 Cifra: <span id="quizSelectedNum">-</span></div>
             <div class="progress-label" id="progressLabel">Rămase: 9</div>
             
             <div class="score-board">
@@ -242,7 +298,6 @@
                 <span style="color:var(--error)">❌ <b id="wrongCount">0</b></span>
             </div>
 
-            <!-- Timer global - mic -->
             <div class="global-timer-line">
                 <span>⏰</span>
                 <div class="global-timer-track">
@@ -266,14 +321,7 @@
             <div class="results-reason" id="resultsReason"></div>
             <div class="results-score" id="resultsScore">0</div>
             <div class="results-detail" id="resultsDetail"></div>
-            <button class="btn-action" id="restartBtn" onclick="restartQuiz()">🔄 Reîncearcă aceeași cifră</button>
-            <button class="btn-action btn-secondary" onclick="goToLearn()">📚 Alege altă cifră</button>
-        </div>
-
-        <div id="noSelectionMsg" style="padding:30px 0;display:none;">
-            <div style="font-size:4rem;margin-bottom:15px;">🧚‍♀️</div>
-            <p style="font-size:1.1rem;margin-bottom:20px;font-weight:700;color:var(--primary);">Mai întâi alege o cifră din secțiunea "Învățare"!</p>
-            <button class="btn-action" onclick="goToLearn()">Mergi la Învățare 📚</button>
+            <div class="auto-return-msg" id="autoReturnMsg">⏳ Revenire la meniu în <span id="autoReturnCountdown">3</span>s...</div>
         </div>
     </div>
 </div>
@@ -281,51 +329,51 @@
 <script>
 // ===================== CONFIG =====================
 const MAX_NUMBER = 9;
-const GLOBAL_TIME = 120;        // 2 minute globale
-const QUESTION_TIME = 7;        // ⭐ 7 secunde per întrebare
-const AUTO_START_DELAY = 60;
+const QUESTION_TIME = 7;
+const SESSION_TIME = 120;
+const FINAL_TEST_TIME = 300;
+const AUTO_RETURN_DELAY = 3;
+const STORAGE_KEY = 'tablaMagica_progress';
 
 // ===================== STATE =====================
-let selectedNumber = null;
+let completedNumbers = [];
+let currentNumber = null;
+let pendingNumber = null;       // Cifra selectată în learn panel
+let isFinalTest = false;
+
 let totalCorrect = 0;
 let totalWrong = 0;
-
 let mainQueue = [];
 let retryQueue = [];
 let currentMultiplier = 0;
 let isRetryPhase = false;
 let questionAnswered = false;
 
-// Global timer
 let globalTimerInterval = null;
-let globalTimeLeft = GLOBAL_TIME;
+let globalTimeLeft = SESSION_TIME;
 let globalTimerRunning = false;
-let globalTimerStarted = false;
+let currentSessionTime = SESSION_TIME;
 
-// Question timer
 let questionTimerInterval = null;
 let questionTimeLeft = QUESTION_TIME;
 let questionTimerRunning = false;
 
 let stopReason = '';
-
-// Auto-start
-let autoStartTimer = null;
-let autoStartTimeLeft = AUTO_START_DELAY;
+let autoReturnTimer = null;
 
 // Tutorial
 const STEPS = [
-    { icon: '🧚‍♀️', title: 'Pasul 1: Învață', desc: 'Alege o cifră de la 1 la 9. Vei vedea toată tabla ei de înmulțire. Poți sta aici cât vrei!' },
-    { icon: '🎯', title: 'Pasul 2: Testează-te', desc: 'Ai 2 MINUTE pentru toate cifrele și doar 7 SECUNDE pentru fiecare întrebare! Urmărește cronometrul mare de sus!' },
-    { icon: '⏱️', title: 'Pasul 3: Fii rapid!', desc: 'Greșești sau expiră 7s? Întrebarea revine la final, nu se oprește nimic!' }
+    { icon: '🧚‍♀️', title: 'Pasul 1: Meniul Magic', desc: 'Cifrele se deblochează una câte una. Apasă pe cifra activă pentru a vedea tabla ei și apoi începe testul!' },
+    { icon: '🎯', title: 'Pasul 2: Testează-te', desc: 'Ai 7 SECUNDE per întrebare (cronometrul mare de sus!) și 2 MINUTE per cifră. Greșești? Întrebarea revine la final!' },
+    { icon: '🏆', title: 'Pasul 3: Testul Final', desc: 'Când toate 9 cifre sunt verzi, vei primi Testul Final cu TOATĂ tabla înmulțirii! Ești pregătit?' }
 ];
 let currentStep = 0;
 
 // ===================== INIT =====================
 document.addEventListener('DOMContentLoaded', () => {
-    renderNumberGrid();
+    loadProgress();
+    renderMenu();
     initTutorial();
-    startAutoStartTimer();
     
     document.getElementById('answerInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -335,166 +383,129 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// ===================== PERSISTENCE =====================
+function loadProgress() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) completedNumbers = JSON.parse(saved);
+    } catch(e) { completedNumbers = []; }
+}
+function saveProgress() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(completedNumbers)); } catch(e) {} }
+function markCompleted(num) {
+    if (!completedNumbers.includes(num)) { completedNumbers.push(num); saveProgress(); }
+}
+function allCompleted() { return completedNumbers.length >= MAX_NUMBER; }
+
 // ===================== TUTORIAL =====================
 function initTutorial() {
-    const dotsContainer = document.getElementById('stepDots');
-    dotsContainer.innerHTML = '';
-    STEPS.forEach((_, i) => {
-        const dot = document.createElement('div');
-        dot.className = `dot ${i === 0 ? 'active' : ''}`;
-        dotsContainer.appendChild(dot);
-    });
+    const c = document.getElementById('stepDots'); c.innerHTML = '';
+    STEPS.forEach((_, i) => { const d = document.createElement('div'); d.className = `dot ${i===0?'active':''}`; c.appendChild(d); });
     renderStep();
 }
-
 function renderStep() {
-    const step = STEPS[currentStep];
-    document.getElementById('stepIcon').textContent = step.icon;
-    document.getElementById('stepTitle').textContent = step.title;
-    document.getElementById('stepDesc').textContent = step.desc;
-    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentStep));
-    document.getElementById('stepBtn').textContent = currentStep === STEPS.length - 1 ? 'Am înțeles! 🚀' : 'Următorul Pas ➡️';
+    const s = STEPS[currentStep];
+    document.getElementById('stepIcon').textContent = s.icon;
+    document.getElementById('stepTitle').textContent = s.title;
+    document.getElementById('stepDesc').textContent = s.desc;
+    document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i===currentStep));
+    document.getElementById('stepBtn').textContent = currentStep === STEPS.length-1 ? 'Am înțeles! 🚀' : 'Următorul Pas ➡️';
 }
-
 function nextStep() {
-    if (currentStep < STEPS.length - 1) {
-        currentStep++;
-        renderStep();
-    } else {
-        document.getElementById('tutorialOverlay').classList.add('hidden');
-    }
+    if (currentStep < STEPS.length-1) { currentStep++; renderStep(); }
+    else document.getElementById('tutorialOverlay').classList.add('hidden');
 }
 
-// ===================== AUTO-START =====================
-function startAutoStartTimer() {
-    clearInterval(autoStartTimer);
-    autoStartTimeLeft = AUTO_START_DELAY;
-    updateAutoStartUI();
-    document.getElementById('autoStartBar').classList.add('visible');
-    document.getElementById('autoStartLabel').classList.add('visible');
-    
-    autoStartTimer = setInterval(() => {
-        autoStartTimeLeft--;
-        updateAutoStartUI();
-        if (autoStartTimeLeft <= 0) {
-            clearInterval(autoStartTimer);
-            triggerAutoStart();
-        }
-    }, 1000);
-}
-
-function resetAutoStart() {
-    autoStartTimeLeft = AUTO_START_DELAY;
-    updateAutoStartUI();
-}
-
-function updateAutoStartUI() {
-    const pct = ((AUTO_START_DELAY - autoStartTimeLeft) / AUTO_START_DELAY) * 100;
-    document.getElementById('autoStartFill').style.width = `${pct}%`;
-    document.getElementById('autoStartCountdown').textContent = autoStartTimeLeft;
-}
-
-function triggerAutoStart() {
-    if (!selectedNumber) {
-        startAutoStartTimer();
-        return;
-    }
-    switchToQuiz();
-}
-
-// ===================== NAVIGATION =====================
-function goToLearn() {
-    stopQuestionTimer();
-    document.getElementById('learn-section').style.display = 'block';
-    document.getElementById('quiz-section').classList.remove('active');
-    if (!globalTimerStarted) {
-        startAutoStartTimer();
-    } else {
-        document.getElementById('autoStartBar').classList.remove('visible');
-        document.getElementById('autoStartLabel').classList.remove('visible');
-    }
-}
-
-function switchToQuiz() {
-    document.getElementById('learn-section').style.display = 'none';
-    document.getElementById('quiz-section').classList.add('active');
-    clearInterval(autoStartTimer);
-    document.getElementById('autoStartBar').classList.remove('visible');
-    document.getElementById('autoStartLabel').classList.remove('visible');
-    
-    if (!globalTimerStarted) {
-        globalTimerStarted = true;
-        startGlobalTimer();
-    }
-    
-    updateQuizView();
-}
-
-function updateQuizView() {
-    const quizContent = document.getElementById('quizContent');
-    const noSelMsg = document.getElementById('noSelectionMsg');
-    const resultsScreen = document.getElementById('resultsScreen');
-    
-    resultsScreen.classList.remove('active');
-    
-    if (selectedNumber) {
-        quizContent.style.display = 'block';
-        noSelMsg.style.display = 'none';
-        document.getElementById('quizSelectedNum').textContent = selectedNumber;
-        if (mainQueue.length === 0 && retryQueue.length === 0) startNewSession();
-    } else {
-        quizContent.style.display = 'none';
-        noSelMsg.style.display = 'block';
-    }
-}
-
-// ===================== LEARN MODE =====================
-function renderNumberGrid() {
+// ===================== MENU =====================
+function renderMenu() {
     const grid = document.getElementById('numberGrid');
+    grid.innerHTML = '';
+    let nextAvailable = null;
+    for (let i = 1; i <= MAX_NUMBER; i++) {
+        if (!completedNumbers.includes(i)) { nextAvailable = i; break; }
+    }
     for (let i = 1; i <= MAX_NUMBER; i++) {
         const btn = document.createElement('button');
         btn.className = 'num-btn';
         btn.textContent = i;
-        btn.onclick = () => selectNumber(i, btn);
+        if (completedNumbers.includes(i)) {
+            btn.classList.add('completed');
+        } else if (i === nextAvailable) {
+            btn.classList.add('current');
+            btn.onclick = () => openLearnPanel(i);
+        } else {
+            btn.classList.add('locked');
+        }
         grid.appendChild(btn);
     }
+    document.getElementById('completedCount').textContent = completedNumbers.length;
+    document.getElementById('finalTestBanner').classList.toggle('visible', allCompleted());
 }
 
-function selectNumber(num, btnElement) {
-    resetAutoStart();
-    
-    if (selectedNumber !== num) {
-        selectedNumber = num;
-        mainQueue = [];
-        retryQueue = [];
-        isRetryPhase = false;
-        
-        document.getElementById('checkBtn').style.display = 'block';
-        document.getElementById('nextBtn').style.display = 'none';
-        document.getElementById('feedbackMsg').textContent = '';
-        document.getElementById('answerInput').value = '';
-        document.getElementById('answerInput').className = '';
-    }
-
-    document.querySelectorAll('.num-btn').forEach(b => b.classList.remove('active'));
-    btnElement.classList.add('active');
-    
-    const display = document.getElementById('tableDisplay');
-    display.innerHTML = '';
+// ===================== LEARN PANEL =====================
+function openLearnPanel(num) {
+    pendingNumber = num;
+    const panel = document.getElementById('learnPanel');
+    document.getElementById('learnTitle').textContent = `📚 Tabla lui ${num}`;
+    const table = document.getElementById('learnTable');
+    table.innerHTML = '';
     for (let i = 1; i <= MAX_NUMBER; i++) {
         const row = document.createElement('div');
         row.className = 'table-row';
         row.innerHTML = `<span>${num} × ${i}</span> <b>= ${num * i}</b>`;
-        display.appendChild(row);
+        table.appendChild(row);
     }
+    panel.classList.add('visible');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// ===================== QUIZ LOGIC =====================
-function startNewSession() {
-    mainQueue = Array.from({length: MAX_NUMBER}, (_, i) => i + 1);
-    shuffleArray(mainQueue);
+function closeLearnPanel() {
+    pendingNumber = null;
+    document.getElementById('learnPanel').classList.remove('visible');
+}
+
+function confirmStartQuiz() {
+    if (!pendingNumber) return;
+    currentNumber = pendingNumber;
+    isFinalTest = false;
+    currentSessionTime = SESSION_TIME;
+    closeLearnPanel();
+    launchQuiz(`Cifra ${currentNumber}`);
+}
+
+function startFinalTest() {
+    currentNumber = null;
+    isFinalTest = true;
+    currentSessionTime = FINAL_TEST_TIME;
+    launchQuiz('🏆 TEST FINAL');
+}
+
+// ===================== LAUNCH QUIZ =====================
+function launchQuiz(label) {
+    document.getElementById('menu-section').style.display = 'none';
+    document.getElementById('quiz-section').classList.add('active');
+    document.getElementById('quizContent').style.display = 'block';
+    document.getElementById('resultsScreen').classList.remove('active');
+    document.getElementById('quizSelectedNum').textContent = label;
+    
+    totalCorrect = 0; totalWrong = 0; updateScore();
+    
+    if (isFinalTest) {
+        mainQueue = [];
+        for (let a = 1; a <= MAX_NUMBER; a++)
+            for (let b = 1; b <= MAX_NUMBER; b++)
+                mainQueue.push({a, b});
+        shuffleArray(mainQueue);
+    } else {
+        mainQueue = Array.from({length: MAX_NUMBER}, (_, i) => i + 1);
+        shuffleArray(mainQueue);
+    }
     retryQueue = [];
     isRetryPhase = false;
+    
+    // ⭐ FIX: Resetăm timer-ul global CORECT
+    globalTimeLeft = currentSessionTime;
+    startGlobalTimer();
     showQuestion();
 }
 
@@ -505,286 +516,201 @@ function shuffleArray(arr) {
     }
 }
 
+// ===================== SHOW QUESTION =====================
 function showQuestion() {
     stopQuestionTimer();
-    
-    if (globalTimeLeft <= 0) {
-        stopReason = 'timeout';
-        endSession();
-        return;
-    }
+    if (globalTimeLeft <= 0) { stopReason = 'timeout'; endSession(); return; }
     
     let sourceQueue;
-    if (mainQueue.length > 0) {
-        sourceQueue = mainQueue;
-        isRetryPhase = false;
-    } else if (retryQueue.length > 0) {
-        sourceQueue = retryQueue;
-        isRetryPhase = true;
-    } else {
-        stopReason = 'perfect';
-        endSession();
-        return;
-    }
+    if (mainQueue.length > 0) { sourceQueue = mainQueue; isRetryPhase = false; }
+    else if (retryQueue.length > 0) { sourceQueue = retryQueue; isRetryPhase = true; }
+    else { stopReason = 'perfect'; endSession(); return; }
     
-    currentMultiplier = sourceQueue.shift();
+    const item = sourceQueue.shift();
     questionAnswered = false;
     
-    const input = document.getElementById('answerInput');
-    input.value = '';
-    input.className = '';
-    input.disabled = false;
-    input.focus();
+    let qA, qB;
+    if (isFinalTest) { qA = item.a; qB = item.b; }
+    else { qA = currentNumber; qB = item; }
+    currentMultiplier = item;
     
+    const input = document.getElementById('answerInput');
+    input.value = ''; input.className = ''; input.disabled = false; input.focus();
     document.getElementById('feedbackMsg').textContent = '';
     document.getElementById('feedbackMsg').className = 'feedback-msg';
     document.getElementById('checkBtn').style.display = 'block';
     document.getElementById('nextBtn').style.display = 'none';
     
     const remaining = mainQueue.length + retryQueue.length + 1;
-    const phaseText = isRetryPhase ? ' 🔄 Reluare' : '';
-    document.getElementById('progressLabel').textContent = `Rămase: ${remaining}${phaseText}`;
+    document.getElementById('progressLabel').textContent = `Rămase: ${remaining}${isRetryPhase ? ' 🔄 Reluare' : ''}`;
     
-    if (Math.random() > 0.5) {
-        document.getElementById('question').textContent = `${selectedNumber} × ${currentMultiplier}`;
-    } else {
-        document.getElementById('question').textContent = `${currentMultiplier} × ${selectedNumber}`;
-    }
-    
+    document.getElementById('question').textContent = Math.random() > 0.5 ? `${qA} × ${qB}` : `${qB} × ${qA}`;
     startQuestionTimer();
 }
 
-function nextQuestion() {
-    showQuestion();
-}
+function nextQuestion() { showQuestion(); }
 
-// ===================== QUESTION TIMER (7s, BIG, SUS) =====================
+// ===================== QUESTION TIMER (7s BIG) =====================
 function startQuestionTimer() {
     stopQuestionTimer();
     questionTimeLeft = QUESTION_TIME;
     questionTimerRunning = true;
     updateQuestionTimerUI();
-    
     questionTimerInterval = setInterval(() => {
         questionTimeLeft -= 0.1;
         updateQuestionTimerUI();
-        if (questionTimeLeft <= 0) {
-            questionTimeLeft = 0;
-            stopQuestionTimer();
-            handleQuestionTimeout();
-        }
+        if (questionTimeLeft <= 0) { questionTimeLeft = 0; stopQuestionTimer(); handleQuestionTimeout(); }
     }, 100);
 }
-
-function stopQuestionTimer() {
-    clearInterval(questionTimerInterval);
-    questionTimerRunning = false;
-}
-
+function stopQuestionTimer() { clearInterval(questionTimerInterval); questionTimerRunning = false; }
 function updateQuestionTimerUI() {
-    const bigTimer = document.getElementById('bigTimer');
-    const num = document.getElementById('bigTimerNum');
-    const secs = Math.ceil(questionTimeLeft);
-    
-    num.textContent = secs;
-    
-    // Culori: mov (mult timp) → galben (puțin) → roșu (urgent) + pulsație
-    bigTimer.classList.remove('warning', 'danger');
+    const bt = document.getElementById('bigTimer');
+    document.getElementById('bigTimerNum').textContent = Math.ceil(questionTimeLeft);
+    bt.classList.remove('warning', 'danger');
     const pct = questionTimeLeft / QUESTION_TIME;
-    if (pct <= 0.3) bigTimer.classList.add('danger');
-    else if (pct <= 0.55) bigTimer.classList.add('warning');
+    if (pct <= 0.3) bt.classList.add('danger');
+    else if (pct <= 0.55) bt.classList.add('warning');
 }
-
 function handleQuestionTimeout() {
     if (questionAnswered) return;
     questionAnswered = true;
-    
     const input = document.getElementById('answerInput');
     const feedback = document.getElementById('feedbackMsg');
-    const correct = selectedNumber * currentMultiplier;
-    
-    input.disabled = true;
-    input.classList.add('wrong');
+    const correct = isFinalTest ? currentMultiplier.a * currentMultiplier.b : currentNumber * currentMultiplier;
+    input.disabled = true; input.classList.add('wrong');
     document.getElementById('checkBtn').style.display = 'none';
-    
-    if (!retryQueue.includes(currentMultiplier)) {
-        retryQueue.push(currentMultiplier);
-    }
+    const alreadyInRetry = retryQueue.some(item => isFinalTest ? item.a===currentMultiplier.a && item.b===currentMultiplier.b : item===currentMultiplier);
+    if (!alreadyInRetry) retryQueue.push(currentMultiplier);
     totalWrong++;
-    
-    feedback.textContent = `⚡ Ai rămas fără timp! Răspunsul era: ${correct}. Revine la final!`;
+    feedback.textContent = `⚡ Timp expirat! Răspunsul era: ${correct}. Revine la final!`;
     feedback.className = 'feedback-msg retry';
-    
     updateScore();
     document.getElementById('nextBtn').style.display = 'block';
     document.getElementById('nextBtn').focus();
 }
 
-// ===================== GLOBAL TIMER (2 min) =====================
+// ===================== GLOBAL TIMER =====================
 function startGlobalTimer() {
-    if (globalTimerRunning) return;
+    stopGlobalTimer();
     globalTimerRunning = true;
     updateGlobalTimerUI();
-    
     globalTimerInterval = setInterval(() => {
         globalTimeLeft -= 0.1;
         updateGlobalTimerUI();
-        if (globalTimeLeft <= 0) {
-            globalTimeLeft = 0;
-            stopGlobalTimer();
-            stopQuestionTimer();
-            stopReason = 'timeout';
-            handleGlobalTimeout();
-        }
+        if (globalTimeLeft <= 0) { globalTimeLeft = 0; stopGlobalTimer(); stopQuestionTimer(); stopReason = 'timeout'; handleGlobalTimeout(); }
     }, 100);
 }
-
-function stopGlobalTimer() {
-    clearInterval(globalTimerInterval);
-    globalTimerRunning = false;
-}
-
+function stopGlobalTimer() { clearInterval(globalTimerInterval); globalTimerRunning = false; }
 function updateGlobalTimerUI() {
-    const pct = Math.max(0, globalTimeLeft / GLOBAL_TIME);
+    const pct = Math.max(0, globalTimeLeft / currentSessionTime);
     document.getElementById('globalTimerBar').style.transform = `scaleX(${pct})`;
-    
     const mins = Math.floor(globalTimeLeft / 60);
     const secs = Math.ceil(globalTimeLeft % 60);
-    document.getElementById('globalTimerLabel').textContent = 
-        `${mins}:${secs.toString().padStart(2, '0')}`;
-    
+    document.getElementById('globalTimerLabel').textContent = `${mins}:${secs.toString().padStart(2,'0')}`;
     const bar = document.getElementById('globalTimerBar');
     if (pct > 0.5) bar.style.background = 'linear-gradient(90deg,#55efc4,#00b894)';
     else if (pct > 0.25) bar.style.background = 'linear-gradient(90deg,#feca57,#fdcb6e)';
     else bar.style.background = 'linear-gradient(90deg,#ff7675,#d63031)';
 }
-
 function handleGlobalTimeout() {
     const input = document.getElementById('answerInput');
     const feedback = document.getElementById('feedbackMsg');
-    
     if (input && !input.disabled) {
         input.disabled = true;
         document.getElementById('checkBtn').style.display = 'none';
         document.getElementById('nextBtn').style.display = 'none';
-        feedback.textContent = `⏰ Cele 2 minute au expirat!`;
+        feedback.textContent = '⏰ Timpul a expirat!';
         feedback.className = 'feedback-msg error';
     }
-    
     setTimeout(() => endSession(), 1500);
 }
 
 // ===================== CHECK ANSWER =====================
 function checkAnswer() {
-    if (questionAnswered) return;
-    if (!globalTimerRunning && globalTimeLeft <= 0) return;
-    
+    if (questionAnswered || (!globalTimerRunning && globalTimeLeft <= 0)) return;
     const input = document.getElementById('answerInput');
     const feedback = document.getElementById('feedbackMsg');
     const userAnswer = parseInt(input.value);
-    const correct = selectedNumber * currentMultiplier;
-    
+    const correct = isFinalTest ? currentMultiplier.a * currentMultiplier.b : currentNumber * currentMultiplier;
     if (isNaN(userAnswer)) return;
     
-    questionAnswered = true;
-    stopQuestionTimer();
-    
+    questionAnswered = true; stopQuestionTimer();
     input.disabled = true;
     document.getElementById('checkBtn').style.display = 'none';
     
     if (userAnswer === correct) {
         input.classList.add('correct');
-        feedback.textContent = isRetryPhase 
-            ? '🎉 Corect la reluare! Bravo!' 
-            : '🎉 Corect! Bravo, magicianule!';
+        feedback.textContent = isRetryPhase ? '🎉 Corect la reluare! Bravo!' : '🎉 Corect! Bravo, magicianule!';
         feedback.className = 'feedback-msg success';
-        totalCorrect++;
-        showSparkle();
+        totalCorrect++; showSparkle();
     } else {
         input.classList.add('wrong');
-        if (!retryQueue.includes(currentMultiplier)) {
-            retryQueue.push(currentMultiplier);
-        }
+        const alreadyInRetry = retryQueue.some(item => isFinalTest ? item.a===currentMultiplier.a && item.b===currentMultiplier.b : item===currentMultiplier);
+        if (!alreadyInRetry) retryQueue.push(currentMultiplier);
         feedback.textContent = `❌ Greșit! Răspunsul corect: ${correct}. Va reveni la final!`;
         feedback.className = 'feedback-msg retry';
         totalWrong++;
     }
-    
     updateScore();
     document.getElementById('nextBtn').style.display = 'block';
     document.getElementById('nextBtn').focus();
 }
-
 function updateScore() {
     document.getElementById('correctCount').textContent = totalCorrect;
     document.getElementById('wrongCount').textContent = totalWrong;
 }
 
-// ===================== END SESSION & RESULTS =====================
+// ===================== END SESSION & AUTO-RETURN =====================
 function endSession() {
-    stopQuestionTimer();
-    stopGlobalTimer();
-    
+    stopQuestionTimer(); stopGlobalTimer();
     document.getElementById('quizContent').style.display = 'none';
-    const screen = document.getElementById('resultsScreen');
-    screen.classList.add('active');
+    document.getElementById('resultsScreen').classList.add('active');
     
-    if (globalTimeLeft <= 0 && stopReason !== 'timeout') {
-        stopReason = 'timeout';
-    }
+    if (globalTimeLeft <= 0 && stopReason !== 'timeout') stopReason = 'timeout';
+    if (stopReason === 'perfect' && !isFinalTest && currentNumber) markCompleted(currentNumber);
     
     const reasonEl = document.getElementById('resultsReason');
     let emoji, title, reasonText, reasonClass;
-    
-    switch (stopReason) {
-        case 'perfect':
-            emoji = '🦄👑';
-            title = 'PERFECT! Maestru Magic!';
-            reasonText = `✨ Ai răspuns corect la toate întrebările pentru cifra ${selectedNumber}!`;
-            reasonClass = 'reason-perfect';
-            break;
-        case 'timeout':
-            emoji = '⏰🦄';
-            title = 'Timpul s-a terminat!';
-            reasonText = `⏰ Cele 2 minute au expirat. Mai rămâneau ${mainQueue.length + retryQueue.length} întrebări.`;
-            reasonClass = 'reason-time';
-            break;
-        default:
-            emoji = '🦄';
-            title = 'Sesiune terminată';
-            reasonText = '';
-            reasonClass = 'reason-perfect';
+    if (isFinalTest) {
+        if (stopReason === 'perfect') { emoji='👑🦄🏆'; title='MAESTRU SUPREM!'; reasonText='✨ Ai completat TOATĂ tabla înmulțirii!'; reasonClass='reason-perfect'; }
+        else { emoji='⏰🦄'; title='Test Final - Timp expirat!'; reasonText=`Mai rămâneau ${mainQueue.length+retryQueue.length} întrebări.`; reasonClass='reason-time'; }
+    } else {
+        if (stopReason==='perfect') { emoji='🦄👑'; title=`Cifra ${currentNumber} deblocată!`; reasonText=`✨ Cifra ${currentNumber} este acum verde!`; reasonClass='reason-perfect'; }
+        else { emoji='⏰🦄'; title='Timpul s-a terminat!'; reasonText=`⏰ Mai încearcă cifra ${currentNumber}!`; reasonClass='reason-time'; }
     }
     
     document.getElementById('resultsEmoji').textContent = emoji;
     document.getElementById('resultsTitle').textContent = title;
-    reasonEl.textContent = reasonText;
-    reasonEl.className = `results-reason ${reasonClass}`;
+    reasonEl.textContent = reasonText; reasonEl.className = `results-reason ${reasonClass}`;
     document.getElementById('resultsScore').textContent = `${totalCorrect} ✅ / ${totalWrong} ❌`;
+    document.getElementById('resultsDetail').innerHTML = `Scor: <b>${totalCorrect}</b> răspunsuri corecte.`;
     
-    const timeRemaining = Math.max(0, Math.ceil(globalTimeLeft));
-    const timeMsg = globalTimeLeft > 0 
-        ? `⏳ Mai ai ${Math.floor(timeRemaining/60)}:${(timeRemaining%60).toString().padStart(2,'0')} din cele 2 minute.`
-        : `⏰ Timpul de 2 minute s-a epuizat complet.`;
-    
-    document.getElementById('resultsDetail').innerHTML = 
-        `Scor cumulativ: <b>${totalCorrect}</b> răspunsuri corecte.<br>${timeMsg}`;
-    
-    const restartBtn = document.getElementById('restartBtn');
-    restartBtn.style.display = stopReason === 'timeout' ? 'none' : 'inline-block';
+    startAutoReturn();
 }
 
-function restartQuiz() {
-    if (globalTimeLeft <= 0) return;
-    document.getElementById('resultsScreen').classList.remove('active');
-    document.getElementById('quizContent').style.display = 'block';
-    startNewSession();
+function startAutoReturn() {
+    let countdown = AUTO_RETURN_DELAY;
+    document.getElementById('autoReturnMsg').style.display = 'block';
+    document.getElementById('autoReturnCountdown').textContent = countdown;
+    autoReturnTimer = setInterval(() => {
+        countdown--;
+        document.getElementById('autoReturnCountdown').textContent = countdown;
+        if (countdown <= 0) { clearInterval(autoReturnTimer); showMenu(); }
+    }, 1000);
+}
+
+function showMenu() {
+    clearTimeout(autoReturnTimer);
+    stopQuestionTimer(); stopGlobalTimer();
+    document.getElementById('menu-section').style.display = 'block';
+    document.getElementById('quiz-section').classList.remove('active');
+    document.getElementById('learnPanel').classList.remove('visible');
+    pendingNumber = null;
+    renderMenu();
 }
 
 function showSparkle() {
-    const s = document.createElement('div');
-    s.className = 'sparkle-overlay';
-    s.textContent = '✨🦄✨';
+    const s = document.createElement('div'); s.className = 'sparkle-overlay'; s.textContent = '✨🦄✨';
     document.querySelector('.app-container').appendChild(s);
     setTimeout(() => s.remove(), 900);
 }
