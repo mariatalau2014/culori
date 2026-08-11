@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Aplicație prietenoasă pentru a învăța tabla înmulțirii — pentru fetițe de 9 ani." />
+  <title>Steluța — Tabla înmulțirii</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --sky-top: #7ec8e3;
+      --sky-mid: #b8e0f0;
+      --sky-bot: #ffe4c9;
+      --ink: #1a3a4a;
+      --ink-soft: #4a6a7a;
+      --surface: rgba(255, 255, 255, 0.88);
+      --surface-solid: #fffdf9;
+      --teal: #0d7377;
+      --teal-deep: #08575a;
+      --coral: #e85a4f;
+      --coral-soft: #ff8a7a;
+      --gold: #f4a261;
+      --mint: #2a9d8f;
+      --ok: #2a9d8f;
+      --bad: #e76f51;
+      --radius: 22px;
+      --shadow: 0 12px 40px rgba(26, 58, 74, 0.12);
+      --font-display: "Baloo 2", system-ui, sans-serif;
+      --font-body: "Nunito", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      min-height: 100%;
+    }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse 80% 50% at 15% 10%, rgba(255, 255, 255, 0.55), transparent 55%),
+        radial-gradient(ellipse 60% 40% at 90% 20%, rgba(244, 162, 97, 0.35), transparent 50%),
+        linear-gradient(165deg, var(--sky-top) 0%, var(--sky-mid) 42%, var(--sky-bot) 100%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.35;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.7) 0 2px, transparent 3px),
+        radial-gradient(circle at 70% 15%, rgba(255, 255, 255, 0.6) 0 1.5px, transparent 2.5px),
+        radial-gradient(circle at 45% 70%, rgba(255, 255, 255, 0.5) 0 2px, transparent 3px),
+        radial-gradient(circle at 85% 55%, rgba(255, 255, 255, 0.55) 0 1.5px, transparent 2.5px);
+      animation: twinkle 5s ease-in-out infinite;
+      z-index: 0;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.25; }
+      50% { opacity: 0.45; }
+    }
+
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.85); opacity: 0; }
+      70% { transform: scale(1.06); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes bounceSoft {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 520px);
+      margin: 0 auto;
+      min-height: 100dvh;
+      padding: max(16px, env(safe-area-inset-top)) 18px max(24px, env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+    }
+
+    .screen {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      animation: riseIn 0.45s ease both;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    /* —— HOME —— */
+    .home {
+      justify-content: center;
+      gap: 1.4rem;
+      text-align: center;
+      min-height: calc(100dvh - 40px);
+    }
+
+    .brand {
+      font-family: var(--font-display);
+      font-size: clamp(3.2rem, 14vw, 4.4rem);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      color: var(--teal-deep);
+      text-shadow: 0 4px 0 rgba(255, 255, 255, 0.45);
+      animation: pop 0.7s ease both;
+    }
+
+    .brand span {
+      display: block;
+      font-size: 0.38em;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--coral);
+      margin-top: 0.35rem;
+      font-weight: 700;
+    }
+
+    .hero-orb {
+      width: min(72vw, 260px);
+      aspect-ratio: 1;
+      margin: 0.4rem auto 0;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 30%, #fff8f0 0%, transparent 40%),
+        radial-gradient(circle at 70% 70%, rgba(232, 90, 79, 0.35), transparent 55%),
+        linear-gradient(145deg, #5eb1c9, #0d7377 55%, #f4a261);
+      box-shadow: var(--shadow), inset 0 -20px 40px rgba(8, 87, 90, 0.25);
+      position: relative;
+      animation: bounceSoft 3.2s ease-in-out infinite;
+    }
+
+    .hero-orb::after {
+      content: "×";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-display);
+      font-size: 5.5rem;
+      font-weight: 800;
+      color: rgba(255, 253, 249, 0.92);
+      text-shadow: 0 6px 20px rgba(8, 87, 90, 0.35);
+    }
+
+    .home-copy h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.45rem, 5.5vw, 1.85rem);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    .home-copy p {
+      margin-top: 0.45rem;
+      color: var(--ink-soft);
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      margin-top: 0.5rem;
+    }
+
+    .btn {
+      font-family: var(--font-body);
+      font-weight: 800;
+      font-size: 1.1rem;
+      border: none;
+      cursor: pointer;
+      border-radius: 16px;
+      padding: 0.95rem 1.4rem;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: linear-gradient(120deg, var(--teal), var(--mint), var(--teal));
+      background-size: 200% 100%;
+      color: #fff;
+      animation: shimmer 4s linear infinite;
+      box-shadow: 0 8px 24px rgba(13, 115, 119, 0.35);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--teal-deep);
+      border: 2px solid rgba(13, 115, 119, 0.2);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+      padding: 0.5rem;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* —— SHELL (shared header) —— */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .back {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      border: 2px solid rgba(13, 115, 119, 0.18);
+      background: var(--surface);
+      color: var(--teal-deep);
+      font-size: 1.25rem;
+      font-weight: 800;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .topbar h1 {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--teal-deep);
+      flex: 1;
+      text-align: center;
+    }
+
+    .star-chip {
+      min-width: 52px;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--surface);
+      border: 2px solid rgba(244, 162, 97, 0.45);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: #c46b1a;
+      font-size: 0.95rem;
+    }
+
+    .panel {
+      background: var(--surface);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius);
+      padding: 1.15rem;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.65);
+    }
+
+    .section-lead {
+      color: var(--ink-soft);
+      font-weight: 600;
+      font-size: 0.98rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* —— NUMBER PICKER —— */
+    .num-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.55rem;
+    }
+
+    .num-pick {
+      aspect-ratio: 1;
+      border: none;
+      border-radius: 16px;
+      background: var(--surface-solid);
+      color: var(--teal-deep);
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 3px 0 rgba(13, 115, 119, 0.12);
+      position: relative;
+      transition: transform 0.12s ease, background 0.2s;
+    }
+
+    .num-pick:hover {
+      transform: translateY(-2px);
+    }
+
+    .num-pick.done {
+      background: linear-gradient(145deg, #d8f3ef, #a8e6cf);
+      color: var(--teal-deep);
+    }
+
+    .num-pick.done::after {
+      content: "★";
+      position: absolute;
+      top: 3px;
+      right: 6px;
+      font-size: 0.7rem;
+      color: var(--gold);
+    }
+
+    .mode-grid {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .mode-btn {
+      text-align: left;
+      padding: 1.1rem 1.2rem;
+      border-radius: 18px;
+      border: 2px solid transparent;
+      background: var(--surface-solid);
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.12s;
+    }
+
+    .mode-btn:hover {
+      border-color: rgba(13, 115, 119, 0.35);
+      transform: translateY(-2px);
+    }
+
+    .mode-btn strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--teal-deep);
+      margin-bottom: 0.2rem;
+    }
+
+    .mode-btn span {
+      color: var(--ink-soft);
+      font-weight: 600;
+      font-size: 0.92rem;
+      line-height: 1.35;
+    }
+
+    /* —— LEARN —— */
+    .learn-head {
+      text-align: center;
+      margin-bottom: 0.9rem;
+    }
+
+    .learn-head .eq {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--coral);
+      font-weight: 800;
+    }
+
+    .learn-head p {
+      color: var(--ink-soft);
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+
+    .array-board {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+      margin: 0.8rem 0 1rem;
+      min-height: 120px;
+    }
+
+    .array-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, var(--coral-soft), var(--coral));
+      box-shadow: 0 2px 0 rgba(180, 60, 50, 0.25);
+      animation: pop 0.4s ease both;
+    }
+
+    .table-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      max-height: 240px;
+      overflow-y: auto;
+      margin-bottom: 1rem;
+      padding-right: 4px;
+    }
+
+    .table-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.65rem 0.9rem;
+      border-radius: 12px;
+      background: rgba(126, 200, 227, 0.18);
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .table-line:hover,
+    .table-line.active {
+      background: rgba(13, 115, 119, 0.12);
+      border-color: rgba(13, 115, 119, 0.35);
+    }
+
+    .table-line b {
+      color: var(--teal-deep);
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+    }
+
+    /* —— PLAY —— */
+    .play-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+    }
+
+    .hearts {
+      letter-spacing: 0.15em;
+      color: var(--coral);
+      font-size: 1.1rem;
+    }
+
+    .question {
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 12vw, 3.4rem);
+      font-weight: 800;
+      text-align: center;
+      color: var(--teal-deep);
+      margin: 0.4rem 0 0.6rem;
+      letter-spacing: 0.02em;
+    }
+
+    .answer-display {
+      width: 100%;
+      min-height: 64px;
+      border-radius: 16px;
+      background: #fff;
+      border: 3px solid rgba(13, 115, 119, 0.2);
+      display: grid;
+      place-items: center;
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 0.85rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .answer-display.ok {
+      border-color: var(--ok);
+      background: #e8f8f5;
+      color: var(--ok);
+    }
+
+    .answer-display.bad {
+      border-color: var(--bad);
+      background: #fff0ec;
+      color: var(--bad);
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+
+    .feedback {
+      min-height: 1.5rem;
+      text-align: center;
+      font-weight: 800;
+      margin-bottom: 0.7rem;
+      font-size: 1.05rem;
+    }
+
+    .feedback.ok { color: var(--ok); }
+    .feedback.bad { color: var(--bad); }
+
+    .choices {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .choice {
+      padding: 1rem;
+      border-radius: 14px;
+      border: 2px solid rgba(13, 115, 119, 0.15);
+      background: #fff;
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--teal-deep);
+      cursor: pointer;
+      transition: transform 0.1s, background 0.15s, border-color 0.15s;
+    }
+
+    .choice:hover:not(:disabled) {
+      border-color: var(--teal);
+      transform: translateY(-2px);
+    }
+
+    .choice:disabled {
+      cursor: default;
+    }
+
+    .choice.correct {
+      background: #e8f8f5;
+      border-color: var(--ok);
+      color: var(--ok);
+    }
+
+    .choice.wrong {
+      background: #fff0ec;
+      border-color: var(--bad);
+      color: var(--bad);
+    }
+
+    .numpad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.55rem;
+    }
+
+    .pad-key {
+      padding: 0.85rem 0;
+      border: none;
+      border-radius: 14px;
+      background: #fff;
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--teal-deep);
+      cursor: pointer;
+      box-shadow: 0 3px 0 rgba(13, 115, 119, 0.1);
+    }
+
+    .pad-key:active {
+      transform: translateY(2px);
+      box-shadow: none;
+    }
+
+    .pad-key.action {
+      background: rgba(126, 200, 227, 0.35);
+      font-size: 1rem;
+    }
+
+    .pad-key.go {
+      background: linear-gradient(135deg, var(--teal), var(--mint));
+      color: #fff;
+    }
+
+    /* —— RESULT / PROGRESS —— */
+    .result-wrap {
+      text-align: center;
+      padding: 1.5rem 0.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .result-badge {
+      width: 110px;
+      height: 110px;
+      margin: 0 auto;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 800;
+      color: #fff;
+      background: linear-gradient(145deg, var(--gold), var(--coral));
+      box-shadow: var(--shadow);
+      animation: pop 0.55s ease both;
+    }
+
+    .result-wrap h2 {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--teal-deep);
+    }
+
+    .result-wrap p {
+      color: var(--ink-soft);
+      font-weight: 600;
+      line-height: 1.45;
+    }
+
+    .progress-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .prog-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 0.9rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.65);
+    }
+
+    .prog-row .n {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--teal);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+
+    .prog-bar {
+      flex: 1;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(13, 115, 119, 0.12);
+      overflow: hidden;
+    }
+
+    .prog-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--mint), var(--gold));
+      transition: width 0.5s ease;
+    }
+
+    .prog-stars {
+      font-weight: 800;
+      color: #c46b1a;
+      min-width: 2.5rem;
+      text-align: right;
+    }
+
+    .hint-strip {
+      margin-top: auto;
+      padding-top: 1rem;
+      text-align: center;
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    @media (max-width: 380px) {
+      .num-grid { gap: 0.4rem; }
+      .num-pick { font-size: 1.25rem; border-radius: 12px; }
+      .dot { width: 14px; height: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <!-- HOME -->
+    <section class="screen home active" id="screen-home" aria-label="Acasă">
+      <div class="brand" aria-label="Steluța">Steluța<span>tabla înmulțirii</span></div>
+      <div class="hero-orb" aria-hidden="true"></div>
+      <div class="home-copy">
+        <h2>Hai să învățăm împreună!</h2>
+        <p>Alege o cifră, privește tabla, apoi joacă. Fiecare răspuns corect îți aduce o stea.</p>
+      </div>
+      <div class="cta-row">
+        <button type="button" class="btn btn-primary" id="btn-start">Încep aventura</button>
+        <button type="button" class="btn btn-secondary" id="btn-progress-home">Vezi progresul meu</button>
+      </div>
+    </section>
+
+    <!-- CHOOSE TABLE -->
+    <section class="screen" id="screen-pick" aria-label="Alege cifra">
+      <div class="topbar">
+        <button type="button" class="back" data-go="home" aria-label="Înapoi">←</button>
+        <h1>Alege cifra</h1>
+        <div class="star-chip" id="stars-total-pick" title="Stele totale">★ 0</div>
+      </div>
+      <p class="section-lead">Cu ce cifră vrei să lucrezi azi?</p>
+      <div class="panel">
+        <div class="num-grid" id="num-grid"></div>
+        <div class="mode-grid">
+          <button type="button" class="mode-btn" id="mode-learn" disabled>
+            <strong>1. Învață</strong>
+            <span>Vezi tabla și grupulețele de puncte — fără grabă.</span>
+          </button>
+          <button type="button" class="mode-btn" id="mode-play" disabled>
+            <strong>2. Joacă</strong>
+            <span>10 întrebări cu 3 vieți. Alegi răspunsul din 4 variante.</span>
+          </button>
+          <button type="button" class="mode-btn" id="mode-mix">
+            <strong>Amestec magic</strong>
+            <span>Întrebări din toate cifrele pe care le-ai mai exersat.</span>
+          </button>
+        </div>
+      </div>
+      <p class="hint-strip" id="pick-hint">Atinge o cifră ca să începi.</p>
+    </section>
+
+    <!-- LEARN -->
+    <section class="screen" id="screen-learn" aria-label="Învață">
+      <div class="topbar">
+        <button type="button" class="back" data-go="pick" aria-label="Înapoi">←</button>
+        <h1 id="learn-title">Tabla lui 3</h1>
+        <div class="star-chip" id="stars-learn">★ 0</div>
+      </div>
+      <div class="panel">
+        <div class="learn-head">
+          <div class="eq" id="learn-eq">3 × 4 = 12</div>
+          <p id="learn-explain">4 grupuri cu câte 3 puncte</p>
+        </div>
+        <div class="array-board" id="array-board" aria-hidden="true"></div>
+        <div class="table-list" id="table-list"></div>
+        <button type="button" class="btn btn-primary" id="btn-ready" style="width:100%">Sunt gata — vreau să joc!</button>
+      </div>
+    </section>
+
+    <!-- PLAY -->
+    <section class="screen" id="screen-play" aria-label="Joacă">
+      <div class="topbar">
+        <button type="button" class="back" data-go="pick" aria-label="Înapoi">←</button>
+        <h1 id="play-title">Joacă</h1>
+        <div class="star-chip" id="stars-play">★ 0</div>
+      </div>
+      <div class="panel">
+        <div class="play-meta">
+          <span id="q-progress">Întrebarea 1 / 10</span>
+          <span class="hearts" id="hearts" aria-label="Vieți">♥♥♥</span>
+        </div>
+        <div class="question" id="question">3 × 4</div>
+        <div class="answer-display" id="answer-display">?</div>
+        <div class="feedback" id="feedback"></div>
+        <div class="choices" id="choices"></div>
+        <button type="button" class="btn btn-primary" id="btn-next" style="width:100%;display:none">Următoarea</button>
+      </div>
+    </section>
+
+    <!-- RESULT -->
+    <section class="screen" id="screen-result" aria-label="Rezultat">
+      <div class="result-wrap">
+        <div class="result-badge" id="result-badge">★</div>
+        <h2 id="result-title">Bravo!</h2>
+        <p id="result-text">Ai câștigat 8 stele.</p>
+        <div class="cta-row" style="width:100%">
+          <button type="button" class="btn btn-primary" id="btn-again">Mai joc o dată</button>
+          <button type="button" class="btn btn-secondary" id="btn-result-pick">Altă cifră</button>
+          <button type="button" class="btn btn-ghost" id="btn-result-home">Acasă</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROGRESS -->
+    <section class="screen" id="screen-progress" aria-label="Progres">
+      <div class="topbar">
+        <button type="button" class="back" data-go="home" aria-label="Înapoi">←</button>
+        <h1>Progresul tău</h1>
+        <div class="star-chip" id="stars-progress">★ 0</div>
+      </div>
+      <p class="section-lead">Stelele arată cât de bine cunoști fiecare cifră.</p>
+      <div class="panel">
+        <div class="progress-list" id="progress-list"></div>
+      </div>
+      <button type="button" class="btn btn-primary" id="btn-progress-play" style="width:100%;margin-top:1rem">Continui să învăț</button>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const STORAGE_KEY = "steluța_inmultire_v1";
+      const MAX_N = 10;
+      const QUESTIONS_PER_ROUND = 10;
+      const MAX_LIVES = 3;
+      const PRAISE = [
+        "Super!",
+        "Bravo!",
+        "Exact!",
+        "Ești o stea!",
+        "Minunat!",
+        "Da, așa!",
+        "Perfect!",
+      ];
+      const ENCOURAGE = [
+        "Nicio problemă — mai încearcă!",
+        "Aproape! Continuă!",
+        "Hai că poți!",
+        "Încearcă din nou cu calm.",
+      ];
+
+      /** @type {{ stars: number, perTable: Record<string, number>, practiced: number[] }} */
+      let state = loadState();
+      let selected = null;
+      let learnFactor = 1;
+      let round = null;
+
+      const $ = (id) => document.getElementById(id);
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return defaultState();
+          const parsed = JSON.parse(raw);
+          return {
+            stars: Number(parsed.stars) || 0,
+            perTable: parsed.perTable && typeof parsed.perTable === "object" ? parsed.perTable : {},
+            practiced: Array.isArray(parsed.practiced) ? parsed.practiced : [],
+          };
+        } catch {
+          return defaultState();
+        }
+      }
+
+      function defaultState() {
+        return { stars: 0, perTable: {}, practiced: [] };
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (_) { /* ignore */ }
+      }
+
+      function tableStars(n) {
+        return Number(state.perTable[String(n)]) || 0;
+      }
+
+      function addStars(n, amount) {
+        state.stars += amount;
+        const key = String(n);
+        state.perTable[key] = Math.min(10, (Number(state.perTable[key]) || 0) + amount);
+        if (!state.practiced.includes(n)) state.practiced.push(n);
+        saveState();
+        refreshStarChips();
+      }
+
+      function refreshStarChips() {
+        const label = "★ " + state.stars;
+        ["stars-total-pick", "stars-learn", "stars-play", "stars-progress"].forEach((id) => {
+          const el = $(id);
+          if (el) el.textContent = label;
+        });
+      }
+
+      function showScreen(name) {
+        document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
+        const el = $("screen-" + name);
+        if (el) el.classList.add("active");
+      }
+
+      function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      function pickPraise() {
+        return PRAISE[Math.floor(Math.random() * PRAISE.length)];
+      }
+
+      function pickEncourage() {
+        return ENCOURAGE[Math.floor(Math.random() * ENCOURAGE.length)];
+      }
+
+      /* —— PICK —— */
+      function renderNumGrid() {
+        const grid = $("num-grid");
+        grid.innerHTML = "";
+        for (let i = 1; i <= MAX_N; i++) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "num-pick" + (tableStars(i) >= 5 ? " done" : "");
+          btn.textContent = String(i);
+          btn.setAttribute("aria-label", "Cifra " + i);
+          if (selected === i) btn.style.outline = "3px solid " + getComputedStyle(document.documentElement).getPropertyValue("--coral").trim();
+          btn.addEventListener("click", () => selectNumber(i));
+          grid.appendChild(btn);
+        }
+      }
+
+      function selectNumber(n) {
+        selected = n;
+        $("mode-learn").disabled = false;
+        $("mode-play").disabled = false;
+        $("pick-hint").textContent = "Ai ales cifra " + n + ". Învață mai întâi, apoi joacă!";
+        renderNumGrid();
+      }
+
+      /* —— LEARN —— */
+      function openLearn() {
+        if (!selected) return;
+        learnFactor = 1;
+        $("learn-title").textContent = "Tabla lui " + selected;
+        renderLearn();
+        showScreen("learn");
+      }
+
+      function renderLearn() {
+        const a = selected;
+        const b = learnFactor;
+        $("learn-eq").textContent = a + " × " + b + " = " + a * b;
+        $("learn-explain").textContent =
+          b === 1
+            ? "Un grup cu " + a + (a === 1 ? " punct" : " puncte")
+            : b + " grupuri cu câte " + a + " puncte";
+
+        const board = $("array-board");
+        board.innerHTML = "";
+        const rows = Math.min(b, 10);
+        for (let r = 0; r < rows; r++) {
+          const row = document.createElement("div");
+          row.className = "array-row";
+          for (let c = 0; c < a; c++) {
+            const d = document.createElement("div");
+            d.className = "dot";
+            d.style.animationDelay = (r * 0.04 + c * 0.03) + "s";
+            row.appendChild(d);
+          }
+          board.appendChild(row);
+        }
+
+        const list = $("table-list");
+        list.innerHTML = "";
+        for (let i = 1; i <= MAX_N; i++) {
+          const line = document.createElement("button");
+          line.type = "button";
+          line.className = "table-line" + (i === learnFactor ? " active" : "");
+          line.innerHTML = "<span>" + a + " × " + i + "</span><b>" + a * i + "</b>";
+          line.addEventListener("click", () => {
+            learnFactor = i;
+            renderLearn();
+          });
+          list.appendChild(line);
+        }
+      }
+
+      /* —— PLAY —— */
+      function buildQueue(mode) {
+        const pairs = [];
+        if (mode === "mix") {
+          const pool = state.practiced.length ? state.practiced.slice() : [1, 2, 3, 4, 5];
+          while (pairs.length < QUESTIONS_PER_ROUND) {
+            const a = pool[Math.floor(Math.random() * pool.length)];
+            const b = 1 + Math.floor(Math.random() * MAX_N);
+            pairs.push({ a, b });
+          }
+        } else {
+          const factors = shuffle(Array.from({ length: MAX_N }, (_, i) => i + 1));
+          for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
+            pairs.push({ a: selected, b: factors[i % MAX_N] });
+          }
+        }
+        return shuffle(pairs);
+      }
+
+      function startPlay(mode) {
+        if (mode !== "mix" && !selected) return;
+        round = {
+          mode,
+          queue: buildQueue(mode),
+          index: 0,
+          correct: 0,
+          lives: MAX_LIVES,
+          answered: false,
+          current: null,
+        };
+        $("play-title").textContent =
+          mode === "mix" ? "Amestec" : "Cifra " + selected;
+        showScreen("play");
+        nextQuestion();
+      }
+
+      function nextQuestion() {
+        if (!round) return;
+        if (round.lives <= 0 || round.index >= round.queue.length) {
+          endRound();
+          return;
+        }
+        round.answered = false;
+        round.current = round.queue[round.index];
+        const { a, b } = round.current;
+        const flip = Math.random() > 0.5;
+        $("question").textContent = flip ? b + " × " + a : a + " × " + b;
+        $("answer-display").textContent = "?";
+        $("answer-display").className = "answer-display";
+        $("feedback").textContent = "";
+        $("feedback").className = "feedback";
+        $("q-progress").textContent =
+          "Întrebarea " + (round.index + 1) + " / " + QUESTIONS_PER_ROUND;
+        $("hearts").textContent = "♥".repeat(round.lives) + "♡".repeat(MAX_LIVES - round.lives);
+        $("btn-next").style.display = "none";
+
+        const correct = a * b;
+        const opts = new Set([correct]);
+        while (opts.size < 4) {
+          const delta = (Math.floor(Math.random() * 5) + 1) * (Math.random() > 0.5 ? 1 : -1);
+          const wrong = correct + delta;
+          if (wrong > 0 && wrong !== correct) opts.add(wrong);
+          else opts.add(correct + opts.size + 1);
+        }
+        const choices = $("choices");
+        choices.innerHTML = "";
+        shuffle([...opts]).forEach((val) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "choice";
+          btn.textContent = String(val);
+          btn.addEventListener("click", () => chooseAnswer(val, btn));
+          choices.appendChild(btn);
+        });
+      }
+
+      function chooseAnswer(val, btn) {
+        if (!round || round.answered) return;
+        round.answered = true;
+        const { a, b } = round.current;
+        const correct = a * b;
+        const display = $("answer-display");
+        const feedback = $("feedback");
+        const choiceBtns = [...$("choices").querySelectorAll(".choice")];
+
+        choiceBtns.forEach((c) => {
+          c.disabled = true;
+          const n = Number(c.textContent);
+          if (n === correct) c.classList.add("correct");
+        });
+
+        if (val === correct) {
+          btn.classList.add("correct");
+          display.textContent = String(correct);
+          display.classList.add("ok");
+          feedback.textContent = pickPraise();
+          feedback.classList.add("ok");
+          round.correct += 1;
+          if (round.mode !== "mix") addStars(selected, 1);
+          else addStars(a, 1);
+        } else {
+          btn.classList.add("wrong");
+          display.textContent = String(correct);
+          display.classList.add("bad");
+          feedback.textContent = pickEncourage() + " Răspunsul e " + correct + ".";
+          feedback.classList.add("bad");
+          round.lives -= 1;
+          $("hearts").textContent =
+            "♥".repeat(Math.max(0, round.lives)) +
+            "♡".repeat(MAX_LIVES - Math.max(0, round.lives));
+        }
+
+        round.index += 1;
+        $("btn-next").style.display = "block";
+        refreshStarChips();
+      }
+
+      function endRound() {
+        const won = round.lives > 0 && round.correct >= 7;
+        const perfect = round.correct === QUESTIONS_PER_ROUND && round.lives === MAX_LIVES;
+        $("result-badge").textContent = perfect ? "★" : won ? "♪" : "!";
+        $("result-title").textContent = perfect
+          ? "Stea strălucitoare!"
+          : won
+            ? "Bravo, campioană!"
+            : "Hai să mai exersăm!";
+        $("result-text").textContent =
+          "Ai răspuns corect la " +
+          round.correct +
+          " din " +
+          Math.min(round.index, QUESTIONS_PER_ROUND) +
+          " întrebări. Ai acum " +
+          state.stars +
+          " stele în total.";
+        showScreen("result");
+      }
+
+      /* —— PROGRESS —— */
+      function renderProgress() {
+        const list = $("progress-list");
+        list.innerHTML = "";
+        for (let i = 1; i <= MAX_N; i++) {
+          const stars = tableStars(i);
+          const row = document.createElement("div");
+          row.className = "prog-row";
+          row.innerHTML =
+            '<div class="n">' +
+            i +
+            '</div><div class="prog-bar"><div class="prog-fill" style="width:' +
+            stars * 10 +
+            '%"></div></div><div class="prog-stars">' +
+            stars +
+            "★</div>";
+          list.appendChild(row);
+        }
+        refreshStarChips();
+      }
+
+      /* —— WIRING —— */
+      $("btn-start").addEventListener("click", () => {
+        renderNumGrid();
+        refreshStarChips();
+        showScreen("pick");
+      });
+
+      $("btn-progress-home").addEventListener("click", () => {
+        renderProgress();
+        showScreen("progress");
+      });
+
+      $("btn-progress-play").addEventListener("click", () => {
+        renderNumGrid();
+        showScreen("pick");
+      });
+
+      $("mode-learn").addEventListener("click", openLearn);
+      $("mode-play").addEventListener("click", () => startPlay("table"));
+      $("mode-mix").addEventListener("click", () => startPlay("mix"));
+      $("btn-ready").addEventListener("click", () => startPlay("table"));
+
+      $("btn-next").addEventListener("click", () => {
+        if (round && (round.lives <= 0 || round.index >= round.queue.length)) endRound();
+        else nextQuestion();
+      });
+
+      $("btn-again").addEventListener("click", () => {
+        if (round) startPlay(round.mode);
+      });
+
+      $("btn-result-pick").addEventListener("click", () => {
+        renderNumGrid();
+        showScreen("pick");
+      });
+
+      $("btn-result-home").addEventListener("click", () => showScreen("home"));
+
+      document.querySelectorAll("[data-go]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const dest = btn.getAttribute("data-go");
+          if (dest === "pick") {
+            renderNumGrid();
+            refreshStarChips();
+          }
+          if (dest === "home") refreshStarChips();
+          if (dest === "progress") renderProgress();
+          showScreen(dest);
+        });
+      });
+
+      refreshStarChips();
+    })();
+  </script>
+</body>
+</html>
