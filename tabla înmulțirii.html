@@ -53,7 +53,6 @@
         .review-btn{padding:12px 20px;background:linear-gradient(135deg,#ff7675,#d63031);color:white;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:.3s;box-shadow:0 5px 20px rgba(214,48,49,.3);margin-bottom:10px;display:none}
         .review-btn.visible{display:block}.review-btn:hover{transform:translateY(-3px)}
         .review-count{background:rgba(255,255,255,.3);padding:2px 8px;border-radius:10px;font-size:.85rem;margin-left:6px}
-        /* ⭐ BANNER ANTRENAMENT 2H - mai proeminent */
         .practice-banner{display:none;margin-top:15px;padding:20px;background:linear-gradient(135deg,#a29bfe,#6c5ce7);border-radius:20px;color:white;box-shadow:0 8px 30px rgba(108,92,231,.4);border:3px solid #fff}
         .practice-banner.visible{display:block}
         .practice-banner h2{font-size:1.3rem;margin-bottom:6px}
@@ -120,7 +119,6 @@
         .results-detail{color:#636e72;margin-bottom:15px;font-weight:600;line-height:1.6;font-size:.9rem}
         .results-reason{display:inline-block;padding:6px 14px;border-radius:12px;font-weight:700;font-size:.85rem;margin-bottom:12px}
         .reason-perfect{background:#eafff7;color:var(--success)}.reason-time{background:#fff9e6;color:#e67e22}
-        /* ⭐ Mesaj special când toate cifrele sunt deblocate */
         .all-done-note{margin-top:10px;padding:10px;background:linear-gradient(135deg,#a29bfe,#6c5ce7);border-radius:12px;color:white;font-weight:700;font-size:.9rem}
         .auto-return-msg{margin-top:12px;padding:8px;background:#faf5ff;border-radius:12px;font-weight:600;color:var(--primary);font-size:.85rem}
         @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-12px) rotate(-2deg)}40%{transform:translateX(12px) rotate(2deg)}60%{transform:translateX(-8px)}80%{transform:translateX(8px)}}
@@ -172,7 +170,7 @@
         <!-- ⭐ TEST FINAL - apare DOAR după cele 2h -->
         <div class="final-test-banner" id="finalTestBanner">
             <h2>🏆 Testul Final e gata!</h2>
-            <p>40 de întrebări din toată tabla înmulțirii, 4 minute!</p>
+            <p>40 de întrebări din toată tabla înmulțirii, 5 minute!</p>
             <button class="btn-final" onclick="startFinalTest()">🚀 Începe Testul Final!</button>
         </div>
     </div>
@@ -214,8 +212,8 @@
     </div>
 </div>
 <script>
-const MAX_NUMBER=9,QUESTION_TIME=7,SESSION_TIME=120,FINAL_TEST_TIME=240,FINAL_TEST_QUESTIONS=40,LEARN_TIME=60,AUTO_RETURN_DELAY=3;
-const PRACTICE_WINDOW_MS=2*60*60*1000;   // ⭐ 2 ORE de antrenament după toate verzi
+const MAX_NUMBER=9,QUESTION_TIME=7,SESSION_TIME=120,FINAL_TEST_TIME=300,FINAL_TEST_QUESTIONS=40,LEARN_TIME=60,AUTO_RETURN_DELAY=3; // MODIFICAT: FINAL_TEST_TIME = 300 (5 min)
+const PRACTICE_WINDOW_MS=2*60*60*1000;   
 const STORAGE_PROGRESS='tablaMagica_progress',STORAGE_MISTAKES='tablaMagica_mistakes',STORAGE_HISTORY='tablaMagica_history',STORAGE_STREAK='tablaMagica_streak',STORAGE_ALLDONE='tablaMagica_allDoneDate',STORAGE_ALLDONE_TS='tablaMagica_allDoneTimestamp';
 
 let completedNumbers=[],mistakeSet=new Set(),dayHistory={},streakData={count:0,lastDate:null},allDoneDate=null,allDoneTimestamp=null;
@@ -231,7 +229,7 @@ const STEPS=[
     {icon:'🎯',title:'Pasul 2: Testează-te',desc:'7 SECUNDE per întrebare, 2 MINUTE per cifră. Tastează răspunsul și apasă ✓!'},
     {icon:'🔥',title:'Pasul 3: Serie Zilnică',desc:'Calendarul bifează automat: VERDE ✅ zilele făcute, ROȘU ✗ cele nefăcute.'},
     {icon:'🔄',title:'Pasul 4: Revizuiește',desc:'Greșelile se salvează. Apasă "Revizuiește Greșelile" pentru a le exersa din nou!'},
-    {icon:'🏆',title:'Pasul 5: Testul Final',desc:'Când toate 9 sunt verzi → ai 2 ORE de antrenament liber → apoi Testul Final (40 întrebări, 4 min). A doua zi → reset!'}
+    {icon:'🏆',title:'Pasul 5: Testul Final',desc:'Când toate 9 sunt verzi → ai 2 ORE de antrenament liber → apoi Testul Final (40 întrebări, 5 min). După test → reset total!'}
 ];
 let currentStep=0;
 
@@ -256,8 +254,8 @@ function saveAllDone(){try{if(allDoneDate)localStorage.setItem(STORAGE_ALLDONE,a
 
 function markCompleted(num){if(!completedNumbers.includes(num)){completedNumbers.push(num);saveProgress();if(completedNumbers.length>=MAX_NUMBER&&!allDoneDate){allDoneDate=todayStr();allDoneTimestamp=Date.now();saveAllDone()}}}
 function allCompleted(){return completedNumbers.length>=MAX_NUMBER}
-function resetAllProgress(){completedNumbers=[];saveProgress()}
-function checkDayReset(){if(allDoneDate&&allDoneDate<todayStr()){completedNumbers=[];saveProgress();allDoneDate=null;allDoneTimestamp=null;saveAllDone()}}
+function resetAllProgress(){completedNumbers=[];mistakeSet.clear();allDoneDate=null;allDoneTimestamp=null;saveProgress();saveMistakes();saveAllDone()} // Reset complet inclusiv greșeli
+function checkDayReset(){if(allDoneDate&&allDoneDate<todayStr()){resetAllProgress()}}
 function isInPracticeWindow(){if(!allDoneTimestamp)return false;return(Date.now()-allDoneTimestamp)<PRACTICE_WINDOW_MS}
 function getPracticeRemainingMs(){if(!allDoneTimestamp)return 0;return Math.max(0,PRACTICE_WINDOW_MS-(Date.now()-allDoneTimestamp))}
 
@@ -364,16 +362,30 @@ function checkAnswer(){if(questionAnswered||(!globalTimerRunning&&globalTimeLeft
 function updateScore(){document.getElementById('correctCount').textContent=totalCorrect;document.getElementById('wrongCount').textContent=totalWrong}
 
 function endSession(){stopQuestionTimer();stopGlobalTimer();document.getElementById('quizContent').style.display='none';document.getElementById('resultsScreen').classList.add('active');if(globalTimeLeft<=0&&stopReason!=='timeout')stopReason='timeout';if(!isReviewMode)markTodayDone();
-    // ⭐ Detectăm momentul exact când a 9-a cifră devine verde
+    
+    // LOGICĂ RESETARE DUPĂ TEST FINAL
+    const wasFinalTest = isFinalTest;
+
     const justCompletedAll=(stopReason==='perfect'&&!isFinalTest&&!isReviewMode&&currentNumber&&!allCompleted());
     if(stopReason==='perfect'&&!isFinalTest&&!isReviewMode&&currentNumber)markCompleted(currentNumber);
+    
     const re=document.getElementById('resultsReason');let emoji,title,text,cls;
     if(isReviewMode){if(stopReason==='perfect'){emoji='🔄✨';title='Greșeli revizuite!';text='✨ Ai rezolvat toate greșelile!';cls='reason-perfect'}else{emoji='⏰🔄';title='Timp expirat';text=`Mai rămâneau ${mainQueue.length+retryQueue.length} exerciții.`;cls='reason-time'}}
-    else if(isFinalTest){if(stopReason==='perfect'){emoji='👑🦄🏆';title='MAESTRU SUPREM!';text='✨ Test Final trecut! Mâine aventura o ia de la capăt!';cls='reason-perfect'}else{emoji='⏰🦄';title='Test Final - Timp expirat!';text=`Mai rămâneau ${mainQueue.length+retryQueue.length} întrebări.`;cls='reason-time'}}
+    else if(isFinalTest){
+        if(stopReason==='perfect'){emoji='👑🦄🏆';title='MAESTRU SUPREM!';text='✨ Test Final trecut! Totul s-a resetat pentru mâine!';cls='reason-perfect'}
+        else{emoji='⏰🦄';title='Test Final - Timp expirat!';text=`Mai rămâneau ${mainQueue.length+retryQueue.length} întrebări. Resetare completă!`;cls='reason-time'}
+    }
     else{if(stopReason==='perfect'){emoji='🦄👑';title=`Cifra ${currentNumber} completă!`;text=`✨ Mini-test terminat!`;cls='reason-perfect'}else{emoji='⏰🦄';title='Timpul s-a terminat!';text=`⏰ Mai exersează cifra ${currentNumber}!`;cls='reason-time'}}
+    
     document.getElementById('resultsEmoji').textContent=emoji;document.getElementById('resultsTitle').textContent=title;re.textContent=text;re.className=`results-reason ${cls}`;document.getElementById('resultsScore').textContent=`${totalCorrect} ✅ / ${totalWrong} ❌`;document.getElementById('resultsDetail').innerHTML=`Scor: <b>${totalCorrect}</b> răspunsuri corecte.${isReviewMode&&stopReason==='perfect'?'<br>🎉 Greșelile corecte eliminate din jurnal!':''}`;
-    // ⭐ Afișăm mesajul special doar când TOATE cifrele au devenit verzi acum
+    
     document.getElementById('allDoneNote').style.display=(justCompletedAll&&allCompleted())?'block':'none';
+    
+    // ⭐ RESETARE TOTALĂ DACĂ A FOST TEST FINAL
+    if(wasFinalTest) {
+        resetAllProgress();
+    }
+
     startAutoReturn()}
 
 function startAutoReturn(){let cd=AUTO_RETURN_DELAY;document.getElementById('autoReturnCountdown').textContent=cd;autoReturnTimer=setInterval(()=>{cd--;document.getElementById('autoReturnCountdown').textContent=cd;if(cd<=0){clearInterval(autoReturnTimer);showMenu()}},1000)}
