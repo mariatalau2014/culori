@@ -49,6 +49,25 @@
         .practice-banner p{font-size:.9rem;margin-bottom:10px;opacity:.95;line-height:1.5}
         .practice-timer-display{font-size:2.4rem;font-weight:800;margin:10px 0;text-shadow:2px 2px 0 rgba(0,0,0,.2);letter-spacing:2px}
         .practice-hint{font-size:.8rem;opacity:.9;margin-top:8px;background:rgba(255,255,255,.15);padding:8px;border-radius:10px}
+        /* ⭐ STILURI TEST PERSONALIZAT */
+        .custom-test-panel{display:none;margin-top:15px;padding:18px;background:#faf5ff;border-radius:20px;border:2px solid #f0e6ff}
+        .custom-test-panel.visible{display:block}
+        .custom-test-panel h3{color:var(--primary);margin-bottom:10px;font-size:1.1rem}
+        .custom-num-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
+        .custom-num-btn{aspect-ratio:1;border:3px solid #f0e6ff;border-radius:12px;background:white;font-size:1.2rem;font-weight:700;cursor:pointer;transition:.3s;color:var(--primary)}
+        .custom-num-btn.selected{background:var(--primary);color:white;border-color:var(--primary)}
+        .custom-num-btn:hover{transform:translateY(-2px)}
+        .custom-actions{display:flex;gap:8px;margin-bottom:12px}
+        .custom-actions button{flex:1;padding:8px;border:2px solid #f0e6ff;border-radius:12px;background:white;font-weight:700;font-size:.8rem;cursor:pointer;color:var(--primary);transition:.3s;font-family:'Fredoka',sans-serif}
+        .custom-actions button:hover{background:#f0e6ff}
+        .btn-start-custom{padding:12px 25px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:white;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:.3s;box-shadow:0 5px 20px rgba(108,92,231,.3);font-family:'Fredoka',sans-serif}
+        .btn-start-custom:hover{transform:translateY(-3px)}
+        .btn-start-custom:disabled{opacity:.5;cursor:not-allowed;transform:none}
+        .btn-cancel-custom{margin-top:8px;padding:8px;background:transparent;border:2px solid #ddd;border-radius:12px;color:#636e72;font-weight:600;cursor:pointer;width:100%;transition:.3s;font-family:'Fredoka',sans-serif}
+        .btn-cancel-custom:hover{border-color:var(--primary);color:var(--primary)}
+        .btn-open-custom{padding:12px 20px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:white;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:.3s;box-shadow:0 5px 20px rgba(108,92,231,.3);margin-bottom:10px;display:none;font-family:'Fredoka',sans-serif}
+        .btn-open-custom.visible{display:block}
+        .btn-open-custom:hover{transform:translateY(-3px)}
         .learn-panel{display:none;margin-top:15px;padding:18px;background:#faf5ff;border-radius:20px;border:2px solid #f0e6ff}
         .learn-panel.visible{display:block}
         .learn-panel h3{color:var(--primary);margin-bottom:10px;font-size:1.1rem}
@@ -139,7 +158,22 @@
         <p style="margin-bottom:8px;font-weight:700;color:var(--primary);font-size:.9rem;" id="menuInstruction">Alege următoarea cifră magică:</p>
         <div class="number-grid" id="numberGrid"></div>
         
-        <!-- Banner Antrenament (opțional, vizibil în primele 2h) -->
+        <!-- ⭐ BUTON TEST PERSONALIZAT -->
+        <button class="btn-open-custom" id="btnOpenCustom" onclick="openCustomTestPanel()">🎲 Test Personalizat (15 întrebări)</button>
+        
+        <!-- ⭐ PANOU TEST PERSONALIZAT -->
+        <div class="custom-test-panel" id="customTestPanel">
+            <h3>🎲 Alege cifrele pentru test</h3>
+            <div class="custom-num-grid" id="customNumGrid"></div>
+            <div class="custom-actions">
+                <button onclick="customSelectAll()">Selectează tot</button>
+                <button onclick="customDeselectAll()">Deselectează tot</button>
+            </div>
+            <p style="font-size:.8rem;color:#636e72;margin-bottom:10px;font-weight:600;">Cifre selectate: <span id="customSelectedCount" style="color:var(--primary)">0</span></p>
+            <button class="btn-start-custom" id="btnStartCustom" onclick="startCustomTest()" disabled>🚀 Începe Testul (15 întrebări)</button>
+            <button class="btn-cancel-custom" onclick="closeCustomTestPanel()">← Înapoi</button>
+        </div>
+        
         <div class="practice-banner" id="practiceBanner">
             <h2>🎯 Perioadă de Antrenament!</h2>
             <p>Toate cifrele sunt verzi! Poți exersa liber sau poți da Testul Final oricând.</p>
@@ -158,7 +192,6 @@
             <button class="btn-cancel-learn" onclick="closeLearnPanel()">← Înapoi la meniu</button>
         </div>
         
-        <!-- ⭐ TEST FINAL - Disponibil IMEDIAT ce toate cifrele sunt verzi -->
         <div class="final-test-banner" id="finalTestBanner">
             <h2>🏆 Testul Final e gata!</h2>
             <p>15 întrebări din toată tabla înmulțirii, 6 minute!</p>
@@ -203,14 +236,15 @@
     </div>
 </div>
 <script>
-const MAX_NUMBER=10, MINI_TEST_QUESTIONS=5, QUESTION_TIME=20, SESSION_TIME=120, FINAL_TEST_TIME=360, FINAL_TEST_QUESTIONS=15, LEARN_TIME=60, AUTO_RETURN_DELAY=3;
+const MAX_NUMBER=10, MINI_TEST_QUESTIONS=5, QUESTION_TIME=20, SESSION_TIME=120, FINAL_TEST_TIME=360, FINAL_TEST_QUESTIONS=15, CUSTOM_TEST_QUESTIONS=15, LEARN_TIME=60, AUTO_RETURN_DELAY=3;
 const PRACTICE_WINDOW_MS=2*60*60*1000;
 
 const STORAGE_PROGRESS='tablaMagica_progress_v3',STORAGE_MISTAKES='tablaMagica_mistakes_v3',STORAGE_HISTORY='tablaMagica_history_v3',STORAGE_STREAK='tablaMagica_streak_v3',STORAGE_ALLDONE='tablaMagica_allDoneDate_v3',STORAGE_ALLDONE_TS='tablaMagica_allDoneTimestamp_v3';
 
 let completedNumbers=[],mistakeSet=new Set(),dayHistory={},streakData={count:0,lastDate:null},allDoneDate=null,allDoneTimestamp=null;
 
-let currentNumber=null,pendingNumber=null,isFinalTest=false,isReviewMode=false;
+let currentNumber=null,pendingNumber=null,isFinalTest=false,isReviewMode=false,isCustomTest=false;
+let customSelectedNums=new Set();
 let totalCorrect=0,totalWrong=0,mainQueue=[],retryQueue=[],currentMultiplier=0,isRetryPhase=false,questionAnswered=false;
 let globalTimerInterval=null,globalTimeLeft=SESSION_TIME,globalTimerRunning=false,currentSessionTime=SESSION_TIME;
 let questionTimerInterval=null,questionTimeLeft=QUESTION_TIME,questionTimerRunning=false;
@@ -220,9 +254,9 @@ let answerValue='';
 const STEPS=[
     {icon:'🧚‍♀️',title:'Pasul 1: Învață (60s)',desc:'Apasă pe cifra activă (1-10). Ai MAXIM 60s să memorezi tabla, apoi testul începe automat!'},
     {icon:'🎯',title:'Pasul 2: Mini-Test (5 întrebări)',desc:'20 SECUNDE per întrebare. Primești 5 înmulțiri aleatorii cu cifra aleasă. Tastează răspunsul și apasă ✓!'},
-    {icon:'🔥',title:'Pasul 3: Serie Zilnică',desc:'Menține seria zilnică activă! Fă exerciții în fiecare zi pentru a crește seria.'},
+    {icon:'🎲',title:'Pasul 3: Test Personalizat',desc:'După ce deblochezi toate cifrele, poți crea un test de 15 întrebări doar din cifrele alese de tine!'},
     {icon:'🔄',title:'Pasul 4: Revizuiește',desc:'Greșelile se salvează. Apasă "Revizuiește Greșelile" pentru a le exersa din nou!'},
-    {icon:'🏆',title:'Pasul 5: Testul Final',desc:'Când toate 10 sunt verzi → Testul Final devine disponibil IMEDIAT! (15 întrebări, 6 min). După test → reset total!'}
+    {icon:'🏆',title:'Pasul 5: Testul Final',desc:'Când ești gata → Testul Final (15 întrebări din TOATE cifrele, 6 min). După test → reset total!'}
 ];
 let currentStep=0;
 
@@ -258,6 +292,55 @@ function removeMistake(a,b){const key=`${Math.min(a,b)}x${Math.max(a,b)}`;if(mis
 function recalcStreak(){const today=todayStr(),yesterday=yesterdayStr();if(streakData.lastDate===today)return;if(streakData.lastDate===yesterday){if(!dayHistory[yesterday]){streakData.count=0;streakData.lastDate=null;saveStreak()}}else if(streakData.lastDate&&streakData.lastDate!==today){if(dateDiffDays(streakData.lastDate,today)>1){streakData.count=0;streakData.lastDate=null;saveStreak()}}}
 function markTodayDone(){const today=todayStr();dayHistory[today]=true;saveHistory();const yesterday=yesterdayStr();if(streakData.lastDate===today)return;if(streakData.lastDate===yesterday||streakData.count===0)streakData.count++;else streakData.count=1;streakData.lastDate=today;saveStreak()}
 
+// ⭐ FUNCȚII TEST PERSONALIZAT
+function openCustomTestPanel(){
+    customSelectedNums.clear();
+    renderCustomNumGrid();
+    document.getElementById('customTestPanel').classList.add('visible');
+    document.getElementById('customTestPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function closeCustomTestPanel(){
+    document.getElementById('customTestPanel').classList.remove('visible');
+}
+function renderCustomNumGrid(){
+    const grid=document.getElementById('customNumGrid');
+    grid.innerHTML='';
+    for(let i=1;i<=MAX_NUMBER;i++){
+        const btn=document.createElement('button');
+        btn.className='custom-num-btn'+(customSelectedNums.has(i)?' selected':'');
+        btn.textContent=i;
+        btn.onclick=()=>toggleCustomNum(i);
+        grid.appendChild(btn);
+    }
+    updateCustomCount();
+}
+function toggleCustomNum(n){
+    if(customSelectedNums.has(n))customSelectedNums.delete(n);
+    else customSelectedNums.add(n);
+    renderCustomNumGrid();
+}
+function customSelectAll(){
+    for(let i=1;i<=MAX_NUMBER;i++)customSelectedNums.add(i);
+    renderCustomNumGrid();
+}
+function customDeselectAll(){
+    customSelectedNums.clear();
+    renderCustomNumGrid();
+}
+function updateCustomCount(){
+    const c=customSelectedNums.size;
+    document.getElementById('customSelectedCount').textContent=c;
+    document.getElementById('btnStartCustom').disabled=(c<1);
+}
+function startCustomTest(){
+    if(customSelectedNums.size<1)return;
+    closeCustomTestPanel();
+    isCustomTest=true;isFinalTest=false;isReviewMode=false;currentNumber=null;
+    currentSessionTime=FINAL_TEST_TIME;
+    const nums=[...customSelectedNums].sort((a,b)=>a-b);
+    launchQuiz(`🎲 Test: ${nums.join(', ')}`);
+}
+
 function updateAnswerDisplay(){const disp=document.getElementById('answerDisplay');if(answerValue===''){disp.textContent='?';disp.classList.add('empty')}else{disp.textContent=answerValue;disp.classList.remove('empty')}}
 function pressDigit(d){if(questionAnswered)return;if(answerValue.length>=3)return;answerValue+=d;updateAnswerDisplay()}
 function pressBackspace(){if(questionAnswered)return;answerValue=answerValue.slice(0,-1);updateAnswerDisplay()}
@@ -275,7 +358,6 @@ function renderMenu(){
     document.getElementById('streakCount').textContent=`${streakData.count} ${streakData.count===1?'zi':'zile'}`;
 
     const grid=document.getElementById('numberGrid');grid.innerHTML='';
-    // MODIFICAT: practiceActive nu mai blochează Testul Final
     const practiceActive=isInPracticeWindow();
     
     let nextAvailable=null;for(let i=1;i<=MAX_NUMBER;i++){if(!completedNumbers.includes(i)){nextAvailable=i;break}}
@@ -286,21 +368,22 @@ function renderMenu(){
     document.getElementById('completedCount').textContent=completedNumbers.length;
     const instrEl=document.getElementById('menuInstruction');
     const pb=document.getElementById('practiceBanner'),fb=document.getElementById('finalTestBanner');
+    const cb=document.getElementById('btnOpenCustom');
 
-    // ⭐ LOGICA NOUĂ: Testul Final apare IMEDIAT ce toate cifrele sunt completate
     if(allCompleted()){
-        fb.classList.add('visible'); // Testul Final e mereu vizibil
+        fb.classList.add('visible');
+        cb.classList.add('visible'); // ⭐ Buton test personalizat vizibil
         if(practiceActive){
             pb.classList.add('visible');
-            instrEl.textContent='🎯 Exersează pe cifrele verzi sau dă Testul Final!';
+            instrEl.textContent='🎯 Exersează, dă un test personalizat sau Testul Final!';
             startPracticeDisplay();
         } else {
             pb.classList.remove('visible');
-            instrEl.textContent='🏆 Ești gata de Testul Final!';
+            instrEl.textContent='🏆 Ești gata de Testul Final sau un Test Personalizat!';
         }
     }
     else{
-        pb.classList.remove('visible');fb.classList.remove('visible');
+        pb.classList.remove('visible');fb.classList.remove('visible');cb.classList.remove('visible');
         instrEl.textContent='Alege următoarea cifră magică:';
     }
 
@@ -317,17 +400,15 @@ function startLearnTimer(){stopLearnTimer();learnTimeLeft=LEARN_TIME;updateLearn
 function stopLearnTimer(){clearInterval(learnTimerInterval)}
 function updateLearnTimerUI(){document.getElementById('learnCountdown').textContent=learnTimeLeft;const f=document.getElementById('learnTimerFill');const p=Math.max(0,(learnTimeLeft/LEARN_TIME)*100);f.style.width=`${p}%`;if(p>50)f.style.background='linear-gradient(90deg,#a29bfe,#6c5ce7)';else if(p>25)f.style.background='linear-gradient(90deg,#feca57,#e67e22)';else f.style.background='linear-gradient(90deg,#ff7675,#d63031)'}
 function closeLearnPanel(){stopLearnTimer();pendingNumber=null;document.getElementById('learnPanel').classList.remove('visible')}
-function confirmStartQuiz(){if(!pendingNumber)return;stopLearnTimer();currentNumber=pendingNumber;isFinalTest=false;isReviewMode=false;currentSessionTime=SESSION_TIME;document.getElementById('learnPanel').classList.remove('visible');launchQuiz(`Mini-test: Cifra ${currentNumber}`)}
+function confirmStartQuiz(){if(!pendingNumber)return;stopLearnTimer();currentNumber=pendingNumber;isFinalTest=false;isReviewMode=false;isCustomTest=false;currentSessionTime=SESSION_TIME;document.getElementById('learnPanel').classList.remove('visible');launchQuiz(`Mini-test: Cifra ${currentNumber}`)}
 
 function startFinalTest(){
-    currentNumber=null;
-    isFinalTest=true;
-    isReviewMode=false;
+    currentNumber=null;isFinalTest=true;isReviewMode=false;isCustomTest=false;
     currentSessionTime=FINAL_TEST_TIME;
     launchQuiz('🏆 TEST FINAL');
 }
 
-function startReviewMode(){if(mistakeSet.size===0)return;isReviewMode=true;isFinalTest=false;currentNumber=null;currentSessionTime=SESSION_TIME;launchQuiz('🔄 REVIZUIRE GREȘELI')}
+function startReviewMode(){if(mistakeSet.size===0)return;isReviewMode=true;isFinalTest=false;isCustomTest=false;currentNumber=null;currentSessionTime=SESSION_TIME;launchQuiz('🔄 REVIZUIRE GREȘELI')}
 
 function launchQuiz(label){
     document.getElementById('menu-section').style.display='none';
@@ -341,6 +422,18 @@ function launchQuiz(label){
         mainQueue=[...mistakeSet].map(k=>{const[a,b]=k.split('x').map(Number);return{a,b}});
         shuffleArray(mainQueue);
         currentSessionTime=Math.max(SESSION_TIME,mainQueue.length*(QUESTION_TIME+3));
+    }
+    else if(isCustomTest){
+        // ⭐ TEST PERSONALIZAT: doar combinații din cifrele selectate
+        const nums=[...customSelectedNums];
+        const ap=[];
+        for(const a of nums){
+            for(const b of nums){
+                ap.push({a,b});
+            }
+        }
+        shuffleArray(ap);
+        mainQueue=ap.slice(0,CUSTOM_TEST_QUESTIONS);
     }
     else if(isFinalTest){
         const ap=[];
@@ -362,7 +455,10 @@ function launchQuiz(label){
 function shuffleArray(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
 
 function showQuestion(){stopQuestionTimer();if(globalTimeLeft<=0){stopReason='timeout';endSession();return}let sq;if(mainQueue.length>0){sq=mainQueue;isRetryPhase=false}else if(retryQueue.length>0){sq=retryQueue;isRetryPhase=true}else{stopReason='perfect';endSession();return}
-    const item=sq.shift();questionAnswered=false;let qA,qB;if(isFinalTest||isReviewMode){qA=item.a;qB=item.b}else{qA=currentNumber;qB=item}currentMultiplier=item;
+    const item=sq.shift();questionAnswered=false;let qA,qB;
+    if(isFinalTest||isReviewMode||isCustomTest){qA=item.a;qB=item.b}
+    else{qA=currentNumber;qB=item}
+    currentMultiplier=item;
     answerValue='';const disp=document.getElementById('answerDisplay');disp.className='answer-display empty';updateAnswerDisplay();
     document.getElementById('keypad').classList.remove('disabled');
     document.getElementById('feedbackMsg').textContent='';document.getElementById('feedbackMsg').className='feedback-msg';
@@ -374,31 +470,43 @@ function nextQuestion(){showQuestion()}
 function startQuestionTimer(){stopQuestionTimer();questionTimeLeft=QUESTION_TIME;questionTimerRunning=true;updateQuestionTimerUI();questionTimerInterval=setInterval(()=>{questionTimeLeft-=0.1;updateQuestionTimerUI();if(questionTimeLeft<=0){questionTimeLeft=0;stopQuestionTimer();handleQuestionTimeout()}},100)}
 function stopQuestionTimer(){clearInterval(questionTimerInterval);questionTimerRunning=false}
 function updateQuestionTimerUI(){const bt=document.getElementById('bigTimer');document.getElementById('bigTimerNum').textContent=Math.ceil(questionTimeLeft);bt.classList.remove('warning','danger');const p=questionTimeLeft/QUESTION_TIME;if(p<=0.3)bt.classList.add('danger');else if(p<=0.55)bt.classList.add('warning')}
-function handleQuestionTimeout(){if(questionAnswered)return;questionAnswered=true;const disp=document.getElementById('answerDisplay');const fb=document.getElementById('feedbackMsg');let a,b;if(isFinalTest||isReviewMode){a=currentMultiplier.a;b=currentMultiplier.b}else{a=currentNumber;b=currentMultiplier}addMistake(a,b);disp.classList.remove('empty');disp.classList.add('wrong');document.getElementById('keypad').classList.add('disabled');const air=retryQueue.some(it=>isFinalTest||isReviewMode?it.a===currentMultiplier.a&&it.b===currentMultiplier.b:it===currentMultiplier);if(!air)retryQueue.push(currentMultiplier);totalWrong++;fb.textContent=`⚡ Timp expirat! Răspunsul era: ${a*b}. Revine la final!`;fb.className='feedback-msg retry';updateScore();document.getElementById('nextBtn').style.display='block';document.getElementById('nextBtn').focus()}
+function handleQuestionTimeout(){if(questionAnswered)return;questionAnswered=true;const disp=document.getElementById('answerDisplay');const fb=document.getElementById('feedbackMsg');let a,b;
+    if(isFinalTest||isReviewMode||isCustomTest){a=currentMultiplier.a;b=currentMultiplier.b}
+    else{a=currentNumber;b=currentMultiplier}
+    addMistake(a,b);disp.classList.remove('empty');disp.classList.add('wrong');document.getElementById('keypad').classList.add('disabled');
+    const air=retryQueue.some(it=>(isFinalTest||isReviewMode||isCustomTest)?it.a===currentMultiplier.a&&it.b===currentMultiplier.b:it===currentMultiplier);
+    if(!air)retryQueue.push(currentMultiplier);totalWrong++;fb.textContent=`⚡ Timp expirat! Răspunsul era: ${a*b}. Revine la final!`;fb.className='feedback-msg retry';updateScore();document.getElementById('nextBtn').style.display='block';document.getElementById('nextBtn').focus()}
 
 function startGlobalTimer(){stopGlobalTimer();globalTimerRunning=true;updateGlobalTimerUI();globalTimerInterval=setInterval(()=>{globalTimeLeft-=0.1;updateGlobalTimerUI();if(globalTimeLeft<=0){globalTimeLeft=0;stopGlobalTimer();stopQuestionTimer();stopReason='timeout';handleGlobalTimeout()}},100)}
 function stopGlobalTimer(){clearInterval(globalTimerInterval);globalTimerRunning=false}
 function updateGlobalTimerUI(){const p=Math.max(0,globalTimeLeft/currentSessionTime);document.getElementById('globalTimerBar').style.transform=`scaleX(${p})`;const mi=Math.floor(globalTimeLeft/60);const se=Math.ceil(globalTimeLeft%60);document.getElementById('globalTimerLabel').textContent=`${mi}:${se.toString().padStart(2,'0')}`;const bar=document.getElementById('globalTimerBar');if(p>0.5)bar.style.background='linear-gradient(90deg,#55efc4,#00b894)';else if(p>0.25)bar.style.background='linear-gradient(90deg,#feca57,#fdcb6e)';else bar.style.background='linear-gradient(90deg,#ff7675,#d63031)'}
 function handleGlobalTimeout(){const fb=document.getElementById('feedbackMsg');document.getElementById('keypad').classList.add('disabled');fb.textContent='⏰ Timpul a expirat!';fb.className='feedback-msg error';setTimeout(()=>endSession(),1500)}
 
-function checkAnswer(){if(questionAnswered||(!globalTimerRunning&&globalTimeLeft<=0))return;if(answerValue==='')return;const ua=parseInt(answerValue);let a,b;if(isFinalTest||isReviewMode){a=currentMultiplier.a;b=currentMultiplier.b}else{a=currentNumber;b=currentMultiplier}const correct=a*b;questionAnswered=true;stopQuestionTimer();const disp=document.getElementById('answerDisplay');document.getElementById('keypad').classList.add('disabled');
+function checkAnswer(){if(questionAnswered||(!globalTimerRunning&&globalTimeLeft<=0))return;if(answerValue==='')return;const ua=parseInt(answerValue);let a,b;
+    if(isFinalTest||isReviewMode||isCustomTest){a=currentMultiplier.a;b=currentMultiplier.b}
+    else{a=currentNumber;b=currentMultiplier}
+    const correct=a*b;questionAnswered=true;stopQuestionTimer();const disp=document.getElementById('answerDisplay');document.getElementById('keypad').classList.add('disabled');
     if(ua===correct){disp.classList.add('correct');const fb=document.getElementById('feedbackMsg');fb.textContent=isRetryPhase?'🎉 Corect la reluare!':'🎉 Corect! Bravo!';fb.className='feedback-msg success';totalCorrect++;showSparkle();if(isRetryPhase&&isReviewMode)removeMistake(a,b)}
-    else{disp.classList.add('wrong');addMistake(a,b);const air=retryQueue.some(it=>isFinalTest||isReviewMode?it.a===currentMultiplier.a&&it.b===currentMultiplier.b:it===currentMultiplier);if(!air)retryQueue.push(currentMultiplier);const fb=document.getElementById('feedbackMsg');fb.textContent=`❌ Greșit! Răspunsul corect: ${correct}. Va reveni!`;fb.className='feedback-msg retry';totalWrong++}
+    else{disp.classList.add('wrong');addMistake(a,b);const air=retryQueue.some(it=>(isFinalTest||isReviewMode||isCustomTest)?it.a===currentMultiplier.a&&it.b===currentMultiplier.b:it===currentMultiplier);if(!air)retryQueue.push(currentMultiplier);const fb=document.getElementById('feedbackMsg');fb.textContent=`❌ Greșit! Răspunsul corect: ${correct}. Va reveni!`;fb.className='feedback-msg retry';totalWrong++}
     updateScore();document.getElementById('nextBtn').style.display='block';document.getElementById('nextBtn').focus()}
 function updateScore(){document.getElementById('correctCount').textContent=totalCorrect;document.getElementById('wrongCount').textContent=totalWrong}
 
 function endSession(){stopQuestionTimer();stopGlobalTimer();document.getElementById('quizContent').style.display='none';document.getElementById('resultsScreen').classList.add('active');if(globalTimeLeft<=0&&stopReason!=='timeout')stopReason='timeout';if(!isReviewMode)markTodayDone();
 
     const wasFinalTest=isFinalTest;
-    const justCompletedAll=(stopReason==='perfect'&&!isFinalTest&&!isReviewMode&&currentNumber&&!allCompleted());
+    const justCompletedAll=(stopReason==='perfect'&&!isFinalTest&&!isReviewMode&&!isCustomTest&&currentNumber&&!allCompleted());
 
-    if(stopReason==='perfect'&&!isFinalTest&&!isReviewMode&&currentNumber)markCompleted(currentNumber);
+    if(stopReason==='perfect'&&!isFinalTest&&!isReviewMode&&!isCustomTest&&currentNumber)markCompleted(currentNumber);
 
     const re=document.getElementById('resultsReason');let emoji,title,text,cls;
 
     if(isReviewMode){
         if(stopReason==='perfect'){emoji='🔄✨';title='Greșeli revizuite!';text='✨ Ai rezolvat toate greșelile!';cls='reason-perfect'}
         else{emoji='⏰🔄';title='Timp expirat';text=`Mai rămâneau ${mainQueue.length+retryQueue.length} exerciții.`;cls='reason-time'}
+    }
+    else if(isCustomTest){
+        if(stopReason==='perfect'){emoji='🎲✨';title='Test Personalizat Complet!';text='✨ Bravo! Ai răspuns corect la toate!';cls='reason-perfect'}
+        else{emoji='⏰🎲';title='Test Personalizat - Timp expirat!';text=`Mai rămâneau ${mainQueue.length+retryQueue.length} întrebări.`;cls='reason-time'}
     }
     else if(isFinalTest){
         if(stopReason==='perfect'){
@@ -419,19 +527,17 @@ function endSession(){stopQuestionTimer();stopGlobalTimer();document.getElementB
     const note=document.getElementById('allDoneNote');
     if(justCompletedAll&&allCompleted()){
         note.style.display='block';
-        note.textContent='🎯 Toate cifrele deblocate! Testul Final este acum disponibil!';
+        note.textContent='🎯 Toate cifrele deblocate! Testul Final și Testul Personalizat sunt acum disponibile!';
     }else{
         note.style.display='none';
     }
 
-    if(wasFinalTest){
-        resetAllProgress();
-    }
+    if(wasFinalTest){resetAllProgress()}
 
     startAutoReturn()}
 
 function startAutoReturn(){let cd=AUTO_RETURN_DELAY;document.getElementById('autoReturnCountdown').textContent=cd;autoReturnTimer=setInterval(()=>{cd--;document.getElementById('autoReturnCountdown').textContent=cd;if(cd<=0){clearInterval(autoReturnTimer);showMenu()}},1000)}
-function showMenu(){clearTimeout(autoReturnTimer);stopQuestionTimer();stopGlobalTimer();stopLearnTimer();document.getElementById('menu-section').style.display='block';document.getElementById('quiz-section').classList.remove('active');document.getElementById('learnPanel').classList.remove('visible');pendingNumber=null;renderMenu()}
+function showMenu(){clearTimeout(autoReturnTimer);stopQuestionTimer();stopGlobalTimer();stopLearnTimer();document.getElementById('menu-section').style.display='block';document.getElementById('quiz-section').classList.remove('active');document.getElementById('learnPanel').classList.remove('visible');document.getElementById('customTestPanel').classList.remove('visible');pendingNumber=null;renderMenu()}
 function showSparkle(){const s=document.createElement('div');s.className='sparkle-overlay';s.textContent='✨🦄✨';document.querySelector('.app-container').appendChild(s);setTimeout(()=>s.remove(),900)}
 </script>
 </body>
