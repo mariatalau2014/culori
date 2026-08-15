@@ -67,6 +67,17 @@
         .btn-open-custom{padding:12px 20px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:white;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:.3s;box-shadow:0 5px 20px rgba(108,92,231,.3);margin-bottom:10px;display:none;font-family:'Fredoka',sans-serif}
         .btn-open-custom.visible{display:block}
         .btn-open-custom:hover{transform:translateY(-3px)}
+        /* ⭐ STRATEGIE TASTARE */
+        .strategy-box{margin-top:12px;padding:14px;background:white;border-radius:14px;border:2px solid #f0e6ff;text-align:left}
+        .strategy-box h4{color:var(--primary);font-size:.9rem;margin-bottom:6px}
+        .strategy-box p{font-size:.75rem;color:#636e72;margin-bottom:8px;line-height:1.4}
+        .strategy-input{width:100%;padding:10px 12px;border:3px solid #f0e6ff;border-radius:12px;font-size:1rem;font-family:'Fredoka',sans-serif;color:var(--text);outline:none;transition:.3s}
+        .strategy-input:focus{border-color:var(--primary)}
+        .strategy-input.correct{border-color:var(--success);background:#eafff7}
+        .strategy-input.wrong{border-color:var(--error);background:#fff5f5}
+        .strategy-feedback{font-size:.8rem;font-weight:700;margin-top:6px;min-height:18px}
+        .strategy-feedback.ok{color:var(--success)}
+        .strategy-feedback.err{color:var(--error)}
         .learn-panel{display:none;margin-top:15px;padding:18px;background:#faf5ff;border-radius:20px;border:2px solid #f0e6ff}
         .learn-panel.visible{display:block}
         .learn-panel h3{color:var(--primary);margin-bottom:10px;font-size:1.1rem}
@@ -87,7 +98,6 @@
         .final-test-banner p{font-size:.9rem;margin-bottom:12px;opacity:.95}
         .btn-final{padding:12px 25px;background:white;color:#e67e22;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:.3s;box-shadow:0 5px 20px rgba(0,0,0,.15)}
         .btn-final:hover{transform:translateY(-3px)}
-        /* ⭐ BUTON RESET */
         .btn-reset{margin-top:20px;padding:10px 20px;background:transparent;border:2px solid #ddd;border-radius:12px;color:#b2bec3;font-weight:600;font-size:.85rem;cursor:pointer;width:100%;transition:.3s;font-family:'Fredoka',sans-serif}
         .btn-reset:hover{border-color:var(--error);color:var(--error);background:#fff5f5}
         .quiz-area{display:none}.quiz-area.active{display:block}
@@ -189,6 +199,15 @@
                 <div class="learn-timer-track"><div class="learn-timer-fill" id="learnTimerFill"></div></div>
             </div>
             <div class="multiplication-table" id="learnTable"></div>
+            
+            <!-- ⭐ STRATEGIE DE TASTARE -->
+            <div class="strategy-box" id="strategyBox">
+                <h4>✏️ Strategie: Tastează tabla!</h4>
+                <p>Scrie rezultatele separate prin virgulă:<br><b id="strategyExample">7, 14, 21, 28, 35, 42, 49, 56, 63, 70</b></p>
+                <input type="text" class="strategy-input" id="strategyInput" placeholder="Ex: 7, 14, 21, ..." autocomplete="off" inputmode="numeric">
+                <div class="strategy-feedback" id="strategyFeedback"></div>
+            </div>
+            
             <button class="btn-start-test" onclick="confirmStartQuiz()">🎯 Începe Testul Acum!</button>
             <button class="btn-cancel-learn" onclick="closeLearnPanel()">← Înapoi la meniu</button>
         </div>
@@ -199,7 +218,6 @@
             <button class="btn-final" onclick="startFinalTest()">🚀 Începe Testul Final!</button>
         </div>
         
-        <!-- ⭐ BUTON RESET MANUAL -->
         <button class="btn-reset" onclick="manualReset()">🗑️ Reset Tot (ia-o de la capăt)</button>
     </div>
     <div id="quiz-section" class="quiz-area">
@@ -249,6 +267,7 @@ let completedNumbers=[],mistakeSet=new Set(),dayHistory={},streakData={count:0,l
 
 let currentNumber=null,pendingNumber=null,isFinalTest=false,isReviewMode=false,isCustomTest=false;
 let customSelectedNums=new Set();
+let strategyTypedCorrectly=false; // ⭐ Track dacă strategia a fost tastată corect
 let totalCorrect=0,totalWrong=0,mainQueue=[],retryQueue=[],currentMultiplier=0,isRetryPhase=false,questionAnswered=false;
 let globalTimerInterval=null,globalTimeLeft=SESSION_TIME,globalTimerRunning=false,currentSessionTime=SESSION_TIME;
 let questionTimerInterval=null,questionTimeLeft=QUESTION_TIME,questionTimerRunning=false;
@@ -256,8 +275,8 @@ let learnTimerInterval=null,learnTimeLeft=LEARN_TIME,stopReason='',autoReturnTim
 let answerValue='';
 
 const STEPS=[
-    {icon:'🧚‍♀️',title:'Pasul 1: Învață (60s)',desc:'Apasă pe cifra activă (1-10). Ai MAXIM 60s să memorezi tabla, apoi testul începe automat!'},
-    {icon:'🎯',title:'Pasul 2: Mini-Test (5 întrebări)',desc:'20 SECUNDE per întrebare. Primești 5 înmulțiri aleatorii cu cifra aleasă. Tastează răspunsul și apasă ✓!'},
+    {icon:'🧚‍♀️',title:'Pasul 1: Învață + Strategie',desc:'Apasă pe cifra activă. Ai 60s să memorezi tabla, apoi tasteaz-o ca strategie! Dacă o scrii corect, testul o va folosi.'},
+    {icon:'🎯',title:'Pasul 2: Mini-Test (5 întrebări)',desc:'20 SECUNDE per întrebare. Primești 5 înmulțiri aleatorii. Dacă ai tastat strategia corect, te ajută la răspunsuri!'},
     {icon:'🎲',title:'Pasul 3: Test Personalizat',desc:'După ce deblochezi toate cifrele, poți crea un test de 15 întrebări din tabelele cifrelor alese de tine!'},
     {icon:'🔄',title:'Pasul 4: Revizuiește',desc:'Greșelile se salvează. Apasă "Revizuiește Greșelile" pentru a le exersa din nou!'},
     {icon:'🏆',title:'Pasul 5: Testul Final',desc:'Când ești gata → Testul Final (15 întrebări din TOATE cifrele, 6 min). După test → reset total!'}
@@ -296,56 +315,69 @@ function removeMistake(a,b){const key=`${Math.min(a,b)}x${Math.max(a,b)}`;if(mis
 function recalcStreak(){const today=todayStr(),yesterday=yesterdayStr();if(streakData.lastDate===today)return;if(streakData.lastDate===yesterday){if(!dayHistory[yesterday]){streakData.count=0;streakData.lastDate=null;saveStreak()}}else if(streakData.lastDate&&streakData.lastDate!==today){if(dateDiffDays(streakData.lastDate,today)>1){streakData.count=0;streakData.lastDate=null;saveStreak()}}}
 function markTodayDone(){const today=todayStr();dayHistory[today]=true;saveHistory();const yesterday=yesterdayStr();if(streakData.lastDate===today)return;if(streakData.lastDate===yesterday||streakData.count===0)streakData.count++;else streakData.count=1;streakData.lastDate=today;saveStreak()}
 
-// ⭐ RESET MANUAL
 function manualReset(){
     if(confirm('⚠️ Sigur vrei să resetezi TOT progresul?\n\nVei pierde toate cifrele deblocate și greșelile salvate.')){
-        resetAllProgress();
-        renderMenu();
+        resetAllProgress();renderMenu();
+    }
+}
+
+// ⭐ VALIDARE STRATEGIE
+function validateStrategy(num){
+    const input=document.getElementById('strategyInput');
+    const fb=document.getElementById('strategyFeedback');
+    const raw=input.value.trim();
+    if(!raw){
+        input.className='strategy-input';fb.textContent='';fb.className='strategy-feedback';
+        strategyTypedCorrectly=false;return;
+    }
+    // Parse: acceptă virgulă, spațiu, punct-virgulă ca separator
+    const parts=raw.split(/[,;\s]+/).map(s=>s.trim()).filter(s=>s!=='');
+    const expected=[];
+    for(let i=1;i<=MAX_NUMBER;i++) expected.push(num*i);
+    
+    const userNums=parts.map(Number);
+    let correct=true;
+    if(userNums.length!==expected.length) correct=false;
+    else{
+        for(let i=0;i<expected.length;i++){
+            if(userNums[i]!==expected[i]){correct=false;break;}
+        }
+    }
+    
+    if(correct){
+        input.className='strategy-input correct';
+        fb.textContent='✅ Perfect! Strategia ta va fi folosită la test!';
+        fb.className='strategy-feedback ok';
+        strategyTypedCorrectly=true;
+    }else{
+        input.className='strategy-input wrong';
+        fb.textContent='❌ Nu e corect. Verifică și mai încearcă!';
+        fb.className='strategy-feedback err';
+        strategyTypedCorrectly=false;
     }
 }
 
 function openCustomTestPanel(){
-    customSelectedNums.clear();
-    renderCustomNumGrid();
+    customSelectedNums.clear();renderCustomNumGrid();
     document.getElementById('customTestPanel').classList.add('visible');
     document.getElementById('customTestPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-function closeCustomTestPanel(){
-    document.getElementById('customTestPanel').classList.remove('visible');
-}
+function closeCustomTestPanel(){document.getElementById('customTestPanel').classList.remove('visible')}
 function renderCustomNumGrid(){
-    const grid=document.getElementById('customNumGrid');
-    grid.innerHTML='';
+    const grid=document.getElementById('customNumGrid');grid.innerHTML='';
     for(let i=1;i<=MAX_NUMBER;i++){
         const btn=document.createElement('button');
         btn.className='custom-num-btn'+(customSelectedNums.has(i)?' selected':'');
-        btn.textContent=i;
-        btn.onclick=()=>toggleCustomNum(i);
-        grid.appendChild(btn);
+        btn.textContent=i;btn.onclick=()=>toggleCustomNum(i);grid.appendChild(btn);
     }
     updateCustomCount();
 }
-function toggleCustomNum(n){
-    if(customSelectedNums.has(n))customSelectedNums.delete(n);
-    else customSelectedNums.add(n);
-    renderCustomNumGrid();
-}
-function customSelectAll(){
-    for(let i=1;i<=MAX_NUMBER;i++)customSelectedNums.add(i);
-    renderCustomNumGrid();
-}
-function customDeselectAll(){
-    customSelectedNums.clear();
-    renderCustomNumGrid();
-}
-function updateCustomCount(){
-    const c=customSelectedNums.size;
-    document.getElementById('customSelectedCount').textContent=c;
-    document.getElementById('btnStartCustom').disabled=(c<1);
-}
+function toggleCustomNum(n){if(customSelectedNums.has(n))customSelectedNums.delete(n);else customSelectedNums.add(n);renderCustomNumGrid()}
+function customSelectAll(){for(let i=1;i<=MAX_NUMBER;i++)customSelectedNums.add(i);renderCustomNumGrid()}
+function customDeselectAll(){customSelectedNums.clear();renderCustomNumGrid()}
+function updateCustomCount(){const c=customSelectedNums.size;document.getElementById('customSelectedCount').textContent=c;document.getElementById('btnStartCustom').disabled=(c<1)}
 function startCustomTest(){
-    if(customSelectedNums.size<1)return;
-    closeCustomTestPanel();
+    if(customSelectedNums.size<1)return;closeCustomTestPanel();
     isCustomTest=true;isFinalTest=false;isReviewMode=false;currentNumber=null;
     currentSessionTime=FINAL_TEST_TIME;
     const nums=[...customSelectedNums].sort((a,b)=>a-b);
@@ -356,7 +388,15 @@ function updateAnswerDisplay(){const disp=document.getElementById('answerDisplay
 function pressDigit(d){if(questionAnswered)return;if(answerValue.length>=3)return;answerValue+=d;updateAnswerDisplay()}
 function pressBackspace(){if(questionAnswered)return;answerValue=answerValue.slice(0,-1);updateAnswerDisplay()}
 function pressCheck(){if(questionAnswered)return;if(answerValue==='')return;checkAnswer()}
-document.addEventListener('keydown',(e)=>{const qa=document.getElementById('quiz-section').classList.contains('active')&&document.getElementById('quizContent').style.display!=='none';if(!qa)return;if(e.key>='0'&&e.key<='9'){pressDigit(parseInt(e.key))}else if(e.key==='Backspace'){pressBackspace()}else if(e.key==='Enter'){if(document.getElementById('nextBtn').style.display!=='none')nextQuestion();else pressCheck()}});
+document.addEventListener('keydown',(e)=>{
+    // ⭐ Permite tastarea în inputul de strategie fără a declanșa keypad-ul
+    if(document.activeElement&&document.activeElement.id==='strategyInput')return;
+    const qa=document.getElementById('quiz-section').classList.contains('active')&&document.getElementById('quizContent').style.display!=='none';
+    if(!qa)return;
+    if(e.key>='0'&&e.key<='9'){pressDigit(parseInt(e.key))}
+    else if(e.key==='Backspace'){pressBackspace()}
+    else if(e.key==='Enter'){if(document.getElementById('nextBtn').style.display!=='none')nextQuestion();else pressCheck()}
+});
 
 document.addEventListener('DOMContentLoaded',()=>{loadAll();renderMenu();initTutorial()});
 
@@ -367,10 +407,8 @@ function nextStep(){if(currentStep<STEPS.length-1){currentStep++;renderStep()}el
 function renderMenu(){
     checkDayReset();stopPracticeDisplay();
     document.getElementById('streakCount').textContent=`${streakData.count} ${streakData.count===1?'zi':'zile'}`;
-
     const grid=document.getElementById('numberGrid');grid.innerHTML='';
     const practiceActive=isInPracticeWindow();
-    
     let nextAvailable=null;for(let i=1;i<=MAX_NUMBER;i++){if(!completedNumbers.includes(i)){nextAvailable=i;break}}
     for(let i=1;i<=MAX_NUMBER;i++){const btn=document.createElement('button');btn.className='num-btn';btn.textContent=i;
         if(completedNumbers.includes(i)){btn.classList.add('completed');if(practiceActive)btn.onclick=()=>openLearnPanel(i)}
@@ -378,26 +416,12 @@ function renderMenu(){
         else btn.classList.add('locked');grid.appendChild(btn)}
     document.getElementById('completedCount').textContent=completedNumbers.length;
     const instrEl=document.getElementById('menuInstruction');
-    const pb=document.getElementById('practiceBanner'),fb=document.getElementById('finalTestBanner');
-    const cb=document.getElementById('btnOpenCustom');
-
+    const pb=document.getElementById('practiceBanner'),fb=document.getElementById('finalTestBanner'),cb=document.getElementById('btnOpenCustom');
     if(allCompleted()){
-        fb.classList.add('visible');
-        cb.classList.add('visible');
-        if(practiceActive){
-            pb.classList.add('visible');
-            instrEl.textContent='🎯 Exersează, dă un test personalizat sau Testul Final!';
-            startPracticeDisplay();
-        } else {
-            pb.classList.remove('visible');
-            instrEl.textContent='🏆 Ești gata de Testul Final sau un Test Personalizat!';
-        }
-    }
-    else{
-        pb.classList.remove('visible');fb.classList.remove('visible');cb.classList.remove('visible');
-        instrEl.textContent='Alege următoarea cifră magică:';
-    }
-
+        fb.classList.add('visible');cb.classList.add('visible');
+        if(practiceActive){pb.classList.add('visible');instrEl.textContent='🎯 Exersează, dă un test personalizat sau Testul Final!';startPracticeDisplay()}
+        else{pb.classList.remove('visible');instrEl.textContent='🏆 Ești gata de Testul Final sau un Test Personalizat!'}
+    }else{pb.classList.remove('visible');fb.classList.remove('visible');cb.classList.remove('visible');instrEl.textContent='Alege următoarea cifră magică:'}
     document.getElementById('reviewCount').textContent=mistakeSet.size;
     document.getElementById('reviewBtn').classList.toggle('visible',mistakeSet.size>0)
 }
@@ -406,20 +430,40 @@ function startPracticeDisplay(){stopPracticeDisplay();updatePracticeDisplay();pr
 function stopPracticeDisplay(){clearInterval(practiceDisplayInterval)}
 function updatePracticeDisplay(){const r=getPracticeRemainingMs();if(r<=0){stopPracticeDisplay();renderMenu();return}const ts=Math.ceil(r/1000);const h=Math.floor(ts/3600);const m=Math.floor((ts%3600)/60);const s=ts%60;document.getElementById('practiceTimerDisplay').textContent=`${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`}
 
-function openLearnPanel(num){pendingNumber=num;document.getElementById('learnTitle').textContent=`📚 Tabla lui ${num}`;const t=document.getElementById('learnTable');t.innerHTML='';for(let i=1;i<=MAX_NUMBER;i++){const r=document.createElement('div');r.className='table-row';r.innerHTML=`<span>${num} × ${i}</span> <b>= ${num*i}</b>`;t.appendChild(r)}document.getElementById('learnPanel').classList.add('visible');document.getElementById('learnPanel').scrollIntoView({behavior:'smooth',block:'nearest'});startLearnTimer()}
+function openLearnPanel(num){
+    pendingNumber=num;strategyTypedCorrectly=false;
+    document.getElementById('learnTitle').textContent=`📚 Tabla lui ${num}`;
+    const t=document.getElementById('learnTable');t.innerHTML='';
+    for(let i=1;i<=MAX_NUMBER;i++){const r=document.createElement('div');r.className='table-row';r.innerHTML=`<span>${num} × ${i}</span> <b>= ${num*i}</b>`;t.appendChild(r)}
+    
+    // ⭐ Setup strategie
+    const exampleParts=[];for(let i=1;i<=MAX_NUMBER;i++)exampleParts.push(num*i);
+    document.getElementById('strategyExample').textContent=exampleParts.join(', ');
+    document.getElementById('strategyInput').value='';
+    document.getElementById('strategyInput').className='strategy-input';
+    document.getElementById('strategyFeedback').textContent='';
+    document.getElementById('strategyFeedback').className='strategy-feedback';
+    
+    document.getElementById('learnPanel').classList.add('visible');
+    document.getElementById('learnPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
+    startLearnTimer();
+}
 function startLearnTimer(){stopLearnTimer();learnTimeLeft=LEARN_TIME;updateLearnTimerUI();learnTimerInterval=setInterval(()=>{learnTimeLeft--;updateLearnTimerUI();if(learnTimeLeft<=0){stopLearnTimer();confirmStartQuiz()}},1000)}
 function stopLearnTimer(){clearInterval(learnTimerInterval)}
 function updateLearnTimerUI(){document.getElementById('learnCountdown').textContent=learnTimeLeft;const f=document.getElementById('learnTimerFill');const p=Math.max(0,(learnTimeLeft/LEARN_TIME)*100);f.style.width=`${p}%`;if(p>50)f.style.background='linear-gradient(90deg,#a29bfe,#6c5ce7)';else if(p>25)f.style.background='linear-gradient(90deg,#feca57,#e67e22)';else f.style.background='linear-gradient(90deg,#ff7675,#d63031)'}
-function closeLearnPanel(){stopLearnTimer();pendingNumber=null;document.getElementById('learnPanel').classList.remove('visible')}
-function confirmStartQuiz(){if(!pendingNumber)return;stopLearnTimer();currentNumber=pendingNumber;isFinalTest=false;isReviewMode=false;isCustomTest=false;currentSessionTime=SESSION_TIME;document.getElementById('learnPanel').classList.remove('visible');launchQuiz(`Mini-test: Cifra ${currentNumber}`)}
-
-function startFinalTest(){
-    currentNumber=null;isFinalTest=true;isReviewMode=false;isCustomTest=false;
-    currentSessionTime=FINAL_TEST_TIME;
-    launchQuiz('🏆 TEST FINAL');
+function closeLearnPanel(){stopLearnTimer();pendingNumber=null;strategyTypedCorrectly=false;document.getElementById('learnPanel').classList.remove('visible')}
+function confirmStartQuiz(){
+    if(!pendingNumber)return;
+    // ⭐ Validează strategia înainte de a începe
+    validateStrategy(pendingNumber);
+    stopLearnTimer();currentNumber=pendingNumber;isFinalTest=false;isReviewMode=false;isCustomTest=false;
+    currentSessionTime=SESSION_TIME;
+    document.getElementById('learnPanel').classList.remove('visible');
+    launchQuiz(`Mini-test: Cifra ${currentNumber}${strategyTypedCorrectly?' ✏️':''}`);
 }
 
-function startReviewMode(){if(mistakeSet.size===0)return;isReviewMode=true;isFinalTest=false;isCustomTest=false;currentNumber=null;currentSessionTime=SESSION_TIME;launchQuiz('🔄 REVIZUIRE GREȘELI')}
+function startFinalTest(){currentNumber=null;isFinalTest=true;isReviewMode=false;isCustomTest=false;strategyTypedCorrectly=false;currentSessionTime=FINAL_TEST_TIME;launchQuiz('🏆 TEST FINAL')}
+function startReviewMode(){if(mistakeSet.size===0)return;isReviewMode=true;isFinalTest=false;isCustomTest=false;currentNumber=null;strategyTypedCorrectly=false;currentSessionTime=SESSION_TIME;launchQuiz('🔄 REVIZUIRE GREȘELI')}
 
 function launchQuiz(label){
     document.getElementById('menu-section').style.display='none';
@@ -428,46 +472,17 @@ function launchQuiz(label){
     document.getElementById('resultsScreen').classList.remove('active');
     document.getElementById('quizSelectedNum').textContent=label;
     totalCorrect=0;totalWrong=0;updateScore();
-
-    if(isReviewMode){
-        mainQueue=[...mistakeSet].map(k=>{const[a,b]=k.split('x').map(Number);return{a,b}});
-        shuffleArray(mainQueue);
-        currentSessionTime=Math.max(SESSION_TIME,mainQueue.length*(QUESTION_TIME+3));
-    }
-    else if(isCustomTest){
-        const nums=[...customSelectedNums];
-        const ap=[];
-        for(const a of nums){
-            for(let b=1;b<=MAX_NUMBER;b++){
-                ap.push({a,b});
-            }
-        }
-        shuffleArray(ap);
-        mainQueue=ap.slice(0, Math.min(CUSTOM_TEST_QUESTIONS, ap.length));
-    }
-    else if(isFinalTest){
-        const ap=[];
-        for(let a=1;a<=MAX_NUMBER;a++){
-            for(let b=1;b<=MAX_NUMBER;b++){
-                ap.push({a,b});
-            }
-        }
-        shuffleArray(ap);
-        mainQueue=ap.slice(0,FINAL_TEST_QUESTIONS);
-    }
-    else{
-        const allMults=Array.from({length:MAX_NUMBER},(_,i)=>i+1);
-        shuffleArray(allMults);
-        mainQueue=allMults.slice(0,MINI_TEST_QUESTIONS);
-    }
+    if(isReviewMode){mainQueue=[...mistakeSet].map(k=>{const[a,b]=k.split('x').map(Number);return{a,b}});shuffleArray(mainQueue);currentSessionTime=Math.max(SESSION_TIME,mainQueue.length*(QUESTION_TIME+3))}
+    else if(isCustomTest){const nums=[...customSelectedNums];const ap=[];for(const a of nums){for(let b=1;b<=MAX_NUMBER;b++){ap.push({a,b})}}shuffleArray(ap);mainQueue=ap.slice(0,Math.min(CUSTOM_TEST_QUESTIONS,ap.length))}
+    else if(isFinalTest){const ap=[];for(let a=1;a<=MAX_NUMBER;a++){for(let b=1;b<=MAX_NUMBER;b++){ap.push({a,b})}}shuffleArray(ap);mainQueue=ap.slice(0,FINAL_TEST_QUESTIONS)}
+    else{const allMults=Array.from({length:MAX_NUMBER},(_,i)=>i+1);shuffleArray(allMults);mainQueue=allMults.slice(0,MINI_TEST_QUESTIONS)}
     retryQueue=[];isRetryPhase=false;globalTimeLeft=currentSessionTime;startGlobalTimer();showQuestion();
 }
 function shuffleArray(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
 
 function showQuestion(){stopQuestionTimer();if(globalTimeLeft<=0){stopReason='timeout';endSession();return}let sq;if(mainQueue.length>0){sq=mainQueue;isRetryPhase=false}else if(retryQueue.length>0){sq=retryQueue;isRetryPhase=true}else{stopReason='perfect';endSession();return}
     const item=sq.shift();questionAnswered=false;let qA,qB;
-    if(isFinalTest||isReviewMode||isCustomTest){qA=item.a;qB=item.b}
-    else{qA=currentNumber;qB=item}
+    if(isFinalTest||isReviewMode||isCustomTest){qA=item.a;qB=item.b}else{qA=currentNumber;qB=item}
     currentMultiplier=item;
     answerValue='';const disp=document.getElementById('answerDisplay');disp.className='answer-display empty';updateAnswerDisplay();
     document.getElementById('keypad').classList.remove('disabled');
@@ -481,8 +496,7 @@ function startQuestionTimer(){stopQuestionTimer();questionTimeLeft=QUESTION_TIME
 function stopQuestionTimer(){clearInterval(questionTimerInterval);questionTimerRunning=false}
 function updateQuestionTimerUI(){const bt=document.getElementById('bigTimer');document.getElementById('bigTimerNum').textContent=Math.ceil(questionTimeLeft);bt.classList.remove('warning','danger');const p=questionTimeLeft/QUESTION_TIME;if(p<=0.3)bt.classList.add('danger');else if(p<=0.55)bt.classList.add('warning')}
 function handleQuestionTimeout(){if(questionAnswered)return;questionAnswered=true;const disp=document.getElementById('answerDisplay');const fb=document.getElementById('feedbackMsg');let a,b;
-    if(isFinalTest||isReviewMode||isCustomTest){a=currentMultiplier.a;b=currentMultiplier.b}
-    else{a=currentNumber;b=currentMultiplier}
+    if(isFinalTest||isReviewMode||isCustomTest){a=currentMultiplier.a;b=currentMultiplier.b}else{a=currentNumber;b=currentMultiplier}
     addMistake(a,b);disp.classList.remove('empty');disp.classList.add('wrong');document.getElementById('keypad').classList.add('disabled');
     const air=retryQueue.some(it=>(isFinalTest||isReviewMode||isCustomTest)?it.a===currentMultiplier.a&&it.b===currentMultiplier.b:it===currentMultiplier);
     if(!air)retryQueue.push(currentMultiplier);totalWrong++;fb.textContent=`⚡ Timp expirat! Răspunsul era: ${a*b}. Revine la final!`;fb.className='feedback-msg retry';updateScore();document.getElementById('nextBtn').style.display='block';document.getElementById('nextBtn').focus()}
@@ -493,62 +507,41 @@ function updateGlobalTimerUI(){const p=Math.max(0,globalTimeLeft/currentSessionT
 function handleGlobalTimeout(){const fb=document.getElementById('feedbackMsg');document.getElementById('keypad').classList.add('disabled');fb.textContent='⏰ Timpul a expirat!';fb.className='feedback-msg error';setTimeout(()=>endSession(),1500)}
 
 function checkAnswer(){if(questionAnswered||(!globalTimerRunning&&globalTimeLeft<=0))return;if(answerValue==='')return;const ua=parseInt(answerValue);let a,b;
-    if(isFinalTest||isReviewMode||isCustomTest){a=currentMultiplier.a;b=currentMultiplier.b}
-    else{a=currentNumber;b=currentMultiplier}
+    if(isFinalTest||isReviewMode||isCustomTest){a=currentMultiplier.a;b=currentMultiplier.b}else{a=currentNumber;b=currentMultiplier}
     const correct=a*b;questionAnswered=true;stopQuestionTimer();const disp=document.getElementById('answerDisplay');document.getElementById('keypad').classList.add('disabled');
-    if(ua===correct){disp.classList.add('correct');const fb=document.getElementById('feedbackMsg');fb.textContent=isRetryPhase?'🎉 Corect la reluare!':'🎉 Corect! Bravo!';fb.className='feedback-msg success';totalCorrect++;showSparkle();if(isRetryPhase&&isReviewMode)removeMistake(a,b)}
+    if(ua===correct){disp.classList.add('correct');const fb=document.getElementById('feedbackMsg');
+        // ⭐ Mesaj special dacă strategia a fost folosită
+        if(strategyTypedCorrectly&&!isRetryPhase) fb.textContent='🎉 Corect! Strategia te-a ajutat!';
+        else if(isRetryPhase) fb.textContent='🎉 Corect la reluare!';
+        else fb.textContent='🎉 Corect! Bravo!';
+        fb.className='feedback-msg success';totalCorrect++;showSparkle();if(isRetryPhase&&isReviewMode)removeMistake(a,b)}
     else{disp.classList.add('wrong');addMistake(a,b);const air=retryQueue.some(it=>(isFinalTest||isReviewMode||isCustomTest)?it.a===currentMultiplier.a&&it.b===currentMultiplier.b:it===currentMultiplier);if(!air)retryQueue.push(currentMultiplier);const fb=document.getElementById('feedbackMsg');fb.textContent=`❌ Greșit! Răspunsul corect: ${correct}. Va reveni!`;fb.className='feedback-msg retry';totalWrong++}
     updateScore();document.getElementById('nextBtn').style.display='block';document.getElementById('nextBtn').focus()}
 function updateScore(){document.getElementById('correctCount').textContent=totalCorrect;document.getElementById('wrongCount').textContent=totalWrong}
 
 function endSession(){stopQuestionTimer();stopGlobalTimer();document.getElementById('quizContent').style.display='none';document.getElementById('resultsScreen').classList.add('active');if(globalTimeLeft<=0&&stopReason!=='timeout')stopReason='timeout';if(!isReviewMode)markTodayDone();
-
     const wasFinalTest=isFinalTest;
     const justCompletedAll=(stopReason==='perfect'&&!isFinalTest&&!isReviewMode&&!isCustomTest&&currentNumber&&!allCompleted());
-
     if(stopReason==='perfect'&&!isFinalTest&&!isReviewMode&&!isCustomTest&&currentNumber)markCompleted(currentNumber);
-
     const re=document.getElementById('resultsReason');let emoji,title,text,cls;
-
-    if(isReviewMode){
-        if(stopReason==='perfect'){emoji='🔄✨';title='Greșeli revizuite!';text='✨ Ai rezolvat toate greșelile!';cls='reason-perfect'}
-        else{emoji='⏰🔄';title='Timp expirat';text=`Mai rămâneau ${mainQueue.length+retryQueue.length} exerciții.`;cls='reason-time'}
-    }
-    else if(isCustomTest){
-        if(stopReason==='perfect'){emoji='🎲✨';title='Test Personalizat Complet!';text='✨ Bravo! Ai răspuns corect la toate!';cls='reason-perfect'}
-        else{emoji='⏰🎲';title='Test Personalizat - Timp expirat!';text=`Mai rămâneau ${mainQueue.length+retryQueue.length} întrebări.`;cls='reason-time'}
-    }
-    else if(isFinalTest){
-        if(stopReason==='perfect'){
-            emoji='👑🦄🏆';title='MAESTRU SUPREM!';
-            text='✨ Test Final trecut! Totul s-a resetat pentru un nou început!';cls='reason-perfect';
-        }else{
-            emoji='⏰🦄';title='Test Final - Timp expirat!';
-            text=`Mai rămâneau ${mainQueue.length+retryQueue.length} întrebări. Resetare completă!`;cls='reason-time';
-        }
-    }
-    else{
-        if(stopReason==='perfect'){emoji='🦄👑';title=`Cifra ${currentNumber} completă!`;text=`✨ Mini-test terminat!`;cls='reason-perfect'}
-        else{emoji='⏰🦄';title='Timpul s-a terminat!';text=`⏰ Mai exersează cifra ${currentNumber}!`;cls='reason-time'}
-    }
-
+    if(isReviewMode){if(stopReason==='perfect'){emoji='🔄✨';title='Greșeli revizuite!';text='✨ Ai rezolvat toate greșelile!';cls='reason-perfect'}else{emoji='⏰🔄';title='Timp expirat';text=`Mai rămâneau ${mainQueue.length+retryQueue.length} exerciții.`;cls='reason-time'}}
+    else if(isCustomTest){if(stopReason==='perfect'){emoji='🎲✨';title='Test Personalizat Complet!';text='✨ Bravo! Ai răspuns corect la toate!';cls='reason-perfect'}else{emoji='⏰🎲';title='Test Personalizat - Timp expirat!';text=`Mai rămâneau ${mainQueue.length+retryQueue.length} întrebări.`;cls='reason-time'}}
+    else if(isFinalTest){if(stopReason==='perfect'){emoji='👑🦄🏆';title='MAESTRU SUPREM!';text='✨ Test Final trecut! Totul s-a resetat pentru un nou început!';cls='reason-perfect'}else{emoji='⏰🦄';title='Test Final - Timp expirat!';text=`Mai rămâneau ${mainQueue.length+retryQueue.length} întrebări. Resetare completă!`;cls='reason-time'}}
+    else{if(stopReason==='perfect'){emoji='🦄👑';title=`Cifra ${currentNumber} completă!`;text=`✨ Mini-test terminat!`;cls='reason-perfect'}else{emoji='⏰🦄';title='Timpul s-a terminat!';text=`⏰ Mai exersează cifra ${currentNumber}!`;cls='reason-time'}}
     document.getElementById('resultsEmoji').textContent=emoji;document.getElementById('resultsTitle').textContent=title;re.textContent=text;re.className=`results-reason ${cls}`;document.getElementById('resultsScore').textContent=`${totalCorrect} ✅ / ${totalWrong} ❌`;document.getElementById('resultsDetail').innerHTML=`Scor: <b>${totalCorrect}</b> răspunsuri corecte.${isReviewMode&&stopReason==='perfect'?'<br>🎉 Greșelile corecte eliminate din jurnal!':''}`;
-
     const note=document.getElementById('allDoneNote');
-    if(justCompletedAll&&allCompleted()){
-        note.style.display='block';
-        note.textContent='🎯 Toate cifrele deblocate! Testul Final și Testul Personalizat sunt acum disponibile!';
-    }else{
-        note.style.display='none';
-    }
-
+    if(justCompletedAll&&allCompleted()){note.style.display='block';note.textContent='🎯 Toate cifrele deblocate! Testul Final și Testul Personalizat sunt acum disponibile!'}else{note.style.display='none'}
     if(wasFinalTest){resetAllProgress()}
-
     startAutoReturn()}
 
 function startAutoReturn(){let cd=AUTO_RETURN_DELAY;document.getElementById('autoReturnCountdown').textContent=cd;autoReturnTimer=setInterval(()=>{cd--;document.getElementById('autoReturnCountdown').textContent=cd;if(cd<=0){clearInterval(autoReturnTimer);showMenu()}},1000)}
-function showMenu(){clearTimeout(autoReturnTimer);stopQuestionTimer();stopGlobalTimer();stopLearnTimer();document.getElementById('menu-section').style.display='block';document.getElementById('quiz-section').classList.remove('active');document.getElementById('learnPanel').classList.remove('visible');document.getElementById('customTestPanel').classList.remove('visible');pendingNumber=null;renderMenu()}
+function showMenu(){clearTimeout(autoReturnTimer);stopQuestionTimer();stopGlobalTimer();stopLearnTimer();document.getElementById('menu-section').style.display='block';document.getElementById('quiz-section').classList.remove('active');document.getElementById('learnPanel').classList.remove('visible');document.getElementById('customTestPanel').classList.remove('visible');pendingNumber=null;strategyTypedCorrectly=false;renderMenu()}
 function showSparkle(){const s=document.createElement('div');s.className='sparkle-overlay';s.textContent='✨🦄✨';document.querySelector('.app-container').appendChild(s);setTimeout(()=>s.remove(),900)}
+
+// ⭐ Event listener pentru validarea strategiei în timp real
+document.getElementById('strategyInput').addEventListener('input',function(){
+    if(pendingNumber) validateStrategy(pendingNumber);
+});
 </script>
 </body>
 </html>
